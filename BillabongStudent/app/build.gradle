@@ -106,7 +106,7 @@ android {
             buildConfigField "String", "ASSOCIATION_ID", '"5900dad38c04da1a00996c16"'
             buildConfigField 'String', 'LEGACY_SERVER_KEY_FROM_FCM', '"key=AIzaSyCyhijgwzH1Eiqqi_g1P-GVX9uvK3IuwTY"'
             buildConfigField 'String', 'SUBSCRIBE_FCM', '"billabongstudent_route"'
-            archivesBaseName = "billabongstudent-$versionName$versionNameSuffix"
+            archivesBaseName = "billabongStudent-$versionName$versionNameSuffix"
 
 
         }
