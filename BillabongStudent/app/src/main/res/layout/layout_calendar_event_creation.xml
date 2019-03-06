@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<LinearLayout
+    android:id="@+id/layoutCreation"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal|center_vertical"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layoutCreatePersonalEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:clickable="true">
+
+        <ImageButton
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/background_circle_calendar_personal_event"
+            android:elevation="10dp"
+            android:src="@drawable/personal_w"
+            android:clickable="false"
+            />
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/personal"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp"
+            android:clickable="false"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutCreateActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:clickable="true"
+        >
+
+        <ImageButton
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/background_circle_calendar_activity"
+            android:elevation="10dp"
+            android:src="@drawable/activities_w"
+            android:clickable="false"/>
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/activity"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp"
+            android:clickable="false"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutCreateAnnouncement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:clickable="true">
+
+        <ImageButton
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/background_circle_calendar_announcement"
+            android:elevation="10dp"
+            android:src="@drawable/announcements_w"
+            android:clickable="false"/>
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/announcement"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp"
+            android:clickable="false"/>
+
+    </LinearLayout>
+
+</LinearLayout>
+</layout>

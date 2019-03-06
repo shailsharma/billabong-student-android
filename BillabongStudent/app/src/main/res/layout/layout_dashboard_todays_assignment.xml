@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:visibility="gone"
+    app:cardBackgroundColor="@color/colorWhite"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="3dp">
+
+    <in.securelearning.lil.android.base.widget.TextViewCustom
+        android:id="@+id/textViewNoAssignment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorGreenDark"
+        android:gravity="center_horizontal"
+        android:paddingBottom="24dp"
+        android:paddingTop="24dp"
+        android:text="No assignments today"
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="gone"/>
+
+    <in.securelearning.lil.android.base.widget.TextViewCustom
+        android:id="@+id/textViewAssignmentProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorGreenDark"
+        android:gravity="center_horizontal"
+        android:paddingBottom="24dp"
+        android:paddingTop="24dp"
+        android:text="Looking for assignments..."
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="visible"/>
+
+    <LinearLayout
+        android:id="@+id/layoutTodaysAssignment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@color/colorGreenDark"
+            android:padding="4dp"
+            android:text="@string/string_assignments"
+            android:textColor="@color/white_color"
+            android:textSize="22sp"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_assignments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"/>
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>
+

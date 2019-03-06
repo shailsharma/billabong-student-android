@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/actionAttach"
+        android:icon="@drawable/action_attach_w"
+        android:orderInCategory="97"
+        android:title="@string/action_attach_files"
+        android:visible="true"
+        app:showAsAction="always"/>
+
+
+    <item
+        android:id="@+id/actionPost"
+        android:icon="@drawable/send_w"
+        android:orderInCategory="98"
+        android:title="@string/action_post"
+        android:visible="true"
+        app:showAsAction="always"/>
+
+
+</menu>

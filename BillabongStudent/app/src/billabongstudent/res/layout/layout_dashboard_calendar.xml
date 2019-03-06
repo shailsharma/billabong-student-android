@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <LinearLayout
+        android:id="@+id/cardView_Date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--title,current date and click button-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_16dp"
+            android:layout_marginRight="@dimen/margin_16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                >
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/string_calendar"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/colorRyanBlack"
+                    android:textStyle="bold"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/textViewCurrentDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_4dp"
+                    android:textColor="@color/colorRyanGreyDescription"
+                    android:textStyle="italic"
+                    tools:text="11 March 2019, Wednesday"/>
+            </LinearLayout>
+
+            <in.securelearning.lil.android.base.widget.CustomImageButton
+                android:id="@+id/buttonCalendarView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:gravity="end"
+                android:padding="@dimen/padding_8dp"
+                android:src="@drawable/icon_dashboard_calendar"/>
+
+        </LinearLayout>
+
+        <!--events pager and indicator-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_8dp"
+            android:layout_marginBottom="@dimen/margin_8dp"
+            android:orientation="vertical">
+
+            <in.securelearning.lil.android.home.utils.RecyclerViewPager
+                android:id="@+id/recycleViewPagerEvents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingLeft="@dimen/padding_48dp"
+                android:paddingRight="@dimen/padding_48dp"
+                android:visibility="gone"
+                app:rvp_singlePageFling="true"
+                app:rvp_triggerOffset="0.1"></in.securelearning.lil.android.home.utils.RecyclerViewPager>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/textViewNoEvents"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/event_item_height"
+                android:gravity="center"
+                android:text="No events for today"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:visibility="invisible"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

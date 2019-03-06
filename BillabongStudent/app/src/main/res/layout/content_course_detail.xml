@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context=".views.activity.CourseDetailActivity"
+        tools:showIn="activity_course_details">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <!--layout thumbnail and title-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+                <!--layout thumbnail-->
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cardview_curse_thumb"
+                    android:layout_width="170dp"
+                    android:layout_height="130dp"
+                    android:layout_margin="5dp"
+                    card_view:cardCornerRadius="3dp"
+                    card_view:cardElevation="5dp"
+                    card_view:cardPreventCornerOverlap="true">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/imageview_course_thumbnail"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:transitionName="@string/shared_animation" />
+
+                        <ImageView
+                            android:id="@+id/iamgeview_course_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentStart="true"
+                            android:visibility="gone"/>
+
+                    </RelativeLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:id="@+id/textview_assign_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                    android:textColor="@color/colorGreyDark" />
+
+            </LinearLayout>
+
+            <!--layout about course-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/about_this_course"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <in.securelearning.lil.android.base.widget.CustomImageButton
+                    android:id="@+id/share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:src="@android:drawable/ic_menu_share"
+                    android:visibility="gone" />
+
+                <ImageButton
+                    android:id="@+id/download"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:visibility="gone" />
+
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/about"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pre-Read"
+                    android:textColor="@color/colorGreyDark" />
+
+
+            </LinearLayout>
+
+            <!--layout what you will learn -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/what_you_will_learn"
+                    android:textColor="@color/colorGreyDark"
+                    android:textStyle="bold" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/learning_outcomes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Covers Algebra, Equations"
+                    android:textColor="@color/colorGreyDark" />
+
+            </LinearLayout>
+
+            <!--layout course curator-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/course_curators"
+                    android:textColor="@color/colorGreyDark"
+                    android:textStyle="bold" />
+
+                <in.securelearning.lil.android.base.widget.RoundedImageView
+                    android:id="@+id/course_curator_image"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center_horizontal" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/course_curator_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="8dp"
+                    android:text="asgsdgd"
+                    android:textColor="@color/colorGreyDark" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/course_curator_about"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="b) be familiar with the definition of an equation"
+                    android:textColor="@color/colorGreyDark" />
+
+                <android.support.v7.widget.AppCompatButton
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/subscribe" />
+
+            </LinearLayout>
+
+            <!--layout course description-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                android:paddingBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/likes_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:layout_marginRight="8dp"
+                        android:text="454"
+                        android:textColor="@color/colorGreyDark" />
+
+                    <android.support.v7.widget.AppCompatCheckBox
+                        android:id="@+id/checkbox_favorite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@null"
+                        android:drawableLeft="@drawable/likes_drawable"
+                        android:textColor="@color/colorGreyDark" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <RatingBar
+                        android:id="@+id/ratingBar"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:numStars="5" />
+
+                    <!--<android.support.v7.widget.AppCompatTextView-->
+                        <!--android:id="@+id/rating_count"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="24dp"-->
+                        <!--android:layout_marginRight="8dp"-->
+                        <!--android:text="4/5"-->
+                        <!--android:textColor="@color/colorGreyDark" />-->
+
+                    <!--<android.support.v7.widget.AppCompatCheckBox-->
+                        <!--android:id="@+id/rating1"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:button="@null"-->
+                        <!--android:drawableLeft="@drawable/rating_star_drawable" />-->
+
+                    <!--<android.support.v7.widget.AppCompatCheckBox-->
+                        <!--android:id="@+id/rating2"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:button="@null"-->
+                        <!--android:drawableLeft="@drawable/rating_star_drawable" />-->
+
+                    <!--<android.support.v7.widget.AppCompatCheckBox-->
+                        <!--android:id="@+id/rating3"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:button="@null"-->
+                        <!--android:drawableLeft="@drawable/rating_star_drawable" />-->
+
+                    <!--<android.support.v7.widget.AppCompatCheckBox-->
+                        <!--android:id="@+id/rating4"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:button="@null"-->
+                        <!--android:drawableLeft="@drawable/rating_star_drawable" />-->
+
+                    <!--<android.support.v7.widget.AppCompatCheckBox-->
+                        <!--android:id="@+id/rating5"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginRight="16dp"-->
+                        <!--android:button="@null"-->
+                        <!--android:drawableLeft="@drawable/rating_star_drawable" />-->
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:src="@drawable/course_gray" />
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:src="@drawable/publish" />
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:src="@drawable/duration" />
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:src="@drawable/audience" />
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:src="@drawable/board" />
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:src="@drawable/icon_language_c" />
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:src="@drawable/grade"
+                                android:text="@string/a_z" />
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:src="@drawable/courses" />
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:src="@drawable/board" />
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:src="@drawable/licence" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:orientation="vertical">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/learning_module_type"
+                                android:textColor="@color/colorGreyDark" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/published_date"
+                                android:textColor="@color/colorGreyDark" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/duration"
+                                android:textColor="@color/colorGreyDark" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/audience"
+                                android:textColor="@color/colorGreyDark" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/board"
+                                android:textColor="@color/colorGreyDark" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/language"
+                                android:textColor="@color/colorGreyDark" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/grade" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/subject"
+                                android:textColor="@color/colorGreyDark" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/learning_style"
+                                android:textColor="@color/colorGreyDark" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/license"
+                                android:textColor="@color/colorGreyDark" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/learning_module_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:gravity="center_vertical"
+                            android:text="COURSE"
+                            android:textColor="@color/colorGreyDark" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/published_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:gravity="center_vertical"
+                            android:text="7,July 2016"
+                            android:textColor="@color/colorGreyDark" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/duration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:gravity="center_vertical"
+                            android:text="30 mins"
+                            android:textColor="@color/colorGreyDark" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/audience"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:gravity="center_vertical"
+                            android:text="10 to 12 yrs"
+                            android:textColor="@color/colorGreyDark" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/board"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:gravity="center_vertical"
+                            android:text="CBSE"
+                            android:textColor="@color/colorGreyDark" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/language"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:gravity="center_vertical"
+                            android:text="ENGLISH"
+                            android:textColor="@color/colorGreyDark" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/grade"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:gravity="center_vertical"
+                            android:text="9th"
+                            android:textColor="@color/colorGreyDark" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/subject"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:gravity="center_vertical"
+                            android:text="Geography"
+                            android:textColor="@color/colorGreyDark" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/learning_style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:gravity="center_vertical"
+                            android:text="Conceptual"
+                            android:textColor="@color/colorGreyDark" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/license"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:gravity="center_vertical"
+                            android:text="OER"
+                            android:textColor="@color/colorGreyDark" />
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/content_details"
+                    android:textColor="@color/colorGreyDark"
+                    android:textStyle="bold" />
+
+                <!--layout content details main-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:orientation="horizontal">
+
+                        <!--layout content details label #-->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="#"
+                                android:textColor="@color/colorGreyDark" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="#"
+                                android:textColor="@color/colorGreyDark" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="#"
+                                android:textColor="@color/colorGreyDark" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="#"
+                                android:textColor="@color/colorGreyDark" />
+
+                        </LinearLayout>
+
+                        <!--layout content details label-->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:orientation="vertical">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/videos"
+                                android:textColor="@color/colorGreyDark" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/images"
+                                android:textColor="@color/colorGreyDark" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/assessments"
+                                android:textColor="@color/colorGreyDark" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/micro_learning_courses"
+                                android:textColor="@color/colorGreyDark" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!--layout content details values-->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/videos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:gravity="center_vertical"
+                            android:text="2"
+                            android:textColor="@color/colorGreyDark" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/images"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:gravity="center_vertical"
+                            android:text="2"
+                            android:textColor="@color/colorGreyDark" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/assessments"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:gravity="center_vertical"
+                            android:text="2"
+                            android:textColor="@color/colorGreyDark" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/micro_learning_courses"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:gravity="center_vertical"
+                            android:text="2"
+                            android:textColor="@color/colorGreyDark" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</layout>

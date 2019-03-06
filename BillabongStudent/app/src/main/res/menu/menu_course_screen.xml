@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_bookmark"
+        android:icon="@drawable/action_favorite_w"
+        android:orderInCategory="97"
+        android:title="@string/favorites"
+        android:visible="true"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_download"
+        android:icon="@drawable/action_download_w"
+        android:orderInCategory="98"
+        android:title="@string/download"
+        android:visible="true"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_browse"
+        android:icon="@drawable/action_search_w"
+        android:orderInCategory="100"
+        android:title="@string/browse_courses"
+        android:visible="true"
+        app:showAsAction="always"/>
+
+
+</menu>

@@ -1,0 +1,229 @@
+<resources>
+    <string name="app_name_release">Billabong@Home</string>
+    <string name="app_name_test">Billabong@Home Test</string>
+    <string name="app_name_debug">Billabong@Home Dev</string>
+
+    <!--release urls-->
+    <string name="base_api_url">https://billabong.learnindialearn.in/api/</string>
+    <string name="base_web_url">https://billabong.learnindialearn.in/</string>
+
+    <!--debug/development urls-->
+    <string name="base_api_url_debug">https://billabong-dev.learnindialearn.in/api/</string>
+    <string name="base_web_url_debug">https://billabong-dev.learnindialearn.in/</string>
+
+    <!--test/qa urls-->
+    <string name="base_api_url_test">https://billabong-test.learnindialearn.in/api/</string>
+    <string name="base_web_url_test">https://billabong-test.learnindialearn.in/</string>
+
+    <!--mind spark's strings-->
+    <string name="mind_spark_x_api_key">zS72YNPKoA9gK6Z6j9Msj4VO1p2SxUnx21Kwuz4P</string>
+    <string name="mind_spark_base_url">https://www.mindspark.in/api/</string>
+
+    <string name="title_activity_settings_preference_flavor">Settings</string>
+
+
+    <!-- Strings related to Settings -->
+    <!-- SkillMasteryQuestionPostData General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_language">Language</string>
+    <string name="pref_title_about">About</string>
+    <string name="pref_title_help">Help</string>
+
+
+    <string-array name="pref_example_list_language">
+        <item>English</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+    </string-array>
+
+    <string-array name="pref_list_bus_arriving">
+        <item>500 meter</item>
+        <item>800 meter</item>
+        <item>1000 meter</item>
+    </string-array>
+    <string-array name="pref_list_bus_arriving_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="pref_list_bus_has_arriving">
+        <item>50 meter</item>
+        <item>100 meter</item>
+        <item>200 meter</item>
+    </string-array>
+    <string-array name="pref_list_bus_arriving_has_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string name="search_provider_authority">in.securelearning.lil.android.app.billabongstudent.provider.SearchSuggestionProvider</string>
+    <string name="search_provider_authority_debug">in.securelearning.lil.android.app.billabongstudent.debug.provider.SearchSuggestionProvider</string>
+    <string name="search_provider_authority_test">in.securelearning.lil.android.app.billabongstudent.demo.provider.SearchSuggestionProvider</string>
+    <string name="file_provider_authority">in.securelearning.lil.android.app.billabongstudent.provider.FileProvider</string>
+    <string name="file_provider_authority_debug">in.securelearning.lil.android.app.billabongstudent.debug.provider.FileProvider</string>
+    <string name="file_provider_authority_test">in.securelearning.lil.android.app.billabongstudent.demo.provider.FileProvider</string>
+
+    <integer name="event_title_limit">100</integer>
+    <integer name="event_location_limit">40</integer>
+    <integer name="user_name_limit">16</integer>
+    <integer name="user_about_limit">200</integer>
+    <!-- SkillMasteryQuestionPostData settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data sync</string>
+    <string name="pref_header_logout">Logout</string>
+
+    <!-- SkillMasteryQuestionPostData settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+    <string name="pref_title_vibrate">Vibrate</string>
+    <string name="setting_notification_sound">Sound</string>
+    <string name="setting_notification_course">Courses</string>
+    <string name="setting_notification_lnetwork">Learning Network</string>
+    <string name="setting_notification_assignment">Assignment</string>
+    <string name="setting_bus_arriving">Bus arriving </string>
+    <string name="setting_bus_has_arrive">Bus has arrived </string>
+    <string name="pref_title_wifi">Download only on WiFi</string>
+    <string name="pref_title_wifi_on_lnetwork">Auto download Learning Network media</string>
+
+    <!-- below is setting keys list -->
+
+
+    <string name="notifications_language">notifications_language</string>
+    <string name="notifications_help">notifications_help</string>
+    <string name="notifications_about">notifications_about</string>
+
+    <string name="notifications_sound">notifications_sound</string>
+    <string name="notifications_ringtone">notifications_ringtone</string>
+    <string name="notifications_vibrate">notifications_vibrate</string>
+    <string name="notifications_course">notifications_course</string>
+    <string name="notifications_lnetwork">notifications_lnetwork</string>
+    <string name="notifications_assignment">notifications_assignment</string>
+    <string name="notifications_bus_arriving">notifications_bus_arriving</string>
+    <string name="notifications_bus_has_arriving">notifications_bus_has_arriving</string>
+
+    <string name="notifications_wifi">notifications_wifi</string>
+    <string name="notifications_wifi_on_lnetwork">notifications_wifi_on_lnetwork</string>
+
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+
+
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string> 
+    <string name="start">GOT IT</string>   
+    <string name="slide_1_title">Hello Food!</string>
+    <string name="slide_1_desc">Find instant help from teachers, professionals and friends !</string>
+     
+    <string name="slide_2_title">Movie Tickets</string> 
+    <string name="slide_2_desc">Learn anything, anywhere, free !</string>
+    <string name="slide_3_title">Great Discounts</string>
+    <string name="slide_3_desc">Analyze your progress, interactively !</string>
+    <string name="slide_4_title">World Travel</string>    
+    <string name="slide_4_desc">Stay updated with your assignments !</string>
+    <string name="slide_5_title">World Travel</string>    
+    <string name="slide_5_desc">Get updates about your school commute on your phone!</string>
+    <string name="intro_blog">Get updates about your school commute on your phone!</string>
+    <string name="intro_calendar">Get updates about your school commute on your phone!</string>
+    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
+    <string name="play_again">Play Again</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_markdown_sample">MarkdownSampleActivity</string>
+    <string name="unlockAllResource">Unlock All Resource</string>
+    <string name="markThisSubTopicComplete">Mark This Sub Topic Complete</string>
+    <string name="courseAndLessonPlan">Course and Lesson Plan</string>
+    <string name="prescribedResources">Prescribed Resources</string>
+    <string name="assessments">Assessments</string>
+    <string name="referenceResources">Reference Resources</string>
+    <string name="messageNoPeriodFoundForTodaysDate">No Period found for today\'s date\nPlease select another date.</string>
+    <string name="messageNoStudyReferencesFound">No Study References found for selected topic.\nPlease select another topic.</string>
+    <string name="labelClassPerformance">Class Performance</string>
+    <string name="recap">Recap</string>
+
+
+    <string name="labelNoOfSessions">No. of Sessions</string>
+    <string name="labelNoOfSections">No. of Sections</string>
+
+    <string name="messageUnableToGetData">Unable to get data</string>
+
+
+    <string-array name="training_list_item">
+        <item>@string/labelDetails</item>
+        <item>@string/labelCourses</item>
+        <item>@string/labelResources</item>
+        <item>@string/labelSessions</item>
+        <item>@string/labelAssignments</item>
+        <item>@string/labelGroup</item>
+        <item>@string/labelPerformance</item>
+    </string-array>
+
+    <string-array name="training_join_list_item">
+        <item>@string/labelDetails</item>
+        <item>@string/labelCourses</item>
+        <item>@string/labelResources</item>
+        <item>@string/labelSessions</item>
+    </string-array>
+
+    <!--Euro@Home-->
+    <string name="messageNoDataFound">No data found</string>
+    <string name="no_subject_available">No subject available.</string>
+    <string name="no_recap_for_today">No recap for today.</string>
+    <string name="labelLearn">Learn</string>
+    <string name="labelReinforce">Reinforce</string>
+    <string name="labelApply">Apply</string>
+    <string name="no_chapter">No Chapter</string>
+    <string name="chapters">Chapters</string>
+    <string name="chapter">Chapter</string>
+    <string name="go_back">Go Back</string>
+    <string name="homework">Homework</string>
+
+    <string name="labelColon">:</string>
+    <string name="labelAadhaarNumber">Aadhaar Number</string>
+    <string name="labelClassGroup">Class Group</string>
+    <string name="labelEnrollmentCode">Enrollment Code</string>
+    <string name="labelDateOfBirth">Date Of Birth</string>
+    <string name="labelBloodGroup">Blood Group</string>
+    <string name="labelAddress">Address</string>
+    <string name="labelInterest">Interest</string>
+    <string name="labelFatherDetails">Father Details</string>
+    <string name="labelName">Name</string>
+    <string name="labelMobile">Mobile</string>
+    <string name="labelEmail">Email</string>
+    <string name="labelMotherDetails">Mother Details</string>
+    <string name="labelTotalRewards">Total Rewards</string>
+    <string name="no_homework_available">No homework available</string>
+    <string name="pass">pass</string>
+    <string name="fail">fail</string>
+    <string name="messageGettingNextQuestion">Getting Next Question</string>
+    <string name="messageMSEndTopic">Congratulations your practice on this topic submitted.\nPlease Go Back and try practice for another topic.</string>
+    <string name="messageMSNoMCQ">No MCQ type questions available for this topic.\nPlease Go Back and try practice for another topic.</string>
+
+    <string-array name="array_subject_detail_tab_no_post">
+        <item>@string/label_home</item>
+        <item>@string/chapters</item>
+        <item>@string/homework</item>
+    </string-array>
+
+    <string-array name="array_subject_detail_tab">
+        <item>@string/label_home</item>
+        <item>@string/chapters</item>
+        <item>@string/homework</item>
+        <item>@string/string_post</item>
+    </string-array>
+
+
+    <!--view tag id-->
+    <item name="attemptResult" type="id"/>
+    <item name="response" type="id"/>
+    <item name="selectedChoiceIndex" type="id"/>
+
+    <string-array name="array_user_profile_tab">
+        <item>@string/label_perosnal</item>
+        <item>@string/label_parent</item>
+    </string-array>
+</resources>

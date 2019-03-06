@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#644299</color>
+    <color name="colorPrimaryDark">#644299</color>
+    <color name="colorAccent">#644299</color>
+    <color name="colorAccentTransparent">#99644299</color>
+    <color name="notification_small_background">#03a9f4</color>
+
+    <color name="colorPrimarySettings">#3F51B5</color>
+    <color name="colorPrimaryDarkSettings">#303F9F</color>
+    <color name="colorAccentSettings">#03A9F4</color>
+    <color name="colorAssignActivity">#3F51B5</color>
+    <color name="colorDialogBackground">#88000000</color>
+    <!--Quizzes colors-->
+    <color name="colorQuizPrimary">#363F46</color>
+    <color name="colorQuizPrimaryDark">#30383f</color>
+
+    <!--Course colors-->
+    <color name="colorCoursePrimary">#26264a</color>
+    <color name="colorCoursePrimaryDark">#222243</color>
+
+    <!--Assignment colors-->
+    <color name="colorAssignmentPrimary">#259B23</color>
+    <color name="colorAssignmentPrimaryDark">#1d7c1c</color>
+
+    <!--Learning Network colors-->
+    <color name="colorLearningNetworkPrimary">#e73827</color>
+    <color name="colorLearningNetworkPrimaryDark">#e73827</color>
+    <color name="colorLearningNetworkAccent">#e73827</color>
+    <!--Quiz Preview colors-->
+    <color name="colorBackgroundHint">#ff921e</color>
+    <color name="colorGrey400">#bdbdbd</color>
+    <color name="colorBlueGrey100">#cfd8dc</color>
+    <color name="colorYellowAmber200">#ffe082</color>
+    <color name="colorGreenTransparent">#aa3bb670</color>
+    <color name="colorLightGreen">#cae7c9</color>
+
+    <color name="colorBackgroundCorrectResponse">#259B23</color>
+    <color name="colorBackgroundIncorrectResponse">#F44336</color>
+    <color name="colorBackgroundUnansweredResponse">#1E80D0</color>
+    <color name="colorBackgroundYetToViewResponse">#FFFFFF</color>
+    <color name="colorClassPlannerPrimary">#0071bc</color>
+     
+    <color name="bg_screen">#ffffff</color>
+     <!-- dots active colors -->
+        
+    <color name="dot_dark_screen1">#ff1d25</color>    
+    <color name="dot_dark_screen2">#2f66f7</color>    
+    <color name="dot_dark_screen3">#ff9800</color>
+    <color name="dot_dark_screen4">#259b24</color>
+    <color name="dot_dark_screen5">#2e3192</color>
+    <color name="dot_dark_screen6">#02568E</color>
+    <color name="dot_dark_screen7">#FF5278</color>
+     
+        <!-- dots inactive colors -->
+        
+    <color name="dot_light_screen1">#ffd2d3</color>    
+    <color name="dot_light_screen2">#d5e0fd</color>    
+    <color name="dot_light_screen3">#ffeacc</color>
+    <color name="dot_light_screen4">#d3ebd3</color> 
+    <color name="dot_light_screen5">#d5d6e9</color>
+    <color name="dot_light_screen6">#4402568E</color>
+    <color name="dot_light_screen7">#44FF5278</color>
+     
+        
+    <array name="array_dot_inactive">
+                
+        <item>@color/dot_light_screen2</item>
+        <item>@color/dot_light_screen1</item>
+        <item>@color/dot_light_screen4</item>
+        <item>@color/dot_light_screen3</item>
+        <!-- <item>@color/dot_light_screen5</item>-->
+        <item>@color/dot_light_screen6</item>
+        <item>@color/dot_light_screen7</item>
+            
+    </array>
+     
+    <color name="colorBottomTabs">#F8F8F8</color>
+    <array name="array_dot_active">
+                
+        <item>@color/dot_dark_screen2</item>
+        <item>@color/dot_dark_screen1</item>
+        <item>@color/dot_dark_screen4</item>
+        <item>@color/dot_dark_screen3</item>
+        <!--<item>@color/dot_dark_screen5</item>-->
+        <item>@color/dot_dark_screen6</item>
+        <item>@color/dot_dark_screen7</item>
+            
+    </array>
+
+
+    <color name="colorEndGradient">#644299</color>
+    <color name="colorCenterGradient">#9e005d</color>
+    <color name="colorStartGradient">#fbbd18</color>
+        
+    <color name="colorRyanBlack">#424242</color>
+    <color name="colorRyanGreyDescription">#9e9e9e</color>
+
+    <!--Blue Gradient-->
+    <color name="colorBlueStartGradient">#32ccbc</color>
+    <color name="colorBlueCenterGradient">#89BCD3</color>
+    <color name="colorBlueEndGradient">#29abe2</color>
+
+    <!--Orange Gradient-->
+    <color name="colorOrangeStartGradient">#fbb03b</color>
+    <color name="colorOrangeCenterGradient">#fbb03b</color>
+    <color name="colorOrangeEndGradient">#fcde21</color>
+
+    <!--Green Gradient-->
+    <color name="colorGreenStartGradient">#39b54a</color>
+    <color name="colorGreenCenterGradient">#8cc63f</color>
+    <color name="colorGreenEndGradient">#b6e021</color>
+
+    <color name="colorButtonRippleChip">#88FFFFFF</color>
+</resources>

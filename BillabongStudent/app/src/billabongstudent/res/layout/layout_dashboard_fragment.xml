@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/image_dashboard_background"/>
+
+                <!--layout toolbar-->
+                <LinearLayout
+                    android:id="@+id/layoutToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="88dp"
+                    android:layout_alignParentTop="true"
+                    android:background="@drawable/gradient_app"
+                    android:elevation="4dp"
+                    android:gravity="center_vertical"
+
+                    >
+
+                    <in.securelearning.lil.android.base.widget.CustomImageButton
+                        android:id="@+id/buttonDrawer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_8dp"
+                        android:padding="@dimen/padding_8dp"
+                        android:src="@drawable/icon_hamburger_w"/>
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/imageViewUser"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginStart="@dimen/margin_16dp"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_8dp"
+                        android:orientation="vertical"
+                        >
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewGreeting"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/colorWhite"
+                            tools:text="Good Morning"/>
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewUserName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/colorWhite"
+                            android:textStyle="bold"
+                            tools:text="Ritesh"/>
+
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        >
+
+                        <in.securelearning.lil.android.base.widget.CustomImageButton
+                            android:id="@+id/buttonNotification"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginEnd="@dimen/margin_8dp"
+                            android:padding="@dimen/padding_8dp"
+                            android:src="@drawable/logo_notification_w"
+                            android:visibility="gone"/>
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end|center_vertical"
+                            android:src="@drawable/app_logo_light"
+                            android:cropToPadding="true"/>
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <android.support.v4.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/layoutToolbar"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_8dp"
+                        android:layout_marginBottom="@dimen/margin_8dp"
+                        android:focusableInTouchMode="true"
+                        android:orientation="vertical">
+
+                        <!--Recap view-->
+                        <include
+                            android:id="@+id/recapView"
+                            layout="@layout/layout_dashboard_recap"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:layout_marginTop="@dimen/margin_16dp"
+                            android:layout_marginBottom="@dimen/margin_16dp"
+                            android:background="@color/itemDivider"/>
+
+                        <!--assignment card view-->
+                        <include
+                            android:id="@+id/assignmentView"
+                            layout="@layout/layout_dashboard_assignment"/>
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:layout_marginTop="@dimen/margin_16dp"
+                            android:layout_marginBottom="@dimen/margin_16dp"
+                            android:background="@color/itemDivider"/>
+
+
+                        <!--subjects-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_16dp"
+                            android:layout_marginRight="@dimen/margin_16dp"
+                            android:orientation="vertical">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_subjects"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                                android:textColor="@color/colorRyanBlack"
+                                android:textStyle="bold"/>
+
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewErrorSubject"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/event_item_height"
+                                android:gravity="center"
+                                android:text="@string/no_subject_available"
+                                android:textColor="@color/colorGrey55"
+                                android:visibility="gone"/>
+
+                            <LinearLayout
+                                android:id="@+id/layoutSubjectProgressBar"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/event_item_height"
+                                android:gravity="center">
+
+                                <ProgressBar
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/recyclerView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:visibility="gone"/>
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+
+                </android.support.v4.widget.NestedScrollView>
+            </RelativeLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.design.widget.CoordinatorLayout>
+</layout>

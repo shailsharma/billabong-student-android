@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="saveourcar.soc.MainActivity">
+
+
+    <item
+        android:id="@+id/action_bookmark"
+        android:icon="@drawable/ic_favorite_white_24dp"
+        android:orderInCategory="98"
+        android:title="@string/favorites"
+        android:visible="true"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_browse"
+        android:icon="@drawable/search_white"
+        android:orderInCategory="99"
+        android:title="@string/browse_courses"
+        android:visible="true"
+        app:showAsAction="always"/>
+</menu>

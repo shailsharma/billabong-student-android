@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/image_view"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:scaleType="centerCrop" />
+
+            <in.securelearning.lil.android.base.widget.TextViewCustom
+                android:id="@+id/textview_blog_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gradient_black_category"
+                android:padding="5dp"
+                android:text="Blog Title"
+                android:textColor="@color/colorWhite"
+                android:textSize="22sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorGrey"
+                android:padding="5dp">
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:id="@+id/textview_blog_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_margin="5dp"
+                    android:text="Posted on Dec 2,2016"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="14sp" />
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:id="@+id/textview_blogger_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:textStyle="bold"
+                    android:layout_toRightOf="@+id/textview_blog_time"
+                    android:text="by Priya Jain"
+                    android:textColor="@color/colorGreen"
+                    android:textSize="14sp" />
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:id="@+id/textview_comments_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textview_blog_time"
+                    android:layout_margin="5dp"
+                    android:text="(0 Comments)"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="14sp" />
+
+                <RatingBar
+                    android:id="@+id/rating_bar_blog"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="5dp"
+                    android:max="5"
+                    android:rating="4" />
+
+            </RelativeLayout>
+
+            <in.securelearning.lil.android.base.widget.TextViewCustom
+                android:id="@+id/textview_blog_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:text="The rocky ball that forms our world is one of nine planets in the Solar System. Earth is a sphere, with a slight bulge in the middle at the Equator, and a diameter of 12,756 km (7,926 miles). It hurtles at speeds of 105,000 kph (65,000 mph) during its orbit around the Sun, turning on its AXIS once every 24 hours. This journey takes a year to complete. The Earth is the only planet that is known to support life, in a zone called the BIOSPHERE.
+
+The rocky ball that forms our world is one of nine planets in the Solar System. Earth is a sphere, with a slight bulge in the middle at the Equator, and a diameter of 12,756 km (7,926 miles). It hurtles at speeds of 105,000 kph (65,000 mph) during its orbit around the Sun, turning on its AXIS once every 24 hours. This journey takes a year to complete. The Earth is the only planet that is known to support life, in a zone called the BIOSPHERE.
+
+The rocky ball that forms our world is one of nine planets in the Solar System. Earth is a sphere, with a slight bulge in the middle at the Equator, and a diameter of 12,756 km (7,926 miles). It hurtles at speeds of"
+                android:textColor="@color/colorBlack"
+                android:textSize="14sp" />
+
+            <HorizontalScrollView
+                android:id="@+id/scrollview_blog_resources"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_margin="5dp"></HorizontalScrollView>
+
+            <android.support.v7.widget.CardView
+                android:background="@color/colorWhite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:clickable="true"
+                card_view:cardCornerRadius="2dp"
+                card_view:cardElevation="3dp">
+
+                <RelativeLayout
+
+                    android:id="@+id/layout_about_blogger"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_toRightOf="@+id/imageview_blogger"
+                        android:orientation="vertical">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="About the blogger"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <in.securelearning.lil.android.base.widget.RoundedImageView
+                        android:id="@+id/imageview_blogger"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:src="@drawable/user_thumbnail"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true" />
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:clickable="true"
+                card_view:cardCornerRadius="2dp"
+                card_view:cardElevation="3dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp">
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textview_comment_lable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_margin="5dp"
+                        android:text="Comments"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="14sp" />
+
+
+                    <in.securelearning.lil.android.base.widget.RoundedImageView
+                        android:id="@+id/imageview_user_comment"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/textview_comment_lable"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/user_thumbnail" />
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edittext_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textview_comment_lable"
+                        android:layout_margin="5dp"
+                        android:layout_toRightOf="@+id/imageview_user_comment"
+                        android:hint="Write your comment..."
+                        android:textColorHint="@color/colorHint"
+                        android:textSize="14sp" />
+
+
+                    <in.securelearning.lil.android.base.widget.ButtonCustom
+                        android:id="@+id/postButton"
+                        android:padding="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignEnd="@+id/edittext_comment"
+                        android:layout_below="@+id/edittext_comment"
+                        android:background="@color/colorRed"
+                        android:text="Post"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorWhite" />
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

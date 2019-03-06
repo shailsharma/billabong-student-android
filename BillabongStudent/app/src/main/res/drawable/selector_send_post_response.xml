@@ -1,0 +1,8 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/send_r" android:state_focused="true"/>
+    <item android:drawable="@drawable/send_r" android:state_selected="true"/>
+    <item android:drawable="@drawable/send_g"/>
+
+
+</selector>

@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/image_dashboard_background"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layoutTop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/gradient_app"
+                android:elevation="4dp"
+                android:fitsSystemWindows="true"
+                android:orientation="vertical"
+                android:visibility="visible"
+                >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="?actionBarSize"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:visibility="gone">
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textViewQuestionCounter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_4dp"
+                        android:text="Question 1 of 10"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/colorWhite"/>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textViewQuestionsSize"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorWhite"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutTimer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_transparent_white"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    >
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="2dp"
+                        android:text="&#xea19;"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorGreyDark"
+                        android:visibility="gone"/>
+
+                    <Chronometer
+                        android:id="@+id/chronometerQuestionTimer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorGreyDark"/>
+
+                </LinearLayout>
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="10"
+                    android:progressBackgroundTint="@color/colorWhite"
+                    android:progressTint="@color/colorRed"
+                    android:visibility="gone"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/padding_16dp"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/buttonClose"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?selectableItemBackground"
+                            android:padding="@dimen/padding_16dp"
+                            android:src="@drawable/action_close_w"/>
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewQuestionType"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/margin_16dp"
+                            android:background="@drawable/chip_outline_rectangle_white"
+                            android:padding="@dimen/padding_4dp"
+                            android:text="Choose The Correct Alternative"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textColor="@color/colorWhite"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutHintButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/margin_8dp"
+                        android:layout_marginRight="@dimen/margin_8dp"
+                        android:clickable="true"
+                        android:foreground="?selectableItemBackground"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        >
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/buttonQuestionHints"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@null"
+                            android:clickable="false"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/icon_hint_bulb"/>
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textQuestionHints"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:text="0/0"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@color/colorWhite"
+                            android:visibility="visible"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <!--layout response true or false-->
+            <LinearLayout
+                android:id="@+id/layoutResponse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="80dp"
+                android:elevation="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/imageViewResponse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    />
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:id="@+id/textViewResponse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:paddingRight="12dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/colorWhite"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/layoutBottomButtons"
+                android:layout_below="@+id/layoutTop"
+                android:fadingEdgeLength="16dp"
+                android:requiresFadingEdge="vertical"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/padding_16dp"
+                    android:paddingTop="@dimen/padding_8dp"
+                    android:paddingRight="@dimen/padding_16dp"
+                    android:paddingBottom="@dimen/padding_8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewQuestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorBlack"/>
+
+                    <!--resources-->
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/layoutQuestionResource"
+                        android:layout_width="196dp"
+                        android:layout_height="148dp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="2dp"
+                        app:cardElevation="4dp"
+                        app:cardUseCompatPadding="true"
+                        >
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/imageViewResourceThumbnail"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/imageViewResourceType"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|left"
+                            android:layout_margin="4dp"
+                            android:padding="4dp"
+                            app:srcCompat="@drawable/icon_image_white"/>
+
+
+                    </android.support.v7.widget.CardView>
+
+                    <LinearLayout
+                        android:id="@+id/layoutChoices"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+
+                    </LinearLayout>
+
+                    <!--hints-->
+                    <FrameLayout
+                        android:id="@+id/cardViewHints"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:background="@drawable/background_choice_unselected"
+                        android:visibility="gone"
+                        app:cardCornerRadius="2dp"
+                        app:cardElevation="4dp"
+                        app:cardUseCompatPadding="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <in.securelearning.lil.android.base.widget.TextViewCustom
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="8dp"
+                                android:background="@drawable/background_tab_blue"
+                                android:fontFamily="sans-serif-condensed"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="@string/label_hints"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:textColor="@color/white"/>
+
+                            <LinearLayout
+                                android:id="@+id/layoutHints"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:divider="@drawable/separator"
+                                android:orientation="vertical"
+                                android:showDividers="middle">
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+                    </FrameLayout>
+
+                    <!--explanation-->
+                    <FrameLayout
+                        android:id="@+id/layoutExplanation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:background="@drawable/background_choice_unselected"
+                        android:padding="8dp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="2dp"
+                        app:cardElevation="4dp"
+                        app:cardUseCompatPadding="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <in.securelearning.lil.android.base.widget.TextViewCustom
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="8dp"
+                                android:background="@drawable/background_tab_blue"
+                                android:fontFamily="sans-serif-condensed"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="@string/heading_explanation_text"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:textColor="@color/white"/>
+
+                            <org.sufficientlysecure.htmltextview.HtmlTextView
+                                android:id="@+id/textViewExplanationText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                android:textColor="@color/white"
+                                android:visibility="gone"/>
+
+                            <android.support.v7.widget.CardView
+                                android:id="@+id/layoutExplanationResource"
+                                android:layout_width="196dp"
+                                android:layout_height="148dp"
+                                android:visibility="gone"
+                                app:cardCornerRadius="2dp"
+                                app:cardElevation="4dp"
+                                app:cardUseCompatPadding="true">
+
+                                <android.support.v7.widget.AppCompatImageView
+                                    android:id="@+id/imageViewExplanationThumbnail"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerCrop"
+                                    />
+
+                                <android.support.v7.widget.AppCompatImageView
+                                    android:id="@+id/imageViewExplanationType"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom|left"
+                                    android:layout_margin="4dp"
+                                    android:padding="4dp"/>
+
+                            </android.support.v7.widget.CardView>
+
+
+                        </LinearLayout>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </android.support.v4.widget.NestedScrollView>
+
+            <LinearLayout
+                android:id="@+id/layoutBottomButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="@dimen/margin_8dp"
+                android:layout_marginEnd="@dimen/margin_8dp"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/buttonPrev"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/previous"
+                    android:visibility="gone"/>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/buttonSubmit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/gradient_chip"
+                    android:text="@string/submit"
+                    android:textColor="@color/colorWhite"/>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/buttonNext"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/gradient_chip"
+                    android:text="@string/next"
+                    android:textColor="@color/colorWhite"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
+</layout>

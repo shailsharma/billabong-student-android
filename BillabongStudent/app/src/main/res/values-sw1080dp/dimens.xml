@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="large_highlight_text_size">100sp</dimen>
+    <dimen name="medium_highlight_text_size">50sp</dimen>
+    <dimen name="small_highlight_text_size">25sp</dimen>
+    <dimen name="image_view_height_full_width_wide">607dp</dimen>
+    <dimen name="image_view_height_wide_16dp">598.5dp</dimen>
+    <dimen name="image_view_height_wide_24dp">594dp</dimen>
+    <dimen name="event_item_height">540dp</dimen>
+    <dimen name="card_dimension">120dp</dimen>
+</resources>

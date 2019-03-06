@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00000000"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="10dp"
+        card_view:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/assignment_phone_HeaderSize"
+                android:background="@color/colorPrimary"
+                android:elevation="5dp">
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:id="@+id/textview_explanation_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="Explanation"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/assignment_phone_HeaderText"
+                    android:textStyle="bold" />
+
+                <in.securelearning.lil.android.base.widget.CustomImageButton
+                    android:id="@+id/imagebutton_close_explanation_popup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/close_popup" />
+
+            </RelativeLayout>
+
+            <in.securelearning.lil.android.base.widget.TextViewCustom
+                android:id="@+id/textview_explanation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:textColor="@color/colorGreyDark"
+                android:textSize="@dimen/assignment_phone_ContentText"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:id="@+id/imagethumbnail_explanation"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_margin="5dp"
+                android:visibility="gone">
+
+                <in.securelearning.lil.android.base.widget.CustomImageView
+                    android:id="@+id/imageview_explanation_image"
+                    android:layout_width="200dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerCrop" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="10dp"
+                    android:src="@drawable/res_picture" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/videothumbnail_explanation"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <in.securelearning.lil.android.base.widget.CustomImageView
+                    android:id="@+id/imageview_explanation_video"
+                    android:layout_width="200dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerCrop" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/res_video" />
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

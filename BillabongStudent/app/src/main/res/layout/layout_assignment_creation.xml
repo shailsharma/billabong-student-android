@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <!-- Layout for Header assign Image-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorWhite"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/imageview_assign"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/action_done_w"/>
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <!-- Layout for Title and edit it-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/colorWhite"
+                    android:elevation="2dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/input_layout_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/colorGrey77"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="@integer/event_title_limit"
+                        app:errorTextAppearance="@style/CustomTextInputLayoutError"
+                        app:hintTextAppearance="@style/CustomTextInputLayoutHint">
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/textViewAssignTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:fontFamily="sans-serif-condensed"
+                            android:longClickable="false"
+                            android:paddingBottom="16dp"
+                            android:paddingLeft="16dp"
+                            android:inputType="textCapWords"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textColor="@color/colorGreyDark"/>
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <in.securelearning.lil.android.base.widget.CustomImageButton
+                        android:id="@+id/buttonEditTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:src="@drawable/action_edit_blue"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+
+                <!--Layout for subject,topic and grade -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/colorWhite"
+                    android:elevation="2dp"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!--for subject-->
+                    <LinearLayout
+                        android:id="@+id/layoutSubject"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewSubjectLabel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:elevation="1dp"
+                            android:fontFamily="sans-serif-smallcaps"
+                            android:text="Subject"
+                            android:textColor="#3F51B5"/>
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewSubject"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="2"
+                            android:text="Mathematics"/>
+
+                    </LinearLayout>
+
+                    <!-- for Topic-->
+                    <LinearLayout
+                        android:id="@+id/layoutTopic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewTopicLabel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:elevation="1dp"
+                            android:fontFamily="sans-serif-smallcaps"
+                            android:text="Topic"
+                            android:textColor="#3F51B5"/>
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewTopic"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="2"
+                            android:text="Earth in 2070 - Your thoughts"/>
+
+                    </LinearLayout>
+
+                    <!-- for grade-->
+                    <LinearLayout
+                        android:id="@+id/layoutGrade"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewGradeLabel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:fontFamily="sans-serif-smallcaps"
+                            android:text="Grade"
+                            android:textColor="#3F51B5"/>
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewGrade"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="VIII B"/>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <!--Layout for selecting group-->
+                <LinearLayout
+                    android:id="@+id/layoutGruopSelect"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/colorWhite"
+                    android:elevation="2dp"
+                    android:gravity="center_vertical">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewSelectedGroup"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:paddingBottom="16dp"
+                        android:paddingLeft="16dp"
+                        android:paddingTop="16dp"
+                        android:text="@string/label_select_group"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:src="@drawable/action_group_blue"/>
+
+                </LinearLayout>
+
+                <!--Layout for due date-->
+                <LinearLayout
+                    android:id="@+id/layoutSelectDueDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/colorWhite"
+                    android:elevation="2dp"
+                    android:gravity="center_vertical">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewSelectedDueDate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:paddingBottom="16dp"
+                        android:paddingLeft="16dp"
+                        android:paddingTop="16dp"
+                        android:text="@string/label_select_due_date"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:src="@drawable/action_calendar_blue"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutMarksDuration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/layoutMarks"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorWhite"
+                        android:elevation="2dp"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        >
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif-smallcaps"
+                                android:gravity="center"
+                                android:text="Maximum Marks"/>
+
+
+                        </LinearLayout>
+
+                        <android.support.v7.widget.CardView
+                            android:id="@+id/marks_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="8dp"
+                            app:cardBackgroundColor="#3F51B5"
+                            app:cardCornerRadius="4dp"
+                            app:contentPadding="8dp">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewMarks"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:fontFamily="sans-serif-condensed"
+                                android:gravity="center"
+                                android:text="@string/set_maximum_marks"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="16sp"/>
+
+                        </android.support.v7.widget.CardView>
+
+
+                    </LinearLayout>
+
+                    <!--layout for duration-->
+                    <LinearLayout
+                        android:id="@+id/duration"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorWhite"
+                        android:elevation="2dp"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif-smallcaps"
+                                android:gravity="center"
+                                android:text="Duration (in mins)"/>
+
+
+                        </LinearLayout>
+
+                        <android.support.v7.widget.CardView
+                            android:id="@+id/durationCard"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="8dp"
+                            app:cardBackgroundColor="#3F51B5"
+                            app:cardCornerRadius="4dp"
+                            app:contentPadding="8dp">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewDuration"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:fontFamily="sans-serif-condensed"
+                                android:gravity="center"
+                                android:text="@string/set_duration"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="16sp"/>
+                        </android.support.v7.widget.CardView>
+
+                        <!--<android.support.v7.widget.AppCompatEditText-->
+                        <!--android:id="@+id/edit_text_duration_quiz"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:hint="Click to enter duration"-->
+                        <!--android:inputType="number"-->
+                        <!--android:textColorHint="#3F51B5"/>-->
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!--layout for instruction-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/colorWhite"
+                    android:elevation="2dp"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:text="Instruction(s) for student"/>
+
+                    <android.support.v7.widget.AppCompatEditText
+                        android:id="@+id/editTextInstruction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-condensed"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:hint="@string/label_enter_instructions"
+                        android:textColorHint="#3F51B5"/>
+
+                </LinearLayout>
+
+                <!--layout to save assign-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorWhite"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:visibility="gone">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"></View>
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="16dp"
+                        android:layout_weight="1"
+                        android:elevation="4dp"
+                        android:padding="4dp"
+                        android:text="Cancel"
+                        android:textColor="@color/colorAccent"/>
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:elevation="4dp"
+                        android:padding="4dp"
+                        android:text="Save"
+                        android:textColor="#3F51B5"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </ScrollView>
+
+        <RelativeLayout
+            android:id="@+id/relativeLayoutFake"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorTransparent"
+            android:visibility="visible"></RelativeLayout>
+
+    </RelativeLayout>
+</layout>

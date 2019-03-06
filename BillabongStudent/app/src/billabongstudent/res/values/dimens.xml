@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <!-- Default screen margins, per the Android Design guidelines. -->
+        
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+        
+    <dimen name="activity_vertical_margin">16dp</dimen>
+        
+    <dimen name="fab_margin">16dp</dimen>
+        
+    <dimen name="dots_height">30dp</dimen>
+        
+    <dimen name="dots_margin_bottom">20dp</dimen>
+        
+    <dimen name="img_width_height">120dp</dimen>
+        
+    <dimen name="slide_title">30dp</dimen>
+        
+    <dimen name="slide_desc">18sp</dimen>
+        
+    <dimen name="desc_padding">40dp</dimen>
+
+    <dimen name="touch_raise">24dp</dimen>
+
+    <!--Margin-->
+    <dimen name="margin_2dp">2dp</dimen>
+    <dimen name="margin_4dp">4dp</dimen>
+    <dimen name="margin_8dp">8dp</dimen>
+    <dimen name="margin_12dp">12dp</dimen>
+    <dimen name="margin_16dp">16dp</dimen>
+    <dimen name="margin_20dp">20dp</dimen>
+    <dimen name="margin_24dp">24dp</dimen>
+    <dimen name="margin_28dp">28dp</dimen>
+    <dimen name="margin_32dp">32dp</dimen>
+    <dimen name="margin_36dp">36dp</dimen>
+    <dimen name="margin_40dp">40dp</dimen>
+    <dimen name="margin_44dp">44dp</dimen>
+    <dimen name="margin_48dp">48dp</dimen>
+
+    <!--Padding-->
+    <dimen name="padding_2dp">2dp</dimen>
+    <dimen name="padding_4dp">4dp</dimen>
+    <dimen name="padding_8dp">8dp</dimen>
+    <dimen name="padding_12dp">12dp</dimen>
+    <dimen name="padding_16dp">16dp</dimen>
+    <dimen name="padding_20dp">20dp</dimen>
+    <dimen name="padding_24dp">24dp</dimen>
+    <dimen name="padding_28dp">28dp</dimen>
+    <dimen name="padding_32dp">32dp</dimen>
+    <dimen name="padding_36dp">36dp</dimen>
+    <dimen name="padding_40dp">40dp</dimen>
+    <dimen name="padding_44dp">44dp</dimen>
+    <dimen name="padding_48dp">48dp</dimen>
+
+
+    <!--Font size-->
+    <dimen name="textSize_10sp">10sp</dimen>
+    <dimen name="textSize_12sp">12sp</dimen>
+    <dimen name="textSize_14sp">14sp</dimen><!--This equals to textAppearance and textAppearance.Small-->
+    <dimen name="textSize_16sp">16sp</dimen>
+    <dimen name="textSize_18sp">18sp</dimen><!--This equals to textAppearance.Medium-->
+    <dimen name="textSize_20sp">20sp</dimen>
+    <dimen name="textSize_22sp">22sp</dimen><!--This equals to textAppearance.Large-->
+    <dimen name="textSize_24sp">24sp</dimen>
+    <dimen name="textSize_26sp">26sp</dimen>
+    <dimen name="textSize_28sp">28sp</dimen>
+    <dimen name="textSize_30sp">30sp</dimen>
+    <dimen name="textSize_32sp">32sp</dimen>
+    <dimen name="textSize_34sp">34sp</dimen>
+    <dimen name="textSize_36sp">36sp</dimen>
+    <dimen name="textSize_38sp">38sp</dimen>
+    <dimen name="textSize_40sp">40sp</dimen>
+    <dimen name="textSize_42sp">42sp</dimen>
+    <dimen name="textSize_44sp">44sp</dimen>
+    <dimen name="textSize_46sp">46sp</dimen>
+    <dimen name="textSize_48sp">48sp</dimen>
+</resources>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="in.securelearning.lil.android.home.views.activity.tempActivity">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="in.securelearning.lil.android.home.views.activity.SupportHelpActivity">
+
+        </RelativeLayout>
+
+        <in.securelearning.lil.android.base.widget.FloatingActionsMenu
+            android:visibility="gone"
+            android:id="@+id/buttonActionSupport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right|end"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            fab:fab_addButtonColorNormal="@color/colorQuizPrimary"
+            fab:fab_addButtonColorPressed="@color/colorGrey55"
+            fab:fab_addButtonPlusIconColor="@color/colorWhite"
+            fab:fab_addButtonSize="normal"
+            fab:fab_labelStyle="@style/menu_labels_style"
+            fab:fab_labelsPosition="left">
+
+            <!--<in.securelearning.lil.android.base.widget.FloatingActionButton-->
+                <!--android:id="@+id/buttonVoiceCall"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--fab:fab_colorNormal="@color/colorPrimaryQuizCreator"-->
+                <!--fab:fab_colorPressed="@color/colorGrey55"-->
+                <!--fab:fab_icon="@drawable/ic_action_voice_search_inverted"-->
+                <!--fab:fab_plusIconColor="@color/white"-->
+                <!--fab:fab_size="mini"-->
+                <!--fab:fab_title="Voice Call" />-->
+
+            <in.securelearning.lil.android.base.widget.FloatingActionButton
+                android:id="@+id/buttonVideoCall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/colorWhite"
+                fab:fab_colorPressed="@color/colorGrey55"
+                fab:fab_plusIconColor="@color/white"
+                fab:fab_size="mini"
+                fab:fab_title="Video Call" />
+
+        </in.securelearning.lil.android.base.widget.FloatingActionsMenu>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+   
+</layout>

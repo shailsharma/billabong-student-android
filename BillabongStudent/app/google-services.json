@@ -1,0 +1,104 @@
+{
+  "project_info": {
+    "project_number": "44357824329",
+    "firebase_url": "https://learnindialearn-f2085.firebaseio.com",
+    "project_id": "learnindialearn-f2085",
+    "storage_bucket": "learnindialearn-f2085.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:44357824329:android:4a2d1f37599aaa28",
+        "android_client_info": {
+          "package_name": "in.securelearning.lil.android.app.billabongstudent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "44357824329-cfi9eb4b1ap3c7c76ecrntm3n85h5m3f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfv9hiM9Z3f4SjiJ3-k2urouPdtJCrJpM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:44357824329:android:45a4d918fd545135",
+        "android_client_info": {
+          "package_name": "in.securelearning.lil.android.app.billabongstudent.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "44357824329-cfi9eb4b1ap3c7c76ecrntm3n85h5m3f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfv9hiM9Z3f4SjiJ3-k2urouPdtJCrJpM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:44357824329:android:1e72d287ebaa9f41",
+        "android_client_info": {
+          "package_name": "in.securelearning.lil.android.app.billabongstudent.test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "44357824329-cfi9eb4b1ap3c7c76ecrntm3n85h5m3f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfv9hiM9Z3f4SjiJ3-k2urouPdtJCrJpM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

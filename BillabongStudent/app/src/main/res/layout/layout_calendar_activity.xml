@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:fab="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorWhite">
+
+    <!--layout header-->
+    <RelativeLayout
+        android:id="@+id/layout_header"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorCalendarPrimary"
+        android:elevation="5dp">
+
+        <in.securelearning.lil.android.base.widget.CustomImageButton
+            android:id="@+id/button_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:padding="8dp"
+            android:src="@drawable/back_white"/>
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:id="@+id/textViewMonthYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:layout_toRightOf="@+id/button_back"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+            android:textColor="@color/colorWhite"/>
+
+        <Spinner
+            android:id="@+id/spinner_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/button_back"
+            android:background="@color/colorTransparent"
+            android:clickable="false"
+            android:paddingRight="6dp"
+            android:visibility="gone"></Spinner>
+
+        <in.securelearning.lil.android.base.widget.CustomImageButton
+            android:id="@+id/imagebutton_date_selector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/imagebutton_calendar_help"
+            android:padding="8dp"
+            android:src="@drawable/calendar_w"/>
+
+
+        <in.securelearning.lil.android.base.widget.CustomImageButton
+            android:id="@+id/imagebutton_calendar_help"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:padding="8dp"
+            android:src="@drawable/info_w"/>
+
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPagerWeek"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_header"></android.support.v4.view.ViewPager>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview_date"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_header"
+        android:overScrollMode="never"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:visibility="visible"></android.support.v7.widget.RecyclerView>
+
+    <RelativeLayout
+        android:id="@+id/layoutWhiteFade"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#66000000"
+        android:descendantFocusability="blocksDescendants"
+        android:visibility="gone"></RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/button_previous"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/image_black_transparent"
+            android:clickable="true"
+            android:gravity="center_horizontal|center_vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/chevron_left_white"
+                android:clickable="false"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/button_next"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/image_black_transparent"
+            android:clickable="true"
+            android:gravity="center_horizontal|center_vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/chevron_right_white"
+                android:clickable="false"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <in.securelearning.lil.android.base.widget.FloatingActionsMenu
+        android:id="@+id/button_create_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        fab:fab_addButtonColorNormal="#E5496B"
+        fab:fab_addButtonColorPressed="@color/colorGrey55"
+        fab:fab_addButtonPlusIconColor="@color/colorWhite"
+        fab:fab_addButtonSize="normal"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        fab:fab_labelsPosition="left">
+
+        <in.securelearning.lil.android.base.widget.FloatingActionButton
+            android:id="@+id/fab_personal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/colorPersonal"
+            fab:fab_colorPressed="@color/colorGrey55"
+            fab:fab_icon="@drawable/personal_w"
+            fab:fab_plusIconColor="@color/white"
+            fab:fab_size="mini"
+            fab:fab_title="Personal"/>
+
+        <in.securelearning.lil.android.base.widget.FloatingActionButton
+            android:id="@+id/fab_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/colorActivities"
+            fab:fab_colorPressed="@color/colorGrey55"
+            fab:fab_icon="@drawable/activities_w"
+            fab:fab_plusIconColor="@color/white"
+            fab:fab_size="mini"
+            fab:fab_title="Activity"/>
+
+        <in.securelearning.lil.android.base.widget.FloatingActionButton
+            android:id="@+id/fab_announcement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/colorAnnouncement"
+            fab:fab_colorPressed="@color/colorGrey55"
+            fab:fab_icon="@drawable/announcements_w"
+            fab:fab_plusIconColor="@color/white"
+            fab:fab_size="mini"
+            fab:fab_title="Announcement"/>
+
+    </in.securelearning.lil.android.base.widget.FloatingActionsMenu>
+
+
+</RelativeLayout>
+

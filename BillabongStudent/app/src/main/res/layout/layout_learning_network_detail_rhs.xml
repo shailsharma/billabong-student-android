@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/my_appbar_container_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:background="#00000000"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <ImageView
+                android:id="@+id/imageview_group_banner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+
+            <in.securelearning.lil.android.base.widget.CustomImageButton
+                android:id="@+id/button_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="10dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/back_white" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:layout_alignBottom="@+id/imageview_group_banner"
+                android:layout_alignParentStart="true"
+                android:background="@drawable/gradient_black_bottom">
+
+
+                <ImageView
+                    android:id="@+id/imageview_group_icon"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/background_image_white_border"
+                    android:scaleType="centerCrop" />
+
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:id="@+id/selected_group_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="7dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@+id/imageview_group_icon"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorLearningNetworkPrimary"
+            android:elevation="5dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:id="@+id/button_post"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:src="@drawable/post" />
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="Post"
+                    android:textColor="@color/colorWhite" />
+
+                <View
+                    android:id="@+id/view_post"
+                    android:layout_width="fill_parent"
+                    android:layout_height="4dp"
+                    android:background="@color/colorLearningNetworkAccent"
+                    android:visibility="visible"></View>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/button_discussion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <in.securelearning.lil.android.base.widget.ButtonCustom
+
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Query"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite" />
+
+                <View
+                    android:id="@+id/view_discussion"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="@color/colorLearningNetworkAccent"
+                    android:visibility="gone"></View>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/button_events"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <in.securelearning.lil.android.base.widget.ButtonCustom
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Events"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite" />
+
+                <View
+                    android:id="@+id/view_events"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="@color/colorLearningNetworkAccent"
+                    android:visibility="gone"></View>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/button_favorites"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:src="@drawable/favorite_white" />
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="Favorites"
+                    android:textColor="@color/colorWhite" />
+
+                <View
+                    android:id="@+id/view_favorites"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="@color/colorLearningNetworkAccent"
+                    android:visibility="gone"></View>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/button_members"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:src="@drawable/members" />
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="Memebers"
+                    android:textColor="@color/colorWhite" />
+
+                <View
+                    android:id="@+id/view_members"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="@color/colorLearningNetworkAccent"
+                    android:visibility="gone"></View>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#00000000"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
+        >
+
+    </android.support.v7.widget.RecyclerView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/add_white"
+        app:backgroundTint="@color/colorLearningNetworkAccent"
+        app:borderWidth="0dp" />
+
+    <in.securelearning.lil.android.base.widget.TextViewCustom
+        android:id="@+id/textView_no_conversation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/no_conversation"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateDrawable="@drawable/custom_circle_progress_bar"></ProgressBar>
+
+</android.support.design.widget.CoordinatorLayout>

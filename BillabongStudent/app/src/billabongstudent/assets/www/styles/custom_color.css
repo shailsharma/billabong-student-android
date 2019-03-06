@@ -1,0 +1,49 @@
+.bg-primary{
+    background-color : #2296f3
+}
+.db-webview-preview .webview-header .header-title-bottom .header-book-title {
+        border-right: 1px solid #2296f3;
+        }
+.db-webview-preview .custom-alertify{background-color:#2296f3;}
+
+@media only screen and (min-device-width:320px) and (max-device-width:850px){.modal-fullscreen-resource{width:100%}.full-screen-resource-title{background:#2296f3!important}}
+.microcourse-header,.microcourse-header .microcourse-header-container{background:#2296f3}
+.microcourse-header .show-header-btn{background:#2296f3;}
+.show-header-btn,.vid-course-header{background:#2296f3}
+.db-header .lil-cm-title-actions{float:left;width:100%;background:#2296f3}
+.lil-course-microcourse-preview-header .description-header-icon:hover{background:#fff!important;color:#2296f3!important}
+.book-preview-footer .db-preview-progress-bar .marker-bar .markers{background:#2296f3;}
+
+.webview-sidenav .notes-annotation-header{background-color:#2296f3;}
+.webview-section-nav .section-nav-header{background-color:#2296f3;}
+lil-cm-title-label{background-color:#2296f3}
+.btn-primary{background-color:#2296f3;}
+.btn-primary.active,.btn-primary.focus,.btn-primary:active,.btn-primary:focus,.btn-primary:hover,.open>.btn-primary.dropdown-toggle{background-color:#0c7cd5;}
+.btn-primary.active.focus,.btn-primary.active:focus,.btn-primary.active:hover,.btn-primary:active.focus,.btn-primary:active:focus,.btn-primary:active:hover,.open>.btn-primary.dropdown-toggle.focus,.open>.btn-primary.dropdown-toggle:focus,.open>.btn-primary.dropdown-toggle:hover{background-color:#0a68b4;}
+.btn-primary:hover{background-color:#2296f3;}
+.btn-primary .badge{color:#2296f3;}
+.btn-link{color:#2296f3;}
+.btn-link:focus,.btn-link:hover{color:#0a6ebd;}
+.navbar-inverse{background-color:#2296f3;}
+.navbar-inverse .navbar-brand{color:#5aadbb}
+.navbar-inverse .navbar-nav>li>a{color:#5aadbb}
+.thumbnail:hover{border-color:#2296f3}
+.progress-bar{background-color:#2296f3;}
+.list-group-item.active,.list-group-item.active:focus,.list-group-item.active:hover{background-color:#2296f3;border-color:#2296f3}
+
+.panel-primary{border-color:#2296f3}
+.label-primary{background-color:#2296f3}
+.panel-primary>.panel-heading{color:#fff;background-color:#2296f3;border-color:#2296f3}.panel-primary>.panel-heading+.panel-collapse>.panel-body{border-top-color:#2296f3}.panel-primary>.panel-heading .badge{color:#2296f3;background-color:#fff}.panel-primary>.panel-footer+.panel-collapse>.panel-body{border-bottom-color:#2296f3}
+.metaEditModal .meta-preview-modal .l-c-d-left-container .meta-learning-outcome .ui-select-container input:focus,.metaEditModal .meta-preview-modal .l-c-d-left-container .meta-learning-outcome .ui-select-container input[contenteditable]:focus,.metaEditModal .meta-preview-modal .l-c-d-left-container .meta-learning-outcome .ui-select-container input[type=email]:focus,.metaEditModal .meta-preview-modal .l-c-d-left-container .meta-learning-outcome .ui-select-container input[type=password]:focus,.metaEditModal .meta-preview-modal .l-c-d-left-container .meta-learning-outcome .ui-select-container input[type=tel]:focus,.metaEditModal .meta-preview-modal .l-c-d-left-container .meta-learning-outcome .ui-select-container input[type=text]:focus,.qbu-modal .question-bulk-skills-header .ui-select-container input:focus,.qbu-modal .question-bulk-skills-header .ui-select-container input[contenteditable]:focus,.qbu-modal .question-bulk-skills-header .ui-select-container input[type=email]:focus,.qbu-modal .question-bulk-skills-header .ui-select-container input[type=password]:focus,.qbu-modal .question-bulk-skills-header .ui-select-container input[type=tel]:focus,.qbu-modal .question-bulk-skills-header .ui-select-container input[type=text]:focus,.wizard-form-container .ui-select-container input:focus,.wizard-form-container .ui-select-container input[contenteditable]:focus,.wizard-form-container .ui-select-container input[type=email]:focus,.wizard-form-container .ui-select-container input[type=password]:focus,.wizard-form-container .ui-select-container input[type=tel]:focus,.wizard-form-container .ui-select-container input[type=text]:focus,[contenteditable].form-control:focus,[type=email].form-control:focus,[type=password].form-control:focus,[type=tel].form-control:focus,[type=text].form-control:focus,input.form-control:focus,input[type=email]:focus,input[type=number]:focus,input[type=password]:focus,input[type=text]:focus,textarea.form-control:focus,textarea:focus{box-shadow:inset 0 -2px 0 #2296f3}
+select.form-control:focus,select:focus{box-shadow:inset 0 -2px 0 #2296f3;}
+select.form-control[disabled],select.form-control[readonly],select[disabled],select[readonly]{box-shadow:none;border-bottom:1px dotted #ddd}select.form-control[disabled],select.form-control[disabled] option,select.form-control[readonly],select.form-control[readonly] option,select[disabled],select[disabled] option,select[readonly],select[readonly] option{color:#bbb}select.form-control[multiple],select[multiple]{background:none}.checkbox-inline label,.checkbox label,.radio-inline label,.radio label{padding-left:25px}.checkbox-inline input[type=checkbox],.checkbox-inline input[type=radio],.checkbox input[type=checkbox],.checkbox input[type=radio],.radio-inline input[type=checkbox],.radio-inline input[type=radio],.radio input[type=checkbox],.radio input[type=radio]{margin-left:-25px}.radio-inline input[type=radio],.radio input[type=radio],input[type=radio]{position:relative;margin-top:6px;margin-right:4px;vertical-align:top;border:none;background-color:transparent;-webkit-appearance:none;-moz-appearance:none;appearance:none;cursor:pointer}.radio-inline input[type=radio]:focus,.radio input[type=radio]:focus,input[type=radio]:focus{outline:none}.radio-inline input[type=radio]:after,.radio-inline input[type=radio]:before,.radio input[type=radio]:after,.radio input[type=radio]:before,input[type=radio]:after,input[type=radio]:before{content:"";display:block;width:18px;height:18px;border-radius:50%;-webkit-transition:.24s;transition:.24s}.radio-inline input[type=radio]:before,.radio input[type=radio]:before,input[type=radio]:before{background-color:#2296f3;}
+.radio-inline input[type=radio]:checked:after,.radio input[type=radio]:checked:after,input[type=radio]:checked:after{border-color:#2296f3}
+.checkbox-inline input[type=checkbox]:focus:after,.checkbox input[type=checkbox]:focus:after,input[type=checkbox]:focus:after{border-color:#2296f3}
+.checkbox-inline input[type=checkbox]:checked:after,.checkbox input[type=checkbox]:checked:after,input[type=checkbox]:checked:after{background-color:#2296f3;border-color:#2296f3}
+
+.ckeditor-spinner{margin:0 auto;z-index:4;background-color:hsla(0,0%,100%,.9)}
+.spinner{width:100%;height:100%;position:fixed;background:hsla(0,0%,100%,.7);z-index:9999}
+
+.lil-spinner-pathclass-1{stroke:#2296f3}
+
+.navbar-inverse .navbar-nav>.active>a,.navbar-inverse .navbar-nav>.active>a:focus,.navbar-inverse .navbar-nav>.active>a:hover{background-color:#0c7cd5}

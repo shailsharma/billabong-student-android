@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_add_comment_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <in.securelearning.lil.android.base.widget.RoundedImageView
+        android:id="@+id/imageView_current_user_icon"
+        android:layout_width="40dp"
+        android:src="@drawable/profile_g"
+        android:layout_height="40dp"
+        android:scaleType="centerCrop"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:gravity="center_vertical">
+
+        <in.securelearning.lil.android.base.widget.EditTextCustom
+            android:id="@+id/editText_write_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textNoSuggestions"
+            android:layout_weight="1"
+            android:background="@null"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="center_vertical"
+            android:hint="@string/comments_hint"
+            android:padding="10dp"
+            android:textColor="@color/colorGreyDark"
+            android:textColorHint="@color/colorHint" />
+
+
+
+        <in.securelearning.lil.android.base.widget.ButtonCustom
+            android:layout_marginLeft="5dp"
+            android:id="@+id/imageBtn_comment_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/post_btn_string"
+            android:textColor="@color/colorLearningNetworkPrimary"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
+
+
+
+
+

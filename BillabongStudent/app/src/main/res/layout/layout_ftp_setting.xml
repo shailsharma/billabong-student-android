@@ -1,0 +1,215 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#ffffff"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <in.securelearning.lil.android.base.widget.CustomImageButton
+            android:id="@+id/imagebutton_back"
+            style="@style/Base.Widget.AppCompat.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/back_white"/>
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/imagebutton_back"
+            android:text="Settings"
+            android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+            android:textColor="@color/colorWhite"/>
+
+        <in.securelearning.lil.android.base.widget.CustomImageButton
+            android:id="@+id/imagebutton_update"
+            style="@style/Base.Widget.AppCompat.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/select_white"/>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_ftpurl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#77000000">
+
+                <in.securelearning.lil.android.base.widget.EditTextCustom
+                    android:id="@+id/edittext_ftp_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Resource Host address"
+                    android:maxLines="1"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="@dimen/assignment_sw600dp_ContentText"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:focusable="true"
+                android:longClickable="true"
+                android:text="For Example: http://192.124.120.204:8888/"
+                android:textIsSelectable="true"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_baseurl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#77000000">
+
+                <in.securelearning.lil.android.base.widget.EditTextCustom
+                    android:id="@+id/edittext_ftp_baseurl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Full API Address"
+                    android:maxLines="1"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="@dimen/assignment_sw600dp_ContentText"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:focusable="true"
+                android:longClickable="true"
+                android:text="For Example: http://192.124.120.204:4000/api/"
+                android:textIsSelectable="true"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#77000000"
+                android:visibility="gone">
+
+                <in.securelearning.lil.android.base.widget.EditTextCustom
+                    android:id="@+id/edittext_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="FTP Username"
+                    android:maxLines="1"
+                    android:text="securelearning"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="@dimen/assignment_sw600dp_ContentText"/>
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#77000000"
+                android:visibility="gone">
+
+                <in.securelearning.lil.android.base.widget.EditTextCustom
+                    android:id="@+id/edittext_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="FTP Password"
+                    android:maxLines="1"
+                    android:text="admin"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="@dimen/assignment_sw600dp_ContentText"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_directory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#77000000"
+                android:visibility="gone">
+
+                <in.securelearning.lil.android.base.widget.EditTextCustom
+                    android:id="@+id/edittext_directory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="FTP Directory"
+                    android:maxLines="1"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="@dimen/assignment_sw600dp_ContentText"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_port"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#77000000"
+                android:visibility="gone">
+
+                <in.securelearning.lil.android.base.widget.EditTextCustom
+                    android:id="@+id/edittext_port"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="FTP Port"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="@dimen/assignment_sw600dp_ContentText"/>
+            </android.support.design.widget.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/secure_learning_ip_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Securelearning.in"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FTP login enable"
+                    android:textColor="@color/colorGreyDark"/>
+
+                <CheckBox
+                    android:id="@+id/checkbox_ftp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+</LinearLayout>

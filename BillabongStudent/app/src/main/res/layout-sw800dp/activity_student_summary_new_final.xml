@@ -1,0 +1,765 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorBackground"
+                android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:background="@color/colorAssignmentPrimary"/>
+
+    <android.support.v4.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground"
+        android:orientation="vertical"
+        android:layout_below="@+id/toolbar"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!--layout quiz thumbnail-->
+            <android.support.percent.PercentRelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible">
+
+                <RelativeLayout
+                    app:layout_aspectRatio="178%"
+                    app:layout_widthPercent="100%">
+
+                    <ImageView
+                        android:id="@+id/imageview_assignment_thumbnail"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/gradient_black_bottom"
+                        android:transitionName="@string/shared_animation"/>
+
+                </RelativeLayout>
+
+            </android.support.percent.PercentRelativeLayout>
+
+            <!--layout quiz details-->
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="right|center_vertical"
+                            android:orientation="horizontal">
+
+                            <in.securelearning.lil.android.base.widget.TextViewCustom
+                                android:id="@+id/textviewAssignmentType"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:padding="4dp"
+                                android:text="@string/title_resources"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="16sp"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/logo_resource_c"
+                                android:contentDescription="@string/app_name"
+                                android:visibility="gone"/>
+
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+
+                        <LinearLayout
+                            android:id="@+id/layoutAssignmentDuration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="left|center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/clock_gray"
+                                android:contentDescription="@string/app_name"/>
+
+                            <in.securelearning.lil.android.base.widget.TextViewCustom
+                                android:id="@+id/textview_duration"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:text="25 minutes"
+                                android:gravity="left|center_vertical"
+                                android:maxLines="1"
+                                android:textColor="@color/colorGreyDark"
+                                android:textSize="16sp"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/subjectText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:text="Social Science"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="@dimen/medium_highlight_text_size"/>
+
+                    </LinearLayout>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/topicText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="@string/string_topic"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="@dimen/small_highlight_text_size"/>
+
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+
+            <!--layout quiz instruction-->
+            <android.support.v7.widget.CardView
+                android:id="@+id/layoutInstruction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/string_assignment_instruction"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="@dimen/small_highlight_text_size"
+                        android:textStyle="bold"
+                        />
+
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textview_instruction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="16sp"/>
+
+                    <include layout="@layout/layout_view_more_less"/>
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/text_margin"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_due_date_new"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="5 July"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="@dimen/large_highlight_text_size"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textViewDueDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp"
+                            android:text="OVERDUE 3 DAYS AGO"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="@dimen/small_highlight_text_size"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/text_margin"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_assigned_date_new"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="3 July"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="@dimen/large_highlight_text_size"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp"
+                            android:text="@string/assigned_on"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="@dimen/small_highlight_text_size"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/text_margin"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textAssignedByName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp"
+                            android:maxLines="1"
+                            android:ellipsize="marquee"
+                            android:text="@string/app_name"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="@dimen/small_highlight_text_size"
+                            android:textStyle="bold"/>
+
+                        <ImageView
+                            android:id="@+id/imgAssignedBy"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/app_name"
+                            android:src="@drawable/logo_profile"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/assigned_by"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="@dimen/small_highlight_text_size"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/text_margin"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textAssigneToName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp"
+                            android:maxLines="1"
+                            android:ellipsize="marquee"
+                            android:marqueeRepeatLimit="marquee_forever"
+                            android:text="@string/app_name"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="@dimen/small_highlight_text_size"
+                            android:textStyle="bold"/>
+
+                        <ImageView
+                            android:id="@+id/imgAssignedTo"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/app_name"
+                            android:src="@drawable/logo_profile"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/assigned_to"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="@dimen/small_highlight_text_size"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+            <!-- new layout for submitedd and pending status-->
+
+            <LinearLayout
+                android:id="@+id/lay_submitionDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/text_margin"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_pendingBy_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="122"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="@dimen/large_highlight_text_size"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp"
+                            android:text="@string/remaining"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="@dimen/small_highlight_text_size"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/text_margin"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_submittedBy_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="122"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="@dimen/large_highlight_text_size"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/txtViewedBy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp"
+                            android:text="@string/submissions"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="@dimen/small_highlight_text_size"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+            <!--layout pending by graph-->
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cardViewGraph"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <android.support.percent.PercentRelativeLayout
+                        android:id="@+id/graphLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            app:layout_aspectRatio="170%"
+                            app:layout_widthPercent="100%">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_weight="1">
+
+                                <com.github.mikephil.charting.charts.PieChart
+                                    android:id="@+id/assignmentChart"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    tools:layout_editor_absoluteX="8dp"
+                                    tools:layout_editor_absoluteY="8dp">
+
+                                </com.github.mikephil.charting.charts.PieChart>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="4dp"
+                                    android:orientation="vertical">
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:orientation="horizontal">
+
+                                        <android.support.v7.widget.CardView
+                                            xmlns:android="http://schemas.android.com/apk/res/android"
+                                            android:layout_width="36dp"
+                                            android:layout_height="36dp"
+                                            android:layout_margin="5dp">
+
+                                            <View
+                                                android:id="@+id/assignmentImage1"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:background="@drawable/add_image"/>
+                                        </android.support.v7.widget.CardView>
+
+                                        <TextView
+                                            android:id="@+id/assignmentText1"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginLeft="10dp"
+                                            android:textSize="@dimen/small_highlight_text_size"
+                                            android:text="22 Student attended"/>
+
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="4dp"
+                                    android:orientation="vertical">
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:orientation="horizontal">
+
+                                        <android.support.v7.widget.CardView
+                                            xmlns:android="http://schemas.android.com/apk/res/android"
+                                            android:layout_width="36dp"
+                                            android:layout_height="36dp"
+                                            android:layout_margin="5dp">
+
+                                            <View
+                                                android:id="@+id/assignmentImage2"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:background="@drawable/add_image"/>
+                                        </android.support.v7.widget.CardView>
+
+                                        <TextView
+                                            android:id="@+id/assignmentText2"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginLeft="10dp"
+                                            android:textSize="@dimen/small_highlight_text_size"
+                                            android:text="78 Student not attended"/>
+
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="4dp"
+                                    android:orientation="vertical">
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:orientation="horizontal">
+
+                                        <android.support.v7.widget.CardView
+                                            xmlns:android="http://schemas.android.com/apk/res/android"
+                                            android:layout_width="36dp"
+                                            android:layout_height="36dp"
+                                            android:layout_margin="5dp">
+
+                                            <View
+                                                android:id="@+id/assignmentImage3"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:background="@drawable/add_image"/>
+                                        </android.support.v7.widget.CardView>
+
+                                        <TextView
+                                            android:id="@+id/assignmentText3"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginLeft="10dp"
+                                            android:textSize="@dimen/small_highlight_text_size"
+                                            android:text="78 Student not attended"/>
+
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/layAssignment4"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="4dp"
+                                    android:orientation="vertical">
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:orientation="horizontal">
+
+                                        <android.support.v7.widget.CardView
+                                            xmlns:android="http://schemas.android.com/apk/res/android"
+                                            android:layout_width="36dp"
+                                            android:layout_height="36dp"
+                                            android:layout_margin="5dp">
+
+                                            <View
+                                                android:id="@+id/assignmentImage4"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:background="@drawable/add_image"/>
+                                        </android.support.v7.widget.CardView>
+
+                                        <TextView
+                                            android:id="@+id/assignmentText4"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginLeft="10dp"
+                                            android:textSize="@dimen/small_highlight_text_size"
+                                            android:text="22 Student attended"/>
+
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </android.support.percent.PercentRelativeLayout>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/assignmentExcellentRecycleListText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        android:textColor="@color/colorWhite"
+                        android:visibility="gone"
+                        android:textSize="@dimen/small_highlight_text_size"
+                        android:text="Excellent Student"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/assignmentExcellentRecycleList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:padding="8dp"/>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/assignmentAverageRecycleListText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        android:textColor="@color/colorWhite"
+                        android:visibility="gone"
+                        android:textSize="@dimen/small_highlight_text_size"
+                        android:text="Average Student"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/assignmentAverageRecycleList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:padding="8dp"/>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/assignmentPoorRecycleListText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        android:textColor="@color/colorWhite"
+                        android:visibility="gone"
+                        android:textSize="@dimen/small_highlight_text_size"
+                        android:text="Poor Student"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/assignmentPoorRecycleList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:padding="8dp"/>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/assignmentViewedByRecycleListText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        android:textColor="@color/colorWhite"
+                        android:visibility="gone"
+                        android:textSize="@dimen/small_highlight_text_size"
+                        android:text="Viewed By"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/assignmentViewedByRecycleList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:padding="8dp"/>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/assignmentPendingRecycleListText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        android:textColor="@color/colorWhite"
+                        android:visibility="gone"
+                        android:textSize="@dimen/small_highlight_text_size"
+                        android:text="Pending Student"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/assignmentPendingRecycleList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:padding="8dp"/>
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</RelativeLayout>
+
+
+

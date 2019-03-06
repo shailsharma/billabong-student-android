@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layoutParentMetaDataField"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="4dp"
+            android:text="@string/quiz_wizard"
+            android:textColor="@color/colorGreyDark"
+            android:textSize="20sp"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/inputLayoutGrade"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <in.securelearning.lil.android.base.widget.EditTextCustom
+                android:id="@+id/edittextGrade"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cursorVisible="false"
+                android:drawableRight="@drawable/dropdown_gray"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/grade"
+                android:inputType="text"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
+                android:textColor="@color/colorGreyDark"
+                android:textColorHint="@color/colorGrey66"
+                android:textSize="16sp"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/inputLayoutSubject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <in.securelearning.lil.android.base.widget.EditTextCustom
+                android:id="@+id/edittextSubject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cursorVisible="false"
+                android:drawableRight="@drawable/dropdown_gray"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/subject"
+                android:inputType="text"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
+                android:textColor="@color/colorGreyDark"
+                android:textColorHint="@color/colorGrey66"
+                android:textSize="16sp"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/inputLayoutTopic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <in.securelearning.lil.android.base.widget.EditTextCustom
+                android:id="@+id/edittextTopic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cursorVisible="false"
+                android:drawableRight="@drawable/dropdown_gray"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/string_topic"
+                android:inputType="text"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
+                android:textColor="@color/colorGreyDark"
+                android:textColorHint="@color/colorGrey66"
+                android:textSize="16sp"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/inputLayoutSkill"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <in.securelearning.lil.android.base.widget.EditTextCustom
+                android:id="@+id/edittextSkill"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cursorVisible="false"
+                android:drawableRight="@drawable/dropdown_gray"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/string_skill"
+                android:inputType="text"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
+                android:textColor="@color/colorGreyDark"
+                android:textColorHint="@color/colorGrey66"
+                android:textSize="16sp"/>
+
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+</layout>

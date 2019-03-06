@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/actionAttach"
+        android:icon="@drawable/action_attach_w"
+        android:orderInCategory="97"
+        android:title="@string/label_attach"
+        android:visible="true"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/actionCreate"
+        android:icon="@drawable/action_done_w"
+        android:orderInCategory="98"
+        android:title="@string/label_create"
+        android:visible="true"
+        app:showAsAction="always"/>
+
+</menu>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:elevation="5dp"
+    android:focusable="true"
+    android:focusableInTouchMode="false"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardViewSectionHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/colorGrey"
+            app:cardCornerRadius="0.5dp"
+            app:cardElevation="2dp">
+
+            <in.securelearning.lil.android.base.widget.TextViewCustom
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/string_post"
+                android:textColor="@color/colorGreyDark"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </android.support.v7.widget.CardView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <in.securelearning.lil.android.base.widget.TextViewCustom
+                android:id="@+id/textview_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/textview_last_conversation_time"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/colorGreyDark"
+                android:textSize="16sp" />
+
+            <in.securelearning.lil.android.base.widget.TextViewCustomLight
+                android:id="@+id/textview_post_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textview_user_name"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/colorGreyDark"
+                android:textSize="16sp" />
+
+            <in.securelearning.lil.android.base.widget.TextViewCustom
+                android:id="@+id/textview_last_conversation_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="right"
+                android:layout_marginLeft="10dp"
+                android:textSize="14sp"
+                android:textStyle="italic" />
+
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.2dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toRightOf="@+id/layout_group_icon"
+            android:background="@color/itemDivider"></View>
+    </LinearLayout>
+</RelativeLayout>

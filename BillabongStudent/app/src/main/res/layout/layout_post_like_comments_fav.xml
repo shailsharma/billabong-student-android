@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
+        android:orientation="horizontal">
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:id="@+id/textView_comment_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:padding="8dp"
+            android:text="0"
+            android:textColor="@color/colorGreyDark" />
+
+        <in.securelearning.lil.android.base.widget.CustomImageButton
+            android:id="@+id/imageBtn_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:clickable="false"
+            android:padding="5dp"
+            android:src="@drawable/selector_comment_button" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_fav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:clickable="true"
+        android:orientation="horizontal">
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:id="@+id/textView_favorite_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:padding="8dp"
+            android:text="0"
+            android:textColor="@color/colorGreyDark"
+            android:visibility="gone" />
+
+        <in.securelearning.lil.android.base.widget.CustomImageButton
+            android:id="@+id/imageBtn_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:clickable="false"
+            android:padding="5dp"
+            android:src="@drawable/selector_favorite_button" />
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:text="Favorite"
+            android:textColor="@color/colorGreyDark"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:orientation="horizontal">
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:id="@+id/textView_like_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="0"
+            android:textColor="@color/colorGreyDark" />
+
+        <in.securelearning.lil.android.base.widget.CustomImageButton
+            android:id="@+id/imageBtn_like_thumb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@color/colorTransparent"
+            android:clickable="false"
+            android:padding="5dp"
+            android:src="@drawable/selector_like_button" />
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:text="Like"
+            android:textColor="@color/colorGreyDark"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</RelativeLayout>
+</layout>

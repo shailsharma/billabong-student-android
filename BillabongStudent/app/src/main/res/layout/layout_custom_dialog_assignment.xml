@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:maxWidth="300dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:elevation="5dp">
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:id="@+id/textview_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/colorGreyDark"
+            android:textSize="16sp" />
+
+
+    </RelativeLayout>
+
+    <in.securelearning.lil.android.base.widget.TextViewCustom
+        android:id="@+id/textview_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:textColor="@color/colorGreyDark" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <in.securelearning.lil.android.base.widget.ButtonCustom
+            android:id="@+id/button_negative"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:text="Cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/colorGreyDark" />
+
+        <in.securelearning.lil.android.base.widget.ButtonCustom
+            android:id="@+id/button_positive"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/button_negative"
+            android:text="Ok"
+            android:textAllCaps="false"
+            android:textColor="@color/colorGreyDark" />
+
+    </RelativeLayout>
+
+</LinearLayout>

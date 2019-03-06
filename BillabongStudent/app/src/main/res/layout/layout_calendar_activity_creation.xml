@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true"
+            android:background="@color/colorActivities"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"></android.support.v7.widget.Toolbar>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar"
+            android:padding="4dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColorHint="@color/colorGrey77"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="@integer/event_title_limit"
+                    app:errorTextAppearance="@style/CustomTextInputLayoutError"
+                    app:hintTextAppearance="@style/CustomTextInputLayoutHint">
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edittext_event_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/textview_event_name_star"
+                        android:hint="@string/title"
+                        android:maxLength="@integer/event_title_limit"
+                        android:inputType="textFilter|textCapWords"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:singleLine="true"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="16sp"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColorHint="@color/colorGrey77"
+                    app:errorTextAppearance="@style/CustomTextInputLayoutError"
+                    app:hintTextAppearance="@style/CustomTextInputLayoutHint">
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edittext_event_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/textview_event_name_star"
+                        android:gravity="top"
+                        android:hint="@string/description"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:minHeight="100dp"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="16sp"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_invitees"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColorHint="@color/colorGrey77"
+                    app:errorTextAppearance="@style/CustomTextInputLayoutError"
+                    app:hintTextAppearance="@style/CustomTextInputLayoutHint">
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edittext_event_add_invitees"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/textview_event_invitees_star"
+                        android:clickable="true"
+                        android:drawableRight="@drawable/dropdown_gray"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="@string/invitees"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:singleLine="true"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="16sp"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColorHint="@color/colorGrey77"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="@integer/event_location_limit"
+                    app:errorTextAppearance="@style/CustomTextInputLayoutError"
+                    app:hintTextAppearance="@style/CustomTextInputLayoutHint">
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edittext_event_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_toLeftOf="@+id/textview_event_location_star"
+                        android:hint="@string/location"
+                        android:maxLength="@integer/event_location_limit"
+                        android:inputType="textFilter|textCapSentences|textMultiLine"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:singleLine="true"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="16sp"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/input_layout_start_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColorHint="@color/colorGrey77"
+                        app:errorTextAppearance="@style/CustomTextInputLayoutError"
+                        app:hintAnimationEnabled="false"
+                        app:hintTextAppearance="@style/CustomTextInputLayoutHint">
+
+                        <in.securelearning.lil.android.base.widget.EditTextCustom
+                            android:id="@+id/edittext_event_start_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toLeftOf="@+id/textview_event_startdate_star"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:hint="@string/date"
+                            android:paddingLeft="4dp"
+                            android:paddingRight="4dp"
+                            android:singleLine="true"
+                            android:tag="0"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <CheckBox
+                        android:id="@+id/checkBox_AllDay"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="All Day"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="16sp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_period_selection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingRight="10dp">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/input_layout_start_period"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColorHint="@color/colorGrey77"
+                        app:errorTextAppearance="@style/CustomTextInputLayoutError"
+                        app:hintTextAppearance="@style/CustomTextInputLayoutHint">
+
+                        <in.securelearning.lil.android.base.widget.EditTextCustom
+                            android:id="@+id/edittext_event_start_period"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:drawableRight="@drawable/dropdown_gray"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:hint="@string/string_from_period"
+                            android:longClickable="false"
+                            android:singleLine="true"
+                            android:textColor="@color/colorGreyDark"
+                            android:textColorHint="@color/grey_color"
+                            android:textSize="16sp"/>
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/input_layout_end_period"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColorHint="@color/colorGrey77"
+                        app:errorTextAppearance="@style/CustomTextInputLayoutError"
+                        app:hintTextAppearance="@style/CustomTextInputLayoutHint">
+
+                        <in.securelearning.lil.android.base.widget.EditTextCustom
+                            android:id="@+id/edittext_event_end_period"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:drawableRight="@drawable/dropdown_gray"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:hint="@string/string_to_period"
+                            android:longClickable="false"
+                            android:singleLine="true"
+                            android:textColor="@color/colorGreyDark"
+                            android:textColorHint="@color/grey_color"
+                            android:textSize="16sp"/>
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerViewResource"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"></android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+        <View
+            android:id="@+id/view_focus"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorGrey77"
+            android:visibility="gone"
+            />
+
+    </RelativeLayout>
+</layout>

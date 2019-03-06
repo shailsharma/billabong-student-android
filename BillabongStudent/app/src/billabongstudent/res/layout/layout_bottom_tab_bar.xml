@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_bottom_tab"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:layout_alignParentBottom="true"
+    android:layout_gravity="bottom"
+    android:background="@color/colorPrimary"
+    android:orientation="horizontal">
+
+
+    <RelativeLayout
+        android:id="@+id/layout_course_tab"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
+
+        <in.securelearning.lil.android.base.widget.TextViewCustomLight
+            android:id="@+id/texview_course_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:maxLines="1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="Courses"
+            android:textColor="@color/colorWhite" />
+
+        <ImageView
+            android:id="@+id/imageview_course"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/logo_course_c" />
+
+        <in.securelearning.lil.android.base.widget.TextViewCustomLight
+            android:id="@+id/textview_course_count"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignEnd="@+id/texview_course_bottom"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/background_circle_solid_orange"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_assignment_tab"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
+
+        <in.securelearning.lil.android.base.widget.TextViewCustomLight
+            android:id="@+id/textview_assignment_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:maxLines="1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="Assignments"
+            android:textColor="@color/colorWhite" />
+
+        <ImageView
+            android:id="@+id/imageview_assignment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/logo_assignment" />
+
+        <in.securelearning.lil.android.base.widget.TextViewCustomLight
+            android:id="@+id/textview_assignment_count"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignEnd="@+id/textview_assignment_bottom"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="2dp"
+            android:maxLines="1"
+            android:background="@drawable/background_circle_solid_orange"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_dashboard_tab"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
+
+        <in.securelearning.lil.android.base.widget.TextViewCustomLight
+            android:id="@+id/texview_dashboard_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:maxLines="1"
+            android:layout_marginTop="10dp"
+            android:text="Dashboard"
+            android:textColor="@color/colorWhite" />
+
+        <ImageView
+            android:id="@+id/imageview_dashboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/logo_dashboard_c" />
+
+        <in.securelearning.lil.android.base.widget.TextViewCustomLight
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_alignEnd="@+id/texview_dashboard_bottom"
+            android:layout_marginRight="14dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/background_circle_solid_orange"
+            android:gravity="center"
+            android:text="5"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_network_tab"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
+
+        <in.securelearning.lil.android.base.widget.TextViewCustomLight
+            android:id="@+id/texview_network_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:maxLines="1"
+            android:layout_marginTop="10dp"
+            android:text="Network"
+            android:textColor="@color/colorWhite" />
+
+        <ImageView
+            android:id="@+id/imageview_network"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/logo_learning_network" />
+
+        <in.securelearning.lil.android.base.widget.TextViewCustomLight
+            android:id="@+id/textview_network_count"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignEnd="@+id/texview_network_bottom"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/background_circle_solid_orange"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_map_tab"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
+
+        <in.securelearning.lil.android.base.widget.TextViewCustomLight
+            android:id="@+id/texview_map_bottom"
+            android:layout_width="wrap_content"
+            android:maxLines="1"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="Map"
+            android:textColor="@color/colorWhite" />
+
+        <ImageView
+            android:id="@+id/imageview_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/logo_learning_map" />
+
+        <in.securelearning.lil.android.base.widget.TextViewCustomLight
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_alignEnd="@+id/texview_map_bottom"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/background_circle_solid_orange"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+
+    </RelativeLayout>
+
+</LinearLayout>
+
+

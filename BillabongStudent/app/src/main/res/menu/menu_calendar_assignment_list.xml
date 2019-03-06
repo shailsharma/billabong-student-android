@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/labelAssignments"
+        android:icon="@drawable/logo_assignment_w"
+        android:orderInCategory="97"
+        android:title="@string/label_assignments"
+        android:visible="true"
+        app:showAsAction="ifRoom"/>
+
+</menu>

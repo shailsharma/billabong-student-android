@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    card_view:cardCornerRadius="2dp"
+    card_view:cardElevation="5dp"
+    card_view:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <in.securelearning.lil.android.base.widget.TextViewCustom
+                android:id="@+id/textview_event_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:layout_toLeftOf="@+id/imageButtonEditEvent"
+                android:text="sdugerghierhgpiercnerm3g0i4rgedfrgherfhe erh reherherherh"
+                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:textColor="@color/colorGreyDark" />
+
+            <in.securelearning.lil.android.base.widget.CustomImageButton
+                android:id="@+id/imageButtonEditEvent"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:padding="8dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/edit_grey" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="@string/start_time"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="16sp" />
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/end_time"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:orientation="vertical">
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text=":"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="16sp" />
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=":"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:orientation="vertical">
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:id="@+id/textview_event_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="16sp" />
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:id="@+id/textview_event_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_time"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/location" />
+
+            <in.securelearning.lil.android.base.widget.TextViewCustom
+                android:id="@+id/textview_event_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="aslmalsmflasmflasmflamsflmaslf"
+                android:textColor="@color/colorGreyDark"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:id="@+id/textview_event_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="aslmalsmflasmflasmflamsflmaslf"
+            android:textColor="@color/colorGreyDark"
+            android:textSize="16sp" />
+
+        <include layout="@layout/layout_view_more_less"/>
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:id="@+id/textView_attachments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/attachments"
+            android:textColor="@color/colorGreyDark"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewResource"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>

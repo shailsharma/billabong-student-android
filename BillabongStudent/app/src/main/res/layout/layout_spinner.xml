@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<in.securelearning.lil.android.base.widget.TextViewCustom
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/txt_spinner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?attr/selectableItemBackground"
+    android:padding="8dp"
+    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    android:textColor="@color/colorGreyDark"/>

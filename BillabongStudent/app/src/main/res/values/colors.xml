@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="blue_color">#1919ff</color>
+    <color name="grey_color">#AFAFAF</color>
+    <color name="green_color">#00B200</color>
+    <color name="white_color">#FFFFFF</color>
+    <color name="off_white_color">#F0F0F0</color>
+    <color name="yellow_color">#FFFF00</color>
+    <color name="orange_color">#FFA500</color>
+    <color name="purple_color">#800080</color>
+    <color name="red_color">#FF0000</color>
+    <color name="transparent_white">#66ffffff</color>
+    <color name="colorBackground">#f5f5f5</color>
+    <color name="colorWhite99">#99ffffff</color>
+
+
+
+    <!--Dashboard colors-->
+    <color name="colorNewAssignment">#259B23</color>
+    <color name="colorDueAssignment">#F7931E</color>
+    <color name="colorOverdueAssignment">#ED1C24</color>
+
+    <!--Calendar colors-->
+    <color name="colorCalendarPrimaryDark">#E5496B</color>
+    <color name="colorCalendarPrimary">#FF5177</color>
+    <color name="colorCalendarFloating">#666666</color>
+    <color name="colorTransparentGrey">#90bdbdbd</color>
+    <color name="colorTransparent">#00000000</color>
+    <color name="colorItemSelectedBar">#FD5177</color>
+    <color name="colorItemSelectedBg">#EEEEEE</color>
+    <color name="colorUnselected">#ffffff</color>
+    <color name="colorAssignment">#259B23</color>
+    <color name="colorEvents">#3F51B5</color>
+    <color name="colorEventsDark">#233dd1</color>
+
+    <color name="colorPersonal">#3F51B5</color>
+    <color name="colorActivities">#9450FF</color>
+    <color name="colorPeriod">#858585</color>
+    <color name="colorTrainingSession">#025154</color>
+    <color name="colorAnnouncement">#FF9900</color>
+    <color name="colorHolidayEvents">#4db6ac</color>
+    <color name="colorVacationEvents">#ef5350</color>
+    <color name="colorExamEvents">#86A1FF</color>
+    <color name="colorCelebrationEvents">#810325</color>
+    <color name="colorClassAnnouncement">#FFD740</color>
+    <color name="colorSchoolAnnouncement">#86A1FF</color>
+
+    <!--color define for subjects-->
+    <color name="english_color">#f44336</color>
+    <color name="mathematics_color">#7B1FA2</color>
+    <color name="history_color">#8BC34A</color>
+    <color name="science_color">#D32F2F</color>
+    <color name="hindi_color">#009688</color>
+    <color name="sanskrit_color">#FFC107</color>
+    <color name="physics_color">#1976D2</color>
+    <color name="chemistry_color">#4CAF50</color>
+    <color name="geography_color">#9E9E9E</color>
+    <color name="economics_color">#512DA8</color>
+    <color name="social_science_color">#FF5722</color>
+    <color name="geometry_color">#607D8B</color>
+    <color name="computer_science_color">#C2185B</color>
+    <color name="home_science_color">#388E3C</color>
+    <color name="language_color">#689F38</color>
+    <color name="music_color">#795548</color>
+    <color name="politic_color">#03A9F4</color>
+    <color name="psychology_color">#2196F3</color>
+    <color name="biology_color">#E91E63</color>
+    <color name="business_color">#3F51B5</color>
+    <color name="account_color">#00796B</color>
+    <color name="drawing_color">#303F9F</color>
+    <color name="engineering_color">#CDDC39</color>
+    <color name="general_knowledge_color">#0097A7</color>
+    <color name="craft_color">#0097A7</color>
+    <color name="lunch_color">#666666</color>
+    <color name="free_color">#666666</color>
+
+
+    <color name="colorText">#FFFFFF</color>
+
+    <color name="colorButtonBackgroundQuizCreator">#3F51B5</color>
+    <color name="colorButtonBackgroundQuizCreator1">#2881D2</color>
+    <color name="colorBackgroundAltQuizCreator">#BDBDBD</color>
+    <color name="colorBackgroundScratchPadView">#e6e6e6</color>
+    <color name="colorBackgroundHint">#FFC400</color>
+
+    <color name="colorBackgroundCorrectResponse">#00C853</color>
+    <color name="colorBackgroundIncorrectResponse">#F44336</color>
+    <color name="colorBackgroundUnansweredResponse">#1E80D0</color>
+    <color name="colorBackgroundYetToViewResponse">#FFFFFF</color>
+
+    <!-- colors for quiz creator theme -->
+    <color name="colorPrimaryQuizCreator">#3F51B5</color>
+    <color name="colorPrimaryDarkQuizCreator">#303F9F</color>
+    <color name="colorPrimaryLightQuizCreator">#C5CAE9</color>
+    <color name="colorAccentQuizCreator">#F50057</color>
+
+    <!-- Text color of drop downs -->
+    <color name="unselectedTextColorQuizCreator">#556370</color>
+    <color name="selectedTextColorQuizCreator">#1E80D0</color>
+
+    <color name="list_item_divider_color_QuizCreator">#E0E0E0</color>
+    <color name="list_item_color_QuizCreator">#EEEEEE</color>
+    <color name="light_select_main">#ff8585</color>
+    <color name="gray_main">#999999</color>
+    <!--<color name="colorPrimaryLN">#C6302C</color>-->
+    <!--<color name="colorPrimaryDarkLN">#a83722</color>-->
+    <!---->
+    <color name="colorPrimaryLN">#e73827</color>
+    <color name="colorPrimaryDarkLN">#e73827</color>
+    <color name="textColorPrimaryLN">#FFFFFF</color>
+    <color name="windowBackgroundLN">#911C19</color>
+    <color name="tabIndicatorLN">#FFFFFF</color>
+    <color name="navigationBarColorLN">#000000</color>
+    <color name="itemDivider">#33000000</color>
+    <color name="backgroundColorLN">#10000000</color>
+    <color name="colorAccentLN">#e73827</color>
+    <color name="notification_small_background">#bbbbbb</color>
+
+
+    <array name="subject_color">
+        <item>@color/color1_subject</item>
+        <item>@color/color2_subject</item>
+        <item>@color/color3_subject</item>
+        <item>@color/color4_subject</item>
+        <item>@color/color5_subject</item>
+        <item>@color/color6_subject</item>
+        <item>@color/color7_subject</item>
+        <item>@color/color8_subject</item>
+        <item>@color/color9_subject</item>
+        <item>@color/color10_subject</item>
+    </array>
+
+    <color name="color1_subject">#ba68c8</color>
+    <color name="color2_subject">#f46a40</color>
+    <color name="color3_subject">#bf8a68</color>
+    <color name="color4_subject">#69c939</color>
+    <color name="color5_subject">#c0b025</color>
+    <color name="color6_subject">#6970b6</color>
+    <color name="color7_subject">#00ba9b</color>
+    <color name="color8_subject">#ff4c4c</color>
+    <color name="color9_subject">#9e91f4</color>
+    <color name="color10_subject">#ff22a7</color>
+
+
+    <array name="subject_text_color">
+        <item>@color/color1_subject_text</item>
+        <item>@color/color2_subject_text</item>
+        <item>@color/color3_subject_text</item>
+        <item>@color/color4_subject_text</item>
+        <item>@color/color5_subject_text</item>
+        <item>@color/color6_subject_text</item>
+        <item>@color/color7_subject_text</item>
+        <item>@color/color8_subject_text</item>
+        <item>@color/color9_subject_text</item>
+        <item>@color/color10_subject_text</item>
+        <item>@color/color11_subject_text</item>
+        <item>@color/color12_subject_text</item>
+        <item>@color/color13_subject_text</item>
+        <item>@color/color14_subject_text</item>
+    </array>
+
+    <array name="subject_text_color_extra">
+        <item>@color/color11_subject_text</item>
+        <item>@color/color12_subject_text</item>
+        <item>@color/color13_subject_text</item>
+        <item>@color/color14_subject_text</item>
+    </array>
+
+    <color name="color1_subject_text">#4A148C</color>
+    <color name="color2_subject_text">#bf360c</color>
+    // deep orange
+    <color name="color3_subject_text">#3e2723</color>
+    <color name="color4_subject_text">#33691e</color>
+    <color name="color5_subject_text">#827717</color>
+    <color name="color6_subject_text">#1a237e</color>
+    <color name="color7_subject_text">#004d40</color>
+    <color name="color8_subject_text">#b71c1c</color>
+    <color name="color9_subject_text">#311b92</color>
+    <color name="color10_subject_text">#880e4f</color>
+    <color name="color11_subject_text">#EF6C00</color>
+    <color name="color12_subject_text">#AD1457</color>
+    <color name="color13_subject_text">#558B2F</color>
+    <color name="color14_subject_text">#01579B</color>
+
+
+    <array name="subject_foreground_color">
+        <item>@color/color1_foreground</item>
+        <item>@color/color2_foreground</item>
+        <item>@color/color3_foreground</item>
+        <item>@color/color4_foreground</item>
+        <item>@color/color5_foreground</item>
+        <item>@color/color6_foreground</item>
+        <item>@color/color7_foreground</item>
+        <item>@color/color8_foreground</item>
+        <item>@color/color9_foreground</item>
+        <item>@color/color10_foreground</item>
+    </array>
+
+    <color name="color1_foreground">#77BA68C8</color>
+    <color name="color2_foreground">#77f46a40</color>
+    <color name="color3_foreground">#77bf8a68</color>
+    <color name="color4_foreground">#7769c939</color>
+    <color name="color5_foreground">#77c0b025</color>
+    <color name="color6_foreground">#776970b6</color>
+    <color name="color7_foreground">#7700ba9b</color>
+    <color name="color8_foreground">#77ff4c4c</color>
+    <color name="color9_foreground">#779e91f4</color>
+    <color name="color10_foreground">#77ff22a7</color>
+
+
+</resources>

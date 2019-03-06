@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:tag="@string/hint_item_type_text">
+
+    <in.securelearning.lil.android.base.widget.EditTextCustom
+        android:id="@+id/edit_text_section_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/section_hint_delete"
+        android:background="@null"
+        android:hint="Please enter hint..."
+        android:inputType="textFilter|textCapSentences"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:textColor="@color/colorGreyDark"
+        android:textColorHint="@color/colorGrey400"
+        android:textSize="17sp"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/section_hint_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:paddingLeft="8dp"
+        android:paddingTop="4dp"
+        android:src="@drawable/remove"/>
+
+
+</RelativeLayout>
+
+
+

@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:pinview="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/layoutLoginPhone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- layout refreshToken progress -->
+        <RelativeLayout
+            android:id="@+id/layoutOTPProgress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/loginProgress"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                />
+
+            <in.securelearning.lil.android.base.widget.TextViewCustomLight
+                android:id="@+id/textViewLoadingMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/loginProgress"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="@string/label_requesting_otp"
+                android:textColor="@color/colorGreyDark"
+                android:textSize="24sp"/>
+
+        </RelativeLayout>
+
+        <!--layout refreshToken-->
+        <RelativeLayout
+            android:id="@+id/containerPhoneLogin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:id="@+id/layoutLoginToolBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical">
+
+                <in.securelearning.lil.android.base.widget.CustomImageButton
+                    android:id="@+id/buttonBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="12dp"
+                    android:padding="8dp"
+                    android:src="@drawable/back_gray"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="Login"
+                    android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                    android:textColor="@color/colorGreyDark"/>
+
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/imageViewLoginLilLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/layoutLoginPhoneFields"
+                android:layout_below="@+id/layoutLoginToolBar"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/image_lil_logo_dark"/>
+
+            <!--layout otp fields-->
+            <LinearLayout
+                android:id="@+id/layoutLoginPhoneFields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <!--layout request OTP-->
+                <LinearLayout
+                    android:id="@+id/layoutRequestOTP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/inputLayoutLoginPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/colorGrey77">
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/editTextLoginPhone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Enter 10 digit phone number"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"
+                            android:theme="@style/themeEditTextGrey"/>
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/buttonRequestOTP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:clickable="false"
+                        android:enabled="false"
+                        android:padding="16dp"
+                        android:text="Request OTP"
+                        android:textColor="@color/colorWhite"
+                        android:theme="@style/ButtonColorAccent"
+                        />
+
+                </LinearLayout>
+
+                <!--layout submit OTP-->
+                <LinearLayout
+                    android:id="@+id/layoutSubmitOTP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textViewOTPText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:text="@string/label_otp_text"
+                        android:textColor="@color/colorGrey77"
+                        android:textSize="16sp"/>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textViewOTPTimer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/colorRed"
+                        android:textSize="16sp"
+                        android:visibility="gone"
+                        />
+
+                    <!--<com.chaos.view.PinView-->
+                    <!--android:id="@+id/pinViewOTP"-->
+                    <!--style="@style/PinWidget.PinView"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center_horizontal"-->
+                    <!--android:cursorVisible="true"-->
+                    <!--android:inputType="number"-->
+                    <!--android:padding="5dp"-->
+                    <!--android:textColor="@color/colorGreyDark"-->
+                    <!--android:textSize="18sp"-->
+                    <!--app:borderColor="@color/colorGrey77"-->
+                    <!--app:borderWidth="2dp"-->
+                    <!--app:itemCount="6"-->
+                    <!--app:itemRadius="4dp"-->
+                    <!--app:itemSize="30dp"-->
+                    <!--app:itemSpacing="4dp"-->
+                    <!--/>-->
+
+                    <!--<com.dpizarro.pinview.library.PinView-->
+                    <!--android:id="@+id/pinViewOTP"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--pinview:colorTextPinBox="@color/colorGreyDark"-->
+                    <!--pinview:deleteOnClick="false"-->
+                    <!--pinview:keyboardMandatory="true"-->
+                    <!--pinview:nativePinBox="true"-->
+                    <!--pinview:numberPinBoxes="2"-->
+                    <!--pinview:sizeSplit="18sp"-->
+                    <!--pinview:split="-"-->
+                    <!--pinview:textSizePinBox="18sp"/>-->
+
+                    <com.goodiebag.pinview.Pinview
+                        android:id="@+id/pinViewOTP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cursorVisible="true"
+                        app:forceKeyboard="false"
+                        app:hint="0"
+                        app:inputType="number"
+                        app:password="false"
+                        app:pinBackground="@drawable/background_edittext_thin_bottom_line"
+                        app:pinHeight="30dp"
+                        app:pinLength="6"
+                        app:pinWidth="30dp"/>
+
+
+                    <android.support.v7.widget.AppCompatEditText
+                        android:id="@+id/editTextLoginOTP"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="@string/enter_otp"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:maxLines="1"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="16sp"
+                        android:theme="@style/themeEditTextGrey"
+                        android:visibility="gone"/>
+
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/buttonSubmitOTP"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="5dp"
+                        android:padding="16dp"
+                        android:text="@string/submit"
+                        android:textColor="@color/colorWhite"
+                        android:theme="@style/ButtonColorAccent"
+                        />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+</layout>

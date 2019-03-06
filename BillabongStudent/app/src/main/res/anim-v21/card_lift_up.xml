@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/...">
+    <selector xmlns:android="http://schemas.android.com/...">
+        <item
+            android:state_enabled="true"
+            android:state_pressed="true">
+            <objectanimator
+                android:duration="@android:integer/config_shortAnimTime"
+                android:propertyname="translationZ"
+                android:valueto="6dp"
+                android:valuetype="floatType"/>
+        </item>
+        <item>
+            <objectanimator
+                android:duration="@android:integer/config_shortAnimTime"
+                android:propertyname="translationZ"
+                android:valueto="0dp"
+                android:valuetype="floatType"/>
+        </item>
+    </selector>
+</set>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_create_event"
+        android:icon="@drawable/action_add_w"
+        android:orderInCategory="97"
+        android:title="@string/action_create_event"
+        app:showAsAction="always"/>
+
+
+    <item
+        android:id="@+id/action_go_to_date"
+        android:icon="@drawable/action_calendar_w"
+        android:orderInCategory="98"
+        android:title="@string/action_go_to_date"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_calendar_help"
+        android:icon="@drawable/action_info_w"
+        android:orderInCategory="99"
+        android:title="@string/action_calendar_help"
+        app:showAsAction="ifRoom"/>
+
+
+</menu>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground"
+        android:orientation="vertical">
+
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="?attr/actionBarSize"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:background="@color/colorPrimary"-->
+            <!--android:elevation="4dp"-->
+            <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"></android.support.v7.widget.Toolbar>-->
+
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scrollViewMain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:descendantFocusability="beforeDescendants"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                    <!--layout thumbnail-->
+                    <android.support.percent.PercentRelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            app:layout_aspectRatio="178%"
+                            app:layout_widthPercent="100%">
+
+                            <ImageView
+                                android:id="@+id/imageViewThumbnail"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:transitionName="@string/shared_animation"/>
+
+                            <ImageView
+                                android:id="@+id/imageViewAssignType"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_margin="8dp"
+                                android:background="@drawable/image_black_transparent"
+                                android:padding="8dp"
+                                android:visibility="gone"/>
+
+                        </RelativeLayout>
+
+                    </android.support.percent.PercentRelativeLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="vertical">
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textViewAssignTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                        android:textColor="@color/colorGreyDark"
+                        />
+
+                    <!--assign to-->
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/inputLayoutAssignGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColorHint="@color/colorGrey77"
+                        app:hintAnimationEnabled="false">
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/editTextAssignGroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:cursorVisible="false"
+                            android:drawableRight="@drawable/dropdown_gray"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:hint="Assign To"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="18sp"
+                            android:theme="@style/themeEditTextGrey"/>
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <!--due date-->
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/inputLayoutDueDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColorHint="@color/colorGrey77"
+                        app:hintAnimationEnabled="false">
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/editTextDueDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:cursorVisible="false"
+                            android:drawableRight="@drawable/publish"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:hint="Due Date"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="18sp"
+                            android:theme="@style/themeEditTextGrey"/>
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <!--total score-->
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/inputLayoutTotalScore"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColorHint="@color/colorGrey77">
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/editTextTotalScore"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Add total score"
+                            android:inputType="number"
+                            android:maxLength="4"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="18sp"
+                            android:theme="@style/themeEditTextGrey"/>
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <Switch
+                        android:id="@+id/switchIsTimed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginTop="8dp"
+                        android:checked="true"
+                        android:text="@string/string_is_this_timed_assignment"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="18sp"/>
+
+                    <!--duration-->
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/inputLayoutDuration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/colorGrey77">
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/editTextDuration"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Expected duration (in min.)"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="18sp"
+                            android:theme="@style/themeEditTextGrey"/>
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <!--instruction-->
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/inputLayoutInstruction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColorHint="@color/colorGrey77">
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/editTextInstruction"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Add instructions"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="18sp"
+                            android:theme="@style/themeEditTextGrey"/>
+
+                    </android.support.design.widget.TextInputLayout>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </LinearLayout>
+</layout>

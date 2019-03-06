@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:gravity="center_vertical"
+                  android:orientation="horizontal"
+                  android:padding="8dp">
+
+        <RadioButton
+            android:id="@+id/radioButtonSingleChoice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:clickable="false"
+            android:longClickable="false"
+            android:drawableLeft="@drawable/selector_custom_radio_button"
+            android:visibility="gone"/>
+
+        <CheckBox
+            android:id="@+id/checkboxMultipleChoice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:clickable="false"
+            android:longClickable="false"
+            android:drawableLeft="@drawable/selector_custom_radio_button"
+            android:visibility="gone"/>
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:id="@+id/textViewQuestionChoice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorGreyDark"
+            android:visibility="gone"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/imageViewChoiceResource"
+            android:layout_width="110dp"
+            android:layout_height="70dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:layout_marginLeft="8dp"
+            app:srcCompat="@drawable/john_sample"
+            />
+
+    </LinearLayout>
+</layout>

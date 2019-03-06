@@ -1,0 +1,981 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/colorBackground"
+              android:orientation="vertical">
+
+    <!--layout toolbar-->
+    <RelativeLayout
+        android:id="@+id/layout_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorAssignmentPrimary"
+        android:elevation="10dp">
+
+        <in.securelearning.lil.android.base.widget.CustomImageButton
+            android:id="@+id/button_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:padding="8dp"
+            android:src="@drawable/back_white"/>
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:id="@+id/textview_assignment_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_toRightOf="@+id/button_back"
+            android:layout_toLeftOf="@+id/buttonPlayAssignment"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+            android:textColor="@color/colorWhite"/>
+
+        <in.securelearning.lil.android.base.widget.CustomImageButton
+            android:id="@+id/buttonPlayAssignment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:padding="8dp"
+            android:src="@drawable/play"/>
+
+    </RelativeLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:orientation="vertical">
+
+            <!--layout quiz thumbnail-->
+            <android.support.percent.PercentRelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_header">
+
+                <RelativeLayout
+                    app:layout_aspectRatio="178%"
+                    app:layout_widthPercent="100%">
+
+                    <ImageView
+                        android:id="@+id/imageview_assignment_thumbnail"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/gradient_black_bottom"
+                        android:transitionName="@string/shared_animation"/>
+
+                </RelativeLayout>
+
+            </android.support.percent.PercentRelativeLayout>
+
+            <!--layout quiz details-->
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/assigned_on"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="5dp"
+                            android:text=":"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_assignment_date"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/due_on"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="5dp"
+                            android:text=":"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_due_date"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/subject"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="5dp"
+                            android:text=":"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_subject"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/string_topic"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="5dp"
+                            android:text=":"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_topic"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/string_assigned"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="5dp"
+                            android:text=":"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_assigned_class"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/string_type"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="5dp"
+                            android:text=":"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_type"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/layoutAssignmentDuration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/string_dur"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="5dp"
+                            android:text=":"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_duration"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/assigned_by"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="5dp"
+                            android:text=":"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_assigned_by"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/string_status"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="5dp"
+                            android:text=":"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_status"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/string_skills"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="5dp"
+                            android:text=":"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_skills"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/assigned_to"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="5dp"
+                            android:text=":"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_assigned_to"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="16sp"/>
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+            <!--layout quiz instruction-->
+            <android.support.v7.widget.CardView
+                android:id="@+id/layoutInstruction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/string_assignment_instruction"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        />
+
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textview_instruction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="16sp"/>
+
+                    <include layout="@layout/layout_view_more_less"/>
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <!--layout submitted by student list-->
+            <!--<android.support.v7.widget.CardView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:visibility="gone"-->
+                <!--android:layout_margin="5dp">-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_margin="@dimen/text_margin"-->
+                    <!--android:orientation="vertical">-->
+
+                    <!--<LinearLayout-->
+                        <!--android:id="@+id/layout_submittedBy"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content">-->
+
+                        <!--<in.securelearning.lil.android.base.widget.TextViewCustom-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:paddingBottom="5dp"-->
+                            <!--android:paddingTop="5dp"-->
+                            <!--android:text="@string/submittedBy"-->
+                            <!--android:textColor="@color/colorGreyDark"-->
+                            <!--android:textSize="18sp"-->
+                            <!--android:textStyle="bold"-->
+                            <!--/>-->
+
+                        <!--<in.securelearning.lil.android.base.widget.TextViewCustom-->
+                            <!--android:id="@+id/textview_submittedBy_count"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:gravity="end"-->
+                            <!--android:paddingBottom="5dp"-->
+                            <!--android:paddingTop="5dp"-->
+                            <!--android:textColor="@color/colorAccent"-->
+                            <!--android:textSize="18sp"/>-->
+
+                    <!--</LinearLayout>-->
+
+                    <!--<android.support.v7.widget.RecyclerView-->
+                        <!--android:id="@+id/recycler_view_submittedBy"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:overScrollMode="never"-->
+                        <!--android:visibility="gone"/>-->
+
+                <!--</LinearLayout>-->
+            <!--</android.support.v7.widget.CardView>-->
+
+            <!--&lt;!&ndash;layout pending by student list&ndash;&gt;-->
+            <!--<android.support.v7.widget.CardView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:visibility="gone"-->
+                <!--android:layout_margin="5dp">-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_margin="@dimen/text_margin"-->
+                    <!--android:gravity="center_vertical"-->
+                    <!--android:orientation="vertical">-->
+
+                    <!--<LinearLayout-->
+                        <!--android:id="@+id/layout_pendingBy"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content">-->
+
+                        <!--<in.securelearning.lil.android.base.widget.TextViewCustom-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:paddingBottom="5dp"-->
+                            <!--android:paddingTop="5dp"-->
+                            <!--android:text="@string/pendingBy"-->
+                            <!--android:textColor="@color/colorGreyDark"-->
+                            <!--android:textSize="18sp"-->
+                            <!--android:textStyle="bold"/>-->
+
+                        <!--<in.securelearning.lil.android.base.widget.TextViewCustom-->
+                            <!--android:id="@+id/textview_pendingBy_count"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:gravity="end"-->
+                            <!--android:text=""-->
+                            <!--android:textColor="@color/colorAccent"-->
+                            <!--android:textSize="18sp"/>-->
+
+                    <!--</LinearLayout>-->
+
+                    <!--<android.support.v7.widget.RecyclerView-->
+                        <!--android:id="@+id/recycler_view_pendingBy"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:overScrollMode="never"-->
+                        <!--android:visibility="gone"/>-->
+
+                <!--</LinearLayout>-->
+            <!--</android.support.v7.widget.CardView>-->
+
+            <!-- new layout for submitedd and pending status-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textview_pendingBy_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="122"
+                        android:layout_gravity="center"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="84sp"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp"
+                            android:layout_gravity="center"
+                            android:text="@string/remaining"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="18sp"
+                            android:textStyle="bold"/>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/text_margin"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textview_submittedBy_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="122"
+                            android:layout_gravity="center"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="84sp"/>
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp"
+                            android:layout_gravity="center"
+                            android:text="@string/submissions"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="18sp"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+            <!--layout pending by graph-->
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <android.support.percent.PercentRelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            app:layout_aspectRatio="170%"
+                            app:layout_widthPercent="100%">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_weight="1">
+
+                                <com.github.mikephil.charting.charts.PieChart
+                                    android:id="@+id/assignmentChart"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    tools:layout_editor_absoluteX="8dp"
+                                    tools:layout_editor_absoluteY="8dp">
+
+                                </com.github.mikephil.charting.charts.PieChart>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="4dp"
+                                    android:orientation="vertical">
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:orientation="horizontal">
+
+                                        <android.support.v7.widget.CardView
+                                            xmlns:android="http://schemas.android.com/apk/res/android"
+                                            android:layout_width="36dp"
+                                            android:layout_height="36dp"
+                                            android:layout_margin="5dp">
+
+                                            <View
+                                                android:id="@+id/assignmentImage1"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:background="@drawable/add_image"/>
+                                        </android.support.v7.widget.CardView>
+
+                                        <TextView
+                                            android:id="@+id/assignmentText1"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginLeft="10dp"
+                                            android:text="22 Student attended"/>
+
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="4dp"
+                                    android:orientation="vertical">
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:orientation="horizontal">
+
+                                        <android.support.v7.widget.CardView
+                                            xmlns:android="http://schemas.android.com/apk/res/android"
+                                            android:layout_width="36dp"
+                                            android:layout_height="36dp"
+                                            android:layout_margin="5dp">
+
+                                            <View
+                                                android:id="@+id/assignmentImage2"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:background="@drawable/add_image"/>
+                                        </android.support.v7.widget.CardView>
+
+                                        <TextView
+                                            android:id="@+id/assignmentText2"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginLeft="10dp"
+                                            android:text="78 Student not attended"/>
+
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="4dp"
+                                    android:orientation="vertical">
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:orientation="horizontal">
+
+                                        <android.support.v7.widget.CardView
+                                            xmlns:android="http://schemas.android.com/apk/res/android"
+                                            android:layout_width="36dp"
+                                            android:layout_height="36dp"
+                                            android:layout_margin="5dp">
+
+                                            <View
+                                                android:id="@+id/assignmentImage3"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:background="@drawable/add_image"/>
+                                        </android.support.v7.widget.CardView>
+
+                                        <TextView
+                                            android:id="@+id/assignmentText3"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginLeft="10dp"
+                                            android:text="78 Student not attended"/>
+
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </android.support.percent.PercentRelativeLayout>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="Excellent Student"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/assignmentExcellentRecycleList"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:padding="8dp"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="Average Student"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/assignmentAverageRecycleList"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:padding="8dp"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="Poor Student"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/assignmentPoorRecycleList"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:padding="8dp"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="Pending Student"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/assignmentPendingRecycleList"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:padding="8dp"/>
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>
+
+

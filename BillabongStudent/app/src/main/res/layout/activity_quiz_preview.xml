@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite">
+
+        <RelativeLayout
+            android:id="@+id/layout_header"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:elevation="5dp">
+
+            <in.securelearning.lil.android.base.widget.CustomImageButton
+                android:id="@+id/imagebutton_exit_quiz"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="12dp"
+                android:padding="8dp"
+                android:src="@drawable/back_white"/>
+
+            <in.securelearning.lil.android.base.widget.CustomImageButton
+                android:id="@+id/imagebutton_skip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/skip"
+                android:visibility="gone"/>
+
+            <in.securelearning.lil.android.base.widget.TextViewCustom
+                android:id="@+id/textview_quiz_title_header"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="12dp"
+                android:layout_toLeftOf="@+id/textViewTimeTaken"
+                android:layout_toRightOf="@+id/imagebutton_exit_quiz"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/colorWhite"/>
+
+            <in.securelearning.lil.android.base.widget.TextViewCustom
+                android:id="@+id/textViewTimeTaken"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="12dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:padding="8dp"
+                android:textColor="@color/colorWhite"
+                android:textSize="16sp"/>
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layout_header"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="16dp">
+
+                    <ScrollView
+                        android:id="@+id/scrollview_main_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <in.securelearning.lil.android.base.widget.TextViewCustom
+                                android:id="@+id/text_view_question"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/colorGreyDark"
+                                android:textSize="@dimen/assignment_phone_ContentText"/>
+
+                            <!--question resource layout-->
+                            <LinearLayout
+                                android:id="@+id/group_question_resources"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:orientation="horizontal"
+                                android:paddingLeft="10dp">
+
+                                <RelativeLayout
+                                    android:id="@+id/res_type_image_layout"
+                                    android:layout_width="170dp"
+                                    android:layout_height="130dp"
+                                    android:layout_gravity="center_horizontal"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:id="@+id/image_view_question_image"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:scaleType="centerCrop"/>
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:background="@drawable/gradient_black_top_bottom"/>
+
+
+                                    <ImageView
+                                        android:layout_width="28dp"
+                                        android:layout_height="28dp"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_margin="4dp"
+                                        android:padding="4dp"
+                                        android:src="@drawable/icon_image_white"/>
+
+
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:id="@+id/res_type_video_layout"
+                                    android:layout_width="170dp"
+                                    android:layout_height="130dp"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_marginLeft="5dp"
+                                    android:visibility="gone">
+
+                                    <in.securelearning.lil.android.base.widget.CustomImageView
+                                        android:id="@+id/image_view_question_video"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:scaleType="centerCrop"/>
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:background="@drawable/gradient_black_top_bottom"/>
+
+                                    <ImageView
+                                        android:layout_width="28dp"
+                                        android:layout_height="28dp"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_margin="4dp"
+                                        android:padding="4dp"
+                                        android:src="@drawable/icon_video_white"/>
+
+
+                                </RelativeLayout>
+
+
+                            </LinearLayout>
+
+                            <!--question response layout-->
+                            <LinearLayout
+                                android:id="@+id/group_response"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:orientation="vertical">
+
+
+                            </LinearLayout>
+
+                            <!--layout for explanation-->
+                            <LinearLayout
+                                android:id="@+id/layout_explanation"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="5dp"
+                                android:orientation="vertical">
+
+                                <in.securelearning.lil.android.base.widget.TextViewCustom
+                                    android:id="@+id/textview_explanation_label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="5dp"
+                                    android:text="Explanation"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="@dimen/assignment_phone_ToolbarText"
+                                    android:visibility="gone"/>
+
+                                <in.securelearning.lil.android.base.widget.TextViewCustom
+                                    android:id="@+id/textview_explanation"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:textColor="@color/colorGreyDark"
+                                    android:textSize="@dimen/assignment_phone_ContentText"
+                                    android:visibility="gone"/>
+
+                                <RelativeLayout
+                                    android:id="@+id/imagethumbnail_explanation"
+                                    android:layout_width="170dp"
+                                    android:layout_height="130dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:id="@+id/imageview_explanation_image"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center_horizontal"
+                                        android:scaleType="centerCrop"/>
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:background="@drawable/gradient_black_top_bottom"/>
+
+                                    <ImageView
+                                        android:layout_width="28dp"
+                                        android:layout_height="28dp"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_margin="4dp"
+                                        android:padding="4dp"
+                                        android:src="@drawable/icon_image_white"/>
+
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:id="@+id/videothumbnail_explanation"
+                                    android:layout_width="170dp"
+                                    android:layout_height="130dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:gravity="center"
+                                    android:visibility="gone">
+
+                                    <in.securelearning.lil.android.base.widget.CustomImageView
+                                        android:id="@+id/imageview_explanation_video"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center_horizontal"
+                                        android:scaleType="centerCrop"/>
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:background="@drawable/gradient_black_top_bottom"/>
+
+                                    <ImageView
+                                        android:layout_width="28dp"
+                                        android:layout_height="28dp"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_margin="4dp"
+                                        android:padding="4dp"
+                                        android:src="@drawable/icon_video_white"/>
+
+                                </RelativeLayout>
+
+
+                            </LinearLayout>
+
+                            <!--layout for hint-->
+                            <LinearLayout
+                                android:id="@+id/hintLayoutView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignParentStart="true"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="10dp"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <FrameLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/assignment_phone_HeaderSize"
+                                    android:elevation="5dp">
+
+                                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="start|center_vertical"
+                                        android:layout_marginLeft="5dp"
+                                        android:text="@string/hints_heading"
+                                        android:textColor="@color/colorPrimary"
+                                        android:textSize="@dimen/assignment_phone_ToolbarText"/>
+
+                                    <LinearLayout
+                                        android:id="@+id/button_hint_group_close"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="right|center_vertical"
+                                        android:layout_marginRight="2dp"
+                                        android:visibility="gone">
+
+                                        <in.securelearning.lil.android.base.widget.CustomImageButton
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:background="@null"
+                                            android:clickable="false"
+                                            android:focusable="false"
+                                            android:focusableInTouchMode="false"
+                                            android:padding="2dp"
+                                            android:src="@drawable/close_popup"/>
+
+                                    </LinearLayout>
+
+
+                                </FrameLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/group_response_hint"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:divider="@drawable/separator"
+                                    android:orientation="vertical"
+                                    android:showDividers="middle">
+
+                                </LinearLayout>
+
+
+                            </LinearLayout>
+
+                            <!--used hints layout-->
+                            <LinearLayout
+                                android:id="@+id/layoutHintUsed"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="8dp"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <in.securelearning.lil.android.base.widget.TextViewCustom
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Hints used"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="@dimen/assignment_phone_ToolbarText"/>
+
+                                <LinearLayout
+                                    android:id="@+id/layoutDrawUsedHints"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:divider="@drawable/separator"
+                                    android:orientation="vertical"
+                                    android:showDividers="middle">
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <!--unused hints layout-->
+                            <LinearLayout
+                                android:id="@+id/layoutHintUnused"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="8dp"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <in.securelearning.lil.android.base.widget.TextViewCustom
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Hints unused"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="@dimen/assignment_phone_ToolbarText"/>
+
+                                <LinearLayout
+                                    android:id="@+id/layoutDrawUnusedHints"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:divider="@drawable/separator"
+                                    android:orientation="vertical"
+                                    android:showDividers="middle">
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <!--all hints layout-->
+                            <LinearLayout
+                                android:id="@+id/layoutAllHint"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="8dp"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <in.securelearning.lil.android.base.widget.TextViewCustom
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Hints"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="@dimen/assignment_phone_ToolbarText"/>
+
+                                <LinearLayout
+                                    android:id="@+id/layoutDrawAllHints"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:divider="@drawable/separator"
+                                    android:orientation="vertical"
+                                    android:showDividers="middle">
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </ScrollView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!--layout bottom-->
+            <LinearLayout
+                android:id="@+id/linearLayoutBottomGroup"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="#11000000"
+                android:orientation="horizontal">
+
+                <in.securelearning.lil.android.base.widget.CustomImageButton
+                    android:id="@+id/button_previous"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_vertical"
+                    android:padding="8dp"
+                    android:src="@drawable/previous_g"
+                    android:visibility="gone"/>
+
+                <RelativeLayout
+                    android:id="@+id/layout_hint_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:clickable="true"
+                    >
+
+                    <RelativeLayout
+                        android:id="@+id/image_view_hint"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="10dp"
+                        android:clickable="false">
+
+                        <ImageButton
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/hints"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"/>
+
+                    </RelativeLayout>
+
+                    <Button
+                        android:id="@+id/button_hint_count"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginRight="2dp"
+                        android:layout_marginTop="2dp"
+                        android:background="@drawable/backround_circle_white"
+                        android:clickable="false"
+                        android:textColor="@color/colorBackgroundHint"
+                        android:textSize="12sp"/>
+
+                </RelativeLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:fillViewport="false"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/group_response_question_list"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        >
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <in.securelearning.lil.android.base.widget.CustomImageButton
+                        android:id="@+id/button_next"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
+                        android:padding="8dp"
+                        android:src="@drawable/next_g"
+                        android:visibility="gone">
+
+                    </in.securelearning.lil.android.base.widget.CustomImageButton>
+
+                    <in.securelearning.lil.android.base.widget.CustomImageButton
+                        android:id="@+id/button_submit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
+                        android:padding="8dp"
+                        android:src="@drawable/check_g"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <SlidingDrawer
+            android:id="@+id/sliding_drawer_scratchpad"
+            android:layout_width="500dp"
+            android:layout_height="500dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="50dp"
+            android:content="@+id/content_scratchpad"
+            android:handle="@+id/button_scratchpad"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <in.securelearning.lil.android.base.widget.ButtonCustom
+                android:id="@+id/button_scratchpad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:rotation="90.0"
+                android:text="Scratchpad"
+                android:visibility="gone"/>
+
+
+            <LinearLayout
+                android:id="@+id/content_scratchpad"
+                android:layout_width="500dp"
+                android:layout_height="match_parent"
+                android:background="@android:drawable/dialog_holo_light_frame"
+                android:orientation="vertical">
+
+                <in.securelearning.lil.android.base.widget.CustomImageButton
+                    android:id="@+id/image_view_clear_scratchpad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:src="@drawable/ic_delete_red_36dp"/>
+
+                <EditText
+                    android:id="@+id/edit_text_scratchpad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <in.securelearning.lil.android.base.widget.ScratchPadView
+                    android:id="@+id/scratchpad_view_canvas"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </LinearLayout>
+
+
+        </SlidingDrawer>
+
+        <!--layout for correct and incorrect view -->
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="60dp">
+
+            <LinearLayout
+                android:id="@+id/group_incorrect_response"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="130dp"
+                    android:layout_height="112dp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/image_emoji_oops"/>
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:text="Oops !"
+                    android:textColor="@color/colorRed"
+                    android:textSize="44sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/group_correct_response"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="130dp"
+                    android:layout_height="112dp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/image_emoji_yeah"/>
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Yeah !"
+                    android:textColor="@color/colorGreenDark"
+                    android:textSize="44sp"/>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </RelativeLayout>
+</layout>

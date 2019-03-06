@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/itemDivider"/>
+
+        <RelativeLayout
+            android:id="@+id/layoutBreak"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <in.securelearning.lil.android.base.widget.TextViewCustom
+                android:id="@+id/textViewBreak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/colorGreyDark"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+
+            <in.securelearning.lil.android.base.widget.TextViewCustom
+                android:id="@+id/textViewBreakDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textViewBreak"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/colorGrey77"
+                android:textSize="16sp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutPeriodView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+
+            <in.securelearning.lil.android.base.widget.TextViewCustom
+                android:id="@+id/textViewPeriodNumber"
+                android:layout_width="28dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:background="@color/colorHint"
+                android:gravity="center_horizontal|center_vertical"
+                android:textColor="@color/colorWhite"
+                android:textSize="16sp"/>
+
+            <ImageView
+                android:id="@+id/imageViewPeriodIcon"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/textView_period_number"
+                android:src="@drawable/icon_default_subject"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/layoutMiddle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="6dp"
+                android:layout_toLeftOf="@+id/layoutRight"
+                android:layout_toRightOf="@+id/textViewPeriodNumber"
+                android:orientation="vertical">
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:id="@+id/textViewPeriodName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="18sp"/>
+
+                <in.securelearning.lil.android.base.widget.TextViewCustomLight
+                    android:id="@+id/textViewPeriodTopic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/colorGrey77"
+                    android:textSize="16sp"/>
+
+                <in.securelearning.lil.android.base.widget.TextViewCustomLight
+                    android:id="@+id/textViewPeriodSubTopic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/colorGrey77"
+                    android:textSize="16sp"/>
+
+                <in.securelearning.lil.android.base.widget.TextViewCustomLight
+                    android:id="@+id/textViewPeriodTiming"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/colorGrey77"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/layoutPeriodTeacher"
+                    android:layout_width="75dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <in.securelearning.lil.android.base.widget.RoundedImageView
+                        android:id="@+id/imageViewPeriodTeacherPic"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:layout_marginTop="2dp"
+                        android:cropToPadding="true"
+                        android:src="@drawable/icon_profile_large"/>
+
+                    <ImageView
+                        android:id="@+id/imageViewFirstWord"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:layout_marginTop="2dp"/>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustomLight
+                        android:id="@+id/textViewPeriodTeacherName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="2dp"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="14sp"/>
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layoutPeriodStudent"
+                    android:layout_width="75dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="4dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustomLight
+                        android:id="@+id/textViewClass"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="16sp"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</layout>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_16dp"
+            android:layout_marginRight="@dimen/margin_16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/recap"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorRyanBlack"
+                android:textStyle="bold"/>
+
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+        <!--recap pager and indicator-->
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <in.securelearning.lil.android.home.utils.RecyclerViewPager
+                android:id="@+id/recycleViewRecap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingLeft="@dimen/padding_48dp"
+                android:paddingRight="@dimen/padding_48dp"
+                android:visibility="gone"
+                app:rvp_singlePageFling="true"
+                app:rvp_triggerOffset="0.1"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/textViewErrorRecap"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/event_item_height"
+                android:gravity="center"
+                android:text="@string/no_recap_for_today"
+                android:textColor="@color/colorGrey55"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/layoutRecapProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/event_item_height"
+                android:gravity="center">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+</layout>

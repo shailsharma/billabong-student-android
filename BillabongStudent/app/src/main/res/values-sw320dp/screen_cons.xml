@@ -1,0 +1,7 @@
+<resources>
+    <integer name="search_column_count">2</integer>
+    <integer name="dashboard_column_count">3</integer>
+    <integer name="learning_map_progress_text_size">30</integer>
+    <integer name="skill_map_text_size">6</integer>
+    <bool name="show">false</bool>
+</resources>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--temporary splash for jaipur demo-->
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        android:src="@drawable/splash" />
+
+
+    <!--default splash screen-->
+    <LinearLayout
+        android:id="@+id/layout_default_splash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/imageview_app_logo_splash"
+            android:layout_width="320dp"
+            android:layout_height="96dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/image_lil_logo_light"
+            android:transitionName="@string/shared_animation" />
+
+
+    </LinearLayout>
+
+    <!--customized splash screen-->
+    <RelativeLayout
+        android:id="@+id/layout_customized_splash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="30dp"
+            android:transitionName="@string/shared_animation" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/gradient_black_bottom"
+            android:gravity="center_horizontal">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="320dp"
+                android:layout_height="96dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/lil_white"
+                android:transitionName="@string/shared_animation" />
+
+            <in.securelearning.lil.android.base.widget.TextViewCustom
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="18dp"
+                android:text="powered by"
+                android:textColor="@color/colorWhite"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

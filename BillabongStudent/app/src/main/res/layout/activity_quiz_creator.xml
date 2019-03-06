@@ -1,0 +1,807 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <!--Layout toolbar-->
+    <RelativeLayout
+        android:id="@+id/layout_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorCourseTab"
+        android:elevation="10dp">
+
+        <in.securelearning.lil.android.base.widget.CustomImageButton
+            android:id="@+id/button_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/back_white" />
+
+        <in.securelearning.lil.android.base.widget.TextViewCustom
+            android:id="@+id/textview_quiz_title_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/layout_toolbar_right"
+            android:layout_toRightOf="@+id/button_back"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text=""
+            android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+            android:textColor="@color/colorWhite" />
+
+        <LinearLayout
+            android:id="@+id/layout_toolbar_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/layout_question_label"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="@string/questions"
+                    android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                    android:textColor="@color/colorWhite" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:src="@drawable/next_white" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_toolbar_count_add"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:id="@+id/textview_question_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:padding="10dp"
+                    android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                    android:textColor="@color/colorWhite"
+                    android:visibility="gone" />
+
+                <in.securelearning.lil.android.base.widget.CustomImageButton
+                    android:id="@+id/button_add_new_question"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/action_add_w"
+                    android:visibility="visible" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <!--Layout quiz creations views-->
+    <RelativeLayout
+        android:id="@+id/layout_scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <!--Scroll view containing all fields-->
+        <ScrollView
+            android:id="@+id/scrollview_lhs"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+                <!-- Layout question type-->
+                <LinearLayout
+                    android:id="@+id/group_question_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|left"
+                        android:text="@string/question_type_heading"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="18sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <RadioGroup
+                            android:id="@+id/radio_group_question_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <in.securelearning.lil.android.base.widget.RadioButtonCustom
+                                android:id="@+id/radio_button_question_type_single_correct"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:background="@drawable/selector_question_type_radio"
+                                android:button="@drawable/icon_radio_button_multiple"
+                                android:tag="@string/string_json_question_types_option1" />
+
+                            <in.securelearning.lil.android.base.widget.RadioButtonCustom
+                                android:id="@+id/radio_button_question_type_multiple_correct"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="8dp"
+                                android:background="@drawable/selector_question_type_radio"
+                                android:button="@drawable/icon_checkbox_multiple"
+                                android:tag="@string/string_json_question_types_option2" />
+
+                            <in.securelearning.lil.android.base.widget.RadioButtonCustom
+                                android:id="@+id/radio_button_question_type_subjective"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="8dp"
+                                android:background="@drawable/selector_question_type_radio"
+                                android:button="@drawable/icon_textbox"
+                                android:tag="@string/string_json_question_types_option3"
+                                android:visibility="gone"/>
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_separator_grey" />
+
+                <!-- Layout question-->
+                <LinearLayout
+                    android:id="@+id/group_question"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|left"
+                        android:text="@string/question_group_heading"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="18sp" />
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edit_text_question"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:hint="@string/question_input_hint"
+                        android:imeOptions="actionNext"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:inputType="textFilter|textCapSentences"
+                        android:textColor="@color/colorGreyDark"
+                        android:textColorHint="@color/colorGrey400"
+                        android:textSize="17sp" />
+
+                </LinearLayout>
+
+                <!--Layout question resource-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/text_view_heading_question_attachment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/heading_add_question_attachment"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="17sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:orientation="horizontal">
+
+                            <in.securelearning.lil.android.base.widget.CustomImageButton
+                                android:id="@+id/view_question_image"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/add_image" />
+
+                            <in.securelearning.lil.android.base.widget.CustomImageButton
+                                android:id="@+id/view_question_video"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:src="@drawable/add_video" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!--Horizontal scrollview for question resources-->
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:id="@+id/layout_section_attachments"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:columnCount="2"
+                            android:dividerPadding="5dp"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:orientation="horizontal">
+
+
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/layout_question_attachment"
+                        android:layout_width="170dp"
+                        android:layout_height="130dp"
+                        android:layout_margin="5dp"
+                        android:visibility="visible"
+                        card_view:cardCornerRadius="3dp"
+                        card_view:cardElevation="5dp"
+                        card_view:cardPreventCornerOverlap="false">
+
+                        <RelativeLayout
+                            android:layout_width="170dp"
+                            android:layout_height="130dp">
+
+                            <ImageView
+                                android:id="@+id/image_view_question_attachment"
+                                android:layout_width="170dp"
+                                android:layout_height="130dp"
+                                android:scaleType="centerCrop" />
+
+                            <ImageView
+                                android:id="@+id/imageView_resource_video"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignParentStart="true"
+                                android:layout_margin="4dp"
+                                android:padding="4dp"
+                                android:src="@drawable/icon_video_white"
+                                android:visibility="gone" />
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/gradient_black_top_bottom" />
+
+                            <ImageView
+                                android:id="@+id/imageView_resource_image"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignParentStart="true"
+                                android:layout_margin="4dp"
+                                android:padding="4dp"
+                                android:src="@drawable/icon_image_white"
+                                android:visibility="gone" />
+
+                            <ImageView
+                                android:id="@+id/imageView_remove_attachment"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_margin="4dp"
+                                android:padding="4dp"
+                                android:src="@drawable/icon_cross_white" />
+
+
+                        </RelativeLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_separator_grey" />
+
+                <!--Layout question choices-->
+                <LinearLayout
+                    android:id="@+id/section_question_choices"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/group_choice_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/question_choice_type"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="18sp" />
+
+                        <RadioGroup
+                            android:id="@+id/radio_group_choice_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="end"
+                            android:orientation="horizontal">
+
+                            <in.securelearning.lil.android.base.widget.RadioButtonCustom
+                                android:id="@+id/radio_button_choice_type_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:button="@drawable/add_text"
+                                android:paddingRight="5dp" />
+
+                            <in.securelearning.lil.android.base.widget.RadioButtonCustom
+                                android:id="@+id/radio_button_choice_type_image"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:button="@drawable/add_image" />
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+                    <in.securelearning.lil.android.base.widget.RadioButtonCustom
+                        android:id="@+id/add_mcq_choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_marginTop="5dp"
+                        android:button="@drawable/add_gray" />
+
+                    <LinearLayout
+                        android:id="@+id/section_choices_sub_section"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/background_separator_grey" />
+
+                <!-- Layout question explanation-->
+                <LinearLayout
+                    android:id="@+id/section_explanation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:orientation="horizontal">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="Explanation"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="18sp" />
+
+                        <RadioGroup
+                            android:id="@+id/radio_group_explanation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="end|center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingBottom="6dp"
+                            android:paddingTop="6dp">
+
+                            <in.securelearning.lil.android.base.widget.RadioButtonCustom
+                                android:id="@+id/radio_button_explanation_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:button="@drawable/add_text" />
+
+                            <in.securelearning.lil.android.base.widget.RadioButtonCustom
+                                android:id="@+id/radio_button_explanation_resource"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:button="@drawable/add_image" />
+
+                            <in.securelearning.lil.android.base.widget.RadioButtonCustom
+                                android:id="@+id/radio_button_explanation_video"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:button="@drawable/add_video" />
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+                    <!--Text type explanation-->
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edit_text_explanation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:hint="@string/explanation_input_hint"
+                        android:inputType="textFilter|textCapSentences"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:textColor="@color/colorGreyDark"
+                        android:textColorHint="@color/colorGrey400"
+                        android:textSize="17sp"
+                        android:visibility="gone" />
+
+                    <!--Image type explanation-->
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/layout_explanation_image"
+                        android:layout_width="170dp"
+                        android:layout_height="130dp"
+                        android:layout_margin="5dp"
+                        android:visibility="gone"
+                        card_view:cardCornerRadius="3dp"
+                        card_view:cardElevation="5dp"
+                        card_view:cardPreventCornerOverlap="false">
+
+                        <RelativeLayout
+                            android:layout_width="170dp"
+                            android:layout_height="130dp">
+
+                            <ImageView
+                                android:id="@+id/image_view_explanation"
+                                android:layout_width="170dp"
+                                android:layout_height="130dp"
+                                android:scaleType="centerCrop" />
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/gradient_black_top_bottom" />
+
+                            <ImageView
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignParentLeft="true"
+                                android:layout_margin="4dp"
+                                android:padding="4dp"
+                                android:src="@drawable/icon_image_white" />
+
+                        </RelativeLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                    <!--Video type explanation-->
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/layout_explanation_video"
+                        android:layout_width="170dp"
+                        android:layout_height="130dp"
+                        android:layout_margin="5dp"
+                        android:visibility="gone"
+                        card_view:cardCornerRadius="3dp"
+                        card_view:cardElevation="5dp"
+                        card_view:cardPreventCornerOverlap="false">
+
+                        <RelativeLayout
+                            android:layout_width="170dp"
+                            android:layout_height="130dp">
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:id="@+id/image_view_explanation_video"
+                                android:layout_width="170dp"
+                                android:layout_height="130dp"
+                                android:scaleType="centerCrop" />
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/gradient_black_top_bottom" />
+
+                            <ImageView
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignParentLeft="true"
+                                android:layout_margin="4dp"
+                                android:padding="4dp"
+                                android:src="@drawable/icon_video_white" />
+
+                        </RelativeLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                </LinearLayout>
+
+                <!-- Layout question hints-->
+                <LinearLayout
+                    android:id="@+id/layout_hints"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:orientation="horizontal">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/heading_hints"
+                            android:textColor="@color/colorGreyDark"
+                            android:textSize="18sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:orientation="horizontal">
+
+                            <in.securelearning.lil.android.base.widget.CustomImageButton
+                                android:id="@+id/button_add_hint_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:src="@drawable/add_text" />
+
+                            <in.securelearning.lil.android.base.widget.CustomImageButton
+                                android:id="@+id/button_add_hint_image"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:src="@drawable/add_image" />
+
+                            <in.securelearning.lil.android.base.widget.CustomImageButton
+                                android:id="@+id/button_add_hint_video"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:src="@drawable/add_video" />
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/section_hints"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="vertical">
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- LaytrainingSessionsills -->
+                <LinearLayout
+                    android:id="@+id/group_skills"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|left"
+                        android:text="@string/skills_heading"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="18sp" />
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edittext_skills"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="-4dp"
+                        android:clickable="true"
+                        android:drawablePadding="4dp"
+                        android:drawableRight="@drawable/dropdown_gray"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="Select skill"
+                        android:longClickable="false"
+                        android:paddingBottom="8dp"
+                        android:paddingTop="4dp"
+                        android:singleLine="true"
+                        android:textColorHint="@color/colorGrey400"
+                        android:textSize="17sp" />
+
+                </LinearLayout>
+
+                <!--Layout for update buttons-->
+
+                <LinearLayout
+                    android:id="@+id/update_question_button_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+
+                    <in.securelearning.lil.android.base.widget.ButtonCustom
+                        android:id="@+id/cancel_question_update_button"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/cancel"
+                        android:theme="@style/CustomAccentOverlayQuizCreator" />
+
+                </LinearLayout>
+
+                <!--Layout FAB for adding and updating question to quiz-->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="bottom|end|right"
+                    android:layout_marginTop="10dp">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/add_question_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/fab_margin"
+                        android:src="@drawable/action_add_w"
+                        app:backgroundTint="@color/colorCourseTab"
+                        android:scaleType="center"
+                        app:borderWidth="0dp" />
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/update_question_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/fab_margin"
+                        android:src="@drawable/action_update_w"
+                        android:visibility="gone"
+                        app:backgroundTint="@color/colorCourseTab"
+                        android:scaleType="center"
+                        app:borderWidth="0dp" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+    </RelativeLayout>
+
+    <!--Layout Question List-->
+    <RelativeLayout
+        android:id="@+id/layout_right"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:background="@color/colorWhite"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/question_list_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <!--Layout FAB to save quiz-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/button_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fab_margin"
+                android:src="@drawable/action_done_w"
+                app:backgroundTint="@color/colorCourseTab"
+                app:borderWidth="0dp" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"></android.support.v7.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
+
+            <!--Layout for quiz title-->
+            <LinearLayout
+                android:id="@+id/layout_quiz_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quiz Title"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="22sp"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:hintAnimationEnabled="false"
+                    app:hintEnabled="false">
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/editText_quiz_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:hint="Title"
+                        android:inputType="text|textCapWords"
+                        android:maxLines="1"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:textColor="@color/colorGreyDark"
+                        android:textColorHint="#77000000"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <!--Layout for quiz description-->
+            <LinearLayout
+                android:id="@+id/layout_quiz_topic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quiz Description"
+                    android:textColor="@color/colorGreyDark"
+                    android:textSize="22sp"/>
+
+                <!--Quiz type-->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edittext_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:cursorVisible="false"
+                        android:drawableRight="@drawable/dropdown_gray"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="@string/string_QuizType"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:singleLine="true"
+                        android:textColor="@color/colorGreyDark"
+                        android:textColorHint="#77000000"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <!--board-->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_board"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone"
+                    app:hintAnimationEnabled="false"
+                    app:hintEnabled="false">
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edittext_board"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:cursorVisible="false"
+                        android:drawableRight="@drawable/dropdown_gray"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="@string/string_QuizBoard"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:singleLine="true"
+                        android:textColorHint="#77000000"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <!--learning level-->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_learning_level"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:visibility="visible"
+                    >
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edittext_learning_level"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:cursorVisible="false"
+                        android:drawableRight="@drawable/dropdown_gray"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="@string/grade"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:singleLine="true"
+                        android:textColorHint="#77000000"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <!--icon_language_c-->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_language"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone"
+                    app:hintAnimationEnabled="false"
+                    app:hintEnabled="false">
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edittext_language"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:cursorVisible="false"
+                        android:drawableRight="@drawable/dropdown_gray"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="@string/string_QuizLanguage"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:singleLine="true"
+                        android:textColor="@color/colorGreyDark"
+                        android:textColorHint="#77000000"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <!--grade-->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_grade"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone"
+                    app:hintAnimationEnabled="false"
+                    app:hintEnabled="false">
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edittext_grade"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:cursorVisible="false"
+                        android:drawableRight="@drawable/dropdown_gray"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="@string/string_QuizGrade"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:singleLine="true"
+                        android:textColor="@color/colorGreyDark"
+                        android:textColorHint="#77000000"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <!--subject-->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_subject"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edittext_subject"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:cursorVisible="false"
+                        android:drawableRight="@drawable/dropdown_gray"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="@string/string_QuizSubject"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:singleLine="true"
+                        android:textColor="@color/colorGreyDark"
+                        android:textColorHint="#77000000"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <!--topic-->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_topic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <in.securelearning.lil.android.base.widget.EditTextCustom
+                        android:id="@+id/edittext_topic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:cursorVisible="false"
+                        android:drawableRight="@drawable/dropdown_gray"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="@string/string_QuizTopic"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:singleLine="true"
+                        android:textColor="@color/colorGreyDark"
+                        android:textColorHint="#77000000"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <!--Layout for quiz thumbnail-->
+            <LinearLayout
+                android:id="@+id/layout_quiz_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/layout_browse_thumbnail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add Quiz Thumbnail"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+                        android:textColor="@color/colorGreyDark"/>
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:clickable="false"
+                        android:src="@drawable/add_image"/>
+
+                </LinearLayout>
+
+                <!--<android.support.v7.widget.CardView-->
+                <!--android:id="@+id/cardview_thumbnail"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:visibility="visible"-->
+                <!--card_view:cardCornerRadius="3dp"-->
+                <!--card_view:cardElevation="5dp"-->
+                <!--card_view:cardPreventCornerOverlap="false">-->
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/imageview_quiz_thumbnail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:elevation="4dp"
+                    android:tag="@string/string_AddThumbnailImage"/>
+
+
+                <!--</android.support.v7.widget.CardView>-->
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/button_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/action_arrow_right_w"
+        app:backgroundTint="@color/colorQuizPrimary"
+        app:borderWidth="0dp"/>
+
+</android.support.design.widget.CoordinatorLayout>

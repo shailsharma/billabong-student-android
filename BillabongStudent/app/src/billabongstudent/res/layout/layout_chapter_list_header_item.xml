@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/r1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_12dp"
+        android:background="@drawable/background_chapter_in_progress"
+        android:foreground="?selectableItemBackground"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:elevation="2dp">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/imageViewStateIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:visibility="visible"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textViewStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/chip_outline_rectangle_white"
+            android:paddingLeft="@dimen/padding_8dp"
+            android:paddingRight="@dimen/padding_8dp"
+            android:text="text"
+            android:textAllCaps="true"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/textSize_14sp"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textViewChapterCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewStatus"
+            android:layout_marginStart="@dimen/margin_8dp"
+            android:layout_marginTop="@dimen/margin_8dp"
+            android:text="8 Chapters"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/textSize_12sp"/>
+    </RelativeLayout>
+</layout>

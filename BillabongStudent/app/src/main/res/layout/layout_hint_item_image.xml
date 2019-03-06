@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="170dp"
+    android:layout_height="130dp"
+    android:layout_marginTop="5dp"
+    android:tag="@string/hint_item_type_image"
+    card_view:cardCornerRadius="3dp"
+    card_view:cardElevation="5dp"
+    card_view:cardPreventCornerOverlap="false">
+
+    <RelativeLayout
+        android:layout_width="170dp"
+        android:layout_height="130dp">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/section_hint_image_view"
+            android:layout_width="170dp"
+            android:layout_height="130dp"
+            android:scaleType="centerCrop"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient_black"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/section_hint_delete"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="4dp"
+            android:padding="4dp"
+            android:src="@drawable/icon_cross_white" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="4dp"
+            android:padding="4dp"
+            android:src="@drawable/icon_image_white"
+            android:visibility="visible" />
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

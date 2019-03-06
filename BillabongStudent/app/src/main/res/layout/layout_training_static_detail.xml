@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:id="@+id/layoutContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/imageViewThumbnail"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerCrop"/>
+
+                <!--title,description and time-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical">
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textViewTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/colorGreyDark"/>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textViewGoal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        />
+
+                    <include
+                        android:id="@+id/includeTextViewMoreLessGoal"
+                        layout="@layout/layout_view_more_less"/>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textViewTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
+                <!--venue-->
+                <LinearLayout
+                    android:id="@+id/layoutVenue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@color/colorBackground"
+                        ></View>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textViewLabelVenue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/labelVenue"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/colorGreyDark"/>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textViewVenue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        />
+
+                </LinearLayout>
+
+                <!--Eligibility-->
+                <LinearLayout
+                    android:id="@+id/layoutEligibility"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@color/colorBackground"
+                        ></View>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textViewLabelEligibility"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/labelEligibility"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/colorGreyDark"/>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textViewEligibility"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        />
+
+                </LinearLayout>
+
+                <!--instructions-->
+                <LinearLayout
+                    android:id="@+id/layoutIntruction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@color/colorBackground"
+                        ></View>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textViewLabelInstruction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/labelInstruction"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/colorGreyDark"/>
+
+                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                        android:id="@+id/textViewInstruction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        />
+
+                    <include
+                        android:id="@+id/includeTextViewMoreLessInstructions"
+                        layout="@layout/layout_view_more_less"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@color/colorBackground"
+                        ></View>
+
+                    <!--coordinators-->
+                    <LinearLayout
+                        android:id="@+id/layoutCoordinators"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textViewLabelCoordinator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/labelCoordinators"
+                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="@color/colorGreyDark"/>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerViewCoordinators"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
+                    </LinearLayout>
+
+                    <!--trainers-->
+                    <LinearLayout
+                        android:id="@+id/layoutTrainers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textViewLabelTrainers"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/labelTrainers"
+                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="@color/colorGreyDark"/>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerViewTrainers"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+                    </LinearLayout>
+
+                    <!--trainees-->
+                    <LinearLayout
+                        android:id="@+id/layoutTrainees"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textViewLabelTrainees"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/labelTrainees"
+                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="@color/colorGreyDark"/>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerViewTrainees"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+                    </LinearLayout>
+
+                    <!--learningObjectives-->
+                    <LinearLayout
+                        android:id="@+id/layoutLearningObjectives"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <in.securelearning.lil.android.base.widget.TextViewCustom
+                            android:id="@+id/textViewLabelLearningObjectives"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/labelLearningObjectives"
+                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="@color/colorGreyDark"/>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerViewLearningObjectives"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/buttonJoinTraining"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="4dp"
+                    android:padding="8dp"
+                    android:text="@string/labelJoinTraining"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:theme="@style/ButtonColorAccent"
+                    android:visibility="gone"
+                    />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <LinearLayout
+            android:id="@+id/layoutProgress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</layout>

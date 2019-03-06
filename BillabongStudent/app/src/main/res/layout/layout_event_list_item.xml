@@ -1,0 +1,1967 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--Section 2 original-->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:paddingLeft="8dp"
+                        android:text="Get busy living, or get busy dying."
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#444"
+                        android:textStyle="bold" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_more2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|top"
+                        android:text="&#xf078;"
+                        android:textColor="#444" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_date2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf073;"
+                        android:textColor="#bbb"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="17 Nov 2017"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_duration2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf017;"
+                        android:textColor="#bbb"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="For all day"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_group2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf0c0;"
+                        android:textColor="#bbb"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="VIII - A - Social Science"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_location2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf041;"
+                        android:textColor="#bbb"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="Tagore hall, building A"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <!--Section 3 original-->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:paddingLeft="8dp"
+                        android:text="Try not. Do - or do not. There is no try."
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#444"
+                        android:textStyle="bold" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_less3"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|top"
+                        android:text="&#xf077;"
+                        android:textColor="#444" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_date3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf073;"
+                        android:textColor="#bbb"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="17 Nov 2017"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_duration3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf017;"
+                        android:textColor="#bbb"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="For all day"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_group3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf0c0;"
+                        android:textColor="#bbb"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="VIII - A - Social Science"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_location3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf041;"
+                        android:textColor="#bbb"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="Tagore hall, building A"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="3"
+                        android:paddingRight="4dp"
+                        android:text="@string/common_signin_button_text_long"
+                        android:textColor="#777" />
+
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:padding="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <!--Section 4 announcement-->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:paddingLeft="8dp"
+                        android:text="Save water, drink rainwater."
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#444"
+                        android:textStyle="bold" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_more4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|top"
+                        android:text="&#xf078;"
+                        android:textColor="#444" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_date4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf073;"
+                        android:textColor="#ff9a02"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="17 Nov 2017"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_duration4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf017;"
+                        android:textColor="#ff9a02"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="For all day"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_group4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf0c0;"
+                        android:textColor="#ff9a02"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="VIII - A - Social Science"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_location4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf041;"
+                        android:textColor="#ff9a02"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="Tagore hall, building A"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <!--Section 5 announcement-->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:paddingLeft="8dp"
+                        android:text="You know how to whistle, don't you, Steve? You just put your lips together and blow."
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#444"
+                        android:textStyle="bold" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_less5"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|top"
+                        android:text="&#xf077;"
+                        android:textColor="#444" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_date5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf073;"
+                        android:textColor="#ff9a02"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="17 Nov 2017"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_duration5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf017;"
+                        android:textColor="#ff9a02"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="For all day"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_group5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf0c0;"
+                        android:textColor="#ff9a02"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="VIII - A - Social Science"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_location5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf041;"
+                        android:textColor="#ff9a02"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="Tagore hall, building A"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="3"
+                        android:paddingRight="4dp"
+                        android:text="@string/common_signin_button_text_long"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:padding="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <!--Section 6 activity-->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:paddingLeft="8dp"
+                        android:text="We'll always have Paris."
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#444"
+                        android:textStyle="bold" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_more6"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|top"
+                        android:text="&#xf078;"
+                        android:textColor="#444" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_date6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf073;"
+                        android:textColor="#9551ff"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="17 Nov 2017"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_duration6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf017;"
+                        android:textColor="#9551ff"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="For all day"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_group6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf0c0;"
+                        android:textColor="#9551ff"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="VIII - A - Social Science"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_location6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf041;"
+                        android:textColor="#9551ff"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="Tagore hall, building A"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <!--Section 7 activity-->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:paddingLeft="8dp"
+                        android:text="Keep your friends close, but your enemies closer."
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#444"
+                        android:textStyle="bold" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_less7"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|top"
+                        android:text="&#xf077;"
+                        android:textColor="#444" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_date7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf073;"
+                        android:textColor="#9551ff"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="17 Nov 2017"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_duration7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf017;"
+                        android:textColor="#9551ff"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="For all day"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_group7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf0c0;"
+                        android:textColor="#9551ff"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="VIII - A - Social Science"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_location7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf041;"
+                        android:textColor="#9551ff"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="Tagore hall, building A"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="3"
+                        android:paddingRight="4dp"
+                        android:text="@string/common_signin_button_text_long"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:padding="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <!--Section 8 personal-->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:paddingLeft="8dp"
+                        android:text="There is a saying: Yesterday is history, tomorrow is a mystery, but today is a gift. That is why it is called the present."
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#444"
+                        android:textStyle="bold" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_more8"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|top"
+                        android:text="&#xf078;"
+                        android:textColor="#444" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_date8"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf073;"
+                        android:textColor="#4052b5"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="17 Nov 2017"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_duration8"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf017;"
+                        android:textColor="#4052b5"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="For all day"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_group8"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf0c0;"
+                        android:textColor="#4052b5"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="VIII - A - Social Science"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_location8"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf041;"
+                        android:textColor="#4052b5"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="Tagore hall, building A"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <!--Section 9 personal-->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:paddingLeft="8dp"
+                        android:text="Ab pyar na hua tumhara, UPSC ka exam ho gaya hai ... dus saal se clear hi nahi ho raha hai"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#444"
+                        android:textStyle="bold" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_less9"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|top"
+                        android:text="&#xf077;"
+                        android:textColor="#444" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_date9"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf073;"
+                        android:textColor="#4052b5"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="17 Nov 2017"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_duration9"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf017;"
+                        android:textColor="#4052b5"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="For all day"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_group9"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf0c0;"
+                        android:textColor="#4052b5"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="VIII - A - Social Science"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_location9"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf041;"
+                        android:textColor="#4052b5"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="Tagore hall, building A"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="3"
+                        android:paddingRight="4dp"
+                        android:text="@string/common_signin_button_text_long"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:padding="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <!--Section 1-->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            app:cardBackgroundColor="#e23d57"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
+                android:background="#FFF"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:paddingLeft="8dp"
+                        android:text="May the force be with you."
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#444"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_date1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf073;"
+                        android:textColor="#bbb"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="17 Nov 2017"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_duration1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf017;"
+                        android:textColor="#bbb"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="For all day"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <!--<LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf041;"
+                        android:textColor="#bbb"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:paddingRight="4dp"
+                        android:text="Tagore hall, building A"
+                        android:textColor="#555" />
+
+                </LinearLayout>-->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_group1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf0c0;"
+                        android:textColor="#bbb"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="VIII - A - Social Science"
+                        android:textColor="#555" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textview_location1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="4dp"
+                        android:text="&#xf041;"
+                        android:textColor="#bbb"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:paddingRight="4dp"
+                        android:text="Tagore hall, building A"
+                        android:textColor="#555" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="8dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="3"
+                        android:paddingRight="4dp"
+                        android:text="@string/common_signin_button_text_long"
+                        android:textColor="#777" />
+
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:padding="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginRight="4dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/check_g" />
+
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+</ScrollView>

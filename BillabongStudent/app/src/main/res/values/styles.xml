@@ -1,0 +1,211 @@
+<resources>
+    <!-- Base application theme. -->
+
+    <style name="LilActivitiesAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/decelerate_cubic</item>
+        <item name="android:windowExitAnimation">@anim/zoom_out</item>
+    </style>
+
+    <style name="ThemeTransparent" parent="AppTheme.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="CalendarActivityTheme" parent="AppTheme.NoActionBar">
+        <!--<item name="android:fontFamily">monospace</item>-->
+        <!--<item name="android:typeface">monospace</item>-->
+    </style>
+
+    <style name="TranslucentDecorNoActionBar" parent="android:Theme.Material.Light.NoActionBar.TranslucentDecor">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+
+    <style name="SettingTheme" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimarySettings</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkSettings</item>
+        <item name="colorAccent">@color/colorAccentSettings</item>
+    </style>
+    <!-- Quiz Creator Activity Theme -->
+    <style name="QuizCreatorTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryQuizCreator</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkQuizCreator</item>
+        <item name="colorAccent">@color/colorAccentQuizCreator</item>
+    </style>
+
+    <!-- Quiz List Activity Theme -->
+    <style name="QuizListTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryB</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkB</item>
+        <item name="colorAccent">@color/colorAccentB</item>
+    </style>
+
+    <!-- Quiz Preview Activity Theme -->
+    <style name="QuizPreviewTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryQuizCreator</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkQuizCreator</item>
+        <item name="colorAccent">@color/colorAccentQuizCreator</item>
+    </style>
+
+
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+
+    <style name="SplashNoActionBar" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--<item name="android:windowBackground">@drawable/background_splash</item>-->
+    </style>
+
+    <style name="LoginThemeNoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <!--<item name="android:windowBackground">@drawable/background_splash</item>-->
+    </style>
+
+
+    <style name="SignUpEdittext">
+        <item name="colorControlNormal">#ffffff</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+    </style>
+
+    <style name="themeEditTextGrey">
+        <item name="colorControlNormal">@color/colorGrey77</item>
+        <item name="colorControlActivated">@color/colorGreyDark</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+    </style>
+
+    <style name="MyMaterialTheme" parent="AppTheme">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
+        <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+    </style>
+
+    <style name="EditTextThemeBlue">
+        <item name="colorControlNormal">#88000000</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
+
+    </style>
+
+    <style name="SpinnerTheme">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorControlNormal">#88000000</item>
+    </style>
+
+    <style name="ButtonColorPrimary" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+    </style>
+
+    <style name="ButtonColorWhite" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorWhite</item>
+    </style>
+
+    <style name="ButtonColorAccent" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+
+    <style name="ButtonColorWhiteGray" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorGrey</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="ButtonColorGreen" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorGreen</item>
+    </style>
+
+    <style name="ButtonColorBlackTransparent" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorGrey55</item>
+    </style>
+
+    <style name="menu_labels_style">
+        <item name="android:background">@drawable/background_fab_label</item>
+        <item name="android:textColor">@color/colorGreyDark</item>
+    </style>
+
+
+    <style name="FullscreenThemeLogin" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:opacity">transparent</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:textColorHint">@color/hintColorWhite66</item>
+    </style>
+
+    <style name="FullscreenThemeWowzaPlayer" parent="AppTheme">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:textColorHint">@color/hintColorWhite66</item>
+    </style>
+
+    <style name="cursorColor" parent="AppTheme.AppBarOverlay">
+        <item name="android:textCursorDrawable">@drawable/image_searchview_cursor</item>
+    </style>
+
+    <style name="CustomTextInputLayoutHint" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorGrey77</item>
+    </style>
+
+    <style name="TextInputLayoutHintPrimary" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="CustomTextInputLayoutError" parent="TextAppearance.Design.Error">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="ToolbarExpandedTextAppearance">
+        <item name="android:background">@drawable/gradient_black_top_bottom</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowRadius">4</item>
+        <item name="android:shadowColor">@android:color/black</item>
+    </style>
+
+    <style name="ProgressWhiteAccent">
+        <item name="colorAccent">@color/white</item> <!-- Whatever color you want-->
+    </style>
+
+    <style name="ProgressRedAccent">
+        <item name="colorAccent">@color/red_color</item>
+        <item name="colorPrimary">@color/colorWhite</item>
+    </style>
+
+    <style name="AppThemePracticeTest" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">#2e3192</item>
+        <item name="colorPrimaryDark">#2e3192</item>
+        <item name="colorAccent">#fff</item>
+    </style>
+
+</resources>
