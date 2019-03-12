@@ -160,7 +160,7 @@ public class QuizPreviewModel extends BaseModelQuizPreview implements QuizPrevie
             @Override
             public void accept(Assignment assignment) {
 
-                // TODO: 7/25/2017 remove this code when goes live no need of allias
+                // TODO: 7/25/2017 remove this code when goes live no need of alias
 
                 if (assignment.getUidQuiz() != null && assignment.getUidQuiz().toString().trim().length() > 0) {
                     mQuizModel.fetchQuizfromUid(assignment.getUidQuiz()).subscribe(new Consumer<Quiz>() {

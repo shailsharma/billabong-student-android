@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -102,7 +101,6 @@ import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -134,24 +132,18 @@ public class CreatePostActivity extends AppCompatActivity {
     private final static int IMAGE_CAPTURE = 105;
     public static final String THUMB_FILE_PATH = File.separator + "tempLNImage" + File.separator + "tempImage";
     public static final String THUMB_FILE_DIRECTORY = File.separator + "tempLNImage";
-    private Disposable mSubscription;
-    private ScrollView mPostScrollView;
-    private Spinner mPostTypeSpinner, mPostToGroupSpinner;
+    private Spinner mPostTypeSpinner;
     private EditText mPostEditText;
     private LinearLayout mDiscussionLayout;
     private RecyclerView mResourceRecyclerView;
     private View mViewFocus;
-    private ArrayList<Group> mGroupsList = new ArrayList<>();
     private ArrayList<String> mAttachPathList = new ArrayList<>();
     private ArrayList<Uri> mAttachUriList = new ArrayList<>();
     private PopupWindow popupMenu;
-    private int mSelectedGroupIndex;
     private String mGroupId;
-    private String mLearningNetworkFolder, strFileName;
+    private String mLearningNetworkFolder;
     private ResourceGridAdapter mResourceGridAdapter;
-    private ProgressDialog progressDialog;
-    private Uri cameraOutputUri;
-    private static String GROUP_ID = "group_object_id";
+    private static final String GROUP_ID = "group_object_id";
     private MenuItem mAttachMenuItem;
     private Toolbar mToolbar;
     private TextView mGroupNameTextView;
@@ -308,9 +300,9 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        mPostScrollView = (ScrollView) findViewById(R.id.scrollview_post);
+        ScrollView postScrollView = (ScrollView) findViewById(R.id.scrollview_post);
         mPostTypeSpinner = (Spinner) findViewById(R.id.spinner_category);
-        mPostToGroupSpinner = (Spinner) findViewById(R.id.spinner_group);
+        Spinner postToGroupSpinner = (Spinner) findViewById(R.id.spinner_group);
         mPostEditText = (EditText) findViewById(R.id.editText_write_post);
         mDiscussionLayout = (LinearLayout) findViewById(R.id.layout_discussion);
         mResourceRecyclerView = (RecyclerView) findViewById(R.id.recyclerViewResource);
@@ -1071,13 +1063,6 @@ public class CreatePostActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        if (mSubscription != null) mSubscription.dispose();
-    }
-
     private class ResourceGridAdapter extends RecyclerView.Adapter<ResourceGridAdapter.ViewHolder> {
 
         private Context mContext;
@@ -1140,14 +1125,12 @@ public class CreatePostActivity extends AppCompatActivity {
                 }
             });
 
-            holder.mResourceImageView.setOnClickListener(new View.OnClickListener()
-
-            {
+            holder.mResourceImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     String mimeType = URLConnection.guessContentTypeFromName(mAttachPathList.get(position));
                     if (mimeType.contains("image")) {
-                        FullScreenImage.setUpFullImageView(CreatePostActivity.this, position, true, true,FullScreenImage.getResourceArrayList(mAttachPathList));
+                        FullScreenImage.setUpFullImageView(CreatePostActivity.this, position, true, true, FullScreenImage.getResourceArrayList(mAttachPathList));
                     } else if (mimeType.contains("video")) {
                         Resource item = new Resource();
                         item.setType("video");

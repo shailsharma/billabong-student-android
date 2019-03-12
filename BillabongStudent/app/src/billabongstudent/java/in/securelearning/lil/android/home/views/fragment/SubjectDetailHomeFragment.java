@@ -31,17 +31,13 @@ import in.securelearning.lil.android.app.databinding.LayoutPracticeListItemBindi
 import in.securelearning.lil.android.app.databinding.LayoutSubjectDetailsHomeFragmentBinding;
 import in.securelearning.lil.android.app.databinding.LayoutVideoListItemBinding;
 import in.securelearning.lil.android.base.customchrometabutils.CustomChromeTabHelper;
-import in.securelearning.lil.android.base.dataobjects.DigitalBook;
-import in.securelearning.lil.android.base.dataobjects.InteractiveVideo;
 import in.securelearning.lil.android.base.dataobjects.MetaInformation;
 import in.securelearning.lil.android.base.dataobjects.MicroLearningCourse;
 import in.securelearning.lil.android.base.dataobjects.Thumbnail;
-import in.securelearning.lil.android.base.dataobjects.VideoCourse;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
-import in.securelearning.lil.android.base.views.activity.WebPlayerLiveActivity;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.events.FetchSubjectDetailEvent;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
@@ -231,14 +227,15 @@ public class SubjectDetailHomeFragment extends Fragment {
     /*To fetch practice if subject is maths then from mind spark
      * else from LIL*/
     private void checkSubject(String topicId) {
-        if (mSubjectName.contains("Math")) {
-            fetchMindSparkData(mThirdPartyTopicId, topicId);
-        } else if (mSubjectName.contains("Eng")) {
-            displayLightSailCard();
-            fetchApplyList(topicId);
-        } else {
-            fetchPracticeList(topicId);
-        }
+//        if (mSubjectName.contains("Math")) {
+//            fetchMindSparkData(mThirdPartyTopicId, topicId);
+//        } else if (mSubjectName.contains("Eng")) {
+//            displayLightSailCard();
+//            fetchApplyList(topicId);
+//        } else {
+//            fetchPracticeList(topicId);
+//        }
+        fetchPracticeList(topicId);
     }
 
     /*Check whether thirdPartyTopicId null or empty*/
@@ -472,12 +469,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                         if (finalObjectClass.equals(MicroLearningCourse.class)) {
                             mContext.startActivity(RapidLearningSectionListActivity.getStartIntent(mContext, course.getId()));
                         } else {
-                            if (finalObjectClass.equals(DigitalBook.class) || finalObjectClass.equals(VideoCourse.class) || finalObjectClass.equals(InteractiveVideo.class)) {
-                                WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
-                            } else {
-                                WebPlayerLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false, false);
-                            }
-
+                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
 
                         }
                     } else {
@@ -551,11 +543,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                         if (finalObjectClass.equals(MicroLearningCourse.class)) {
                             mContext.startActivity(RapidLearningSectionListActivity.getStartIntent(mContext, course.getId()));
                         } else {
-                            if (finalObjectClass.equals(DigitalBook.class) || finalObjectClass.equals(VideoCourse.class) || finalObjectClass.equals(InteractiveVideo.class)) {
-                                WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
-                            } else {
-                                WebPlayerLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false, false);
-                            }
+                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
 
                         }
                     } else {
@@ -840,11 +828,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                         if (finalObjectClass.equals(MicroLearningCourse.class)) {
                             mContext.startActivity(RapidLearningSectionListActivity.getStartIntent(mContext, course.getId()));
                         } else {
-                            if (finalObjectClass.equals(DigitalBook.class) || finalObjectClass.equals(VideoCourse.class) || finalObjectClass.equals(InteractiveVideo.class)) {
-                                WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
-                            } else {
-                                WebPlayerLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false, false);
-                            }
+                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
 
                         }
                     } else {
