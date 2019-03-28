@@ -59,10 +59,10 @@ import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
 import in.securelearning.lil.android.base.views.activity.WebPlayerLiveActivity;
 import in.securelearning.lil.android.base.widget.CustomImageButton;
+import in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity;
 import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
 import in.securelearning.lil.android.home.views.activity.PlayVimeoFullScreenActivity;
 import in.securelearning.lil.android.home.views.activity.PlayYouTubeFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.player.microlearning.InjectorPlayer;
 import in.securelearning.lil.android.player.microlearning.events.SpeakCompletedEvent;
 import in.securelearning.lil.android.player.microlearning.model.PlayerModel;
@@ -645,7 +645,7 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
                 //startActivity(PracticePlayerActivity.getStartIntentForQuizOnline(RapidLearningCardsActivity.this, media.getObjectId()));
 
                 if (GeneralUtils.isNetworkAvailable(getContext())) {
-                    WebPlayerLiveActivity.startWebPlayer(getContext(), media.getObjectId(), "", "", Quiz.class, "", false,false);
+                    WebPlayerLiveActivity.startWebPlayer(getContext(), media.getObjectId(), "", "", Quiz.class, "", false, false);
                 } else {
                     ToastUtils.showToastAlert(getContext(), getString(R.string.connect_internet));
                 }
@@ -696,7 +696,7 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
 
         private void playImage(CourseCardMedia media) {
             if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-                UserProfileActivity.showFullImage(media.getUrlMain(), RapidLearningCardsActivity.this);
+                startActivity(PlayFullScreenImageActivity.getStartIntent(getBaseContext(), media.getUrlMain(), true));
                 mCompletedItems.add(media.getObjectId());
                 mBinding.cardStackView.getTopView().setDraggable(true);
             } else {

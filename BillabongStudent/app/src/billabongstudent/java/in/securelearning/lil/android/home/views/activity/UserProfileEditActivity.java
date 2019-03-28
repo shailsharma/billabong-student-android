@@ -264,8 +264,9 @@ public class UserProfileEditActivity extends AppCompatActivity {
         mBinding.imageViewUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCanFullView) {
-                    UserProfileActivity.showFullImage(mUserProfilePath, UserProfileEditActivity.this);
+                if (mCanFullView && !TextUtils.isEmpty(mUserProfilePath)) {
+                    PlayFullScreenImageActivity.getStartIntent(getBaseContext(), mUserProfilePath, true);
+
                 }
             }
         });

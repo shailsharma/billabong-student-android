@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.github.mikephil.charting.components.AxisBase;
@@ -149,6 +148,7 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
             totalReadTime += effortChartData.get(i).getTotalReadTimeSpent();
             totalVideoTime += effortChartData.get(i).getTotalVideoTimeSpent();
             totalPracticeTime += effortChartData.get(i).getTotalPracticeTimeSpent();
+
         }
         /*Total time spent*/
         String formattedTotalTimeSpent = mAnalyticsModel.convertSecondToHourMinuteSecond((long) totalTimeSpent);
