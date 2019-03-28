@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.assignments.views.fragment;
 
+import android.annotation.SuppressLint;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,8 +36,10 @@ import in.securelearning.lil.android.base.dataobjects.AssignmentResponse;
 import in.securelearning.lil.android.base.dataobjects.AssignmentStudent;
 import in.securelearning.lil.android.base.dataobjects.FilterList;
 import in.securelearning.lil.android.base.rxbus.RxBus;
+import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.home.dataobjects.Category;
+import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
 import in.securelearning.lil.android.home.views.widget.PeriodDetailPopUp;
 import in.securelearning.lil.android.quizpreview.events.AssignmentSubmittedEvent;
 import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
@@ -148,6 +151,7 @@ public class AssignmentStudentFragment extends Fragment {
 
     private void listenRxEvent() {
         mSubscription = mRxBus.toFlowable().observeOn(Schedulers.computation()).subscribe(new Consumer<Object>() {
+            @SuppressLint("CheckResult")
             @Override
             public void accept(Object event) throws Exception {
                 if (event instanceof AssignmentSubmittedEvent || (event instanceof ObjectDownloadComplete && ((ObjectDownloadComplete) event).getObjectClass().equals(AssignmentResponse.class))) {
@@ -169,6 +173,11 @@ public class AssignmentStudentFragment extends Fragment {
                                 }
                             });
 
+                }else if (event instanceof AnimateFragmentEvent) {
+                    int id = ((AnimateFragmentEvent) event).getId();
+                    if (id == R.id.nav_assignments) {
+                        AnimationUtils.fadeInFast(getContext(), mBinding.viewPager);
+                    }
                 }
             }
         });

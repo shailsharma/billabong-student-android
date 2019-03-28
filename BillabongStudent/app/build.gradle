@@ -86,7 +86,7 @@ android {
             dimension "normal"
             buildConfigField 'boolean', 'IS_ASSIGNMENT_ENABLED', 'true'
             buildConfigField 'boolean', 'IS_LEARNING_NETWORK_ENABLED', 'true'
-            buildConfigField 'boolean', 'IS_LEARNING_MAP_ENABLED', 'true'
+            buildConfigField 'boolean', 'IS_LEARNING_MAP_ENABLED', 'false'
             buildConfigField 'boolean', 'IS_CLASS_PERFORMANCE_ENABLED', 'false'
             buildConfigField 'boolean', 'IS_CALENDAR_ENABLED', 'false'
             buildConfigField 'boolean', 'IS_PERIOD_ENABLED', 'false'
@@ -99,9 +99,9 @@ android {
             minSdkVersion 21
             applicationIdSuffix ".billabongstudent"
             targetSdkVersion 27
-            versionCode 1
+            versionCode 6
             versionName "01"
-            versionNameSuffix '.001'
+            versionNameSuffix '.006'
             signingConfig signingConfigs.billabongstudentrelease
             buildConfigField "String", "ASSOCIATION_ID", '"5900dad38c04da1a00996c16"'
             buildConfigField 'String', 'LEGACY_SERVER_KEY_FROM_FCM', '"key=AIzaSyCyhijgwzH1Eiqqi_g1P-GVX9uvK3IuwTY"'
@@ -160,7 +160,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.google.android:flexbox:0.3.0'
 
-    implementation 'com.github.PhilJay:MPAndroidChart:v2.2.4+'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
     implementation 'petrov.kristiyan:colorpicker-library:1.1.4'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
@@ -169,6 +169,7 @@ dependencies {
     implementation 'com.github.yalantis:ucrop:2.2.1'
     implementation 'com.afollestad:material-camera:0.4.4'
     implementation 'org.sufficientlysecure:html-textview:3.6'
+    implementation 'com.github.chuross:expandable-layout:1.0.5'
 
     testImplementation 'junit:junit:4.12'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.14.1'

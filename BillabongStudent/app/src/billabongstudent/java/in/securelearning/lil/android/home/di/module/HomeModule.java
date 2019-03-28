@@ -2,6 +2,7 @@ package in.securelearning.lil.android.home.di.module;
 
 import dagger.Module;
 import dagger.Provides;
+import in.securelearning.lil.android.analytics.model.AnalyticsModel;
 import in.securelearning.lil.android.assignments.model.AssignmentResponseStudentModel;
 import in.securelearning.lil.android.assignments.model.AssignmentTeacherModel;
 import in.securelearning.lil.android.base.di.scope.ActivityScope;
@@ -114,5 +115,11 @@ public class HomeModule {
     @ActivityScope
     public FlavorHomeModel flavorHomeModel() {
         return new FlavorHomeModel();
+    }
+
+    @Provides
+    @ActivityScope
+    public AnalyticsModel analyticsModel() {
+        return new AnalyticsModel();
     }
 }

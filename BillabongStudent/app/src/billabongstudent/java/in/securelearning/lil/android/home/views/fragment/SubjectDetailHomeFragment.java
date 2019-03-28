@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -231,14 +232,15 @@ public class SubjectDetailHomeFragment extends Fragment {
     /*To fetch practice if subject is maths then from mind spark
      * else from LIL*/
     private void checkSubject(String topicId) {
-        if (mSubjectName.contains("Math")) {
-            fetchMindSparkData(mThirdPartyTopicId, topicId);
-        } else if (mSubjectName.contains("Eng")) {
-            displayLightSailCard();
-            fetchApplyList(topicId);
-        } else {
-            fetchPracticeList(topicId);
-        }
+//        if (mSubjectName.contains("Math")) {
+//            fetchMindSparkData(mThirdPartyTopicId, topicId);
+//        } else if (mSubjectName.contains("Eng")) {
+//            displayLightSailCard();
+//            fetchApplyList(topicId);
+//        } else {
+//            fetchPracticeList(topicId);
+//        }
+        fetchPracticeList(topicId);
     }
 
     /*Check whether thirdPartyTopicId null or empty*/
@@ -460,6 +462,7 @@ public class SubjectDetailHomeFragment extends Fragment {
             final AboutCourseMinimal course = mList.get(position);
 
             setThumbnail(course.getThumbnail(), holder.mBinding.imageViewBackground);
+            setRewardPoint(course.getTotalMarks(), holder.mBinding.layoutReward, holder.mBinding.textViewRewardPoints);
 
             holder.mBinding.textViewTitle.setText(course.getTitle());
             holder.mBinding.textViewType.setText(mFlavorHomeModel.getCourseType(course));
@@ -472,12 +475,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                         if (finalObjectClass.equals(MicroLearningCourse.class)) {
                             mContext.startActivity(RapidLearningSectionListActivity.getStartIntent(mContext, course.getId()));
                         } else {
-                            if (finalObjectClass.equals(DigitalBook.class) || finalObjectClass.equals(VideoCourse.class) || finalObjectClass.equals(InteractiveVideo.class)) {
-                                WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
-                            } else {
-                                WebPlayerLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false, false);
-                            }
-
+                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
 
                         }
                     } else {
@@ -501,6 +499,15 @@ public class SubjectDetailHomeFragment extends Fragment {
                 Picasso.with(mContext).load(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
             }
 
+        }
+
+        private void setRewardPoint(int totalMarks, LinearLayoutCompat layoutReward, AppCompatTextView textViewRewardPoints) {
+            if (totalMarks > 0) {
+                layoutReward.setVisibility(View.VISIBLE);
+                textViewRewardPoints.setText(String.valueOf(totalMarks));
+            } else {
+                layoutReward.setVisibility(View.GONE);
+            }
         }
 
         @Override
@@ -539,6 +546,7 @@ public class SubjectDetailHomeFragment extends Fragment {
             final AboutCourseMinimal course = mList.get(position);
 
             setThumbnail(course.getThumbnail(), holder.mBinding.imageViewBackground);
+            setRewardPoint(course.getTotalMarks(), holder.mBinding.layoutReward, holder.mBinding.textViewRewardPoints);
 
             holder.mBinding.textViewTitle.setText(course.getTitle());
             holder.mBinding.textViewType.setText(mFlavorHomeModel.getCourseType(course));
@@ -551,11 +559,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                         if (finalObjectClass.equals(MicroLearningCourse.class)) {
                             mContext.startActivity(RapidLearningSectionListActivity.getStartIntent(mContext, course.getId()));
                         } else {
-                            if (finalObjectClass.equals(DigitalBook.class) || finalObjectClass.equals(VideoCourse.class) || finalObjectClass.equals(InteractiveVideo.class)) {
-                                WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
-                            } else {
-                                WebPlayerLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false, false);
-                            }
+                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
 
                         }
                     } else {
@@ -579,6 +583,15 @@ public class SubjectDetailHomeFragment extends Fragment {
                 Picasso.with(mContext).load(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
             }
 
+        }
+
+        private void setRewardPoint(int totalMarks, LinearLayoutCompat layoutReward, AppCompatTextView textViewRewardPoints) {
+            if (totalMarks > 0) {
+                layoutReward.setVisibility(View.VISIBLE);
+                textViewRewardPoints.setText(String.valueOf(totalMarks));
+            } else {
+                layoutReward.setVisibility(View.GONE);
+            }
         }
 
         @Override
@@ -819,7 +832,7 @@ public class SubjectDetailHomeFragment extends Fragment {
         @NonNull
         @Override
         public ApplyAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutMicroCourseListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_micro_course_list_item, parent, false);
+            LayoutVideoListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_video_list_item, parent, false);
             return new ApplyAdapter.ViewHolder(binding);
         }
 
@@ -828,9 +841,10 @@ public class SubjectDetailHomeFragment extends Fragment {
             final AboutCourseMinimal course = mList.get(position);
 
             setThumbnail(course.getThumbnail(), holder.mBinding.imageViewBackground);
+            setRewardPoint(course.getTotalMarks(), holder.mBinding.layoutReward, holder.mBinding.textViewRewardPoints);
 
             holder.mBinding.textViewTitle.setText(course.getTitle());
-            // holder.mBinding.textViewType.setText(mFlavorHomeModel.getCourseType(course));
+            holder.mBinding.textViewType.setText(mFlavorHomeModel.getCourseType(course));
 
             final Class finalObjectClass = mFlavorHomeModel.getCourseClass(course);
             holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
@@ -870,6 +884,15 @@ public class SubjectDetailHomeFragment extends Fragment {
 
         }
 
+        private void setRewardPoint(int totalMarks, LinearLayoutCompat layoutReward, AppCompatTextView textViewRewardPoints) {
+            if (totalMarks > 0) {
+                layoutReward.setVisibility(View.VISIBLE);
+                textViewRewardPoints.setText(String.valueOf(totalMarks));
+            } else {
+                layoutReward.setVisibility(View.GONE);
+            }
+        }
+
         @Override
         public int getItemCount() {
             return mList.size();
@@ -883,13 +906,14 @@ public class SubjectDetailHomeFragment extends Fragment {
         }*/
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            LayoutMicroCourseListItemBinding mBinding;
+            LayoutVideoListItemBinding mBinding;
 
-            public ViewHolder(LayoutMicroCourseListItemBinding binding) {
+            public ViewHolder(LayoutVideoListItemBinding binding) {
                 super(binding.getRoot());
                 mBinding = binding;
             }
         }
     }
+
 
 }

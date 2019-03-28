@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:id="@+id/layoutContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_16dp"
+                android:orientation="vertical">
+
+
+                <!--rewards-->
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorWhite"
+                    android:elevation="@dimen/elevation_2dp"
+                    android:orientation="vertical">
+
+
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:id="@+id/layoutRewardHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:elevation="@dimen/elevation_2dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/padding_16dp"
+                        android:paddingTop="@dimen/padding_12dp"
+                        android:paddingEnd="@dimen/padding_16dp"
+                        android:paddingBottom="@dimen/padding_12dp"
+                        android:foreground="?selectableItemBackground">
+
+                        <!--Icon big-->
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            app:srcCompat="@drawable/icon_rewards"/>
+
+                        <!--Divider-->
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/margin_16dp"
+                            android:layout_marginEnd="@dimen/margin_16dp"
+                            android:background="@color/itemDivider"/>
+
+                        <!--Total rewards-->
+                        <android.support.v7.widget.LinearLayoutCompat
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/labelTotalRewards"
+                                android:textColor="@android:color/black"/>
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewTotalRewards"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_4dp"
+                                android:textColor="@color/colorPrimary"
+                                android:textStyle="bold"
+                                tools:text="3350"/>
+
+                        </android.support.v7.widget.LinearLayoutCompat>
+
+                        <!--down arrow with tint-->
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/imageViewRewardsIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/padding_4dp"
+                            android:tint="@color/colorPrimary"
+                            app:srcCompat="@drawable/chevron_right_white"/>
+
+                    </android.support.v7.widget.LinearLayoutCompat>
+
+                    <com.github.chuross.library.ExpandableLayout
+                        android:id="@+id/layoutRewardsChild"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:exl_expanded="false">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerViewRewards"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:overScrollMode="never"
+                            tools:listitem="@layout/layout_my_achievement_item"/>
+
+                    </com.github.chuross.library.ExpandableLayout>
+
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <!--trophies-->
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:background="@color/colorWhite"
+                    android:elevation="@dimen/elevation_2dp"
+                    android:orientation="vertical">
+
+
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:id="@+id/layoutTrophiesHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:elevation="@dimen/elevation_2dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/padding_16dp"
+                        android:paddingTop="@dimen/padding_12dp"
+                        android:paddingEnd="@dimen/padding_16dp"
+                        android:paddingBottom="@dimen/padding_12dp"
+                        android:foreground="?selectableItemBackground">
+
+                        <!--Icon big-->
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            app:srcCompat="@drawable/icon_trophies"/>
+
+                        <!--Divider-->
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/margin_16dp"
+                            android:layout_marginEnd="@dimen/margin_16dp"
+                            android:background="@color/itemDivider"/>
+
+                        <!--Total rewards-->
+                        <android.support.v7.widget.LinearLayoutCompat
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/total_trophies"
+                                android:textColor="@android:color/black"/>
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewTotalTrophies"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_4dp"
+                                android:textColor="@color/colorPrimary"
+                                android:textStyle="bold"
+                                tools:text="4"/>
+
+                        </android.support.v7.widget.LinearLayoutCompat>
+
+                        <!--down arrow with tint-->
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/imageViewTrophiesIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/padding_4dp"
+                            android:tint="@color/colorPrimary"
+                            app:srcCompat="@drawable/chevron_right_white"/>
+
+                    </android.support.v7.widget.LinearLayoutCompat>
+
+
+                    <com.github.chuross.library.ExpandableLayout
+                        android:id="@+id/layoutTrophiesChild"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:exl_expanded="false">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerViewTrophies"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:overScrollMode="never"
+                            />
+
+                    </com.github.chuross.library.ExpandableLayout>
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <!--badges-->
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:layout_marginBottom="@dimen/margin_4dp"
+                    android:background="@color/colorWhite"
+                    android:elevation="@dimen/elevation_2dp"
+                    android:orientation="vertical">
+
+
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:id="@+id/layoutBadgesHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:elevation="@dimen/elevation_2dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/padding_16dp"
+                        android:paddingTop="@dimen/padding_12dp"
+                        android:paddingEnd="@dimen/padding_16dp"
+                        android:paddingBottom="@dimen/padding_12dp"
+                        android:foreground="?selectableItemBackground">
+
+                        <!--Icon big-->
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            app:srcCompat="@drawable/icon_badges"/>
+
+                        <!--Divider-->
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/margin_16dp"
+                            android:layout_marginEnd="@dimen/margin_16dp"
+                            android:background="@color/itemDivider"/>
+
+                        <!--Total rewards-->
+                        <android.support.v7.widget.LinearLayoutCompat
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/total_badges"
+                                android:textColor="@android:color/black"/>
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewTotalBadges"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_4dp"
+                                android:textColor="@color/colorPrimary"
+                                android:textStyle="bold"
+                                tools:text="4"/>
+
+                        </android.support.v7.widget.LinearLayoutCompat>
+
+                        <!--down arrow with tint-->
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/imageViewBadgesIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/padding_4dp"
+                            android:tint="@android:color/holo_blue_dark"
+                            app:srcCompat="@drawable/chevron_right_white"/>
+
+                    </android.support.v7.widget.LinearLayoutCompat>
+
+
+                    <com.github.chuross.library.ExpandableLayout
+                        android:id="@+id/layoutBadgesChild"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:exl_expanded="false">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerViewBadges"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:overScrollMode="never"
+                            />
+                    </com.github.chuross.library.ExpandableLayout>
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+        </ScrollView>
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:id="@+id/layoutError"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_16dp"
+                android:gravity="center_horizontal"
+                android:text="@string/error_something_went_wrong"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+        </android.support.v7.widget.LinearLayoutCompat>
+    </android.support.v7.widget.LinearLayoutCompat>
+</layout>

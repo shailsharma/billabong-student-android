@@ -63,7 +63,7 @@
                 android:layout_marginTop="@dimen/margin_4dp"
                 android:layout_marginEnd="@dimen/margin_8dp"
                 android:layout_marginBottom="@dimen/margin_4dp"
-                android:background="@drawable/circle_solid_blue"/>
+                android:background="@drawable/circle_solid_primary"/>
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textViewRewardPoints"

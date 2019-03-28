@@ -21,7 +21,6 @@ import java.io.Serializable;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutYoutubePlayerBinding;
 import in.securelearning.lil.android.base.dataobjects.FavouriteResource;
-import in.securelearning.lil.android.base.views.activity.ConnectivityCheckActivity;
 import in.securelearning.lil.android.resources.utils.DeveloperKey;
 
 /**
@@ -54,7 +53,7 @@ public class PlayYouTubeFullScreenActivity extends AppCompatActivity implements 
     }
 
     protected void handleIntent() {
-      //  super.handleIntent(getStartIntent());
+        //  super.handleIntent(getStartIntent());
         Serializable serializable = getIntent().getExtras().getSerializable("resource");
         if (serializable != null) {
             VideoFragment videoFragment = (VideoFragment) getFragmentManager().findFragmentById(R.id.video_fragment_container);
@@ -74,7 +73,7 @@ public class PlayYouTubeFullScreenActivity extends AppCompatActivity implements 
     public static Intent getStartIntent(Context context, FavouriteResource favouriteResourceData, boolean isConnectivityCheck) {
         Intent intent = new Intent(context, PlayYouTubeFullScreenActivity.class);
         intent.putExtra("resource", favouriteResourceData);
-      //  intent.putExtra(CONNECTIVITY_CHECK, isConnectivityCheck);
+        //  intent.putExtra(CONNECTIVITY_CHECK, isConnectivityCheck);
         return intent;
     }
 
@@ -144,11 +143,12 @@ public class PlayYouTubeFullScreenActivity extends AppCompatActivity implements 
         @Override
         public void onInitializationSuccess(Provider provider, final YouTubePlayer player, boolean restored) {
             this.player = player;
-            player.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION);
-            player.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE);
+//            player.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION);
+//            player.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE);
             player.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
             player.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_SYSTEM_UI);
             player.setOnFullscreenListener((PlayYouTubeFullScreenActivity) getActivity());
+            player.setShowFullscreenButton(false);
             if (!restored && videoId != null && !(TextUtils.isEmpty(videoId))) {
                 try {
                     player.loadVideo(videoId);
@@ -166,7 +166,7 @@ public class PlayYouTubeFullScreenActivity extends AppCompatActivity implements 
 
                 @Override
                 public void onLoaded(String videoId) {
-                    if (!TextUtils.isEmpty(videoId) && player != null) {
+                    if (!TextUtils.isEmpty(videoId)) {
                         try {
                             player.play(); //auto play
                         } catch (Exception e) {

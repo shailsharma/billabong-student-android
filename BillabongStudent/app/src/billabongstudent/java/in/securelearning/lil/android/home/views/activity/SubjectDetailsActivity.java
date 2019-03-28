@@ -66,7 +66,7 @@ public class SubjectDetailsActivity extends AppCompatActivity {
     private final static String SUBJECT_ID = "subjectId";
     private String mSubjectId;
     private String mTopicId;
-    private String mThirdPartyTopicId;
+    private String mThirdPartyTopicId = "";
     private String mSubjectName;
     private String mGroupId;
     private Disposable mDisposable;
@@ -118,9 +118,9 @@ public class SubjectDetailsActivity extends AppCompatActivity {
                             setTopicContent(lessonPlanChapter);
                             mBinding.viewPager.setCurrentItem(0, true);
 
-                            if (mSubjectName.contains("Math")) {
-                                fetchThirdPartyMapping(mSubjectId, topicId);
-                            }
+//                            if (mSubjectName.contains("Math")) {
+//                                fetchThirdPartyMapping(mSubjectId, topicId);
+//                            }
 
                         }
                     }, new Consumer<Throwable>() {
@@ -162,11 +162,12 @@ public class SubjectDetailsActivity extends AppCompatActivity {
                             setSubjectContent(lessonPlanSubjectDetails.getSubject());
                             setTopicContent(lessonPlanSubjectDetails.getTopic());
                             checkGroupExistence(lessonPlanSubjectDetails.getGroup());
-                            if (mSubjectName.contains("Math")) {
-                                fetchThirdPartyMapping(lessonPlanSubjectDetails.getSubject().getId(), lessonPlanSubjectDetails.getTopic().getId());
-                            } else {
-                                setUpViewPager();
-                            }
+//                            if (mSubjectName.contains("Math")) {
+//                                fetchThirdPartyMapping(lessonPlanSubjectDetails.getSubject().getId(), lessonPlanSubjectDetails.getTopic().getId());
+//                            } else {
+//                                setUpViewPager();
+//                            }
+                            setUpViewPager();
 
 
                         }
@@ -361,7 +362,6 @@ public class SubjectDetailsActivity extends AppCompatActivity {
         mBinding.viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), tabTitles));
         mBinding.tabLayout.setupWithViewPager(mBinding.viewPager);
         mBinding.tabLayout.setSelectedTabIndicatorHeight(0);
-        mBinding.tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         for (int i = 0; i < mBinding.tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = mBinding.tabLayout.getTabAt(i);

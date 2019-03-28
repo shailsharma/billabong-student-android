@@ -629,11 +629,8 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
 
             final Class finalObjectClass = objectClass;
             if (GeneralUtils.isNetworkAvailable(getContext())) {
-                if (finalObjectClass.equals(VideoCourse.class) || finalObjectClass.equals(InteractiveVideo.class)) {
-                    WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), media.getObjectId(), "", "", finalObjectClass, "", false);
-                } else {
-                    WebPlayerLiveActivity.startWebPlayer(getContext(), media.getObjectId(), "", "", finalObjectClass, "", false, false);
-                }
+                WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), media.getObjectId(), "", "", finalObjectClass, "", false);
+
                 setCompletedItems(media.getObjectId());
                 mBinding.cardStackView.getTopView().setDraggable(true);
             } else {
@@ -648,7 +645,7 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
                 //startActivity(PracticePlayerActivity.getStartIntentForQuizOnline(RapidLearningCardsActivity.this, media.getObjectId()));
 
                 if (GeneralUtils.isNetworkAvailable(getContext())) {
-                    WebPlayerLiveActivity.startWebPlayer(getContext(), media.getObjectId(), "", "", Quiz.class, "", false, false);
+                    WebPlayerLiveActivity.startWebPlayer(getContext(), media.getObjectId(), "", "", Quiz.class, "", false,false);
                 } else {
                     ToastUtils.showToastAlert(getContext(), getString(R.string.connect_internet));
                 }

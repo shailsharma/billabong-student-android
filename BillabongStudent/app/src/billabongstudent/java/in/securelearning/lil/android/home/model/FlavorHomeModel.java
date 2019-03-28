@@ -54,6 +54,7 @@ import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkQuestionRe
 import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkQuestionSubmit;
 import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkTopicListRequest;
 import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkTopicResult;
+import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
 import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.model.FlavorNetworkModel;
@@ -689,6 +690,38 @@ public class FlavorHomeModel {
         }
         return new String(valueDecoded);
     }
+    /*To fetch student's achievements*/
+    public Observable<StudentAchievement> fetchStudentAchievements() {
+        return Observable.create(new ObservableOnSubscribe<StudentAchievement>() {
+            @Override
+            public void subscribe(ObservableEmitter<StudentAchievement> e) throws Exception {
+                Call<StudentAchievement> call = mFlavorNetworkModel.fetchStudentAchievements();
+                Response<StudentAchievement> response = call.execute();
 
+                if (response != null && response.isSuccessful()) {
+                    Log.e("LRPAResult", "Successful");
+                    e.onNext(response.body());
+                } else if (response.code() == 404) {
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                } else if (response.code() == 401 && SyncServiceHelper.refreshToken(mContext)) {
+                    Response<StudentAchievement> response2 = call.clone().execute();
+                    if (response2 != null && response2.isSuccessful()) {
+                        Log.e("LRPAResult", "Successful");
+                        e.onNext(response.body());
+                    } else if (response2.code() == 401) {
+                        mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
+                    } else if (response2.code() == 404) {
+                    } else {
+                        Log.e("LRPAResult", "Failed");
+                        throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                    }
+                } else {
+                    Log.e("LRPAResult", "Failed");
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                }
+                e.onComplete();
 
+            }
+        });
+    }
 }

@@ -34,6 +34,7 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.analytics.activity.StudentAnalyticsActivity;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutDashboardFragmentBinding;
 import in.securelearning.lil.android.app.databinding.LayoutDashboardStudentSubjectItemBinding;
@@ -44,9 +45,11 @@ import in.securelearning.lil.android.base.dataobjects.AssignmentStudent;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
+import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
+import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
 import in.securelearning.lil.android.home.utils.RecyclerViewPagerIndicator;
@@ -233,6 +236,13 @@ public class DashboardFragment extends Fragment {
 //                } else {
 //                    mListener.onDashboardFragmentInteraction(AssignmentStudentFragment.class);
 //                }
+            }
+        });
+
+        mBinding.buttonAnalyticsView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(StudentAnalyticsActivity.getStartIntent(getContext()));
             }
         });
 
@@ -463,6 +473,12 @@ public class DashboardFragment extends Fragment {
                     getAssignmentCounts();
                 } else if (event instanceof AssignmentSubmittedEvent) {
                     getAssignmentCounts();
+                } else if (event instanceof AnimateFragmentEvent) {
+                    int id = ((AnimateFragmentEvent) event).getId();
+                    if (id == R.id.nav_dashboard) {
+                        AnimationUtils.fadeInFast(getContext(), mBinding.scrollView);
+                        AnimationUtils.fadeIn(getContext(), mBinding.layoutToolbar);
+                    }
                 }
                 if (event instanceof ObjectDownloadComplete && ((ObjectDownloadComplete) event).getObjectClass().equals(UserProfile.class)) {
                     Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {

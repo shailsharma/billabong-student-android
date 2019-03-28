@@ -72,6 +72,11 @@ import in.securelearning.lil.android.syncadapter.dataobject.SearchResults;
 import in.securelearning.lil.android.syncadapter.dataobject.ServerDataPackage;
 import in.securelearning.lil.android.syncadapter.dataobject.StudentGradeMapping;
 import in.securelearning.lil.android.syncadapter.dataobject.TeacherGradeMapping;
+import in.securelearning.lil.android.syncadapter.dataobjects.CoverageChartData;
+import in.securelearning.lil.android.syncadapter.dataobjects.ChartDataRequest;
+import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataParent;
+import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataRequest;
+import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataWeekly;
 import in.securelearning.lil.android.syncadapter.dataobjects.LRPAPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.LRPAResult;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterPost;
@@ -86,6 +91,8 @@ import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkQuestionRe
 import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkQuestionSubmit;
 import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkTopicListRequest;
 import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkTopicResult;
+import in.securelearning.lil.android.syncadapter.dataobjects.PerformanceChartData;
+import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfile;
 import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
 import in.securelearning.lil.android.syncadapter.fcmservices.Message;
@@ -1161,6 +1168,47 @@ public class FlavorNetworkModel extends BaseModel {
     /*To fetch third party meta information*/
     public Call<ThirdPartyMapping> fetchThirdPartyMapping(ThirdPartyMapping thirdPartyMapping) {
         return mDownloadApiInterface.fetchThirdPartyMapping(thirdPartyMapping);
+
+    }
+
+    /*To fetch coverage data for particular subject*/
+    public Call<java.util.ArrayList<CoverageChartData>> fetchSubjectWiseCoverageData(ChartDataRequest chartDataRequest) {
+        return mDownloadApiInterface.fetchSubjectWiseCoverageData(chartDataRequest);
+    }
+
+    /*To fetch coverage data for all subjects*/
+    public Call<java.util.ArrayList<CoverageChartData>> fetchAllSubjectCoverageData(ChartDataRequest chartDataRequest) {
+        return mDownloadApiInterface.fetchAllSubjectCoverageData();
+    }
+
+    /*To fetch performance data for particular subject*/
+    public Call<java.util.ArrayList<PerformanceChartData>> fetchSubjectWisePerformanceData(ChartDataRequest chartDataRequest) {
+        return mDownloadApiInterface.fetchSubjectWisePerformanceData(chartDataRequest);
+    }
+
+    /*To fetch performance data for all subjects*/
+    public Call<java.util.ArrayList<PerformanceChartData>> fetchAllSubjectPerformanceData(ChartDataRequest chartDataRequest) {
+        return mDownloadApiInterface.fetchAllSubjectPerformanceData();
+    }
+
+    /*To fetch effort (time spent) data for all subjects*/
+    public Call<EffortChartDataParent> fetchEffortData(EffortChartDataRequest effortChartDataRequest) {
+        return mDownloadApiInterface.fetchEffortData(effortChartDataRequest);
+    }
+
+    /*To fetch effort (time spent) data for individual subject*/
+    public Call<EffortChartDataParent> fetchSubjectWiseEffortData(EffortChartDataRequest effortChartDataRequest) {
+        return mDownloadApiInterface.fetchSubjectWiseEffortData(effortChartDataRequest);
+    }
+
+    /*To fetch effort (time spent) weekly data for individual subject*/
+    public Call<java.util.ArrayList<EffortChartDataWeekly>> fetchWeeklyEffortData(EffortChartDataRequest effortChartDataRequest) {
+        return mDownloadApiInterface.fetchWeeklyEffortData(effortChartDataRequest);
+    }
+
+    /*To fetch student's achievements*/
+    public Call<StudentAchievement> fetchStudentAchievements() {
+        return mDownloadApiInterface.fetchStudentAchievements();
 
     }
 }

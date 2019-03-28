@@ -335,7 +335,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }, 800);
     }
 
-    @SuppressLint("CheckResult")
     private void unSubscribeFCM() {
         if (GeneralUtils.isNetworkAvailable(LoginActivity.this)) {
             Observable.create(new ObservableOnSubscribe<Object>() {

@@ -34,6 +34,7 @@ public class CourseService extends IntentService {
     AppUserModel mAppUserModel;
     @Inject
     SyncServiceModel mSyncServiceModel;
+
     public CourseService() {
         super("CourseService");
     }
@@ -89,8 +90,8 @@ public class CourseService extends IntentService {
     }
 
     private void handleActionSync() {
-        if (GeneralUtils.isNetworkAvailable(CourseService.this))
-            startSync();
+//        if (GeneralUtils.isNetworkAvailable(CourseService.this))
+//            startSync();
     }
 
     public void startSync() {

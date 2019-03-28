@@ -202,6 +202,16 @@
     <string name="messageGettingNextQuestion">Getting Next Question</string>
     <string name="messageMSEndTopic">Congratulations your practice on this topic submitted.\nPlease Go Back and try practice for another topic.</string>
     <string name="messageMSNoMCQ">No MCQ type questions available for this topic.\nPlease Go Back and try practice for another topic.</string>
+    <string name="total_trophies">Total Trophies</string>
+    <string name="total_badges">Total Badges</string>
+    <string name="progress_coverage">Progress (Coverage)</string>
+    <string name="time_spent_efforts">Time Spent (Efforts)</string>
+    <string name="performance_assessment_in">Performance (Assessment in %)</string>
+    <string name="daily_efforts_min">Daily Efforts (min)</string>
+    <string name="total_hrs">Total (hrs)</string>
+    <string name="reading">Reading</string>
+    <string name="min">(min)</string>
+    <string name="progress">Progress</string>
 
     <string-array name="array_subject_detail_tab_no_post">
         <item>@string/label_home</item>
@@ -221,9 +231,12 @@
     <item name="attemptResult" type="id"/>
     <item name="response" type="id"/>
     <item name="selectedChoiceIndex" type="id"/>
+    <item name="coverageSubjectId" type="id"/>
+    <item name="coverageSubjectName" type="id"/>
 
-    <string-array name="array_user_profile_tab">
-        <item>@string/label_perosnal</item>
+    <string-array name="array_student_profile_tab">
+        <item>@string/label_achievement</item>
+        <item>@string/label_personal</item>
         <item>@string/label_parent</item>
     </string-array>
 </resources>
