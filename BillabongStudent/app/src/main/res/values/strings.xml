@@ -852,12 +852,13 @@
     <string name="messageTestAlreadyPerformed">Test already performed</string>
     <string name="labelAvailableTraining">Available Training</string>
     <string name="labelAnalysis">Analysis</string>
+    <string name="labelAnalytics">Analytics</string>
     <string name="label_home">Home</string>
     <string name="filter_homework">Filter Homework</string>
     <string name="submitted_homework">Submitted Homework</string>
 
-    <string name="label_achivement">My Achievements</string>
-    <string name="label_perosnal">Personal</string>
+    <string name="label_achievement">My Achievements</string>
+    <string name="label_personal">Personal</string>
     <string name="label_parent">Parent</string>
     <string name="question">Question</string>
     <string name="questionTypeMCQ">MCQ</string>

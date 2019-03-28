@@ -40,9 +40,9 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.app.databinding.LayoutFullImageBinding;
 import in.securelearning.lil.android.app.databinding.LayoutProfileTeacherClassesItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutUserProfileActivityBinding;
-import in.securelearning.lil.android.app.databinding.LayoutUserProfileFullImageBinding;
 import in.securelearning.lil.android.base.dataobjects.Board;
 import in.securelearning.lil.android.base.dataobjects.CuratorMapping;
 import in.securelearning.lil.android.base.dataobjects.Grade;
@@ -770,7 +770,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     public static void showFullImage(String userProfilePath, Context context) {
         final Dialog dialog = new Dialog(context);
-        final LayoutUserProfileFullImageBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.layout_user_profile_full_image, null, false);
+        final LayoutFullImageBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.layout_full_image, null, false);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(binding.getRoot());
         dialog.setCancelable(true);
@@ -1029,7 +1029,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     String title = curatorMapping.getGrade().getName() + " " + curatorMapping.getSection().getName() + " " + curatorMapping.getSubject().getName();
-                    startActivity(ClassDetailsActivity.getStartIntent(UserProfileActivity.this, curatorMapping.getSubject().getId(), curatorMapping.getSubject().getSubjectIds(), "", "", curatorMapping.getGrade().getId(), curatorMapping.getSection().getId(), DateUtils.getCurrentISO8601DateString(), false, curatorMapping.getSubject().getName(), title));
+                    //startActivity(ClassDetailsActivity.getStartIntent(UserProfileActivity.this, curatorMapping.getSubject().getId(), curatorMapping.getSubject().getSubjectIds(), "", "", curatorMapping.getGrade().getId(), curatorMapping.getSection().getId(), DateUtils.getCurrentISO8601DateString(), false, curatorMapping.getSubject().getName(), title));
                 }
             });
         }

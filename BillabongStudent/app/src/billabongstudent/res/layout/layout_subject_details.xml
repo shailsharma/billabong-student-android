@@ -53,18 +53,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:orientation="vertical"
                     android:layout_marginLeft="@dimen/margin_8dp"
                     android:layout_marginRight="@dimen/margin_8dp"
+                    android:orientation="vertical"
                     >
 
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/textViewTopic"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
                         android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
                         android:textColor="@color/colorWhite"
-                        android:gravity="center_horizontal"
                         tools:text="Health and Wealth Health and Wealth Health and Wealth "/>
 
                     <android.support.v7.widget.AppCompatTextView
@@ -112,6 +112,8 @@
                     android:minHeight="?actionBarSize"
                     app:tabIndicatorHeight="0dp"
                     app:tabMode="scrollable"
+                    app:tabPaddingEnd="@dimen/padding_8dp"
+                    app:tabPaddingStart="@dimen/padding_8dp"
                     app:tabSelectedTextColor="@android:color/white"
                     app:tabTextColor="@android:color/white"
                     />

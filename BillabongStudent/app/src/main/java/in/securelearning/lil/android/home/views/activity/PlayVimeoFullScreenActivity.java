@@ -39,7 +39,7 @@ public class PlayVimeoFullScreenActivity extends CordovaActivity {
 
             if (!TextUtils.isEmpty(url)) {
                 String[] urlId = url.split("/");
-                if (urlId != null && urlId.length > 0) {
+                if (urlId.length > 0) {
                     String id = url.replace("https://vimeo.com/", "");
                     loadUrl("file:///android_asset/vimeoIndex.html?id=" + id);
                     return;

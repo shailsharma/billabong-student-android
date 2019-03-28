@@ -30,8 +30,10 @@ import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
+import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.home.dataobjects.TimeUtils;
+import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
 import in.securelearning.lil.android.learningnetwork.InjectorLearningNetwork;
 import in.securelearning.lil.android.learningnetwork.events.LoadNewPostCreatedEvent;
@@ -170,6 +172,12 @@ public class LearningNetworkGroupListFragment extends Fragment {
                                     mGroupAdapter.updateCount(alias);
                                 }
                             });
+                } else if (event instanceof AnimateFragmentEvent) {
+                    int id = ((AnimateFragmentEvent) event).getId();
+                    if (id == R.id.nav_learning_network) {
+                        AnimationUtils.fadeInFast(getContext(), mBinding.layoutNoResult);
+                        AnimationUtils.fadeInFast(getContext(), mBinding.recyclerView);
+                    }
                 }
 
             }

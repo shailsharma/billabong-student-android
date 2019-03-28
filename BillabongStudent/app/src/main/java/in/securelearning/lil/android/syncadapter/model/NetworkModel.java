@@ -492,6 +492,15 @@ public class NetworkModel extends BaseModel {
         return mSearchApiInterface.getPopUp(objectId);
     }
 
+    public Call<ResponseBody> getActivityChecklistJson(String id) {
+        return mDownloadApiInterface.getActivityChecklistJson(id);
+
+    }
+
+    public Call<ResponseBody> savePopupActivity(RequestBody requestBody) {
+        return mDirectUploadApiInterface.savePopupActivity(requestBody);
+    }
+
     public Call<ResponseBody> fetchYoutubeVideoDuration(String objectId) {
         return mDownloadApiInterface.getYoutubeVideoDuration(objectId);
     }

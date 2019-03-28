@@ -236,11 +236,8 @@ public class ClassDetailsFragments extends Fragment {
                     return PostListFragment.newInstance(columnCount, mGroupId, false);
 
                 case 5:
-                    if (isTeacher) {
-                        return TeacherMapFragmentForClassDetails.newInstance(columnCount, subjectId, subjects, topicId, gradeId, sectionId, date);
-                    } else {
-                        return LearningMapFragmentForClassDetails.newInstance(columnCount, subjectId, subjects, subjectName, topicId, gradeId, sectionId, date);
-                    }
+                    return PostListFragment.newInstance(columnCount, mGroupId, false);
+
 //                case 6:
 //
 //                    return CurriculumProgressFragmentForClassDetail.newInstance(columnCount, subjectId, subjects, subjectName, topicId, gradeId, sectionId, date);

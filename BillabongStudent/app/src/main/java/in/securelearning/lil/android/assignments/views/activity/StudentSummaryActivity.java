@@ -32,6 +32,8 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -831,25 +833,25 @@ public class StudentSummaryActivity extends AppCompatActivity {
         float b = status[1];
         float c = status[2];
         float d = j;
-        ArrayList<Entry> yvalues = new ArrayList<>();
-        yvalues.add(new Entry(a, 0));
-        yvalues.add(new Entry(b, 1));
-        yvalues.add(new Entry(c, 2));
-        yvalues.add(new Entry(d, 3));
-        PieDataSet dataSet = new PieDataSet(yvalues, "");
-        dataSet.setColors(colors);
+        ArrayList<PieEntry> yvalues = new ArrayList<>();
+        yvalues.add(new PieEntry(a, 0));
+        yvalues.add(new PieEntry(b, 1));
+        yvalues.add(new PieEntry(c, 2));
+        yvalues.add(new PieEntry(d, 3));
+        IPieDataSet dataSet = new PieDataSet(yvalues, "");
+        ((PieDataSet) dataSet).setColors(colors);
         dataSet.setValueTextSize(0f);
         ArrayList<String> xVals = new ArrayList<>();
         xVals.add("");
         xVals.add("");
         xVals.add("");
         xVals.add("");
-        PieData data = new PieData(xVals, dataSet);
+        PieData data = new PieData(dataSet);
         mAssignmentChart.setData(data);
         mAssignmentChart.setHoleRadius(90f);
         mAssignmentChart.setDrawHoleEnabled(true);
         mAssignmentChart.setUsePercentValues(false);
-        mAssignmentChart.setDescription("");
+        mAssignmentChart.getDescription().setEnabled(false);
         mAssignmentChart.setDrawCenterText(true);
         mAssignmentChart.setCenterTextColor(colors[0]);
         float progress = i * 100 / (i + j);
@@ -926,7 +928,7 @@ public class StudentSummaryActivity extends AppCompatActivity {
             if (status == 0) {
                 strMarksPerQuestion = strMaxMarkQuestion;
             } else if (status == 1
-                    ) {
+            ) {
                 strMarksPerQuestion = "0";
             }
             mTotal.add(Double.parseDouble(strMarksPerQuestion));

@@ -96,16 +96,18 @@
                             android:visibility="gone"/>
 
                         <android.support.v7.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
                             android:layout_gravity="end|center_vertical"
-                            android:src="@drawable/app_logo_light"
-                            android:cropToPadding="true"/>
+                            android:layout_marginEnd="@dimen/margin_8dp"
+                            android:cropToPadding="true"
+                            android:src="@drawable/app_logo_light"/>
                     </FrameLayout>
 
                 </LinearLayout>
 
                 <android.support.v4.widget.NestedScrollView
+                    android:id="@+id/scrollView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/layoutToolbar"
@@ -153,13 +155,32 @@
                             android:layout_marginRight="@dimen/margin_16dp"
                             android:orientation="vertical">
 
-                            <android.support.v7.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
+                            <android.support.v7.widget.LinearLayoutCompat
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/label_subjects"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                                android:textColor="@color/colorRyanBlack"
-                                android:textStyle="bold"/>
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="@string/label_subjects"
+                                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                                    android:textColor="@color/colorRyanBlack"
+                                    android:textStyle="bold"/>
+
+
+                                <in.securelearning.lil.android.base.widget.CustomImageButton
+                                    android:id="@+id/buttonAnalyticsView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:padding="@dimen/padding_8dp"
+                                    android:src="@drawable/icon_dashboard_subject"
+                                    android:visibility="visible"/>
+
+                            </android.support.v7.widget.LinearLayoutCompat>
 
 
                             <android.support.v7.widget.AppCompatTextView

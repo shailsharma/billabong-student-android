@@ -63,7 +63,6 @@ import in.securelearning.lil.android.app.databinding.LayoutNavigationDrawerBindi
 import in.securelearning.lil.android.assignments.views.activity.AssignmentCompletedStudentActivity;
 import in.securelearning.lil.android.assignments.views.activity.AssignmentCompletedTeacherActivity;
 import in.securelearning.lil.android.assignments.views.activity.QuizNewActivity;
-import in.securelearning.lil.android.assignments.views.activity.TeacherAnalysisForStudentActivity;
 import in.securelearning.lil.android.assignments.views.fragment.AssignmentFragmentTeacher;
 import in.securelearning.lil.android.assignments.views.fragment.AssignmentStudentFragment;
 import in.securelearning.lil.android.assignments.views.fragment.AssignmentTeacherFragment;
@@ -85,13 +84,13 @@ import in.securelearning.lil.android.courses.views.fragment.CourseFavouritesFrag
 import in.securelearning.lil.android.courses.views.fragment.CourseFragmentNew;
 import in.securelearning.lil.android.courses.views.fragment.DemoCourseFragment;
 import in.securelearning.lil.android.home.InjectorHome;
+import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
 import in.securelearning.lil.android.home.interfaces.Filterable;
 import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
 import in.securelearning.lil.android.home.views.fragment.ClassPlannerActivity;
 import in.securelearning.lil.android.home.views.fragment.DashboardFragment;
 import in.securelearning.lil.android.home.views.fragment.FilterFragment;
-import in.securelearning.lil.android.home.views.fragment.LearningMapFinalFragment;
 import in.securelearning.lil.android.home.views.fragment.ResourceFragment;
 import in.securelearning.lil.android.learningnetwork.views.fragment.BulletinFragment;
 import in.securelearning.lil.android.learningnetwork.views.fragment.LearningNetworkGroupListFragment;
@@ -168,7 +167,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     private CourseFragmentNew mFragmentCourse;
     private BlogFragment mFragmentBlog;
     private LearningNetworkGroupListFragment mFragmentLearningNetwork;
-    private LearningMapFinalFragment mFragmentLM;
     private BulletinFragment mFragmentBulletin;
     private NotificationFragment mNotificationFragment;
     private DashboardFragment mFragmentDashboard;
@@ -317,11 +315,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             if (PermissionPrefsCommon.getTrainingJoinPermission(getBaseContext())) {
                 startActivity(TrainingsActivity.getStartIntent(NavigationDrawerActivity.this));
             }
-        } else if (getIntent().getAction() != null && getIntent().getAction().equals(ShortcutUtil.ACTION_SHORTCUT_LEARNING_MAP)) {
-            if (PermissionPrefsCommon.getNavigationLearningMapPermission(getBaseContext())) {
-                startActivity(LearningMapNewActivity.getStartIntent(NavigationDrawerActivity.this));
-            }
         }
+
     }
 
     /**
@@ -728,6 +723,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 params.setScrollFlags(0);
                 FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
                 fragmentTransaction = hideFragment(fragmentTransaction, mCurrentFragmentId);
+                if (mCurrentFragmentId != id) {
+                    mRxBus.send(new AnimateFragmentEvent(R.id.nav_dashboard));
+                }
                 if (mFragmentDashboard != null) {
                     fragmentTransaction.show(mFragmentDashboard)
                             .commit();
@@ -769,12 +767,16 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 mBinding.appBar.toolbar.setVisibility(View.VISIBLE);
                 mFilterList = buildFilter(FILTER_TYPE_ASSIGNMENT);
                 setTitle(item.getTitle());
-                //getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorAssignmentPrimary));
-                //mToolbar.setBackgroundColor(ContextCompat.getColor(NavigationDrawerActivity.this, R.color.colorAssignmentPrimary));
+
                 mAppBarLayout.setElevation(0);
 
                 FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
                 fragmentTransaction = hideFragment(fragmentTransaction, mCurrentFragmentId);
+
+                if (mCurrentFragmentId != id) {
+                    mRxBus.send(new AnimateFragmentEvent(R.id.nav_assignments));
+
+                }
 
                 if (PermissionPrefsCommon.getAssignmentCreatePermission(getBaseContext())) {
                     if (mFragmentAssignmentTeacher != null) {
@@ -839,13 +841,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 doneVisibility(false);
                 setTitle(item.getTitle());
                 mBinding.appBar.toolbar.setVisibility(View.VISIBLE);
-                //getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryLN));
-                //mToolbar.setBackgroundColor(ContextCompat.getColor(NavigationDrawerActivity.this, R.color.colorPrimaryLN));
+
                 mAppBarLayout.setElevation(10);
                 params.setScrollFlags(0);
 
                 FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
                 fragmentTransaction = hideFragment(fragmentTransaction, mCurrentFragmentId);
+                if (mCurrentFragmentId != id) {
+                    mRxBus.send(new AnimateFragmentEvent(R.id.nav_learning_network));
+                }
                 if (mFragmentLearningNetwork != null) {
                     fragmentTransaction.show(mFragmentLearningNetwork)
                             .commit();
@@ -879,31 +883,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             break;
             case R.id.nav_user_profile: {
                 if (!TextUtils.isEmpty(mLoggedInUserId)) {
-                    startActivity(StudentUserProfileActivity.getStartIntent(mLoggedInUserId, NavigationDrawerActivity.this));
+                    startActivity(StudentProfileActivity.getStartIntent(mLoggedInUserId, NavigationDrawerActivity.this));
                 }
             }
             break;
-            case R.id.nav_learning_map: {
-//                mCurrentFragmentId = id;
-//                searchVisibility(false);
-//                filterVisibility(false);
-//                browseVisibility(false);
-//                bookmarkVisibility(false);
-//                setTitle(item.getTitle());
-//                getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-//                mToolbar.setBackgroundColor(ContextCompat.getColor(NavigationDrawerActivity.this, R.color.colorPrimary));
-//                mAppBarLayout.setElevation(10);
-//                params.setScrollFlags(0);
-//                if (mFragmentLM == null) {
-//                    mFragmentLM = new LearningMapFinalFragment();
-//                }
-//                final FragmentManager fragmentManager = getSupportFragmentManager();
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.container_main, mFragmentLM);
-//                fragmentTransaction.commit();
-                startActivity(LearningMapNewActivity.getStartIntent(NavigationDrawerActivity.this));
-            }
-            break;
+
             case R.id.nav_tracking: {
                 if (PermissionPrefsCommon.getAssignmentCreatePermission(getBaseContext())) {
                     Intent mIntent = new Intent(NavigationDrawerActivity.this, TrackingActivityForTeacher.class);
@@ -914,12 +898,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 }
             }
             break;
-            case R.id.nav_teacher_map: {
-                if (PermissionPrefsCommon.getAssignmentCreatePermission(getBaseContext())) {
-                    startActivity(TeacherAnalysisForStudentActivity.getStartIntent(NavigationDrawerActivity.this));
-                }
-            }
-            break;
+
 //            case R.id.nav_notification: {
 //                searchVisibility(false);
 //                filterVisibility(false);
@@ -954,7 +933,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }
 
 
-        mDrawerLayout.closeDrawer(Gravity.LEFT);
+        mDrawerLayout.closeDrawer(Gravity.START);
         return true;
     }
 
@@ -1111,7 +1090,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             @Override
             public void onClick(View view) {
                 if (!TextUtils.isEmpty(mLoggedInUserId)) {
-                    startActivity(StudentUserProfileActivity.getStartIntent(mLoggedInUserId, NavigationDrawerActivity.this));
+                    startActivity(StudentProfileActivity.getStartIntent(mLoggedInUserId, NavigationDrawerActivity.this));
                 }
 
             }
@@ -1387,9 +1366,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             mBinding.appBar.navContent.bottomNavigation.getMenu().findItem(R.id.nav_assignments).setChecked(true);
 
 
-        } else if (aClass.equals(LearningMapFinalFragment.class)) {
-            mBinding.appBar.navContent.bottomNavigation.getMenu().performIdentifierAction(R.id.nav_learning_map, Menu.FLAG_PERFORM_NO_CLOSE);
-            mBinding.appBar.navContent.bottomNavigation.getMenu().findItem(R.id.nav_learning_map).setChecked(true);
         } else if (aClass.equals(NavigationDrawerActivity.class)) {
             mDrawerLayout.openDrawer(Gravity.LEFT);
         }

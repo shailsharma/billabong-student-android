@@ -362,7 +362,6 @@ public class SubjectDetailsActivity extends AppCompatActivity {
         mBinding.viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), tabTitles));
         mBinding.tabLayout.setupWithViewPager(mBinding.viewPager);
         mBinding.tabLayout.setSelectedTabIndicatorHeight(0);
-        mBinding.tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         for (int i = 0; i < mBinding.tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = mBinding.tabLayout.getTabAt(i);

@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.assignments.views.fragment;
 
+import android.annotation.SuppressLint;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,9 +36,11 @@ import in.securelearning.lil.android.base.dataobjects.AssignmentMinimal;
 import in.securelearning.lil.android.base.dataobjects.FilterList;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
+import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.widget.TextViewCustom;
 import in.securelearning.lil.android.home.dataobjects.Category;
+import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
 import in.securelearning.lil.android.home.views.widget.PeriodDetailPopUp;
 import in.securelearning.lil.android.learningnetwork.events.EventNewAssignmentCreated;
 import io.reactivex.Completable;
@@ -154,6 +157,7 @@ public class AssignmentTeacherFragment extends Fragment {
 
     private void listenRxEvent() {
         mSubscription = mRxBus.toFlowable().observeOn(Schedulers.computation()).subscribe(new Consumer<Object>() {
+            @SuppressLint("CheckResult")
             @Override
             public void accept(Object event) throws Exception {
                 if (event instanceof AllStudentSubmittedEvent || event instanceof EventNewAssignmentCreated) {
@@ -175,6 +179,11 @@ public class AssignmentTeacherFragment extends Fragment {
                                 }
                             });
 
+                } else if (event instanceof AnimateFragmentEvent) {
+                    int id = ((AnimateFragmentEvent) event).getId();
+                    if (id == R.id.nav_assignments) {
+                        AnimationUtils.fadeInFast(getContext(), mBinding.viewPager);
+                    }
                 }
             }
         });

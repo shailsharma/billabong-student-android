@@ -19,6 +19,15 @@ public class IdNameObject implements Serializable {
     @Expose
     private String mName;
 
+    public IdNameObject(String id) {
+        mId = id;
+    }
+
+    public IdNameObject(String id, String name) {
+        mId = id;
+        mName = name;
+    }
+
     public String getId() {
         return mId;
     }

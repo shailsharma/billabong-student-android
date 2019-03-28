@@ -209,7 +209,8 @@ public class TrainingDetailsFragment extends Fragment {
             } else if (mTabTitles[position].equals(getString(R.string.labelGroup))) {
                 return PostListFragment.newInstance(mColumnCount, mTrainingGroupId, false, mColor);
             } else if (mTabTitles[position].equals(getString(R.string.labelPerformance))) {
-                return TraineePerformanceFragment.newInstance(mTrainingId);
+                return PostListFragment.newInstance(mColumnCount, mTrainingGroupId, false, mColor);
+
             } else {
                 return null;
             }

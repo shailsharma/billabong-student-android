@@ -219,8 +219,8 @@ public class CalendarPeriodListActivity extends AppCompatActivity {
                             title = gradeName + " " + sectionName + " " + subjectName;
                         }
 
-                        Intent i = ClassDetailsActivity.getStartIntent(getBaseContext(), subjectId, period.getSubjectIds(), topicName, topicId, gradeId, sectionId, period.getStartTime(), false, subjectName, title);
-                        startActivity(i);
+//                        Intent i = ClassDetailsActivity.getStartIntent(getBaseContext(), subjectId, period.getSubjectIds(), topicName, topicId, gradeId, sectionId, period.getStartTime(), false, subjectName, title);
+//                        startActivity(i);
 
                     }
                 });

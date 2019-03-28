@@ -39,6 +39,10 @@ public class AboutCourseMinimal implements Serializable {
     @Expose
     private MetaInformation mMetaInformation;
 
+    @SerializedName("totalMarks")
+    @Expose
+    private int mTotalMarks;
+
     private boolean mIsSelected;
 
     public String getId() {
@@ -108,5 +112,13 @@ public class AboutCourseMinimal implements Serializable {
 
     public void setMetaInformation(MetaInformation metaInformation) {
         mMetaInformation = metaInformation;
+    }
+
+    public int getTotalMarks() {
+        return mTotalMarks;
+    }
+
+    public void setTotalMarks(int totalMarks) {
+        mTotalMarks = totalMarks;
     }
 }

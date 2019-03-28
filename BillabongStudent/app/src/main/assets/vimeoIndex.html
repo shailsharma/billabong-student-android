@@ -43,14 +43,16 @@ img {
 
 
 
+
     </style>
 </head>
-<body onresize="onResize()" style="margin:0px;">
-<div style="min-height: 100%;">
+<!--onresize="onResize()"-->
+<body style="margin:0px;">
+<div style="height: auto; max-height: 100vh; width: 100vw; max-width: 100vw;">
     <div
             id="mydiv"
             data-vimeo-autoplay="true"
-            data-vimeo-title="false"></div>
+            data-vimeo-title="false" data-vimeo-responsive="true"></div>
 
     <div id="titleParent" class="card">
         <div class="container">
@@ -86,7 +88,7 @@ img {
     let grade = params.get("grade");
     let color = "#"+params.get("color");
     document.getElementById("mydiv").setAttribute("data-vimeo-url", "https://vimeo.com/"+id);
-    document.getElementById("mydiv").setAttribute("data-vimeo-width", window.innerWidth);
+    //document.getElementById("mydiv").setAttribute("data-vimeo-width", window.innerWidth);
     if(ll){
         document.getElementById("ll").innerHTML= ll;
         document.getElementById("ll").style.color= color;
@@ -113,7 +115,7 @@ img {
     }
     else{
         document.getElementById("titleParent").remove();
-        document.getElementById("mydiv").setAttribute("data-vimeo-height", window.innerHeight);
+        //document.getElementById("mydiv").setAttribute("data-vimeo-height", window.innerHeight);
 
 
     }
@@ -161,6 +163,7 @@ function onResize(){
         }
     }
 }
+
 
 
 

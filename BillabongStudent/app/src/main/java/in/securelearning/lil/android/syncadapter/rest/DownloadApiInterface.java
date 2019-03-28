@@ -56,6 +56,11 @@ import in.securelearning.lil.android.syncadapter.dataobject.RolePermissions;
 import in.securelearning.lil.android.syncadapter.dataobject.SearchPeriodicEventsParams;
 import in.securelearning.lil.android.syncadapter.dataobject.SearchPeriodsResults;
 import in.securelearning.lil.android.syncadapter.dataobject.ServerDataPackage;
+import in.securelearning.lil.android.syncadapter.dataobjects.ChartDataRequest;
+import in.securelearning.lil.android.syncadapter.dataobjects.CoverageChartData;
+import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataParent;
+import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataRequest;
+import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataWeekly;
 import in.securelearning.lil.android.syncadapter.dataobjects.LRPAPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.LRPAResult;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterPost;
@@ -63,6 +68,8 @@ import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterRe
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectDetails;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectResult;
+import in.securelearning.lil.android.syncadapter.dataobjects.PerformanceChartData;
+import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfile;
 import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
 import okhttp3.ResponseBody;
@@ -172,6 +179,9 @@ public interface DownloadApiInterface {
 
     @GET("PopUps/{objectId}")
     Call<ResponseBody> getPopUps(@Path("objectId") String objectId);
+
+    @GET("popupactivities/getPopupActivity/{objectId}")
+    Call<ResponseBody> getActivityChecklistJson(@Path("objectId") String objectId);
 
     @GET("LILGoogleAPIs/fetchVideoDuration/{objectId}")
     Call<ResponseBody> getYoutubeVideoDuration(@Path("objectId") String objectId);
@@ -442,4 +452,37 @@ public interface DownloadApiInterface {
     /*Api to fetch third party meta information*/
     @POST("TPCurriculumMappings/fetchTPCurriculumMapping")
     Call<ThirdPartyMapping> fetchThirdPartyMapping(@Body ThirdPartyMapping thirdPartyMapping);
+
+    /*Api to fetch coverage data for particular subject*/
+    @POST("users/getCoverage")
+    Call<java.util.ArrayList<CoverageChartData>> fetchSubjectWiseCoverageData(@Body ChartDataRequest chartDataRequest);
+
+    /*Api to fetch coverage data for all subjects*/
+    @POST("users/getCoverage")
+    Call<java.util.ArrayList<CoverageChartData>> fetchAllSubjectCoverageData();
+
+    /*Api to fetch performance data for particular subject*/
+    @POST("users/getPerformance")
+    Call<java.util.ArrayList<PerformanceChartData>> fetchSubjectWisePerformanceData(@Body ChartDataRequest chartDataRequest);
+
+    /*Api to fetch performance data for all subjects*/
+    @POST("users/getPerformance")
+    Call<java.util.ArrayList<PerformanceChartData>> fetchAllSubjectPerformanceData();
+
+    /*Api to fetch effort (time spent) data for all subjects*/
+    @POST("userlogs/getUserSubjectsTimeSpent")
+    Call<EffortChartDataParent> fetchEffortData(@Body EffortChartDataRequest effortChartDataRequest);
+
+    /*Api to fetch effort (time spent) data for individual subject*/
+    @POST("userlogs/getUserTopicTimeSpent")
+    Call<EffortChartDataParent> fetchSubjectWiseEffortData(@Body EffortChartDataRequest effortChartDataRequest);
+
+    /*Api to fetch effort (time spent) weekly data for individual subject*/
+    @POST("userlogs/getUserDailyTimeSpentWeekly")
+    Call<java.util.ArrayList<EffortChartDataWeekly>> fetchWeeklyEffortData(@Body EffortChartDataRequest effortChartDataRequest);
+
+
+    /*Api to fetch student's achievements*/
+    @GET("UserScores/detail")
+    Call<StudentAchievement> fetchStudentAchievements();
 }
