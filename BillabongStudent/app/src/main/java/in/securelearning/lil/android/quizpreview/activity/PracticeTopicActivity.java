@@ -58,8 +58,8 @@ import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.model.HomeModel;
+import in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity;
 import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
 import in.securelearning.lil.android.quizpreview.InjectorQuizPreview;
 import in.securelearning.lil.android.quizpreview.model.QuestionResponseModelApp;
@@ -972,9 +972,8 @@ public class PracticeTopicActivity extends AppCompatActivity {
         String mimeType = URLConnection.guessContentTypeFromName(resourcePath);
         if (mimeType != null) {
             if (mimeType.contains("image")) {
-//                ArrayList<String> pathArrayList = new ArrayList<>();
-//                pathArrayList.add("file://" + resourcePath);
-                UserProfileActivity.showFullImage(resourcePath, PracticeTopicActivity.this);
+                startActivity(PlayFullScreenImageActivity.getStartIntent(getBaseContext(), resourcePath, true));
+
 
             } else if (mimeType.contains("video")) {
                 Resource item = new Resource();

@@ -100,8 +100,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private LayoutUserProfileActivityBinding mBinding;
     private List<String> mEarnBadges = new java.util.ArrayList<>();
     public static String USER_ID = "userId";
-    private String userProfilePath = "";
-    boolean canFullView = false;
+
     @Inject
     RxBus mRxBus;
     @Inject
@@ -735,7 +734,8 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void setUserThumbnail(UserProfile userProfile) {
-
+        String userProfilePath = null;
+        boolean canFullView = false;
         if (userProfile.getThumbnail() != null && !TextUtils.isEmpty(userProfile.getThumbnail().getLocalUrl())) {
             Picasso.with(getBaseContext()).load(userProfile.getThumbnail().getLocalUrl()).transform(new CircleTransform()).resize(300, 300).centerCrop().into(mBinding.imageViewUserPic);
             canFullView = true;
@@ -758,11 +758,14 @@ public class UserProfileActivity extends AppCompatActivity {
 
         }
 
+        final boolean finalCanFullView = canFullView;
+        final String finalUserProfilePath = userProfilePath;
         mBinding.imageViewUserPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (canFullView) {
-                    showFullImage(userProfilePath, UserProfileActivity.this);
+                if (finalCanFullView && !TextUtils.isEmpty(finalUserProfilePath)) {
+                    startActivity(PlayFullScreenImageActivity.getStartIntent(getBaseContext(), finalUserProfilePath, true));
+
                 }
             }
         });

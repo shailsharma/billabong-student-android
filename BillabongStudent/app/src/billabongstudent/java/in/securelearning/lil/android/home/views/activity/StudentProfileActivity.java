@@ -74,7 +74,6 @@ public class StudentProfileActivity extends AppCompatActivity {
     RxBus mRxBus;
     private boolean isFromLoggedInUser = false;
     private String mUserObjectId = null;
-    boolean canFullView = false;
     private StudentProfile mUserProfile = new StudentProfile();
     private StudentAchievement mStudentAchievement;
 
@@ -343,14 +342,19 @@ public class StudentProfileActivity extends AppCompatActivity {
 
 
     private void setUserThumbnail(UserProfile userProfile) {
-
+        String imageUrl = null;
+        boolean canFullView = false;
         if (userProfile.getThumbnail() != null && !TextUtils.isEmpty(userProfile.getThumbnail().getLocalUrl())) {
+            imageUrl = userProfile.getThumbnail().getLocalUrl();
             Picasso.with(getBaseContext()).load(userProfile.getThumbnail().getLocalUrl()).transform(new CircleTransform()).resize(300, 300).centerCrop().into(mBinding.imageViewProfile);
             canFullView = true;
         } else if (userProfile.getThumbnail() != null && !TextUtils.isEmpty(userProfile.getThumbnail().getUrl())) {
+            imageUrl = userProfile.getThumbnail().getUrl();
+
             Picasso.with(getBaseContext()).load(userProfile.getThumbnail().getUrl()).transform(new CircleTransform()).resize(300, 300).centerCrop().into(mBinding.imageViewProfile);
             canFullView = true;
         } else if (userProfile.getThumbnail() != null && !TextUtils.isEmpty(userProfile.getThumbnail().getThumb())) {
+            imageUrl = userProfile.getThumbnail().getThumb();
             Picasso.with(getBaseContext()).load(userProfile.getThumbnail().getThumb()).transform(new CircleTransform()).resize(300, 300).centerCrop().into(mBinding.imageViewProfile);
             canFullView = true;
         } else {
@@ -362,6 +366,16 @@ public class StudentProfileActivity extends AppCompatActivity {
             }
 
         }
+        final boolean finalCanFullView = canFullView;
+        final String finalImageUrl = imageUrl;
+        mBinding.imageViewProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (finalCanFullView && !TextUtils.isEmpty(finalImageUrl)) {
+                    startActivity(PlayFullScreenImageActivity.getStartIntent(getBaseContext(), finalImageUrl, true));
+                }
+            }
+        });
     }
 
     private void setUpViewPager() {

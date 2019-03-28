@@ -210,7 +210,7 @@ public class WebPlayerLiveModel implements WebPlayerLiveModelInterface {
                 e.printStackTrace();
             }
         } else if (type.equalsIgnoreCase(mContext.getString(R.string.typeImage))) {
-            mContext.startActivity(PlayFullScreenImageActivity.getStartIntent(mContext, url));
+            mContext.startActivity(PlayFullScreenImageActivity.getStartIntent(mContext, url, false));
         } else if (type.equalsIgnoreCase(mContext.getString(R.string.typeVideo))) {
             Resource item = new Resource();
             item.setType(mContext.getString(R.string.typeVideo));

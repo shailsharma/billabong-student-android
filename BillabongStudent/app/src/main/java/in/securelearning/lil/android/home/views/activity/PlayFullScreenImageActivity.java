@@ -20,6 +20,7 @@ import in.securelearning.lil.android.app.databinding.LayoutFullImageBinding;
 
 public class PlayFullScreenImageActivity extends AppCompatActivity {
 
+    private static final String SHOULD_SHOW_STATUS_BAR = "shouldShowStatusBar";
     LayoutFullImageBinding mBinding;
     public static final String URL = "url";
 
@@ -33,8 +34,7 @@ public class PlayFullScreenImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_full_image);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
         handleIntent();
         setTitle("");
         mBinding.buttonClose.setOnClickListener(new View.OnClickListener() {
@@ -48,6 +48,10 @@ public class PlayFullScreenImageActivity extends AppCompatActivity {
     private void handleIntent() {
         if (getIntent() != null) {
             String url = getIntent().getStringExtra(URL);
+            boolean shouldShowStatusBar = getIntent().getBooleanExtra(SHOULD_SHOW_STATUS_BAR, false);
+
+            shouldShowStatusBar(shouldShowStatusBar);
+
             if (!TextUtils.isEmpty(url)) {
                 Picasso.with(getBaseContext()).load(url).placeholder(R.drawable.image_placeholder).into(mBinding.imageViewUserImage);
             } else {
@@ -60,9 +64,22 @@ public class PlayFullScreenImageActivity extends AppCompatActivity {
         }
     }
 
-    public static Intent getStartIntent(Context context, String url) {
+    private void shouldShowStatusBar(boolean shouldShowStatusBar) {
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        if (shouldShowStatusBar) {
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
+            decorView.setSystemUiVisibility(uiOptions);
+        } else {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+    }
+
+    public static Intent getStartIntent(Context context, String url, boolean shouldShowStatusBar) {
         Intent intent = new Intent(context, PlayFullScreenImageActivity.class);
         intent.putExtra(URL, url);
+        intent.putExtra(SHOULD_SHOW_STATUS_BAR, shouldShowStatusBar);
         return intent;
     }
 
