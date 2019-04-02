@@ -233,28 +233,7 @@ public class AnalyticsModel {
                     Log.e("PerformanceChartData", "Failed");
                     throw new Exception(mContext.getString(R.string.messageUnableToGetData));
                 }
-//                ArrayList<PerformanceChartData> performanceChartData = new ArrayList<>();
-//                PerformanceChartData performanceChartData1 = new PerformanceChartData();
-//                performanceChartData1.setPerformance(27);
-//                performanceChartData1.setName("Maths");
-//
-//                PerformanceChartData performanceChartData2 = new PerformanceChartData();
-//                performanceChartData2.setPerformance(55);
-//                performanceChartData2.setName("Social Science");
-//
-//                PerformanceChartData performanceChartData3 = new PerformanceChartData();
-//                performanceChartData3.setPerformance(11);
-//                performanceChartData3.setName("Hindi");
-//
-//                PerformanceChartData performanceChartData4 = new PerformanceChartData();
-//                performanceChartData4.setPerformance(71);
-//                performanceChartData4.setName("English");
-//
-//                performanceChartData.add(performanceChartData1);
-//                performanceChartData.add(performanceChartData2);
-//                performanceChartData.add(performanceChartData3);
-//                performanceChartData.add(performanceChartData4);
-//                e.onNext(performanceChartData);
+
                 e.onComplete();
             }
         });
@@ -290,37 +269,8 @@ public class AnalyticsModel {
                     Log.e("EffortChartData", "Failed");
                     throw new Exception(mContext.getString(R.string.messageUnableToGetData));
                 }
-
-//                EffortChartDataParent effortChartDataParent = new EffortChartDataParent();
-//                ArrayList<EffortChartData> chartDataArrayList = new ArrayList<>();
-//                EffortChartData effortChartData1 = new EffortChartData();
-//                effortChartData1.setTotalTimeSpent(310);
-//                effortChartData1.setTotalReadTimeSpent(107);
-//                effortChartData1.setTotalVideoTimeSpent(100);
-//                effortChartData1.setTotalPracticeTimeSpent(100);
-//                effortChartData1.setSubject(new ArrayList<IdNameObject>(Collections.singleton(new IdNameObject("", "English"))));
-//
-//                EffortChartData effortChartData2 = new EffortChartData();
-//                effortChartData2.setTotalTimeSpent(1200);
-//                effortChartData2.setTotalReadTimeSpent(300);
-//                effortChartData2.setTotalVideoTimeSpent(400);
-//                effortChartData2.setTotalPracticeTimeSpent(500);
-//                effortChartData2.setSubject(new ArrayList<IdNameObject>(Collections.singleton(new IdNameObject("", "Science"))));
-//
-//                EffortChartData effortChartData3 = new EffortChartData();
-//                effortChartData3.setTotalTimeSpent(600);
-//                effortChartData3.setTotalReadTimeSpent(300);
-//                effortChartData3.setTotalVideoTimeSpent(150);
-//                effortChartData3.setTotalPracticeTimeSpent(150);
-//                effortChartData3.setSubject(new ArrayList<IdNameObject>(Collections.singleton(new IdNameObject("", "Natural Science"))));
-//                chartDataArrayList.add(effortChartData1);
-//                chartDataArrayList.add(effortChartData2);
-//                chartDataArrayList.add(effortChartData3);
-//
-//                effortChartDataParent.setEffortChartDataList(chartDataArrayList);
-//                effortChartDataParent.setDaysCount(4);
-//                e.onNext(effortChartDataParent);
                 e.onComplete();
+
             }
         });
     }
@@ -535,5 +485,14 @@ public class AnalyticsModel {
         dialog.getWindow().setLayout((6 * width) / 7, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         dialog.show();
+    }
+
+    public float barTextSize(){
+        return 11f;
+    }
+
+
+    public float barWidth(){
+        return 0.36f;
     }
 }

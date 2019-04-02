@@ -21,6 +21,7 @@ import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -41,6 +42,7 @@ import in.securelearning.lil.android.app.databinding.LayoutDashboardStudentSubje
 import in.securelearning.lil.android.app.databinding.LayoutLessonPlanCardItemBinding;
 import in.securelearning.lil.android.assignments.model.AssignmentResponseStudentModel;
 import in.securelearning.lil.android.assignments.model.AssignmentTeacherModel;
+import in.securelearning.lil.android.assignments.views.fragment.AssignmentStudentFragment;
 import in.securelearning.lil.android.base.dataobjects.AssignmentStudent;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.model.AppUserModel;
@@ -257,6 +259,30 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(NotificationActivity.getStartIntent(getContext()));
+            }
+        });
+
+        mBinding.assignmentView.textViewAssignmentCount1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onDashboardFragmentInteraction(AssignmentStudentFragment.class);
+
+            }
+        });
+
+        mBinding.assignmentView.textViewAssignmentCount2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onDashboardFragmentInteraction(AssignmentStudentFragment.class);
+
+            }
+        });
+
+        mBinding.assignmentView.textViewAssignmentCount3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onDashboardFragmentInteraction(AssignmentStudentFragment.class);
+
             }
         });
 

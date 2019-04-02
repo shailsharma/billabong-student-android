@@ -54,6 +54,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:clickable="true"
+                            android:foreground="?selectableItemBackground"
                             android:gravity="center_horizontal"
                             android:orientation="vertical">
 
@@ -67,10 +68,12 @@
                                 tools:text="40:25"/>
 
                             <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewTotalTimeSpentLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/total_hrs"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:textColor="@color/colorAccent"/>
 
                         </android.support.v7.widget.LinearLayoutCompat>
 
@@ -80,6 +83,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
+                            android:foreground="?selectableItemBackground"
                             android:gravity="center_horizontal"
                             android:orientation="vertical"
                             >
@@ -94,10 +98,12 @@
                                 tools:text="40:25"/>
 
                             <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewDailyTimeSpentLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/daily_efforts_min"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:textColor="@color/colorAccent"/>
 
                         </android.support.v7.widget.LinearLayoutCompat>
 

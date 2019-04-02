@@ -1,5 +1,7 @@
 package in.securelearning.lil.android.syncadapter.rest;
 
+import org.json.JSONObject;
+
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -19,4 +21,7 @@ public interface DirectUploadApiInterface {
 
     @POST("popupactivities/save")
     Call<ResponseBody> savePopupActivity(@Body RequestBody requestBody);
+
+    @POST("QuizResponses/getReportByQuizId")
+    Call<ResponseBody> getReportByQuizId(@Body RequestBody requestBody);
 }

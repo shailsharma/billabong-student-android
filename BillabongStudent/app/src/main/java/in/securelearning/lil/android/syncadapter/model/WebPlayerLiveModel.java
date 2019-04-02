@@ -1,9 +1,12 @@
 package in.securelearning.lil.android.syncadapter.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -193,6 +196,7 @@ public class WebPlayerLiveModel implements WebPlayerLiveModelInterface {
 
     @Override
     public void playMedia(String type, String url) {
+
         if (type.equalsIgnoreCase(mContext.getString(R.string.typePdf))) {
             try {
                 if (!TextUtils.isEmpty(url)) {
@@ -210,7 +214,7 @@ public class WebPlayerLiveModel implements WebPlayerLiveModelInterface {
                 e.printStackTrace();
             }
         } else if (type.equalsIgnoreCase(mContext.getString(R.string.typeImage))) {
-            mContext.startActivity(PlayFullScreenImageActivity.getStartIntent(mContext, url, false));
+            mContext.startActivity(PlayFullScreenImageActivity.getStartIntent(mContext, url, true));
         } else if (type.equalsIgnoreCase(mContext.getString(R.string.typeVideo))) {
             Resource item = new Resource();
             item.setType(mContext.getString(R.string.typeVideo));
@@ -252,6 +256,12 @@ public class WebPlayerLiveModel implements WebPlayerLiveModelInterface {
     public Response<ResponseBody> savePopupActivity(JSONObject jsonObject) {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonObject.toString());
         return webCallExecutor(mNetworkModel.savePopupActivity(body));
+    }
+
+    @Override
+    public Response<ResponseBody> getReportByQuizId(JSONObject jsonObject) {
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonObject.toString());
+        return webCallExecutor(mNetworkModel.getReportByQuizId(body));
     }
 
     public boolean addBlogRating(UserRating rating, String id) {

@@ -192,7 +192,7 @@ public class ProgressDetailActivity extends AppCompatActivity {
             holder.mBinding.textViewTopicName.setText(coverageChartData.getName());
 
             float coveragePercent = (coverageChartData.getCoverage() / coverageChartData.getTotal()) * 100;
-            String performance = String.valueOf(new DecimalFormat("##.##").format(coveragePercent) + "%");
+            String performance = String.valueOf(Math.round(coveragePercent) + "%");
             holder.mBinding.textViewTopicPerformance.setText(performance);
 
             if (coveragePercent > 0 && coveragePercent <= 40) {

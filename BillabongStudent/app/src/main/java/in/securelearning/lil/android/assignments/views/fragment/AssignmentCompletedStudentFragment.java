@@ -357,28 +357,28 @@ public class AssignmentCompletedStudentFragment extends Fragment {
 
         private String getAssignmentType(String assignmentType) {
 
-            if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_OBJECTIVE.getAssignmentType()) ||
-                    assignmentType.equalsIgnoreCase(AssignmentType.TYPE_SUBJECTIVE.getAssignmentType())) {
+            if (assignmentType.equalsIgnoreCase("quiz")) {
                 return getString(R.string.quiz);
 
             } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_RESOURCE.getAssignmentType())) {
                 return getString(R.string.resource);
             } else {
-                //String type = "";
-                if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_DIGITAL_BOOK.getAssignmentType())) {
-                    return AssignmentType.TYPE_DIGITAL_BOOK.getAssignmentType();
-                } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_VIDEO_COURSE.getAssignmentType())) {
-                    return AssignmentType.TYPE_VIDEO_COURSE.getAssignmentType();
-                } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_CONCEPT_MAP.getAssignmentType())) {
-                    return AssignmentType.TYPE_CONCEPT_MAP.getAssignmentType();
-                } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_INTERACTIVE_IMAGE.getAssignmentType())) {
-                    return AssignmentType.TYPE_INTERACTIVE_IMAGE.getAssignmentType();
-                } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_Popup.getAssignmentType())) {
-                    return AssignmentType.TYPE_Popup.getAssignmentType();
-                } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_INTERACTIVE_VIDEO.getAssignmentType())) {
-                    return AssignmentType.TYPE_INTERACTIVE_VIDEO.getAssignmentType();
+                if (assignmentType.equalsIgnoreCase("digitalbook")) {
+                    return "Digital Book";
+                } else if (assignmentType.equalsIgnoreCase("videocourse")) {
+                    return "Video Course";
+                } else if (assignmentType.contains("feature")) {
+                    return "Recap";
+                } else if (assignmentType.contains("map")) {
+                    return "Concept Map";
+                } else if (assignmentType.contains("interactiveim")) {
+                    return "Interactive Image";
+                } else if (assignmentType.contains("interactivevi")) {
+                    return "Interactive Video";
+                } else if (assignmentType.contains("pop")) {
+                    return "Pop Up";
                 } else {
-                    return getString(R.string.title_course);
+                    return "Course";
                 }
 
             }

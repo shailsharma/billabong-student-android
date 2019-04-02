@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -36,6 +37,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.analytics.helper.MyPercentFormatter;
+import in.securelearning.lil.android.analytics.helper.PiePercentFormatter;
 import in.securelearning.lil.android.analytics.model.AnalyticsModel;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsStudentBinding;
@@ -102,7 +104,6 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
                     .subscribe(new Consumer<EffortChartDataParent>() {
                         @Override
                         public void accept(EffortChartDataParent effortChartDataParent) throws Exception {
-                            fetchPerformanceData();
                             mBinding.progressBarEffort.setVisibility(View.GONE);
                             if (!effortChartDataParent.getEffortChartDataList().isEmpty()) {
                                 mBinding.layoutTotalTimeSpent.setVisibility(View.VISIBLE);
@@ -115,18 +116,19 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
                                 mBinding.layoutDailyTimeSpent.setVisibility(View.GONE);
                                 mBinding.textViewNoEffortData.setVisibility(View.VISIBLE);
                             }
+                            fetchPerformanceData();
 
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
-                            fetchPerformanceData();
                             mBinding.progressBarEffort.setVisibility(View.GONE);
                             mBinding.layoutTotalTimeSpent.setVisibility(View.GONE);
                             mBinding.chartEffort.setVisibility(View.GONE);
                             mBinding.layoutDailyTimeSpent.setVisibility(View.GONE);
                             mBinding.textViewNoEffortData.setVisibility(View.VISIBLE);
+                            fetchPerformanceData();
 
                         }
                     });
@@ -135,97 +137,6 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
         }
 
     }
-
-    private void drawPieChart(ArrayList<EffortChartData> effortChartData, int daysCount) {
-        float totalTimeSpent = 0;
-        float totalReadTime = 0;
-        float totalVideoTime = 0;
-        float totalPracticeTime = 0;
-        ArrayList<PieEntry> entryArrayList = new ArrayList<PieEntry>();
-        for (int i = 0; i < effortChartData.size(); i++) {
-            entryArrayList.add(new PieEntry(effortChartData.get(i).getTotalTimeSpent(), effortChartData.get(i).getSubject().get(0).getName(), effortChartData.get(i)));
-            totalTimeSpent += effortChartData.get(i).getTotalTimeSpent();
-            totalReadTime += effortChartData.get(i).getTotalReadTimeSpent();
-            totalVideoTime += effortChartData.get(i).getTotalVideoTimeSpent();
-            totalPracticeTime += effortChartData.get(i).getTotalPracticeTimeSpent();
-
-        }
-        /*Total time spent*/
-        String formattedTotalTimeSpent = mAnalyticsModel.convertSecondToHourMinuteSecond((long) totalTimeSpent);
-        mBinding.textViewTotalTimeSpent.setText(formattedTotalTimeSpent);
-        final float finalTotalTimeSpent = totalTimeSpent;
-        final float finalTotalReadTime = totalReadTime;
-        final float finalTotalVideoTime = totalVideoTime;
-        final float finalTotalPracticeTime = totalPracticeTime;
-
-        mBinding.layoutTotalTimeSpent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAnalyticsModel.showDetailedTotalTimeSpent(StudentAnalyticsActivity.this, finalTotalTimeSpent, finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime);
-            }
-        });
-
-        /*Daily time spent*/
-        final float dailyTimeSpent = totalTimeSpent / daysCount;
-        final float dailyReadTimeSpent = totalReadTime / daysCount;
-        final float dailyVideoTimeSpent = totalVideoTime / daysCount;
-        final float dailyPracticeTimeSpent = totalPracticeTime / daysCount;
-        String formattedDailyTimeSpent = mAnalyticsModel.convertSecondToMinute((long) dailyTimeSpent);
-        mBinding.textViewDailyTimeSpent.setText(formattedDailyTimeSpent);
-
-
-        mBinding.layoutDailyTimeSpent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAnalyticsModel.showDetailedDailyTimeSpent(StudentAnalyticsActivity.this, dailyTimeSpent, dailyReadTimeSpent, dailyVideoTimeSpent, dailyPracticeTimeSpent);
-            }
-        });
-
-        /*Pie chart*/
-        PieDataSet dataSet = new PieDataSet(entryArrayList, "");
-        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-        dataSet.setSliceSpace(2f);
-
-        PieData data = new PieData(dataSet);
-        data.setValueFormatter(new MyPercentFormatter());
-        mBinding.chartEffort.setData(data);
-        mBinding.chartEffort.setDrawHoleEnabled(false);
-        mBinding.chartEffort.setHoleRadius(0f);
-        mBinding.chartEffort.getDescription().setEnabled(false);
-        data.setValueTextSize(12f);
-        data.setValueTextColor(Color.WHITE);
-        mBinding.chartEffort.invalidate();
-        mBinding.chartEffort.setClickable(true);
-        mBinding.chartEffort.setTouchEnabled(true);
-        mBinding.chartEffort.setRotationEnabled(false);
-        mBinding.chartEffort.setDrawSliceText(true);
-        Legend legend = mBinding.chartPerformance.getLegend();
-        legend.setEnabled(true);
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        legend.setWordWrapEnabled(true);
-        legend.setDrawInside(false);
-        legend.setFormSize(8f);
-        legend.setFormToTextSpace(8f);
-        legend.setXEntrySpace(12f);
-        mBinding.chartEffort.animateXY(1400, 1400);
-        mBinding.chartEffort.setUsePercentValues(true);
-
-        mBinding.chartEffort.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-                EffortChartData chartData = (EffortChartData) e.getData();
-                startActivity(TimeEffortDetailActivity.getStartIntent(getBaseContext(), chartData.getId(), chartData.getSubject().get(0).getName()));
-            }
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-        });
-    }
-
 
     @SuppressLint("CheckResult")
     private void fetchCoverageData() {
@@ -311,6 +222,115 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
 
     }
 
+    private void drawPieChart(ArrayList<EffortChartData> effortChartData, int daysCount) {
+        float totalTimeSpent = 0;
+        float totalReadTime = 0;
+        float totalVideoTime = 0;
+        float totalPracticeTime = 0;
+        ArrayList<PieEntry> entryArrayList = new ArrayList<PieEntry>();
+        for (int i = 0; i < effortChartData.size(); i++) {
+            if (effortChartData.get(i).getTotalTimeSpent() <= 0 || effortChartData.get(i).getSubject().isEmpty()) {
+                effortChartData.remove(effortChartData.get(i));
+            }
+        }
+        for (int i = 0; i < effortChartData.size(); i++) {
+            entryArrayList.add(new PieEntry(effortChartData.get(i).getTotalTimeSpent(), effortChartData.get(i).getSubject().get(0).getName(), effortChartData.get(i)));
+            totalTimeSpent += effortChartData.get(i).getTotalTimeSpent();
+            totalReadTime += effortChartData.get(i).getTotalReadTimeSpent();
+            totalVideoTime += effortChartData.get(i).getTotalVideoTimeSpent();
+            totalPracticeTime += effortChartData.get(i).getTotalPracticeTimeSpent();
+        }
+        /*Total time spent*/
+        String formattedTotalTimeSpent = mAnalyticsModel.convertSecondToHourMinuteSecond((long) totalTimeSpent);
+        mBinding.textViewTotalTimeSpent.setText(formattedTotalTimeSpent);
+        final float finalTotalTimeSpent = totalTimeSpent;
+        final float finalTotalReadTime = totalReadTime;
+        final float finalTotalVideoTime = totalVideoTime;
+        final float finalTotalPracticeTime = totalPracticeTime;
+
+        mBinding.textViewDailyTimeSpentLabel.setPaintFlags(mBinding.textViewDailyTimeSpentLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        mBinding.textViewTotalTimeSpentLabel.setPaintFlags(mBinding.textViewTotalTimeSpentLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+        mBinding.layoutTotalTimeSpent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAnalyticsModel.showDetailedTotalTimeSpent(StudentAnalyticsActivity.this, finalTotalTimeSpent, finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime);
+            }
+        });
+
+        /*Daily time spent*/
+        final float dailyTimeSpent = totalTimeSpent / daysCount;
+        final float dailyReadTimeSpent = totalReadTime / daysCount;
+        final float dailyVideoTimeSpent = totalVideoTime / daysCount;
+        final float dailyPracticeTimeSpent = totalPracticeTime / daysCount;
+        String formattedDailyTimeSpent = mAnalyticsModel.convertSecondToMinute((long) dailyTimeSpent);
+        mBinding.textViewDailyTimeSpent.setText(formattedDailyTimeSpent);
+
+
+        mBinding.layoutDailyTimeSpent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAnalyticsModel.showDetailedDailyTimeSpent(StudentAnalyticsActivity.this, dailyTimeSpent, dailyReadTimeSpent, dailyVideoTimeSpent, dailyPracticeTimeSpent);
+            }
+        });
+
+        /*Pie chart*/
+        PieDataSet dataSet = new PieDataSet(entryArrayList, "");
+        int[] colors = new int[]{ContextCompat.getColor(getBaseContext(), R.color.dot_dark_screen1),
+                ContextCompat.getColor(getBaseContext(), R.color.dot_dark_screen2),
+                ContextCompat.getColor(getBaseContext(), R.color.dot_dark_screen3),
+                ContextCompat.getColor(getBaseContext(), R.color.dot_dark_screen4),
+                ContextCompat.getColor(getBaseContext(), R.color.dot_dark_screen5),
+                ContextCompat.getColor(getBaseContext(), R.color.dot_dark_screen6),
+                ContextCompat.getColor(getBaseContext(), R.color.dot_dark_screen7),
+                ContextCompat.getColor(getBaseContext(), R.color.colorGreyDark),
+                ContextCompat.getColor(getBaseContext(), R.color.colorCenterGradient),
+                ContextCompat.getColor(getBaseContext(), R.color.colorLNRed),
+                ContextCompat.getColor(getBaseContext(), R.color.colorGreyDark)};
+        dataSet.setColors(ColorTemplate.createColors(colors));
+        dataSet.setSliceSpace(2f);
+
+        PieData data = new PieData(dataSet);
+        data.setValueFormatter(new PiePercentFormatter());
+        data.setValueTextSize(12f);
+        data.setValueTextColor(Color.WHITE);
+
+        Legend legend = mBinding.chartEffort.getLegend();
+        legend.setEnabled(true);
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        legend.setWordWrapEnabled(true);
+        legend.setDrawInside(false);
+        legend.setFormToTextSpace(8f);
+        legend.setXEntrySpace(12f);
+
+        mBinding.chartEffort.setData(data);
+        mBinding.chartEffort.invalidate();
+        mBinding.chartEffort.setDrawHoleEnabled(false);
+        mBinding.chartEffort.setHoleRadius(0f);
+        mBinding.chartEffort.getDescription().setEnabled(false);
+        mBinding.chartEffort.setClickable(true);
+        mBinding.chartEffort.setTouchEnabled(true);
+        mBinding.chartEffort.setRotationEnabled(false);
+        mBinding.chartEffort.setDrawEntryLabels(false);
+        mBinding.chartEffort.animateXY(1400, 1400);
+        mBinding.chartEffort.setUsePercentValues(true);
+
+        mBinding.chartEffort.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                EffortChartData chartData = (EffortChartData) e.getData();
+                startActivity(TimeEffortDetailActivity.getStartIntent(getBaseContext(), chartData.getId(), chartData.getSubject().get(0).getName()));
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
+    }
+
     /*Draw bar chart for date wise time spent*/
     private void drawPerformanceBarChart(ArrayList<PerformanceChartData> performanceChartData) {
 
@@ -319,11 +339,16 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
         List<Integer> colors = new ArrayList<>();
 
         for (int i = 0; i < performanceChartData.size(); i++) {
+            if (performanceChartData.get(i).getPerformance() <= 0) {
+                performanceChartData.remove(performanceChartData.get(i));
+            }
+        }
+
+        for (int i = 0; i < performanceChartData.size(); i++) {
 
             PerformanceChartData data = performanceChartData.get(i);
 
             float performance = data.getPerformance();
-
             values.add(new BarEntry(i, performance, data));
 
             xAxisLabel.add(data.getName());
@@ -386,10 +411,8 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
         BarData barData = new BarData(dataSets);
         barData.setValueTextColor(Color.BLACK);
         barData.setValueFormatter(new MyPercentFormatter());
-        barData.setBarWidth(0.36f);
-        mBinding.chartPerformance.setData(barData);
-        mBinding.chartPerformance.invalidate();
-
+        barData.setValueTextSize(mAnalyticsModel.barTextSize());
+        barData.setBarWidth(mAnalyticsModel.barWidth());
 
         mBinding.chartPerformance.getDescription().setEnabled(false);
         mBinding.chartPerformance.setMaxVisibleValueCount(100);
@@ -403,13 +426,16 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
         mBinding.chartPerformance.setScaleYEnabled(false);
         mBinding.chartPerformance.setFitBars(true);
         mBinding.chartPerformance.animateY(1400);
-
+        mBinding.chartPerformance.clear();
+        mBinding.chartPerformance.setData(barData);
+        mBinding.chartPerformance.invalidate();
 
         mBinding.chartPerformance.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 PerformanceChartData ccd = (PerformanceChartData) e.getData();
-                startActivity(PerformanceDetailActivity.getStartIntent(getBaseContext(), ccd.getId(), ccd.getName()));
+                float performance = Math.round(ccd.getPerformance());
+                startActivity(PerformanceDetailActivity.getStartIntent(getBaseContext(), ccd.getId(), ccd.getName(), performance));
 
             }
 
@@ -428,6 +454,12 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
         ArrayList<Integer> colors = new ArrayList<>();
 
         for (int i = 0; i < coverageChartData.size(); i++) {
+            if (coverageChartData.get(i).getCoverage() <= 0) {
+                coverageChartData.remove(coverageChartData.get(i));
+            }
+        }
+
+        for (int i = 0; i < coverageChartData.size(); i++) {
             CoverageChartData data = coverageChartData.get(i);
             xAxisLabel.add(data.getName());
             float coverage = (data.getCoverage() / data.getTotal()) * 100;
@@ -440,6 +472,7 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
             } else if (coverage > 70) {
                 colors.add(ContextCompat.getColor(getBaseContext(), R.color.colorGreenDark));
             }
+
         }
 
         BarDataSet set = new BarDataSet(values, "");
@@ -490,7 +523,8 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
 
         BarData data = new BarData(dataSets);
         data.setValueTextColor(Color.BLACK);
-        data.setBarWidth(0.36f);
+        data.setValueTextSize(mAnalyticsModel.barTextSize());
+        data.setBarWidth(mAnalyticsModel.barWidth());
 
         mBinding.chartCoverage.getDescription().setEnabled(false);
         mBinding.chartCoverage.setMaxVisibleValueCount(100);
@@ -502,16 +536,17 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
         mBinding.chartCoverage.setHighlightFullBarEnabled(false);
         mBinding.chartCoverage.setScaleXEnabled(false);
         mBinding.chartCoverage.setScaleYEnabled(false);
-        mBinding.chartCoverage.setData(data);
         mBinding.chartCoverage.setFitBars(true);
-        mBinding.chartCoverage.animateY(2000);
+        mBinding.chartCoverage.animateY(1400);
+        mBinding.chartCoverage.clear();
+        mBinding.chartCoverage.setData(data);
         mBinding.chartCoverage.invalidate();
 
         mBinding.chartCoverage.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 CoverageChartData ccd = (CoverageChartData) e.getData();
-                float coverage = (ccd.getCoverage() / ccd.getTotal()) * 100;
+                float coverage = Math.round((ccd.getCoverage() / ccd.getTotal()) * 100);
                 startActivity(ProgressDetailActivity.getStartIntent(getBaseContext(), ccd.getId(), ccd.getName(), coverage));
 
             }

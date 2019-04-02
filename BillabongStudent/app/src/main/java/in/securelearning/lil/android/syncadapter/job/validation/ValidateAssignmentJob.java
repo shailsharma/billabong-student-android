@@ -49,9 +49,9 @@ public class ValidateAssignmentJob extends BaseValidationJob<Assignment> {
 
 
         if (mDataObject.getThumbnail() != null && mDataObject.getThumbnail().getLocalUrl() != null && !mDataObject.getThumbnail().getLocalUrl().contains("file:")) {
-        /*download thumbnail Resource*/
+            /*download thumbnail Resource*/
             String thumbnailUrl = mDataObject.getThumbnail().getUrl();
-           /*download Resource*/
+            /*download Resource*/
 
             if (thumbnailUrl != null && !thumbnailUrl.isEmpty() && !thumbnailUrl.endsWith(File.separator)) {
                 Resource resourceLocal = FileUtils.createResourceFromUrl(mDataObject.getObjectId(), thumbnailUrl);
@@ -83,10 +83,10 @@ public class ValidateAssignmentJob extends BaseValidationJob<Assignment> {
 
 
         if (!TextUtils.isEmpty(mDataObject.getUidQuiz())) {
-           /*fetch quiz from database*/
+            /*fetch quiz from database*/
             Quiz quiz = fetchQuizFromDatabase(mDataObject.getUidQuiz());
 
-        /*if quiz is available validate it*/
+            /*if quiz is available validate it*/
             if (quiz == null || !quiz.getObjectId().equals(mDataObject.getUidQuiz())) {
                 BaseDownloadJob<Quiz> job = downloadQuiz(mDataObject.getUidQuiz());
                 job.execute();
@@ -113,42 +113,42 @@ public class ValidateAssignmentJob extends BaseValidationJob<Assignment> {
             return false;
         } else {
             if (!TextUtils.isEmpty(mDataObject.getUidCourse())) {
+                saveJson(mDataObject);
 
-                AboutCourse aboutCourse = fetchAboutCourseFromDatabase(mDataObject.getUidCourse());
+                //  AboutCourse aboutCourse = fetchAboutCourseFromDatabase(mDataObject.getUidCourse());
 
-        /*if course is available validate it*/
-                if (aboutCourse == null || !aboutCourse.getObjectId().equals(mDataObject.getUidCourse())) {
-                    BaseDownloadJobWeb<AboutCourse> job = downloadAboutCourse(mDataObject.getUidCourse(), mDataObject.getAssignmentType());
-                    if (job != null) {
-                        job.execute();
-                    } else {
-                        mDataObject.setAssignmentType(findAndUpdateAssignmentType(mDataObject.getUidCourse()));
-                        saveJson(mDataObject);
-                    }
-                    aboutCourse = fetchAboutCourseFromDatabase(mDataObject.getUidCourse());
-                    job = null;
-                } else if (aboutCourse != null && aboutCourse.getObjectId().equals(mDataObject.getUidCourse()) && aboutCourse.getSyncStatus().equals(SyncStatus.JSON_SYNC.toString())) {
-                    BaseValidationJob<AboutCourse> job = validateAboutCourse(aboutCourse);
-                    job.execute();
-                    aboutCourse = fetchAboutCourseFromDatabase(mDataObject.getUidCourse());
-                    job = null;
-                    if (mDataObject.getAssignmentType().equals(AssignmentType.TYPE_SUBJECTIVE.getAssignmentType())) {
-                        mDataObject.setAssignmentType(getCourseType(aboutCourse));
-                        saveJson(mDataObject);
-                    }
+                /*if course is available validate it*/
+                //if (aboutCourse == null || !aboutCourse.getObjectId().equals(mDataObject.getUidCourse())) {
+                //   BaseDownloadJobWeb<AboutCourse> job = downloadAboutCourse(mDataObject.getUidCourse(), mDataObject.getAssignmentType());
+                //     if (job != null) {
+                //       job.execute();
+                //    } else {
+                //  mDataObject.setAssignmentType(mDataObject.getUidCourse());
+                //    }
+                //    aboutCourse = fetchAboutCourseFromDatabase(mDataObject.getUidCourse());
+                //    job = null;
+                // } else if (aboutCourse != null && aboutCourse.getObjectId().equals(mDataObject.getUidCourse()) && aboutCourse.getSyncStatus().equals(SyncStatus.JSON_SYNC.toString())) {
+                //      BaseValidationJob<AboutCourse> job = validateAboutCourse(aboutCourse);
+                //     job.execute();
+                //     aboutCourse = fetchAboutCourseFromDatabase(mDataObject.getUidCourse());
+                //     job = null;
+                //     if (mDataObject.getAssignmentType().equals(AssignmentType.TYPE_SUBJECTIVE.getAssignmentType())) {
+                //        mDataObject.setAssignmentType(getCourseType(aboutCourse));
+                //        saveJson(mDataObject);
+                //     }
+                // }
+                /*if course is completely in sync*/
+                //   if (aboutCourse != null && aboutCourse.getObjectId().equals(mDataObject.getUidCourse()) && aboutCourse.getSyncStatus().equals(SyncStatus.COMPLETE_SYNC.toString())) {
+                if (thumbnailDownloaded) {
+                    mDataObject.setSyncStatus(SyncStatus.COMPLETE_SYNC.toString());
+                    saveJson(mDataObject);
+                    mAssignmentMinimal = mJobModel.saveAssignmentMinimal(mDataObject);
+                    //         aboutCourse = null;
+                    mAssignmentMinimal = null;
+                    return true;
                 }
-            /*if course is completely in sync*/
-                if (aboutCourse != null && aboutCourse.getObjectId().equals(mDataObject.getUidCourse()) && aboutCourse.getSyncStatus().equals(SyncStatus.COMPLETE_SYNC.toString())) {
-                    if (thumbnailDownloaded) {
-                        mDataObject.setSyncStatus(SyncStatus.COMPLETE_SYNC.toString());
-                        saveJson(mDataObject);
-                        mAssignmentMinimal = mJobModel.saveAssignmentMinimal(mDataObject);
-                        aboutCourse = null;
-                        mAssignmentMinimal = null;
-                        return true;
-                    }
-                }
-                aboutCourse = null;
+                //   }
+                //   aboutCourse = null;
                 return false;
 
             } else if (!TextUtils.isEmpty(mDataObject.getUidResource())) {

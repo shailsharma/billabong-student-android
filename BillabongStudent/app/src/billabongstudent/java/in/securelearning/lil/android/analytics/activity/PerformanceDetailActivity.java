@@ -17,8 +17,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.text.DecimalFormat;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+
 import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -39,11 +43,13 @@ public class PerformanceDetailActivity extends AppCompatActivity {
     AnalyticsModel mAnalyticsModel;
     private static final String SUBJECT_ID = "subjectId";
     private static final String SUBJECT_NAME = "subjectName";
+    private static final String PERFORMANCE = "performance";
 
-    public static Intent getStartIntent(Context context, String id, String name) {
+    public static Intent getStartIntent(Context context, String id, String name, float performance) {
         Intent intent = new Intent(context, PerformanceDetailActivity.class);
         intent.putExtra(SUBJECT_ID, id);
         intent.putExtra(SUBJECT_NAME, name);
+        intent.putExtra(PERFORMANCE, performance);
         return intent;
     }
 
@@ -78,10 +84,50 @@ public class PerformanceDetailActivity extends AppCompatActivity {
         if (getIntent() != null) {
             String subjectId = getIntent().getStringExtra(SUBJECT_ID);
             String subjectName = getIntent().getStringExtra(SUBJECT_NAME);
+            float performance = getIntent().getFloatExtra(PERFORMANCE, 0f);
             setUpToolbar(subjectName);
             fetchPerformanceData(subjectId);
-
+            drawProgress(performance);
         }
+    }
+
+    /*draw and set values for time spent pie chart*/
+    private void drawProgress(float performance) {
+        float total = 100;
+        float remaining = total - performance;
+        ArrayList<PieEntry> fillValues = new ArrayList<>();
+        fillValues.add(new PieEntry(performance));
+        fillValues.add(new PieEntry(remaining));
+        PieDataSet dataSet = new PieDataSet(fillValues, "");
+        if (performance > 0 && performance <= 40) {
+            int[] colors = new int[]{ContextCompat.getColor(Objects.requireNonNull(getBaseContext()), R.color.colorRed), ContextCompat.getColor(getBaseContext(), R.color.colorGrey)};
+            dataSet.setColors(colors);
+        } else if (performance > 40 && performance <= 70) {
+            int[] colors = new int[]{ContextCompat.getColor(Objects.requireNonNull(getBaseContext()), R.color.colorAnnouncement), ContextCompat.getColor(getBaseContext(), R.color.colorGrey)};
+            dataSet.setColors(colors);
+        } else if (performance > 70) {
+            int[] colors = new int[]{ContextCompat.getColor(Objects.requireNonNull(getBaseContext()), R.color.colorGreenDark), ContextCompat.getColor(getBaseContext(), R.color.colorGrey)};
+            dataSet.setColors(colors);
+        }
+        dataSet.setValueTextSize(0f);
+        PieData data = new PieData(dataSet);
+        mBinding.pieChartPerformance.setData(data);
+        mBinding.pieChartPerformance.setHoleRadius(85f);
+        mBinding.pieChartPerformance.setDrawHoleEnabled(true);
+        mBinding.pieChartPerformance.setUsePercentValues(true);
+        mBinding.pieChartPerformance.getDescription().setEnabled(false);
+        mBinding.pieChartPerformance.setDrawCenterText(true);
+        String centerTextValue = String.valueOf(Math.round(performance)) + "%";
+        if (centerTextValue.contains("NaN")) {
+            mBinding.pieChartPerformance.setCenterText("0%");
+        } else {
+            mBinding.pieChartPerformance.setCenterText(centerTextValue);
+        }
+        mBinding.pieChartPerformance.setCenterTextSize(18f);
+        mBinding.pieChartPerformance.getLegend().setEnabled(false);
+        mBinding.pieChartPerformance.invalidate();
+        mBinding.pieChartPerformance.setClickable(false);
+        mBinding.pieChartPerformance.setTouchEnabled(false);
     }
 
     @SuppressLint("CheckResult")
@@ -142,7 +188,7 @@ public class PerformanceDetailActivity extends AppCompatActivity {
 
             holder.mBinding.textViewTopicName.setText(performanceChartData.getName());
 
-            String performance = String.valueOf(new DecimalFormat("##.##").format(performanceChartData.getPerformance()) + "%");
+            String performance = String.valueOf(Math.round(performanceChartData.getPerformance()) + "%");
             holder.mBinding.textViewTopicPerformance.setText(performance);
 
             if (performanceChartData.getPerformance() > 0 && performanceChartData.getPerformance() <= 40) {

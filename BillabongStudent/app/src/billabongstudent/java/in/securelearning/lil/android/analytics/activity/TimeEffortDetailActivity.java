@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,19 +18,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.analytics.helper.MyXAxisValueFormatter;
 import in.securelearning.lil.android.analytics.model.AnalyticsModel;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsEffortTopicItemBinding;
@@ -182,6 +182,7 @@ public class TimeEffortDetailActivity extends AppCompatActivity {
         lineDataSet.setCircleColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimary));
         lineDataSet.setCircleColorHole(ContextCompat.getColor(getBaseContext(), R.color.colorPrimary));
 
+
         LineData lineData = new LineData(lineDataSet);
         mBinding.chartEffort.setData(lineData);
 
@@ -198,12 +199,8 @@ public class TimeEffortDetailActivity extends AppCompatActivity {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularityEnabled(true);
         xAxis.setDrawGridLines(false);
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return xAxisLabel.get((int) value);
-            }
-        });
+        xAxis.setValueFormatter(new MyXAxisValueFormatter(xAxisLabel));
+
 
         YAxis leftAxis = mBinding.chartEffort.getAxisLeft();
         leftAxis.setInverted(false);
@@ -245,6 +242,9 @@ public class TimeEffortDetailActivity extends AppCompatActivity {
         final float finalTotalReadTime = totalReadTime;
         final float finalTotalVideoTime = totalVideoTime;
         final float finalTotalPracticeTime = totalPracticeTime;
+
+        mBinding.textViewDailyTimeSpentLabel.setPaintFlags(mBinding.textViewDailyTimeSpentLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        mBinding.textViewTotalTimeSpentLabel.setPaintFlags(mBinding.textViewTotalTimeSpentLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         mBinding.layoutTotalTimeSpent.setOnClickListener(new View.OnClickListener() {
             @Override

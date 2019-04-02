@@ -53,6 +53,7 @@ public class PlayVimeoFullScreenActivity extends CordovaActivity {
     public static Intent getStartIntent(Context context, String url) {
         Intent intent = new Intent(context, PlayVimeoFullScreenActivity.class);
         intent.putExtra(URL, url);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 

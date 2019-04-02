@@ -67,13 +67,14 @@ public class PlayYouTubeFullScreenActivity extends AppCompatActivity implements 
     public static Intent getStartIntent(Context context, FavouriteResource favouriteResourceData) {
         Intent intent = new Intent(context, PlayYouTubeFullScreenActivity.class);
         intent.putExtra("resource", favouriteResourceData);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 
     public static Intent getStartIntent(Context context, FavouriteResource favouriteResourceData, boolean isConnectivityCheck) {
         Intent intent = new Intent(context, PlayYouTubeFullScreenActivity.class);
         intent.putExtra("resource", favouriteResourceData);
-        //  intent.putExtra(CONNECTIVITY_CHECK, isConnectivityCheck);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 

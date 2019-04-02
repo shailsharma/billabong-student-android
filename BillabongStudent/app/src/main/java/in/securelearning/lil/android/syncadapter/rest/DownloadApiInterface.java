@@ -93,7 +93,10 @@ public interface DownloadApiInterface {
     @GET("AssignmentResponses/getAssignmentResponse")
     Call<ServerDataPackage> getServerDataPackage();
 
-    @GET("Assignments/{objectId}")
+//    @GET("Assignments/{objectId}")
+//    Call<Assignment> getAssignment(@Path("objectId") String objectId);
+
+    @GET("Assignments/getAssignment/{objectId}")
     Call<Assignment> getAssignment(@Path("objectId") String objectId);
 
     @GET("Assignments/fetchByAlias/{aliasId}")
@@ -165,8 +168,11 @@ public interface DownloadApiInterface {
     @GET("LearningNetworkPosts/fetchAllPost/{objectId}")
     Call<GroupPostsNResponse> fetchAllPostNResponse(@Path("objectId") String objectId);
 
-    @GET("AssignmentResponses/{objectId}")
+    @GET("AssignmentResponses/getAssignmentResponse/{objectId}")
     Call<AssignmentResponse> getAssignmentResponse(@Path("objectId") String objectId);
+
+//    @GET("AssignmentResponses/{objectId}")
+//    Call<AssignmentResponse> getAssignmentResponse(@Path("objectId") String objectId);
 
     @GET("DigitalBooks/getDigitalBook/{objectId}")
     Call<DigitalBook> getDigitalBook(@Path("objectId") String objectId);
