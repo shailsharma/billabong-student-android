@@ -39,7 +39,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/margin_8dp"
                         android:layout_marginBottom="@dimen/margin_8dp"
-                        android:text="@string/time_spent_efforts"
+                        android:text="@string/efforts_based_on_time_spent"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/colorBlack"/>
 
@@ -160,7 +160,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/margin_8dp"
                         android:layout_marginBottom="@dimen/margin_8dp"
-                        android:text="@string/performance_assessment_in"
+                        android:text="@string/performance_based_on_assessments"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/colorBlack"/>
 
@@ -213,7 +213,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/margin_8dp"
                         android:layout_marginBottom="@dimen/margin_8dp"
-                        android:text="@string/progress_coverage"
+                        android:text="@string/progress_based_on_coverage"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/colorBlack"/>
 

@@ -6,7 +6,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import java.util.List;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.syncadapter.dataobjects.CoverageChartData;
+import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
 
 public class MyBarDataSet extends BarDataSet {
         List<BarEntry> mValues;

@@ -32,7 +32,7 @@ import in.securelearning.lil.android.app.databinding.LayoutAnalyticsPerformanceD
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsPerformanceTopicItemBinding;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.syncadapter.dataobjects.PerformanceChartData;
+import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;

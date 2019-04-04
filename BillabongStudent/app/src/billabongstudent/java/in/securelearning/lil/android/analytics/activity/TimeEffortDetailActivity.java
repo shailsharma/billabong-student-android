@@ -36,9 +36,9 @@ import in.securelearning.lil.android.app.databinding.LayoutAnalyticsEffortTopicI
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsTimeSpentDetailBinding;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartData;
-import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataParent;
-import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataWeekly;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartData;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;

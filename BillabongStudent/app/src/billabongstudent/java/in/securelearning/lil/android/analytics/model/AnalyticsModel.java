@@ -19,18 +19,20 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationParentData;
+import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationRequest;
+import in.securelearning.lil.android.analytics.dataobjects.ChartDataRequest;
+import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataRequest;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
+import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsTimeSpentDetailPopupBinding;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
-import in.securelearning.lil.android.syncadapter.dataobjects.ChartDataRequest;
-import in.securelearning.lil.android.syncadapter.dataobjects.CoverageChartData;
-import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataParent;
-import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataRequest;
-import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataWeekly;
-import in.securelearning.lil.android.syncadapter.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.syncadapter.model.FlavorNetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import io.reactivex.Observable;
@@ -413,12 +415,49 @@ public class AnalyticsModel {
         });
     }
 
+    /*To fetch chart configuration for performance and coverage*/
+    public Observable<ChartConfigurationParentData> fetchChartConfiguration() {
+        return Observable.create(new ObservableOnSubscribe<ChartConfigurationParentData>() {
+            @Override
+            public void subscribe(ObservableEmitter<ChartConfigurationParentData> e) throws Exception {
+                ChartConfigurationRequest chartConfigurationRequest = new ChartConfigurationRequest();
+                chartConfigurationRequest.setPerformance(true);
+                chartConfigurationRequest.setCoverage(true);
+                Call<ChartConfigurationParentData> call = mFlavorNetworkModel.fetchChartConfiguration(chartConfigurationRequest);
+                Response<ChartConfigurationParentData> response = call.execute();
+
+                if (response != null && response.isSuccessful()) {
+                    Log.e("ChartConfiguration", "Successful");
+                    e.onNext(response.body());
+                } else if (response.code() == 404) {
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                } else if (response.code() == 401 && SyncServiceHelper.refreshToken(mContext)) {
+                    Response<ChartConfigurationParentData> response2 = call.clone().execute();
+                    if (response2 != null && response2.isSuccessful()) {
+                        Log.e("ChartConfiguration", "Successful");
+                        e.onNext(response.body());
+                    } else if (response2.code() == 401) {
+                        mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
+                    } else if (response2.code() == 404) {
+                        throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                    }
+                } else {
+                    Log.e("ChartConfiguration", "Failed");
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                }
+
+                e.onComplete();
+            }
+        });
+    }
+
+    /*TO get formatted date to show on Weekly time spent graph*/
     public String getFormattedDateForWeeklyEffortChart(String isoDate) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM", Locale.ENGLISH);
         return formatter.format(new Date(DateUtils.getSecondsOfISODateString(isoDate) * 1000L));
     }
 
-
+    /*To show detailed time spent in popup-reading, video and practice*/
     public void showDetailedTotalTimeSpent(Context context, float finalTotalTimeSpent, float finalTotalReadTime, float finalTotalVideoTime, float finalTotalPracticeTime) {
         final Dialog dialog = new Dialog(context);
         final LayoutAnalyticsTimeSpentDetailPopupBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.layout_analytics_time_spent_detail_popup, null, false);
@@ -453,6 +492,7 @@ public class AnalyticsModel {
         dialog.show();
     }
 
+    /*To show detailed daily time spent in popup-reading, video and practice*/
     public void showDetailedDailyTimeSpent(Context context, float dailyTimeSpent, float dailyReadTimeSpent, float dailyVideoTimeSpent, float dailyPracticeTimeSpent) {
         final Dialog dialog = new Dialog(context);
         final LayoutAnalyticsTimeSpentDetailPopupBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.layout_analytics_time_spent_detail_popup, null, false);
@@ -487,12 +527,13 @@ public class AnalyticsModel {
         dialog.show();
     }
 
-    public float barTextSize(){
+    /*Configurable Bar Text size*/
+    public float barTextSize() {
         return 11f;
     }
 
-
-    public float barWidth(){
+    /*Configurable Bar Width*/
+    public float barWidth() {
         return 0.36f;
     }
 }

@@ -21,9 +21,6 @@ import android.widget.Toast;
 
 import org.xml.sax.XMLReader;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import in.securelearning.lil.android.base.customchrometabutils.LinkTransformationMethod;
 
 /**
@@ -248,7 +245,12 @@ public class TextViewMore {
 
     public static String stripHtml(String html) {
         String value = html.replaceAll("\\<.*?>", "");
-        return value.replaceAll("&nbsp;", " ").replaceAll("&[a-zA-Z0-9]+;", "").trim();
+        return value.replaceAll("&nbsp;", " ").replaceAll("&[a-zA-Z0-9]+;", "").replaceAll("#000000", "#ffffff").trim();
+    }
+
+
+    public static String stripHtmlForQuiz(String html) {
+        return html.replaceAll("&nbsp;", " ").replaceAll("&[a-zA-Z0-9]+;", "").replaceAll("#000000", "#ffffff").trim();
     }
 
     public static void copyTextToClipboard(Context context, String text) {

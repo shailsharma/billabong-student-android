@@ -37,7 +37,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/margin_8dp"
                         android:layout_marginBottom="@dimen/margin_8dp"
-                        android:text="@string/time_spent_efforts"
+                        android:text="@string/time_spent"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/colorBlack"/>
 

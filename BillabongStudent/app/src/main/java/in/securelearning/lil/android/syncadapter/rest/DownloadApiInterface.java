@@ -3,6 +3,8 @@ package in.securelearning.lil.android.syncadapter.rest;
 
 import java.util.List;
 
+import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationParentData;
+import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationRequest;
 import in.securelearning.lil.android.base.dataobjects.AboutCourse;
 import in.securelearning.lil.android.base.dataobjects.AnalysisActivityData;
 import in.securelearning.lil.android.base.dataobjects.AnalysisActivityRecentlyRead;
@@ -56,11 +58,11 @@ import in.securelearning.lil.android.syncadapter.dataobject.RolePermissions;
 import in.securelearning.lil.android.syncadapter.dataobject.SearchPeriodicEventsParams;
 import in.securelearning.lil.android.syncadapter.dataobject.SearchPeriodsResults;
 import in.securelearning.lil.android.syncadapter.dataobject.ServerDataPackage;
-import in.securelearning.lil.android.syncadapter.dataobjects.ChartDataRequest;
-import in.securelearning.lil.android.syncadapter.dataobjects.CoverageChartData;
-import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataParent;
-import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataRequest;
-import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataWeekly;
+import in.securelearning.lil.android.analytics.dataobjects.ChartDataRequest;
+import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataRequest;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
 import in.securelearning.lil.android.syncadapter.dataobjects.LRPAPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.LRPAResult;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterPost;
@@ -68,7 +70,7 @@ import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterRe
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectDetails;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectResult;
-import in.securelearning.lil.android.syncadapter.dataobjects.PerformanceChartData;
+import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfile;
 import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
@@ -487,8 +489,11 @@ public interface DownloadApiInterface {
     @POST("userlogs/getUserDailyTimeSpentWeekly")
     Call<java.util.ArrayList<EffortChartDataWeekly>> fetchWeeklyEffortData(@Body EffortChartDataRequest effortChartDataRequest);
 
-
     /*Api to fetch student's achievements*/
     @GET("UserScores/detail")
     Call<StudentAchievement> fetchStudentAchievements();
+
+    /*Api to fetch chart configuration for performance and coverage*/
+    @POST("GlobalConfigs/fetchConfig")
+    Call<ChartConfigurationParentData> fetchChartConfiguration(@Body ChartConfigurationRequest chartConfigurationRequest);
 }

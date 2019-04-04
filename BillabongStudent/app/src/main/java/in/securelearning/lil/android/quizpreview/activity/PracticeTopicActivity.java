@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
@@ -32,6 +33,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +45,7 @@ import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.TextViewMore;
 import in.securelearning.lil.android.app.Widgets.CheckBoxCustom;
 import in.securelearning.lil.android.app.Widgets.RadioButtonCustom;
-import in.securelearning.lil.android.app.databinding.LayoutPracticeTestBinding;
+import in.securelearning.lil.android.app.databinding.LayoutPracticeTopicBinding;
 import in.securelearning.lil.android.base.dataobjects.Attempt;
 import in.securelearning.lil.android.base.dataobjects.MetaInformation;
 import in.securelearning.lil.android.base.dataobjects.Question;
@@ -60,6 +63,7 @@ import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity;
 import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
+import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
 import in.securelearning.lil.android.quizpreview.InjectorQuizPreview;
 import in.securelearning.lil.android.quizpreview.model.QuestionResponseModelApp;
@@ -100,7 +104,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
     QuestionResponseModelApp mQuestionResponseModelApp;
     @Inject
     RxBus mRxBus;
-    LayoutPracticeTestBinding mBinding;
+    LayoutPracticeTopicBinding mBinding;
 
     private static final String ID = "id";
     private static final String TITLE = "title";
@@ -149,7 +153,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InjectorQuizPreview.INSTANCE.getComponent().inject(this);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.layout_practice_test);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.layout_practice_topic);
         handleIntent();
         initializeClickListeners();
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
@@ -278,16 +282,14 @@ public class PracticeTopicActivity extends AppCompatActivity {
     }
 
     private void setUpToolbar() {
-//        getWindow().setStatusBarColor(ContextCompat.getColor(PracticePlayerActivity.this, R.color.colorGreen));
-//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(getBaseContext(), R.color.colorGreen)));
         setSupportActionBar(mBinding.toolbar);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.action_close_w);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setElevation(0f);
         setUiTitle(mTitle);
     }
 
+    @SuppressLint("CheckResult")
     private void setUiTitle(final String titleText) {
         if (!TextUtils.isEmpty(titleText)) {
             Completable.complete().observeOn(AndroidSchedulers.mainThread())
@@ -309,16 +311,6 @@ public class PracticeTopicActivity extends AppCompatActivity {
             if (mComplexityLevel <= MAX_QUESTION_COMPLEXITY_LEVEL && mComplexityLevel >= MIN_QUESTION_COMPLEXITY_LEVEL) {
                 if (mQuestionsCounterArray[mComplexityLevel] + 1 >= mSkillMasteryQuestionGetData.get(mSkillCounter).getQuestions()[mComplexityLevel].size()) {
                     shouldSkip = true;
-
-//                    int i = mComplexityLevel - 1;
-//                    while (i >= MIN_QUESTION_COMPLEXITY_LEVEL) {
-//                        if (mQuestionsCounterArray[i] + 1 < mSkillMasteryQuestionGetData.get(mSkillCounter).getQuestions()[i].size()) {
-//                            mComplexityLevel = i;
-//                            shouldSkip = false;
-//                            break;
-//                        }
-//                        i--;
-//                    }
 
                     int i = MIN_QUESTION_COMPLEXITY_LEVEL - 1;
                     if (i < MIN_QUESTION_COMPLEXITY_LEVEL) {
@@ -556,6 +548,9 @@ public class PracticeTopicActivity extends AppCompatActivity {
 
     private void setQuestionText(Question question) {
         mBinding.textViewQuestion.setText(TextViewMore.stripHtml(question.getQuestionText()));
+        HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(mBinding.textViewQuestion);
+        htmlHttpImageGetter.enableCompressImage(true, 80);
+        mBinding.textViewQuestion.setText(Html.fromHtml(TextViewMore.stripHtmlForQuiz(question.getQuestionText()).trim(), htmlHttpImageGetter, new TextViewMore.UlTagHandler()));
     }
 
     private void setQuestionResource(Question question) {
@@ -596,7 +591,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
         if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_RADIO) || questionType.equalsIgnoreCase("trueFalse")) {
             layoutInflater.inflate(R.layout.layout_response_mcq_single_correct, mBinding.layoutChoices);
             RadioGroup radioGroup = (RadioGroup) mBinding.layoutChoices.findViewById(R.id.radio_group_response);
-
+            mBinding.textViewQuestionType.setText(getString(R.string.single_correct));
             for (final QuestionChoice questionChoice : questionChoices) {
                 String thumbUrl = questionChoice.getChoiceResource().getUrlMain();
                 final String mainUrl = questionChoice.getChoiceResource().getUrlMain();
@@ -624,7 +619,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
 
 
         } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_CHECKBOX)) {
-
+            mBinding.textViewQuestionType.setText(getString(R.string.multiple_correct));
             for (final QuestionChoice questionChoice : questionChoices) {
                 String thumbUrl = questionChoice.getChoiceResource().getUrlMain();
                 String mainUrl = questionChoice.getChoiceResource().getUrlMain();
@@ -974,6 +969,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
             if (mimeType.contains("image")) {
                 startActivity(PlayFullScreenImageActivity.getStartIntent(getBaseContext(), resourcePath, true));
 
+                UserProfileActivity.showFullImage(resourcePath, PracticeTopicActivity.this);
 
             } else if (mimeType.contains("video")) {
                 Resource item = new Resource();

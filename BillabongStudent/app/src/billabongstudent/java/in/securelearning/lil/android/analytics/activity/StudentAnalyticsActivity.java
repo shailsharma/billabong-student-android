@@ -36,6 +36,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationData;
+import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationParentData;
+import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartData;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
+import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.analytics.helper.MyPercentFormatter;
 import in.securelearning.lil.android.analytics.helper.PiePercentFormatter;
 import in.securelearning.lil.android.analytics.model.AnalyticsModel;
@@ -43,10 +49,6 @@ import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsStudentBinding;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.syncadapter.dataobjects.CoverageChartData;
-import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartData;
-import in.securelearning.lil.android.syncadapter.dataobjects.EffortChartDataParent;
-import in.securelearning.lil.android.syncadapter.dataobjects.PerformanceChartData;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -56,9 +58,6 @@ import static java.lang.Float.NaN;
 public class StudentAnalyticsActivity extends AppCompatActivity {
 
     LayoutAnalyticsStudentBinding mBinding;
-    public static final int COVERAGE = 1;
-    public static final int EFFORTS = 2;
-    public static final int PERFORMANCE = 3;
 
     @Inject
     AnalyticsModel mAnalyticsModel;
@@ -95,6 +94,36 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("CheckResult")
+    private void fetchChartConfiguration() {
+        if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
+            mAnalyticsModel.fetchChartConfiguration().subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<ChartConfigurationParentData>() {
+                        @Override
+                        public void accept(ChartConfigurationParentData chartConfigurationParentData) throws Exception {
+
+                            fetchPerformanceData(chartConfigurationParentData.getPerformanceConfiguration());
+
+                            fetchCoverageData(chartConfigurationParentData.getCoverageConfiguration());
+
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
+                            mBinding.progressBarPerformance.setVisibility(View.GONE);
+                            mBinding.progressBarCoverage.setVisibility(View.GONE);
+                            mBinding.textViewNoPerformanceData.setVisibility(View.VISIBLE);
+                            mBinding.textViewNoCoverageData.setVisibility(View.VISIBLE);
+
+                        }
+                    });
+        } else {
+            showInternetSnackBar();
+        }
+
+    }
 
     @SuppressLint("CheckResult")
     private void fetchEffortData() {
@@ -105,6 +134,7 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
                         @Override
                         public void accept(EffortChartDataParent effortChartDataParent) throws Exception {
                             mBinding.progressBarEffort.setVisibility(View.GONE);
+                            fetchChartConfiguration();
                             if (!effortChartDataParent.getEffortChartDataList().isEmpty()) {
                                 mBinding.layoutTotalTimeSpent.setVisibility(View.VISIBLE);
                                 mBinding.chartEffort.setVisibility(View.VISIBLE);
@@ -116,30 +146,29 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
                                 mBinding.layoutDailyTimeSpent.setVisibility(View.GONE);
                                 mBinding.textViewNoEffortData.setVisibility(View.VISIBLE);
                             }
-                            fetchPerformanceData();
 
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
+                            fetchChartConfiguration();
                             mBinding.progressBarEffort.setVisibility(View.GONE);
                             mBinding.layoutTotalTimeSpent.setVisibility(View.GONE);
                             mBinding.chartEffort.setVisibility(View.GONE);
                             mBinding.layoutDailyTimeSpent.setVisibility(View.GONE);
                             mBinding.textViewNoEffortData.setVisibility(View.VISIBLE);
-                            fetchPerformanceData();
 
                         }
                     });
         } else {
-            showInternetSnackBar(EFFORTS);
+            showInternetSnackBar();
         }
 
     }
 
     @SuppressLint("CheckResult")
-    private void fetchCoverageData() {
+    private void fetchCoverageData(final ArrayList<ChartConfigurationData> coverageConfiguration) {
         if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
             mAnalyticsModel.fetchCoverageData("").subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -147,9 +176,9 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
                         @Override
                         public void accept(ArrayList<CoverageChartData> coverageChartData) throws Exception {
                             mBinding.progressBarCoverage.setVisibility(View.GONE);
-                            if (!coverageChartData.isEmpty()) {
+                            if (coverageConfiguration != null && !coverageConfiguration.isEmpty() && !coverageChartData.isEmpty()) {
                                 mBinding.chartCoverage.setVisibility(View.VISIBLE);
-                                drawCoverageChart(coverageChartData);
+                                drawCoverageChart(coverageConfiguration, coverageChartData);
                             } else {
                                 mBinding.textViewNoCoverageData.setVisibility(View.VISIBLE);
                             }
@@ -165,13 +194,13 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
                         }
                     });
         } else {
-            showInternetSnackBar(COVERAGE);
+            showInternetSnackBar();
         }
 
     }
 
     @SuppressLint("CheckResult")
-    private void fetchPerformanceData() {
+    private void fetchPerformanceData(final ArrayList<ChartConfigurationData> performanceConfiguration) {
         if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
             mAnalyticsModel.fetchPerformanceData("").subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -179,10 +208,9 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
                         @Override
                         public void accept(ArrayList<PerformanceChartData> performanceChartData) throws Exception {
                             mBinding.progressBarPerformance.setVisibility(View.GONE);
-                            fetchCoverageData();
-                            if (!performanceChartData.isEmpty()) {
+                            if (performanceConfiguration != null && !performanceConfiguration.isEmpty() && !performanceChartData.isEmpty()) {
                                 mBinding.chartPerformance.setVisibility(View.VISIBLE);
-                                drawPerformanceBarChart(performanceChartData);
+                                drawPerformanceBarChart(performanceConfiguration, performanceChartData);
                             } else {
                                 mBinding.textViewNoPerformanceData.setVisibility(View.VISIBLE);
                             }
@@ -191,37 +219,31 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
-                            fetchCoverageData();
                             mBinding.textViewNoPerformanceData.setVisibility(View.VISIBLE);
                             mBinding.progressBarPerformance.setVisibility(View.GONE);
 
                         }
                     });
         } else {
-            showInternetSnackBar(PERFORMANCE);
+            showInternetSnackBar();
         }
 
     }
 
-    private void showInternetSnackBar(final int type) {
+    private void showInternetSnackBar() {
 
         Snackbar.make(mBinding.getRoot(), getString(R.string.error_message_no_internet), Snackbar.LENGTH_INDEFINITE)
                 .setAction((R.string.labelRetry), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (type == COVERAGE) {
-                            fetchCoverageData();
-                        } else if (type == EFFORTS) {
-                            fetchEffortData();
-                        } else if (type == PERFORMANCE) {
-                            fetchPerformanceData();
-                        }
+                        fetchEffortData();
                     }
                 })
                 .show();
 
     }
 
+    /*Draw pie chart for time spent*/
     private void drawPieChart(ArrayList<EffortChartData> effortChartData, int daysCount) {
         float totalTimeSpent = 0;
         float totalReadTime = 0;
@@ -331,19 +353,29 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
         });
     }
 
-    /*Draw bar chart for date wise time spent*/
-    private void drawPerformanceBarChart(ArrayList<PerformanceChartData> performanceChartData) {
+    /*Draw bar chart for performance*/
+    private void drawPerformanceBarChart(ArrayList<ChartConfigurationData> performanceConfiguration, ArrayList<PerformanceChartData> performanceChartData) {
 
         final ArrayList<String> xAxisLabel = new ArrayList<>();
         ArrayList<BarEntry> values = new ArrayList<>();
         List<Integer> colors = new ArrayList<>();
+        List<LegendEntry> legendEntries = new ArrayList<>();
 
+        /*Add legend entries according to configuration*/
+        for (int i = 0; i < performanceConfiguration.size(); i++) {
+            ChartConfigurationData configurationData = performanceConfiguration.get(i);
+            legendEntries.add(new LegendEntry(configurationData.getLabel(), Legend.LegendForm.SQUARE, NaN, NaN, null, Color.parseColor(configurationData.getColorCode())));
+
+        }
+
+        /*To remove data from list in which performance value is 0*/
         for (int i = 0; i < performanceChartData.size(); i++) {
             if (performanceChartData.get(i).getPerformance() <= 0) {
                 performanceChartData.remove(performanceChartData.get(i));
             }
         }
 
+        /*Adding chart data for Y and X axis*/
         for (int i = 0; i < performanceChartData.size(); i++) {
 
             PerformanceChartData data = performanceChartData.get(i);
@@ -353,15 +385,12 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
 
             xAxisLabel.add(data.getName());
 
-            if (performance > 0 && performance <= 40) {
-                colors.add(ContextCompat.getColor(getBaseContext(), R.color.colorRed));
-            } else if (performance > 40 && performance <= 70) {
-                colors.add(ContextCompat.getColor(getBaseContext(), R.color.colorAnnouncement));
-            } else if (performance > 70) {
-                colors.add(ContextCompat.getColor(getBaseContext(), R.color.colorGreenDark));
+            for (int j = 0; j < performanceConfiguration.size(); j++) {
+                ChartConfigurationData chartConfigurationData = performanceConfiguration.get(j);
+                if (performance >= chartConfigurationData.getFrom() && performance <= chartConfigurationData.getTo()) {
+                    colors.add(Color.parseColor(chartConfigurationData.getColorCode()));
+                }
             }
-
-
         }
 
         YAxis rightAxis = mBinding.chartPerformance.getAxisRight();
@@ -374,10 +403,6 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
         leftAxis.setValueFormatter(new MyPercentFormatter());
         leftAxis.setGridColor(ContextCompat.getColor(getBaseContext(), R.color.colorTransparent));
 
-        List<LegendEntry> legendEntries = new ArrayList<>();
-        legendEntries.add(new LegendEntry("0-40", Legend.LegendForm.SQUARE, NaN, NaN, null, ContextCompat.getColor(getBaseContext(), R.color.colorRed)));
-        legendEntries.add(new LegendEntry("40-70", Legend.LegendForm.SQUARE, NaN, NaN, null, ContextCompat.getColor(getBaseContext(), R.color.colorAnnouncement)));
-        legendEntries.add(new LegendEntry("70+", Legend.LegendForm.SQUARE, NaN, NaN, null, ContextCompat.getColor(getBaseContext(), R.color.colorGreenDark)));
         Legend legend = mBinding.chartPerformance.getLegend();
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
@@ -447,30 +472,43 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
 
     }
 
-    private void drawCoverageChart(ArrayList<CoverageChartData> coverageChartData) {
+    /*Draw bar chart for progress*/
+    private void drawCoverageChart(ArrayList<ChartConfigurationData> coverageConfiguration, ArrayList<CoverageChartData> coverageChartData) {
 
         final ArrayList<String> xAxisLabel = new ArrayList<>();
         ArrayList<BarEntry> values = new ArrayList<>();
         ArrayList<Integer> colors = new ArrayList<>();
+        List<LegendEntry> legendEntries = new ArrayList<>();
 
+        /*Add legend entries according to configuration*/
+        for (int i = 0; i < coverageConfiguration.size(); i++) {
+            ChartConfigurationData configurationData = coverageConfiguration.get(i);
+            legendEntries.add(new LegendEntry(configurationData.getLabel(), Legend.LegendForm.SQUARE, NaN, NaN, null, Color.parseColor(configurationData.getColorCode())));
+
+        }
+
+        /*To remove data from list in which coverage value is 0*/
         for (int i = 0; i < coverageChartData.size(); i++) {
             if (coverageChartData.get(i).getCoverage() <= 0) {
                 coverageChartData.remove(coverageChartData.get(i));
             }
         }
 
+        /*Adding chart data for Y and X axis*/
         for (int i = 0; i < coverageChartData.size(); i++) {
             CoverageChartData data = coverageChartData.get(i);
-            xAxisLabel.add(data.getName());
+
             float coverage = (data.getCoverage() / data.getTotal()) * 100;
             values.add(new BarEntry(i, coverage, data));
 
-            if (coverage > 0 && coverage <= 40) {
-                colors.add(ContextCompat.getColor(getBaseContext(), R.color.colorRed));
-            } else if (coverage > 40 && coverage <= 70) {
-                colors.add(ContextCompat.getColor(getBaseContext(), R.color.colorAnnouncement));
-            } else if (coverage > 70) {
-                colors.add(ContextCompat.getColor(getBaseContext(), R.color.colorGreenDark));
+            xAxisLabel.add(data.getName());
+
+
+            for (int j = 0; j < coverageConfiguration.size(); j++) {
+                ChartConfigurationData chartConfigurationData = coverageConfiguration.get(j);
+                if (coverage >= chartConfigurationData.getFrom() && coverage <= chartConfigurationData.getTo()) {
+                    colors.add(Color.parseColor(chartConfigurationData.getColorCode()));
+                }
             }
 
         }
@@ -494,9 +532,6 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
         leftAxis.setAxisMaximum(100f);
         leftAxis.setValueFormatter(new MyPercentFormatter());
 
-        List<LegendEntry> legendEntries = new ArrayList<>();
-        legendEntries.add(new LegendEntry("Completed", Legend.LegendForm.SQUARE, NaN, NaN, null, ContextCompat.getColor(getBaseContext(), R.color.colorGreenDark)));
-        legendEntries.add(new LegendEntry("Pending", Legend.LegendForm.SQUARE, NaN, NaN, null, ContextCompat.getColor(getBaseContext(), R.color.colorGrey)));
         Legend legend = mBinding.chartCoverage.getLegend();
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);

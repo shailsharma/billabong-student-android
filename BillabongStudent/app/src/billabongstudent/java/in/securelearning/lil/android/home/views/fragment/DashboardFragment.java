@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,7 +22,6 @@ import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -52,6 +52,7 @@ import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
+import in.securelearning.lil.android.home.events.HomeworkTabOpeningEvent;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
 import in.securelearning.lil.android.home.utils.RecyclerViewPagerIndicator;
@@ -266,6 +267,13 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 mListener.onDashboardFragmentInteraction(AssignmentStudentFragment.class);
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mRxBus.send(new HomeworkTabOpeningEvent(HomeworkTabOpeningEvent.DUE));
+                    }
+                }, 500);
 
             }
         });
@@ -274,6 +282,14 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 mListener.onDashboardFragmentInteraction(AssignmentStudentFragment.class);
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mRxBus.send(new HomeworkTabOpeningEvent(HomeworkTabOpeningEvent.DUE));
+                    }
+                }, 500);
+
 
             }
         });
@@ -282,6 +298,13 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 mListener.onDashboardFragmentInteraction(AssignmentStudentFragment.class);
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mRxBus.send(new HomeworkTabOpeningEvent(HomeworkTabOpeningEvent.OVERDUE));
+                    }
+                }, 500);
 
             }
         });
