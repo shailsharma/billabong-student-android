@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 
 import javax.inject.Inject;
 
@@ -32,17 +32,13 @@ import in.securelearning.lil.android.app.databinding.LayoutPracticeListItemBindi
 import in.securelearning.lil.android.app.databinding.LayoutSubjectDetailsHomeFragmentBinding;
 import in.securelearning.lil.android.app.databinding.LayoutVideoListItemBinding;
 import in.securelearning.lil.android.base.customchrometabutils.CustomChromeTabHelper;
-import in.securelearning.lil.android.base.dataobjects.DigitalBook;
-import in.securelearning.lil.android.base.dataobjects.InteractiveVideo;
 import in.securelearning.lil.android.base.dataobjects.MetaInformation;
 import in.securelearning.lil.android.base.dataobjects.MicroLearningCourse;
 import in.securelearning.lil.android.base.dataobjects.Thumbnail;
-import in.securelearning.lil.android.base.dataobjects.VideoCourse;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
-import in.securelearning.lil.android.base.views.activity.WebPlayerLiveActivity;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.events.FetchSubjectDetailEvent;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
@@ -77,13 +73,17 @@ public class SubjectDetailHomeFragment extends Fragment {
     RxBus mRxBus;
     private Context mContext;
     private static final String TOPIC_ID = "topicId";
+    private static final String TOPIC_NAME = "topicName";
     private static final String SUBJECT_NAME = "subjectName";
     private static final String THIRD_PARTY_TOPIC_ID = "thirdPartyTopicId";
+    private static final String SUBJECT_BANNER_URL = "subjectBannerUrl";
     private String mSubjectName;
+    private String mSubjectBannerURL;
     private String mThirdPartyTopicId;
     LayoutSubjectDetailsHomeFragmentBinding mBinding;
 
     private Disposable mDisposable;
+    private String mTopicName;
 
     public SubjectDetailHomeFragment() {
         // Required empty public constructor
@@ -124,8 +124,10 @@ public class SubjectDetailHomeFragment extends Fragment {
     private void getBundleData() {
         if (getArguments() != null) {
             String topicId = getArguments().getString(TOPIC_ID);
+            mTopicName = getArguments().getString(TOPIC_NAME);
             mSubjectName = getArguments().getString(SUBJECT_NAME);
             mThirdPartyTopicId = getArguments().getString(THIRD_PARTY_TOPIC_ID);
+            mSubjectBannerURL = getArguments().getString(SUBJECT_BANNER_URL);
             if (!TextUtils.isEmpty(topicId)) {
                 fetchLearnList(topicId);
             }
@@ -241,6 +243,7 @@ public class SubjectDetailHomeFragment extends Fragment {
 //            fetchPracticeList(topicId);
 //        }
         fetchPracticeList(topicId);
+
     }
 
     /*Check whether thirdPartyTopicId null or empty*/
@@ -254,16 +257,81 @@ public class SubjectDetailHomeFragment extends Fragment {
         }
     }
 
+    /*Display Light Sail card if subject is English*/
     private void displayLightSailCard() {
         mBinding.progressBarPractice.setVisibility(View.GONE);
-        mBinding.cardViewLightSail.setVisibility(View.VISIBLE);
-
-        mBinding.cardViewLightSail.setOnClickListener(new View.OnClickListener() {
+        mBinding.cardViewPractice.setVisibility(View.VISIBLE);
+        Picasso.with(mContext).load(R.drawable.logo_lightsail).placeholder(R.drawable.image_placeholder).into(mBinding.imageViewPractice);
+        mBinding.cardViewPractice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (GeneralUtils.isNetworkAvailable(getContext())) {
                     String jwt = AppPrefs.getIdToken(getContext());
                     CustomChromeTabHelper.loadCustomDataUsingColorResource(getContext(), "https://reader.lightsailed.com/Reader/index.html?jwtToken=" + jwt, R.color.colorPrimary);
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.connect_internet), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    /*Display MindSpark card if subject is Maths*/
+    private void displayMindSparkCard(MindSparkLoginResponse response) {
+        mBinding.layoutMindSparkPractice.getRoot().setVisibility(View.VISIBLE);
+        mBinding.buttonMorePractice.setVisibility(View.VISIBLE);
+        mBinding.imageViewMindSparkLogo.setVisibility(View.VISIBLE);
+        Picasso.with(mContext).load(R.drawable.background_thumb_mind_spark).placeholder(R.drawable.image_placeholder).into(mBinding.layoutMindSparkPractice.imageViewBackground);
+
+        final MindSparkContentDetails mindSparkContentDetails = response.getMindSparkContentDetails();
+        MindSparkTopicData mindSparkTopicData = response.getMindSparkTopicData();
+        if (mindSparkTopicData.getMindSparkUnitList() != null && mindSparkTopicData.getMindSparkUnitList().size() > 0) {
+            MindSparkUnitData mindSparkUnitData = mindSparkTopicData.getMindSparkUnitList().get(0);
+            mBinding.layoutMindSparkPractice.textViewSubTitle.setText(mindSparkUnitData.getUnitName());
+
+        }
+        String value;
+        if (mindSparkContentDetails.getUnitsCleared() > 1) {
+            value = mindSparkContentDetails.getUnitsCleared() + " out of " + mindSparkContentDetails.getUnitsOverall() + " units covered";
+        } else {
+            value = mindSparkContentDetails.getUnitsCleared() + " out of " + mindSparkContentDetails.getUnitsOverall() + " unit covered";
+        }
+        mBinding.layoutMindSparkPractice.textViewStatus.setText(value);
+        mBinding.layoutMindSparkPractice.textViewTitle.setText(mindSparkContentDetails.getContentName());
+        mBinding.layoutMindSparkPractice.textViewRewardPoints.setVisibility(View.GONE);
+
+        mBinding.layoutMindSparkPractice.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (GeneralUtils.isNetworkAvailable(mContext)) {
+                    startActivity(PracticePlayerActivity.getStartIntent(mContext, mindSparkContentDetails.getContentId()));
+                }
+            }
+        });
+
+        mBinding.buttonMorePractice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(MindSparkAllTopicListActivity.getStartIntent(getContext()));
+
+            }
+        });
+    }
+
+    /*Display Practice card if subject is English*/
+    private void displayPracticeCard(final ArrayList<String> skillIds, final HomeModel.SkillMap skillMap) {
+        mBinding.layoutPractice.getRoot().setVisibility(View.VISIBLE);
+        if (!TextUtils.isEmpty(mSubjectBannerURL)) {
+            Picasso.with(mContext).load(mSubjectBannerURL).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(mBinding.layoutPractice.imageViewBackground);
+        } else {
+            Picasso.with(mContext).load(R.drawable.background_thumb_mind_spark).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(mBinding.layoutPractice.imageViewBackground);
+        }
+        mBinding.layoutPractice.textViewTitle.setText(mTopicName);
+        mBinding.layoutPractice.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (GeneralUtils.isNetworkAvailable(mContext)) {
+                    startActivity(PracticeTopicActivity.getStartIntent(getContext(), skillIds, mTopicName, getString(R.string.label_low), skillMap));
+
                 } else {
                     Toast.makeText(getContext(), getString(R.string.connect_internet), Toast.LENGTH_SHORT).show();
                 }
@@ -285,9 +353,36 @@ public class SubjectDetailHomeFragment extends Fragment {
                         fetchApplyList(topicId);
                         mBinding.progressBarPractice.setVisibility(View.GONE);
                         if (lrpaResult != null && lrpaResult.getResults() != null && !lrpaResult.getResults().isEmpty()) {
-                            mBinding.listPractice.setVisibility(View.VISIBLE);
+                            mBinding.listPractice.setVisibility(View.GONE);
                             mBinding.textViewNoDataPractice.setVisibility(View.GONE);
-                            initializeRecyclerViewPractice(lrpaResult.getResults());
+
+                            //initializeRecyclerViewPractice(lrpaResult.getResults());
+
+                            ArrayList<AboutCourseMinimal> list = lrpaResult.getResults();
+                            ArrayList<MetaInformation> metaInformationList = new ArrayList<>();
+                            for (int i = 0; i < list.size(); i++) {
+                                metaInformationList.add(list.get(i).getMetaInformation());
+                            }
+
+                            if (!metaInformationList.isEmpty()) {
+                                ArrayList<String> skillIds = new ArrayList<>();
+                                HomeModel.SkillMap skillMap = getSkillMap(metaInformationList.get(0));
+                                for (int i = 0; i < metaInformationList.size(); i++) {
+                                    skillIds.addAll(getSkillIds(metaInformationList.get(i)));
+                                }
+
+                                /*removing duplicate entries if any*/
+                                HashSet<String> hashSet = new HashSet<String>(skillIds);
+                                skillIds.clear();
+                                skillIds.addAll(hashSet);
+
+                                displayPracticeCard(skillIds, skillMap);
+                            } else {
+                                mBinding.listPractice.setVisibility(View.GONE);
+                                mBinding.textViewNoDataPractice.setVisibility(View.VISIBLE);
+                            }
+
+
                         } else {
                             mBinding.listPractice.setVisibility(View.GONE);
                             mBinding.textViewNoDataPractice.setVisibility(View.VISIBLE);
@@ -356,9 +451,10 @@ public class SubjectDetailHomeFragment extends Fragment {
 
                         mBinding.progressBarPractice.setVisibility(View.GONE);
                         if (mindSparkLoginResponse != null && mindSparkLoginResponse.getMindSparkContentDetails() != null) {
-                            ArrayList<MindSparkLoginResponse> list = new ArrayList<>(Collections.singleton(mindSparkLoginResponse));
-                            initializeRecyclerViewPracticeMS(list);
-                            mBinding.listPractice.setVisibility(View.VISIBLE);
+                            //ArrayList<MindSparkLoginResponse> list = new ArrayList<>(Collections.singleton(mindSparkLoginResponse));
+                            //initializeRecyclerViewPracticeMS(list);
+                            displayMindSparkCard(mindSparkLoginResponse);
+                            mBinding.listPractice.setVisibility(View.GONE);
                             mBinding.textViewNoDataPractice.setVisibility(View.GONE);
                         } else {
                             mBinding.listPractice.setVisibility(View.GONE);
@@ -378,12 +474,14 @@ public class SubjectDetailHomeFragment extends Fragment {
                 });
     }
 
-    public static SubjectDetailHomeFragment newInstance(String topicId, String subjectName, String thirdPartyTopicId) {
+    public static SubjectDetailHomeFragment newInstance(String topicId, String topicName, String subjectName, String thirdPartyTopicId, String bannerUrl) {
         SubjectDetailHomeFragment fragment = new SubjectDetailHomeFragment();
         Bundle args = new Bundle();
         args.putString(TOPIC_ID, topicId);
+        args.putString(TOPIC_NAME, topicName);
         args.putString(SUBJECT_NAME, subjectName);
         args.putString(THIRD_PARTY_TOPIC_ID, thirdPartyTopicId);
+        args.putString(SUBJECT_BANNER_URL, bannerUrl);
         fragment.setArguments(args);
         return fragment;
     }
@@ -414,6 +512,7 @@ public class SubjectDetailHomeFragment extends Fragment {
         PracticeAdapterMS practiceAdapterMS = new PracticeAdapterMS(mContext, list);
         mBinding.listPractice.setAdapter(practiceAdapterMS);
         mBinding.buttonMorePractice.setVisibility(View.VISIBLE);
+        mBinding.imageViewMindSparkLogo.setVisibility(View.VISIBLE);
         mBinding.buttonMorePractice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -440,6 +539,70 @@ public class SubjectDetailHomeFragment extends Fragment {
 
     }
 
+    private ArrayList<String> getSkillIds(MetaInformation metaInformation) {
+        if (metaInformation != null) {
+            ArrayList<String> skillIds = new ArrayList<>();
+            if (metaInformation.getSkills() != null && !metaInformation.getSkills().isEmpty()) {
+                for (int i = 0; i < metaInformation.getSkills().size(); i++) {
+                    skillIds.add(metaInformation.getSkills().get(i).getId());
+                }
+                return skillIds;
+            } else {
+                return null;
+            }
+
+        } else {
+            return null;
+
+        }
+    }
+
+    private HomeModel.SkillMap getSkillMap(MetaInformation metaInformation) {
+        if (metaInformation != null) {
+            HomeModel.SkillMap skillMap = new HomeModel.SkillMap();
+            if (metaInformation.getBoard() != null) {
+                skillMap.setBoard(metaInformation.getBoard());
+            } else {
+                return null;
+            }
+
+            if (metaInformation.getGrade() != null) {
+                skillMap.setGrade(metaInformation.getGrade());
+            } else {
+                return null;
+            }
+            if (metaInformation.getLanguage() != null) {
+                skillMap.setLanguage(metaInformation.getLanguage());
+
+            } else {
+                return null;
+            }
+            if (metaInformation.getLearningLevel() != null) {
+                skillMap.setLearningLevel(metaInformation.getLearningLevel());
+
+            } else {
+                return null;
+            }
+
+            if (metaInformation.getSubject() != null) {
+                skillMap.setSubject(metaInformation.getSubject());
+            } else {
+                return null;
+            }
+
+            if (metaInformation.getTopic() != null) {
+                skillMap.setTopic(metaInformation.getTopic());
+
+            } else {
+                return null;
+            }
+            return skillMap;
+        } else {
+            return null;
+        }
+
+    }
+
     /*Adapter*/
     private class LearnAdapter extends RecyclerView.Adapter<LearnAdapter.ViewHolder> {
         private Context mContext;
@@ -463,7 +626,6 @@ public class SubjectDetailHomeFragment extends Fragment {
 
             setThumbnail(course.getThumbnail(), holder.mBinding.imageViewBackground);
             setRewardPoint(course.getTotalMarks(), holder.mBinding.layoutReward, holder.mBinding.textViewRewardPoints);
-
             holder.mBinding.textViewTitle.setText(course.getTitle());
             holder.mBinding.textViewType.setText(mFlavorHomeModel.getCourseType(course));
 
@@ -476,7 +638,6 @@ public class SubjectDetailHomeFragment extends Fragment {
                             mContext.startActivity(RapidLearningSectionListActivity.getStartIntent(mContext, course.getId()));
                         } else {
                             WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
-
                         }
                     } else {
                         Toast.makeText(getContext(), getString(R.string.error_something_went_wrong), Toast.LENGTH_SHORT).show();
@@ -632,7 +793,6 @@ public class SubjectDetailHomeFragment extends Fragment {
             setThumbnail(course.getThumbnail(), holder.mBinding.imageViewBackground);
 
             holder.mBinding.textViewTitle.setText(course.getTitle());
-            //holder.mBinding.textViewType.setText(mFlavorHomeModel.getCourseType(course));
 
             holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -653,70 +813,6 @@ public class SubjectDetailHomeFragment extends Fragment {
 
                 }
             });
-        }
-
-        private ArrayList<String> getSkillIds(MetaInformation metaInformation) {
-            if (metaInformation != null) {
-                ArrayList<String> skillIds = new ArrayList<>();
-                if (metaInformation.getSkills() != null && !metaInformation.getSkills().isEmpty()) {
-                    for (int i = 0; i < metaInformation.getSkills().size(); i++) {
-                        skillIds.add(metaInformation.getSkills().get(i).getId());
-                    }
-                    return skillIds;
-                } else {
-                    return null;
-                }
-
-            } else {
-                return null;
-
-            }
-        }
-
-        private HomeModel.SkillMap getSkillMap(MetaInformation metaInformation) {
-            if (metaInformation != null) {
-                HomeModel.SkillMap skillMap = new HomeModel.SkillMap();
-                if (metaInformation.getBoard() != null) {
-                    skillMap.setBoard(metaInformation.getBoard());
-                } else {
-                    return null;
-                }
-
-                if (metaInformation.getGrade() != null) {
-                    skillMap.setGrade(metaInformation.getGrade());
-                } else {
-                    return null;
-                }
-                if (metaInformation.getLanguage() != null) {
-                    skillMap.setLanguage(metaInformation.getLanguage());
-
-                } else {
-                    return null;
-                }
-                if (metaInformation.getLearningLevel() != null) {
-                    skillMap.setLearningLevel(metaInformation.getLearningLevel());
-
-                } else {
-                    return null;
-                }
-
-                if (metaInformation.getSubject() != null) {
-                    skillMap.setSubject(metaInformation.getSubject());
-                } else {
-                    return null;
-                }
-
-                if (metaInformation.getTopic() != null) {
-                    skillMap.setTopic(metaInformation.getTopic());
-
-                } else {
-                    return null;
-                }
-                return skillMap;
-            } else {
-                return null;
-            }
-
         }
 
         private void setThumbnail(Thumbnail thumbnail, ImageView imageView) {
@@ -842,7 +938,6 @@ public class SubjectDetailHomeFragment extends Fragment {
 
             setThumbnail(course.getThumbnail(), holder.mBinding.imageViewBackground);
             setRewardPoint(course.getTotalMarks(), holder.mBinding.layoutReward, holder.mBinding.textViewRewardPoints);
-
             holder.mBinding.textViewTitle.setText(course.getTitle());
             holder.mBinding.textViewType.setText(mFlavorHomeModel.getCourseType(course));
 
@@ -854,11 +949,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                         if (finalObjectClass.equals(MicroLearningCourse.class)) {
                             mContext.startActivity(RapidLearningSectionListActivity.getStartIntent(mContext, course.getId()));
                         } else {
-                            if (finalObjectClass.equals(DigitalBook.class) || finalObjectClass.equals(VideoCourse.class) || finalObjectClass.equals(InteractiveVideo.class)) {
-                                WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
-                            } else {
-                                WebPlayerLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false, false);
-                            }
+                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
 
                         }
                     } else {
@@ -867,6 +958,15 @@ public class SubjectDetailHomeFragment extends Fragment {
 
                 }
             });
+        }
+
+        private void setRewardPoint(int totalMarks, LinearLayoutCompat layoutReward, AppCompatTextView textViewRewardPoints) {
+            if (totalMarks > 0) {
+                layoutReward.setVisibility(View.VISIBLE);
+                textViewRewardPoints.setText(String.valueOf(totalMarks));
+            } else {
+                layoutReward.setVisibility(View.GONE);
+            }
         }
 
         private void setThumbnail(Thumbnail thumbnail, ImageView imageView) {
@@ -882,15 +982,6 @@ public class SubjectDetailHomeFragment extends Fragment {
                 Picasso.with(mContext).load(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
             }
 
-        }
-
-        private void setRewardPoint(int totalMarks, LinearLayoutCompat layoutReward, AppCompatTextView textViewRewardPoints) {
-            if (totalMarks > 0) {
-                layoutReward.setVisibility(View.VISIBLE);
-                textViewRewardPoints.setText(String.valueOf(totalMarks));
-            } else {
-                layoutReward.setVisibility(View.GONE);
-            }
         }
 
         @Override
@@ -914,6 +1005,5 @@ public class SubjectDetailHomeFragment extends Fragment {
             }
         }
     }
-
 
 }

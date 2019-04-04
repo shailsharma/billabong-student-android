@@ -759,7 +759,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
             case R.id.nav_assignments: {
                 searchVisibility(false);
-                filterVisibility(true);
+                filterVisibility(false);
                 browseVisibility(false);
                 bookmarkVisibility(false);
                 createQuizVisibility(false);

@@ -33,7 +33,7 @@ import in.securelearning.lil.android.app.databinding.LayoutAnalyticsPerformanceT
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsProgressDetailBinding;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.syncadapter.dataobjects.CoverageChartData;
+import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -192,7 +192,7 @@ public class ProgressDetailActivity extends AppCompatActivity {
             holder.mBinding.textViewTopicName.setText(coverageChartData.getName());
 
             float coveragePercent = (coverageChartData.getCoverage() / coverageChartData.getTotal()) * 100;
-            String performance = String.valueOf(new DecimalFormat("##.##").format(coveragePercent) + "%");
+            String performance = String.valueOf(Math.round(coveragePercent) + "%");
             holder.mBinding.textViewTopicPerformance.setText(performance);
 
             if (coveragePercent > 0 && coveragePercent <= 40) {

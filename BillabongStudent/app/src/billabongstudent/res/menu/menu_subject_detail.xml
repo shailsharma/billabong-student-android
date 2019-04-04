@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/actionAnalytics"
+        android:icon="@drawable/icon_dashboard_subject"
+        android:title="@string/labelAnalytics"
+        app:showAsAction="always"
+        android:visible="false"/>
+</menu>

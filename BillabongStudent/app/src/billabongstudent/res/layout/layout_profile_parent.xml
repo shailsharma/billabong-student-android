@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+        xmlns:tools="http://schemas.android.com/tools">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -10,236 +10,250 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/margin_16dp">
+            >
 
-            <!--Father details-->
-            <android.support.v7.widget.AppCompatTextView
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite"
+                android:elevation="@dimen/elevation_2dp"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_16dp">
+
+                <!--Father details-->
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/labelFatherDetails"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"/>
+
+                <!--Father Name-->
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:id="@+id/linearLayoutFatherName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_16dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="49"
+                        android:text="@string/labelName"
+                        android:textColor="@android:color/black"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/labelColon"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewFatherName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_16dp"
+                        android:layout_weight="49"
+                        android:textColor="@android:color/black"
+                        tools:text="Hemant Sharma"/>
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <!--Mobile-->
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:id="@+id/linearLayoutFatherMobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_16dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="49"
+                        android:text="@string/labelMobile"
+                        android:textColor="@android:color/black"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/labelColon"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewFatherMobile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_16dp"
+                        android:layout_weight="49"
+                        android:textColor="@android:color/black"
+                        tools:text="9828698286"/>
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <!--Email-->
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:id="@+id/linearLayoutFatherEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_16dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="49"
+                        android:text="@string/labelEmail"
+                        android:textColor="@android:color/black"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/labelColon"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewFatherEmail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_16dp"
+                        android:layout_weight="49"
+                        android:textColor="@android:color/black"
+                        tools:text="A@b.c"/>
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+
+            <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_16dp"
-                android:text="@string/labelFatherDetails"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
+                android:layout_marginBottom="@dimen/margin_16dp"
+                android:background="@color/colorWhite"
+                android:elevation="@dimen/elevation_2dp"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_16dp">
 
-            <!--Father Name-->
-            <android.support.v7.widget.LinearLayoutCompat
-                android:id="@+id/linearLayoutFatherName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_16dp">
-
+                <!--Mother details-->
                 <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="49"
-                    android:text="@string/labelName"
-                    android:textColor="@android:color/black" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/labelColon"
+                    android:text="@string/labelMotherDetails"
                     android:textColor="@android:color/black"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/textViewFatherName"
-                    android:layout_width="0dp"
+                <!--Mother Name-->
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:id="@+id/linearLayoutMotherName"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_16dp"
-                    android:layout_weight="49"
-                    android:textColor="@android:color/black"
-                    tools:text="Hemant Sharma" />
+                    android:layout_marginTop="@dimen/margin_16dp">
 
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="49"
+                        android:text="@string/labelName"
+                        android:textColor="@android:color/black"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/labelColon"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewMotherName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_16dp"
+                        android:layout_weight="49"
+                        android:textColor="@android:color/black"
+                        tools:text="Rekha Sharma"/>
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <!--Mobile-->
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:id="@+id/linearLayoutMotherMobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_16dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="49"
+                        android:text="@string/labelMobile"
+                        android:textColor="@android:color/black"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/labelColon"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewMotherMobile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_16dp"
+                        android:layout_weight="49"
+                        android:textColor="@android:color/black"
+                        tools:text="9828698286"/>
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <!--Email-->
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:id="@+id/linearLayoutMotherEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_16dp">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="49"
+                        android:text="@string/labelEmail"
+                        android:textColor="@android:color/black"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/labelColon"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewMotherEmail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_16dp"
+                        android:layout_weight="49"
+                        android:textColor="@android:color/black"
+                        tools:text="A@b.c"/>
+
+                </android.support.v7.widget.LinearLayoutCompat>
             </android.support.v7.widget.LinearLayoutCompat>
 
-            <!--Mobile-->
-            <android.support.v7.widget.LinearLayoutCompat
-                android:id="@+id/linearLayoutFatherMobile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_16dp">
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="49"
-                    android:text="@string/labelMobile"
-                    android:textColor="@android:color/black" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/labelColon"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/textViewFatherMobile"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_16dp"
-                    android:layout_weight="49"
-                    android:textColor="@android:color/black"
-                    tools:text="9828698286" />
-
-            </android.support.v7.widget.LinearLayoutCompat>
-
-            <!--Email-->
-            <android.support.v7.widget.LinearLayoutCompat
-                android:id="@+id/linearLayoutFatherEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_16dp">
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="49"
-                    android:text="@string/labelEmail"
-                    android:textColor="@android:color/black" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/labelColon"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/textViewFatherEmail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_16dp"
-                    android:layout_weight="49"
-                    android:textColor="@android:color/black"
-                    tools:text="A@b.c" />
-
-            </android.support.v7.widget.LinearLayoutCompat>
-
-            <!--Divider-->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginTop="@dimen/margin_16dp"
-                android:background="@color/itemDivider" />
-
-            <!--Mother details-->
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_16dp"
-                android:text="@string/labelMotherDetails"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
-
-            <!--Mother Name-->
-            <android.support.v7.widget.LinearLayoutCompat
-                android:id="@+id/linearLayoutMotherName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_16dp">
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="49"
-                    android:text="@string/labelName"
-                    android:textColor="@android:color/black" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/labelColon"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/textViewMotherName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_16dp"
-                    android:layout_weight="49"
-                    android:textColor="@android:color/black"
-                    tools:text="Rekha Sharma" />
-
-            </android.support.v7.widget.LinearLayoutCompat>
-
-            <!--Mobile-->
-            <android.support.v7.widget.LinearLayoutCompat
-                android:id="@+id/linearLayoutMotherMobile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_16dp">
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="49"
-                    android:text="@string/labelMobile"
-                    android:textColor="@android:color/black" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/labelColon"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/textViewMotherMobile"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_16dp"
-                    android:layout_weight="49"
-                    android:textColor="@android:color/black"
-                    tools:text="9828698286" />
-
-            </android.support.v7.widget.LinearLayoutCompat>
-
-            <!--Email-->
-            <android.support.v7.widget.LinearLayoutCompat
-                android:id="@+id/linearLayoutMotherEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_16dp">
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="49"
-                    android:text="@string/labelEmail"
-                    android:textColor="@android:color/black" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/labelColon"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/textViewMotherEmail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_16dp"
-                    android:layout_weight="49"
-                    android:textColor="@android:color/black"
-                    tools:text="A@b.c" />
-
-            </android.support.v7.widget.LinearLayoutCompat>
 
         </android.support.v7.widget.LinearLayoutCompat>
 

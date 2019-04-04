@@ -39,7 +39,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/margin_8dp"
                         android:layout_marginBottom="@dimen/margin_8dp"
-                        android:text="@string/time_spent_efforts"
+                        android:text="@string/efforts_based_on_time_spent"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/colorBlack"/>
 
@@ -56,6 +56,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:clickable="true"
+                            android:foreground="?selectableItemBackground"
                             android:gravity="center_horizontal"
                             android:orientation="vertical">
 
@@ -69,10 +70,12 @@
                                 tools:text="40:25"/>
 
                             <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewTotalTimeSpentLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/total_hrs"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:textColor="@color/colorAccent"/>
 
                         </android.support.v7.widget.LinearLayoutCompat>
 
@@ -82,6 +85,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
+                            android:foreground="?selectableItemBackground"
                             android:gravity="center_horizontal"
                             android:orientation="vertical"
                             >
@@ -96,10 +100,12 @@
                                 tools:text="40:25"/>
 
                             <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewDailyTimeSpentLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/daily_efforts_min"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:textColor="@color/colorAccent"/>
 
                         </android.support.v7.widget.LinearLayoutCompat>
 
@@ -154,7 +160,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/margin_8dp"
                         android:layout_marginBottom="@dimen/margin_8dp"
-                        android:text="@string/performance_assessment_in"
+                        android:text="@string/performance_based_on_assessments"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/colorBlack"/>
 
@@ -207,7 +213,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/margin_8dp"
                         android:layout_marginBottom="@dimen/margin_8dp"
-                        android:text="@string/progress_coverage"
+                        android:text="@string/progress_based_on_coverage"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/colorBlack"/>
 

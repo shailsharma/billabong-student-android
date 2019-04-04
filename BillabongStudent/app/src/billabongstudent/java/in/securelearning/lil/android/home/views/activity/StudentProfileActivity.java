@@ -74,6 +74,7 @@ public class StudentProfileActivity extends AppCompatActivity {
     RxBus mRxBus;
     private boolean isFromLoggedInUser = false;
     private String mUserObjectId = null;
+    boolean canFullView = false;
     private StudentProfile mUserProfile = new StudentProfile();
     private StudentAchievement mStudentAchievement;
 
@@ -342,6 +343,7 @@ public class StudentProfileActivity extends AppCompatActivity {
 
 
     private void setUserThumbnail(UserProfile userProfile) {
+
         String imageUrl = null;
         boolean canFullView = false;
         if (userProfile.getThumbnail() != null && !TextUtils.isEmpty(userProfile.getThumbnail().getLocalUrl())) {
@@ -382,7 +384,6 @@ public class StudentProfileActivity extends AppCompatActivity {
         final ArrayList<String> tabTitles = getTabTitles();
         mBinding.viewpager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), tabTitles));
         mBinding.tabLayout.setupWithViewPager(mBinding.viewpager);
-        mBinding.tabLayout.setSelectedTabIndicatorHeight(0);
 
         for (int i = 0; i < mBinding.tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = mBinding.tabLayout.getTabAt(i);

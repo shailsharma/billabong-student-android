@@ -2,8 +2,6 @@ package in.securelearning.lil.android.syncadapter.model;
 
 import android.text.TextUtils;
 
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URLConnection;
@@ -13,6 +11,7 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.base.dataobjects.AboutCourse;
+import in.securelearning.lil.android.base.dataobjects.AnalysisActivityData;
 import in.securelearning.lil.android.base.dataobjects.AnalysisActivityRecentlyRead;
 import in.securelearning.lil.android.base.dataobjects.AnalysisTopicCovered;
 import in.securelearning.lil.android.base.dataobjects.AssignedBadges;
@@ -91,7 +90,6 @@ import in.securelearning.lil.android.syncadapter.dataobject.ServerDataPackage;
 import in.securelearning.lil.android.syncadapter.dataobject.SkillMasteryQuestionGetData;
 import in.securelearning.lil.android.syncadapter.dataobject.StudentGradeMapping;
 import in.securelearning.lil.android.syncadapter.dataobject.TeacherGradeMapping;
-import in.securelearning.lil.android.base.dataobjects.AnalysisActivityData;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfile;
 import in.securelearning.lil.android.syncadapter.fcmservices.Message;
 import in.securelearning.lil.android.syncadapter.fcmservices.MessageData;
@@ -492,15 +490,6 @@ public class NetworkModel extends BaseModel {
         return mSearchApiInterface.getPopUp(objectId);
     }
 
-    public Call<ResponseBody> getActivityChecklistJson(String id) {
-        return mDownloadApiInterface.getActivityChecklistJson(id);
-
-    }
-
-    public Call<ResponseBody> savePopupActivity(RequestBody requestBody) {
-        return mDirectUploadApiInterface.savePopupActivity(requestBody);
-    }
-
     public Call<ResponseBody> fetchYoutubeVideoDuration(String objectId) {
         return mDownloadApiInterface.getYoutubeVideoDuration(objectId);
     }
@@ -883,7 +872,8 @@ public class NetworkModel extends BaseModel {
 
     public Call<UserBrowseHistory> uploadUserBrowseHistoryLog(UserBrowseHistory userBrowseHistory) {
         return mNewUploadApiInterface.uploadUserBrowseHistory(userBrowseHistory);
-   }
+    }
+
     public Call<ResponseBody> increaseVideoCourseShareCount(String id) {
         return mDownloadApiInterface.increaseVideoCourseShareCount(id);
     }
@@ -1216,11 +1206,23 @@ public class NetworkModel extends BaseModel {
         return mDirectUploadApiInterface.uploadAnnotation(bookAnnotation);
     }
 
+    public Call<ResponseBody> getActivityChecklistJson(String id) {
+        return mDownloadApiInterface.getActivityChecklistJson(id);
+    }
+
+    public Call<ResponseBody> savePopupActivity(RequestBody requestBody) {
+        return mDirectUploadApiInterface.savePopupActivity(requestBody);
+    }
+
+    public Call<ResponseBody> getReportByQuizId(RequestBody requestBody) {
+        return mDirectUploadApiInterface.getReportByQuizId(requestBody);
+    }
+
     public Call<ResponseBody> deleteAnnotation(String id) {
         return mUploadApiInterface.deleteAnnotation(id);
     }
 
-    public Call<java.util.ArrayList<AnalysisActivityData>> fetchActivityData(String subid,String startdate,String enddate) {
+    public Call<java.util.ArrayList<AnalysisActivityData>> fetchActivityData(String subid, String startdate, String enddate) {
         ActivityData params = new ActivityData();
         params.setSubjectId(subid);
         params.setEndDate(enddate);
@@ -1228,7 +1230,7 @@ public class NetworkModel extends BaseModel {
         return mDownloadApiInterface.fetchActivityData(params);
     }
 
-    public Call<java.util.ArrayList<AnalysisActivityData>> fetchLearningData(String subid,String startdate,String enddate) {
+    public Call<java.util.ArrayList<AnalysisActivityData>> fetchLearningData(String subid, String startdate, String enddate) {
         ActivityData params = new ActivityData();
         params.setSubjectId(subid);
         params.setEndDate(enddate);
@@ -1236,15 +1238,17 @@ public class NetworkModel extends BaseModel {
         return mDownloadApiInterface.fetchLearningData(params);
     }
 
-    public Call<java.util.ArrayList<AnalysisActivityRecentlyRead>> fetchRecentlyReadData(String subid,int limit, int skip) {
-        return mDownloadApiInterface.getRecentlyRead(subid,skip,limit);
+    public Call<java.util.ArrayList<AnalysisActivityRecentlyRead>> fetchRecentlyReadData(String subid, int limit, int skip) {
+        return mDownloadApiInterface.getRecentlyRead(subid, skip, limit);
     }
 
     public Call<java.util.ArrayList<AnalysisTopicCovered>> fetchTopicData(String subid, int limit, int skip) {
-        return mDownloadApiInterface.getTopicCovered(subid,skip,limit);
+        return mDownloadApiInterface.getTopicCovered(subid, skip, limit);
     }
 
     public Call<PerformanceResponseCount> fetchPerformanceCount(String subid) {
         return mDownloadApiInterface.getaggregatedResponseCount(subid);
     }
+
+
 }

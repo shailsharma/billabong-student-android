@@ -64,7 +64,7 @@ public class AssignmentCompletedStudentActivity extends AppCompatActivity implem
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorAssignmentPrimary));
+        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorCenterGradient));
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_assignment_student);
         setTitle(getString(R.string.submitted_homework));
         setSupportActionBar(mBinding.toolbar);
@@ -125,7 +125,7 @@ public class AssignmentCompletedStudentActivity extends AppCompatActivity implem
 
         searchVisibility(false);
         browseVisibility(false);
-        filterVisibility(true);
+        filterVisibility(false);
         bookmarkVisibility(false);
         createQuizVisibility(false);
         doneVisibility(false);

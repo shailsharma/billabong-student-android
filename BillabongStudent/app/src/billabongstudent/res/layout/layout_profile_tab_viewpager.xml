@@ -6,7 +6,8 @@
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/image_dashboard_background">
 
 
         <android.support.v7.widget.Toolbar
@@ -15,11 +16,12 @@
             android:layout_height="80dp"
             android:layout_gravity="top|center_vertical"
             android:background="@drawable/gradient_app"
+            android:elevation="@dimen/elevation_4dp"
             android:paddingTop="20dp"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:titleTextColor="@android:color/white">
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/imageViewBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -38,7 +40,7 @@
                 android:textColor="@color/white"/>
 
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/imageViewEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -78,6 +80,7 @@
                     android:id="@+id/textViewName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@android:color/black"
                     android:textStyle="bold"
                     tools:text="Bhuvan Sharma"/>

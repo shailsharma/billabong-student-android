@@ -40,6 +40,7 @@ import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.home.dataobjects.Category;
 import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
+import in.securelearning.lil.android.home.events.HomeworkTabOpeningEvent;
 import in.securelearning.lil.android.home.views.widget.PeriodDetailPopUp;
 import in.securelearning.lil.android.quizpreview.events.AssignmentSubmittedEvent;
 import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
@@ -104,9 +105,7 @@ public class AssignmentStudentFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getContext(), R.color.colorAssignmentPrimary));
         mBinding = DataBindingUtil.inflate(inflater, R.layout.layout_assignment_fragment_new, container, false);
-        //mBinding.appBarContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorAssignmentPrimary));
         mSubjectMap = PeriodDetailPopUp.getSubjectMap(getContext());
         setUpFragmentForCalendarAssignment();
         setUpViewPager();
@@ -126,13 +125,13 @@ public class AssignmentStudentFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mIsOverDueQueryExecutedOnce) {
-            if (mOverDueSkip > 0 && mBinding.viewPager.getAdapter() != null && mBinding.viewPager.getAdapter().getCount() > 0) {
-                mBinding.viewPager.setCurrentItem(0, false);
-            } else if (mBinding.viewPager.getAdapter() != null && mBinding.viewPager.getAdapter().getCount() > 1) {
-                mBinding.viewPager.setCurrentItem(1, false);
-            }
-        }
+//        if (mIsOverDueQueryExecutedOnce) {
+//            if (mOverDueSkip > 0 && mBinding.viewPager.getAdapter() != null && mBinding.viewPager.getAdapter().getCount() > 0) {
+//                mBinding.viewPager.setCurrentItem(0, false);
+//            } else if (mBinding.viewPager.getAdapter() != null && mBinding.viewPager.getAdapter().getCount() > 1) {
+//                mBinding.viewPager.setCurrentItem(1, false);
+//            }
+//        }
 
     }
 
@@ -173,11 +172,25 @@ public class AssignmentStudentFragment extends Fragment {
                                 }
                             });
 
-                }else if (event instanceof AnimateFragmentEvent) {
+                } else if (event instanceof AnimateFragmentEvent) {
                     int id = ((AnimateFragmentEvent) event).getId();
                     if (id == R.id.nav_assignments) {
                         AnimationUtils.fadeInFast(getContext(), mBinding.viewPager);
                     }
+                } else if (event instanceof HomeworkTabOpeningEvent) {
+                    final int index = ((HomeworkTabOpeningEvent) event).getIndex();
+                    Completable.complete().observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Action() {
+                                @Override
+                                public void run() throws Exception {
+                                    mBinding.viewPager.setCurrentItem(index, true);
+                                }
+                            }, new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Exception {
+                                    throwable.printStackTrace();
+                                }
+                            });
                 }
             }
         });
@@ -188,6 +201,7 @@ public class AssignmentStudentFragment extends Fragment {
         if (getArguments() != null) {
             ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(1);
             mBinding.viewPager.setAdapter(viewPagerAdapter);
+
         } else {
             ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(2);
             mBinding.viewPager.setAdapter(viewPagerAdapter);
@@ -744,28 +758,28 @@ public class AssignmentStudentFragment extends Fragment {
 
     private String getAssignmentType(String assignmentType) {
 
-        if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_OBJECTIVE.getAssignmentType()) ||
-                assignmentType.equalsIgnoreCase(AssignmentType.TYPE_SUBJECTIVE.getAssignmentType())) {
+        if (assignmentType.equalsIgnoreCase("quiz")) {
             return getString(R.string.quiz);
 
         } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_RESOURCE.getAssignmentType())) {
             return getString(R.string.resource);
         } else {
-            //String type = "";
-            if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_DIGITAL_BOOK.getAssignmentType())) {
-                return AssignmentType.TYPE_DIGITAL_BOOK.getAssignmentType();
-            } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_VIDEO_COURSE.getAssignmentType())) {
-                return AssignmentType.TYPE_VIDEO_COURSE.getAssignmentType();
-            } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_CONCEPT_MAP.getAssignmentType())) {
-                return AssignmentType.TYPE_CONCEPT_MAP.getAssignmentType();
-            } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_INTERACTIVE_IMAGE.getAssignmentType())) {
-                return AssignmentType.TYPE_INTERACTIVE_IMAGE.getAssignmentType();
-            } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_Popup.getAssignmentType())) {
-                return AssignmentType.TYPE_Popup.getAssignmentType();
-            } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_INTERACTIVE_VIDEO.getAssignmentType())) {
-                return AssignmentType.TYPE_INTERACTIVE_VIDEO.getAssignmentType();
+            if (assignmentType.equalsIgnoreCase("digitalbook")) {
+                return "Digital Book";
+            } else if (assignmentType.equalsIgnoreCase("videocourse")) {
+                return "Video Course";
+            } else if (assignmentType.contains("feature")) {
+                return "Recap";
+            } else if (assignmentType.contains("map")) {
+                return "Concept Map";
+            } else if (assignmentType.contains("interactiveim")) {
+                return "Interactive Image";
+            } else if (assignmentType.contains("interactivevi")) {
+                return "Interactive Video";
+            } else if (assignmentType.contains("pop")) {
+                return "Pop Up";
             } else {
-                return getString(R.string.title_course);
+                return "Course";
             }
 
         }

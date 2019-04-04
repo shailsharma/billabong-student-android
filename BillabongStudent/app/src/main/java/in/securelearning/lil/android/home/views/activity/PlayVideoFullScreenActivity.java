@@ -59,6 +59,7 @@ public class PlayVideoFullScreenActivity extends AppCompatActivity {
         appData.putString(NETWORK_TYPE, network_type);
         appData.putSerializable(RESOURCE, resource);
         intent.putExtra(APP_DATA, appData);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 

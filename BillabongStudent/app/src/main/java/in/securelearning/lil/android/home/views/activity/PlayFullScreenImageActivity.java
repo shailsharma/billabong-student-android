@@ -80,6 +80,7 @@ public class PlayFullScreenImageActivity extends AppCompatActivity {
         Intent intent = new Intent(context, PlayFullScreenImageActivity.class);
         intent.putExtra(URL, url);
         intent.putExtra(SHOULD_SHOW_STATUS_BAR, shouldShowStatusBar);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 

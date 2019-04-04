@@ -52,10 +52,13 @@ import in.securelearning.lil.android.base.dataobjects.FavouriteResource;
 import in.securelearning.lil.android.base.dataobjects.InteractiveImage;
 import in.securelearning.lil.android.base.dataobjects.InteractiveVideo;
 import in.securelearning.lil.android.base.dataobjects.MetaInformation;
+import in.securelearning.lil.android.base.dataobjects.MicroLearningCourse;
 import in.securelearning.lil.android.base.dataobjects.PopUps;
 import in.securelearning.lil.android.base.dataobjects.QuestionResponse;
+import in.securelearning.lil.android.base.dataobjects.Quiz;
 import in.securelearning.lil.android.base.dataobjects.VideoCourse;
 import in.securelearning.lil.android.base.events.GenerateSubmissionEvent;
+import in.securelearning.lil.android.base.events.QuizCompletedEvent;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.model.AssignmentModel;
 import in.securelearning.lil.android.base.model.AssignmentResponseModel;
@@ -63,11 +66,12 @@ import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
-import in.securelearning.lil.android.courses.views.activity.CourseDetailActivity;
+import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
+import in.securelearning.lil.android.base.views.activity.WebPlayerLiveActivity;
 import in.securelearning.lil.android.home.dataobjects.TimeUtils;
 import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.learningnetwork.events.LoadRefreshAssignmentStageEvent;
-import in.securelearning.lil.android.quizpreview.activity.QuizPreviewActivity;
+import in.securelearning.lil.android.player.microlearning.view.activity.RapidLearningSectionListActivity;
 import in.securelearning.lil.android.quizpreview.events.AssignmentSubmittedEvent;
 import in.securelearning.lil.android.resources.view.activity.VideoPlayActivity;
 import in.securelearning.lil.android.resources.view.activity.VimeoActivity;
@@ -154,17 +158,28 @@ public class AssignmentDetailActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_play) {
             if (mAssignmentResponse != null) {
-                if (isTypeQuiz == true) {
-                    boolean isAttempt = true;
-                    if (mAssignmentResponse.getStage().equals(AssignmentStage.STAGE_SUBMITTED.getAssignmentStage()) || mAssignmentResponse.getStage().equals(AssignmentStage.STAGE_GRADED.getAssignmentStage())) {
-                        isAttempt = false;
+                if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
+                    if (isTypeQuiz) {
+                        boolean isAttempt = true;
+                        if (mAssignmentResponse.getStage().equals(AssignmentStage.STAGE_SUBMITTED.getAssignmentStage()) || mAssignmentResponse.getStage().equals(AssignmentStage.STAGE_GRADED.getAssignmentStage())) {
+                            isAttempt = false;
+                        }
+                        WebPlayerLiveActivity.startWebPlayer(getBaseContext(), mAssignment.getUidQuiz(), "", "", Quiz.class, "", false, false);
+                    } else if (isTypeCourse) {
+                        if (mObjectClass.equals(MicroLearningCourse.class)) {
+                            startActivity(RapidLearningSectionListActivity.getStartIntent(getBaseContext(), mAssignment.getUidCourse()));
+                            mRxBus.send(new GenerateSubmissionEvent(mAssignmentResponse.getObjectId()));
+                        } else {
+                            WebPlayerCordovaLiveActivity.startWebPlayer(getBaseContext(), mAssignment.getUidCourse(), "", "", mObjectClass, mAssignmentResponseObjectId, false);
+
+                        }
                     }
-                    QuizPreviewActivity.startQuizPreview(AssignmentDetailActivity.this, mAssignmentResponse.getDocId(), mAssignmentStudentDocId, isAttempt);
-                } else if (isTypeCourse) {
-                    startActivity(CourseDetailActivity.getStartActivityIntent(getBaseContext(), mAssignment.getUidCourse(), mObjectClass, mAssignmentResponseObjectId));
                 } else {
-                    startResourceActivity();
+                    SnackBarUtils.showSnackBar(getBaseContext(), mContentLayout, getString(R.string.connect_internet));
                 }
+//                else{
+//                    startResourceActivity();
+//                }
             }
             return true;
         } else if (id == android.R.id.home) {
@@ -243,6 +258,11 @@ public class AssignmentDetailActivity extends AppCompatActivity {
                             mGenerateSubmissionEvent = false;
                         }
                     }
+                } else if (event instanceof QuizCompletedEvent) {
+                    if (mGenerateSubmissionEvent) {
+                        submitResponse();
+                        mGenerateSubmissionEvent = false;
+                    }
                 }
             }
         });
@@ -320,30 +340,30 @@ public class AssignmentDetailActivity extends AppCompatActivity {
         setAssignedToThumbnail(assignmentResponse);
         mContentLayout.setVisibility(View.VISIBLE);
 
-        mAttemptButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mAssignmentResponse != null) {
-                    if (isTypeQuiz == true) {
-                        boolean isAttempt = true;
-                        if (mAssignmentResponse.getStage().equals(AssignmentStage.STAGE_SUBMITTED.getAssignmentStage()) || mAssignmentResponse.getStage().equals(AssignmentStage.STAGE_GRADED.getAssignmentStage())) {
-                            isAttempt = false;
-                        }
-                        QuizPreviewActivity.startQuizPreview(AssignmentDetailActivity.this, assignmentResponse.getDocId(), mAssignmentStudentDocId, isAttempt);
-                    } else if (isTypeCourse) {
-                        if (mGenerateSubmissionEvent) {
-                            startActivity(CourseDetailActivity.getStartActivityIntent(getBaseContext(), assignment.getUidCourse(), mObjectClass, mAssignmentResponseObjectId));
-                        } else {
-                            startActivity(CourseDetailActivity.getStartActivityIntent(getBaseContext(), assignment.getUidCourse(), mObjectClass, ""));
-                        }
-
-                    } else {
-                        startResourceActivity();
-                    }
-                }
-
-            }
-        });
+//        mAttemptButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (mAssignmentResponse != null) {
+//                    if (isTypeQuiz) {
+//                        boolean isAttempt = true;
+//                        if (mAssignmentResponse.getStage().equals(AssignmentStage.STAGE_SUBMITTED.getAssignmentStage()) || mAssignmentResponse.getStage().equals(AssignmentStage.STAGE_GRADED.getAssignmentStage())) {
+//                            isAttempt = false;
+//                        }
+//                        QuizPreviewActivity.startQuizPreview(AssignmentDetailActivity.this, assignmentResponse.getDocId(), mAssignmentStudentDocId, isAttempt);
+//                    } else if (isTypeCourse) {
+//                        if (mGenerateSubmissionEvent) {
+//                            startActivity(CourseDetailActivity.getStartActivityIntent(getBaseContext(), assignment.getUidCourse(), mObjectClass, mAssignmentResponseObjectId));
+//                        } else {
+//                            startActivity(CourseDetailActivity.getStartActivityIntent(getBaseContext(), assignment.getUidCourse(), mObjectClass, ""));
+//                        }
+//
+//                    } else {
+//                        startResourceActivity();
+//                    }
+//                }
+//
+//            }
+//        });
 
 //        mBackButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -531,22 +551,13 @@ public class AssignmentDetailActivity extends AppCompatActivity {
     }
 
     public String getAssignmentType(String assignmentType) {
-        if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_OBJECTIVE.getAssignmentType()) ||
-                assignmentType.equalsIgnoreCase(AssignmentType.TYPE_SUBJECTIVE.getAssignmentType())) {
+        if (assignmentType.equalsIgnoreCase("quiz")) {
             isTypeQuiz = true;
             isTypeCourse = false;
             isTypeResource = false;
             String type = "";
-            if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_OBJECTIVE.getAssignmentType())) {
-                //type = AssignmentType.TYPE_OBJECTIVE.getAssignmentType();
-                type = "Quiz";
-            } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_SUBJECTIVE.getAssignmentType())) {
-                // type = AssignmentType.TYPE_SUBJECTIVE.getAssignmentType();
-                type = "Quiz";
-            } else {
-                type = "Quiz";
-            }
-            mCardScore.setVisibility(View.VISIBLE);
+            type = "Quiz";
+            mCardScore.setVisibility(View.GONE);
             return type;
 
         } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_RESOURCE.getAssignmentType())) {
@@ -561,25 +572,31 @@ public class AssignmentDetailActivity extends AppCompatActivity {
             isTypeCourse = true;
             isTypeResource = false;
             String type = "";
-            if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_DIGITAL_BOOK.getAssignmentType())) {
-                type = AssignmentType.TYPE_DIGITAL_BOOK.getAssignmentType();
+            if (assignmentType.equalsIgnoreCase("digitalbook")) {
+                type = "Digital Book";
                 mObjectClass = DigitalBook.class;
-            } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_VIDEO_COURSE.getAssignmentType())) {
-                type = AssignmentType.TYPE_VIDEO_COURSE.getAssignmentType();
+            } else if (assignmentType.equalsIgnoreCase("videocourse")) {
+                type = "Video Course";
                 mObjectClass = VideoCourse.class;
-            } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_CONCEPT_MAP.getAssignmentType())) {
-                type = AssignmentType.TYPE_CONCEPT_MAP.getAssignmentType();
+            } else if (assignmentType.contains("feature")) {
+                type = "Recap";
+                mObjectClass = MicroLearningCourse.class;
+            } else if (assignmentType.contains("map")) {
+                type = "Concept Map";
                 mObjectClass = ConceptMap.class;
-            } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_INTERACTIVE_IMAGE.getAssignmentType())) {
-                type = AssignmentType.TYPE_INTERACTIVE_IMAGE.getAssignmentType();
+            } else if (assignmentType.contains("interactiveim")) {
+                type = "Interactive Image";
                 mObjectClass = InteractiveImage.class;
-            } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_Popup.getAssignmentType())) {
-                type = AssignmentType.TYPE_Popup.getAssignmentType();
-                mObjectClass = PopUps.class;
-            } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_INTERACTIVE_VIDEO.getAssignmentType())) {
-                type = AssignmentType.TYPE_INTERACTIVE_VIDEO.getAssignmentType();
+            } else if (assignmentType.contains("interactivevi")) {
+                type = "Interactive Video";
                 mObjectClass = InteractiveVideo.class;
+            } else if (assignmentType.contains("pop")) {
+                type = "Pop Up";
+                mObjectClass = PopUps.class;
+            } else {
+                type = "Pre read";
             }
+
             mCardScore.setVisibility(View.GONE);
             return type;
         }

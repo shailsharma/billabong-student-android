@@ -16,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.analytics.activity.TimeEffortDetailActivity;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutSubjectDetailsBinding;
 import in.securelearning.lil.android.assignments.views.fragment.AssignmentFragmentStudentClassDetails;
@@ -66,9 +68,11 @@ public class SubjectDetailsActivity extends AppCompatActivity {
     private final static String SUBJECT_ID = "subjectId";
     private String mSubjectId;
     private String mTopicId;
-    private String mThirdPartyTopicId = "";
+    private String mTopicName;
+    private String mThirdPartyTopicId;
     private String mSubjectName;
     private String mGroupId;
+    private String mBannerUrl;
     private Disposable mDisposable;
 
     @Inject
@@ -120,7 +124,12 @@ public class SubjectDetailsActivity extends AppCompatActivity {
 
 //                            if (mSubjectName.contains("Math")) {
 //                                fetchThirdPartyMapping(mSubjectId, topicId);
+//                            } else {
+//                                setUpViewPager();
+//
 //                            }
+                            setUpViewPager();
+
 
                         }
                     }, new Consumer<Throwable>() {
@@ -135,13 +144,22 @@ public class SubjectDetailsActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_subject_detail, menu);
+
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 
             case android.R.id.home:
                 onBackPressed();
                 return true;
-
+            case R.id.actionAnalytics:
+                startActivity(TimeEffortDetailActivity.getStartIntent(getBaseContext(), mSubjectId, mSubjectName));
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -213,8 +231,7 @@ public class SubjectDetailsActivity extends AppCompatActivity {
                     public void accept(Throwable throwable) throws Exception {
                         throwable.printStackTrace();
                         progressDialog.dismiss();
-                        onBackPressed();
-                        Toast.makeText(getBaseContext(), getString(R.string.error_something_went_wrong), Toast.LENGTH_SHORT).show();
+                        setUpViewPager();
                     }
                 });
     }
@@ -259,6 +276,7 @@ public class SubjectDetailsActivity extends AppCompatActivity {
 
             if (!TextUtils.isEmpty(lessonPlanSubject.getBannerUrl())) {
                 Picasso.with(getBaseContext()).load(lessonPlanSubject.getBannerUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(mBinding.headerImageView);
+                mBannerUrl = lessonPlanSubject.getBannerUrl();
             } else {
                 Picasso.with(getBaseContext()).load(R.drawable.image_placeholder).fit().centerCrop().into(mBinding.headerImageView);
             }
@@ -279,6 +297,7 @@ public class SubjectDetailsActivity extends AppCompatActivity {
             mBinding.layoutTopic.setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(lessonPlanChapter.getName())) {
                 mBinding.textViewTopic.setText(lessonPlanChapter.getName());
+                mTopicName = lessonPlanChapter.getName();
             }
 
             String chapterStatus = "(" + getChapterStatus(lessonPlanChapter.getStatus()) + ")";
@@ -357,6 +376,14 @@ public class SubjectDetailsActivity extends AppCompatActivity {
 
     }
 
+    private ArrayList<String> getTabTitles() {
+        if (!TextUtils.isEmpty(mGroupId)) {
+            return new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.array_subject_detail_tab)));
+        } else {
+            return new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.array_subject_detail_tab_no_post)));
+        }
+    }
+
     private void setUpViewPager() {
         final ArrayList<String> tabTitles = getTabTitles();
         mBinding.viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), tabTitles));
@@ -392,14 +419,6 @@ public class SubjectDetailsActivity extends AppCompatActivity {
 
         });
 
-    }
-
-    private ArrayList<String> getTabTitles() {
-        if (!TextUtils.isEmpty(mGroupId)) {
-            return new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.array_subject_detail_tab)));
-        } else {
-            return new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.array_subject_detail_tab_no_post)));
-        }
     }
 
     private void highLightCurrentTab(int position, ArrayList<String> tabTitles) {
@@ -455,11 +474,11 @@ public class SubjectDetailsActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
 
             if (mList.get(position).equals(getString(R.string.label_home))) {
-                return SubjectDetailHomeFragment.newInstance(mTopicId, mSubjectName, mThirdPartyTopicId);
+                return SubjectDetailHomeFragment.newInstance(mTopicId, mTopicName, mSubjectName, mThirdPartyTopicId, mBannerUrl);
             } else if (mList.get(position).equals(getString(R.string.chapters))) {
                 return ChaptersFragment.newInstance(mSubjectId);
             } else if (mList.get(position).equals(getString(R.string.homework))) {
-                return AssignmentFragmentStudentClassDetails.newInstance(mSubjectId, mTopicId, "", "", "", 1, mSubjectName, false, mGroupId);
+                return AssignmentFragmentStudentClassDetails.newInstance(1, mSubjectName, "");
             } else if (mList.get(position).equals(getString(R.string.string_post))) {
                 return PostListFragment.newInstance(1, mGroupId, false, R.color.colorPrimary);
             } else {
