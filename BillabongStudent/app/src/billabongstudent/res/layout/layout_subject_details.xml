@@ -7,7 +7,7 @@
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
+        android:background="@drawable/image_dashboard_background"
         android:fitsSystemWindows="true">
 
         <android.support.design.widget.AppBarLayout
@@ -93,7 +93,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"/>
+                        android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                        tools:text="Hello"/>
 
                 </android.support.v7.widget.Toolbar>
 
@@ -110,6 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:minHeight="?actionBarSize"
+                    app:tabGravity="fill"
                     app:tabIndicatorHeight="0dp"
                     app:tabMode="scrollable"
                     app:tabPaddingEnd="@dimen/padding_8dp"

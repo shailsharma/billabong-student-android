@@ -35,7 +35,7 @@ import in.securelearning.lil.android.base.dataobjects.AssignmentMinimal;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.widget.TextViewCustom;
-import in.securelearning.lil.android.learningnetwork.events.LoadNewAssignmentDownloadEvent;
+import in.securelearning.lil.android.learningnetwork.events.AssignmentResponseDownloadEvent;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -131,7 +131,7 @@ public class TrainerAssignmentsFragment extends Fragment {
         mSubscription = mRxBus.toFlowable().observeOn(Schedulers.computation()).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object event) throws Exception {
-                if (event instanceof LoadNewAssignmentDownloadEvent || event instanceof AllStudentSubmittedEvent) {
+                if (event instanceof AssignmentResponseDownloadEvent || event instanceof AllStudentSubmittedEvent) {
                     Completable.complete().observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Action() {
                                 @Override

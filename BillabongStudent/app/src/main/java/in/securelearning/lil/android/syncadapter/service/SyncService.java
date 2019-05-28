@@ -40,11 +40,13 @@ import in.securelearning.lil.android.base.dataobjects.PostResponse;
 import in.securelearning.lil.android.base.dataobjects.QuestionResponse;
 import in.securelearning.lil.android.base.dataobjects.Quiz;
 import in.securelearning.lil.android.base.dataobjects.Training;
+import in.securelearning.lil.android.base.dataobjects.UserCourseProgress;
 import in.securelearning.lil.android.base.dataobjects.UserRating;
 import in.securelearning.lil.android.base.dataobjects.VideoCourse;
 import in.securelearning.lil.android.base.dataobjects.WebQuizResponse;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.courses.dataobject.CourseReview;
+import in.securelearning.lil.android.login.views.activity.LoginActivity;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.events.CourseDeleteEvent;
 import in.securelearning.lil.android.syncadapter.events.RefreshTrainingListEvent;
@@ -110,6 +112,7 @@ public class SyncService extends BaseService {
     private static final String START_DATE = "in.securelearning.lil.android.syncadapter.service.extra.START_DATE";
     private static final String LIMIT = "in.securelearning.lil.android.syncadapter.service.extra.LIMIT";
     private static final String SKIP = "in.securelearning.lil.android.syncadapter.service.extra.SKIP";
+
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      */
@@ -142,7 +145,7 @@ public class SyncService extends BaseService {
         context.startService(intent);
     }
 
-    public static void startActionDownloadActivity(Context context,String subid,String startDate,String endDate) {
+    public static void startActionDownloadActivity(Context context, String subid, String startDate, String endDate) {
         Intent intent = new Intent(context, SyncService.class);
         intent.setAction(ACTION_DOWNLOAD_ACTIVITY);
         intent.putExtra(SUBJECT_ID, subid);
@@ -151,28 +154,28 @@ public class SyncService extends BaseService {
         context.startService(intent);
     }
 
-    public static void startActionDownloadPerformanceCount(Context context,String subid) {
+    public static void startActionDownloadPerformanceCount(Context context, String subid) {
         Intent intent = new Intent(context, SyncService.class);
         intent.setAction(ACTION_DOWNLOAD_PERFORMANCE_COUNT);
         intent.putExtra(SUBJECT_ID, subid);
         context.startService(intent);
     }
 
-    public static void startActionDownloadActivityRecentlyRead(Context context,String subid) {
+    public static void startActionDownloadActivityRecentlyRead(Context context, String subid) {
         Intent intent = new Intent(context, SyncService.class);
         intent.setAction(ACTION_DOWNLOAD_RECENTLY_READ);
         intent.putExtra(SUBJECT_ID, subid);
         context.startService(intent);
     }
 
-    public static void startActionDownloadActivityTopicCovered(Context context,String subid) {
+    public static void startActionDownloadActivityTopicCovered(Context context, String subid) {
         Intent intent = new Intent(context, SyncService.class);
         intent.setAction(ACTION_DOWNLOAD_TOPIC_COVERED);
         intent.putExtra(SUBJECT_ID, subid);
         context.startService(intent);
     }
 
-    public static void startActionDownloadLearning(Context context,String subid,String startDate,String endDate) {
+    public static void startActionDownloadLearning(Context context, String subid, String startDate, String endDate) {
         Intent intent = new Intent(context, SyncService.class);
         intent.setAction(ACTION_DOWNLOAD_LEARNING);
         intent.putExtra(SUBJECT_ID, subid);
@@ -309,7 +312,6 @@ public class SyncService extends BaseService {
     }
 
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -424,7 +426,7 @@ public class SyncService extends BaseService {
                 } else if (ACTION_UPLOAD_BOOK_ANNOTATION.equals(action)) {
                     handleActionUploadBookAnnotation();
                 } else if (ACTION_UPLOAD_USER_BROWSE_HISTORY_LOG.equals(action)) {
-                   // handleActionUploadCourseUserLog();
+                    // handleActionUploadCourseUserLog();
                     handleActionUploadUserBrowseHistory();
                 } else if (ACTION_UPLOAD_ASSIGNMENT_RESPONSE.equals(action)) {
                     final String id = intent.getStringExtra(EXTRA_OBJECT_ID);
@@ -432,37 +434,31 @@ public class SyncService extends BaseService {
                 } else if (ACTION_FETCH_INTERNAL_NOTIFICATION.equals(action)) {
                     final String id = intent.getStringExtra(EXTRA_OBJECT_ID);
                     handleActionFetchInternalNotification(id);
-                }
-                else if (ACTION_DOWNLOAD_ACTIVITY.equals(action)) {
+                } else if (ACTION_DOWNLOAD_ACTIVITY.equals(action)) {
                     final String subid = intent.getStringExtra(SUBJECT_ID);
                     final String startdate = intent.getStringExtra(START_DATE);
                     final String enddate = intent.getStringExtra(END_DATE);
-                    handleActionDownloadActivity(subid,startdate,enddate);
+                    handleActionDownloadActivity(subid, startdate, enddate);
 
-                }
-                else if (ACTION_DOWNLOAD_LEARNING.equals(action)) {
+                } else if (ACTION_DOWNLOAD_LEARNING.equals(action)) {
                     final String subid = intent.getStringExtra(SUBJECT_ID);
                     final String startdate = intent.getStringExtra(START_DATE);
                     final String enddate = intent.getStringExtra(END_DATE);
-                    handleActionDownloadLearning(subid,startdate,enddate);
+                    handleActionDownloadLearning(subid, startdate, enddate);
 
-                }
-                else if (ACTION_DOWNLOAD_RECENTLY_READ.equals(action)) {
+                } else if (ACTION_DOWNLOAD_RECENTLY_READ.equals(action)) {
                     final String subid = intent.getStringExtra(SUBJECT_ID);
-                    final int limit = intent.getIntExtra(LIMIT,0);
-                    final int skip = intent.getIntExtra(SKIP,0);
-                    handleActionDownloadRecentlyRead(subid,limit,skip);
+                    final int limit = intent.getIntExtra(LIMIT, 0);
+                    final int skip = intent.getIntExtra(SKIP, 0);
+                    handleActionDownloadRecentlyRead(subid, limit, skip);
 
-                }
-                else if (ACTION_DOWNLOAD_TOPIC_COVERED.equals(action)) {
+                } else if (ACTION_DOWNLOAD_TOPIC_COVERED.equals(action)) {
                     final String subid = intent.getStringExtra(SUBJECT_ID);
-                    final int limit = intent.getIntExtra(LIMIT,0);
-                    final int skip = intent.getIntExtra(SKIP,0);
-                    handleActionDownloadTopicCovered(subid,limit,skip);
+                    final int limit = intent.getIntExtra(LIMIT, 0);
+                    final int skip = intent.getIntExtra(SKIP, 0);
+                    handleActionDownloadTopicCovered(subid, limit, skip);
 
-                }
-
-                else if (ACTION_DOWNLOAD_PERFORMANCE_COUNT.equals(action)) {
+                } else if (ACTION_DOWNLOAD_PERFORMANCE_COUNT.equals(action)) {
                     final String subid = intent.getStringExtra(SUBJECT_ID);
                     handleActionDownloadPerformanceCount(subid);
 
@@ -782,6 +778,36 @@ public class SyncService extends BaseService {
 
                 }
 
+            } else if (internalNotification.getObjectAction() == (InternalNotificationActionUtils.ACTION_TYPE_USER_COURSE_PROGRESS_UPLOAD)) {
+                UserCourseProgress userCourseProgress = mSyncServiceModel.retrieveCourseProgress(internalNotification.getObjectDocId(), UserCourseProgress.class);
+                Call<ResponseBody> responseBodyCall = mNetworkModel.uploadUserCourseProgress(userCourseProgress);
+                Response<ResponseBody> response = responseBodyCall.execute();
+                if (response != null && response.isSuccessful()) {
+                    Log.e("UserCourseProgress1--", "Success");
+                    mSyncServiceModel.purgeInternalNotification(internalNotification.getDocId());
+
+                } else if (response.code() == 404) {
+                    Log.e("UserCourseProgress1--", "Failed 404");
+                } else if (response.code() == 401 && SyncServiceHelper.refreshToken(getBaseContext())) {
+                    if (SyncServiceHelper.refreshToken(SyncService.this)) {
+                        Response<ResponseBody> response2 = responseBodyCall.clone().execute();
+                        if (response2 != null && response2.isSuccessful()) {
+                            Log.e("UserCourseProgress2--", "Success");
+                            mSyncServiceModel.purgeInternalNotification(internalNotification.getDocId());
+                        } else if (response2.code() == 404) {
+                            Log.e("UserCourseProgress2--", "Failed 404");
+                        } else if ((response2.code() == 401)) {
+                            startActivity(LoginActivity.getUnauthorizedIntent(getBaseContext()));
+                        } else {
+                            Log.e("UserCourseProgress2--", "Failed");
+
+                        }
+                    }
+                } else {
+                    Log.e("UserCourseProgress1--", "Failed");
+
+                }
+
             }
         }
 
@@ -895,22 +921,26 @@ public class SyncService extends BaseService {
         removeJobFromMonitoringList(BlogDetails.class, id);
     }
 
-    public void handleActionDownloadActivity(String subId,String startDate,String endDate) {
+    public void handleActionDownloadActivity(String subId, String startDate, String endDate) {
         if (GeneralUtils.isNetworkAvailable(SyncService.this))
             JobCreator.createDownloadActivityJob(subId, startDate, endDate).execute();
     }
-    public void handleActionDownloadLearning(String subId,String startDate,String endDate) {
+
+    public void handleActionDownloadLearning(String subId, String startDate, String endDate) {
         if (GeneralUtils.isNetworkAvailable(SyncService.this))
             JobCreator.createDownloadLearningJob(subId, startDate, endDate).execute();
     }
-    public void handleActionDownloadRecentlyRead(String subId,int limit,int skip) {
+
+    public void handleActionDownloadRecentlyRead(String subId, int limit, int skip) {
         if (GeneralUtils.isNetworkAvailable(SyncService.this))
-            JobCreator.createDownloadRecentlyReadJob(subId,limit,skip).execute();
+            JobCreator.createDownloadRecentlyReadJob(subId, limit, skip).execute();
     }
-    public void handleActionDownloadTopicCovered(String subId,int limit,int skip) {
+
+    public void handleActionDownloadTopicCovered(String subId, int limit, int skip) {
         if (GeneralUtils.isNetworkAvailable(SyncService.this))
-            JobCreator.createDownloadTopicCoveredJob(subId,limit,skip).execute();
+            JobCreator.createDownloadTopicCoveredJob(subId, limit, skip).execute();
     }
+
     public void handleActionDownloadPerformanceCount(String subId) {
         if (GeneralUtils.isNetworkAvailable(SyncService.this))
             JobCreator.createDownloadPerformanceCountJob(subId).execute();
@@ -1207,7 +1237,7 @@ public class SyncService extends BaseService {
                         Response<UserBrowseHistory> response = mNetworkModel.uploadUserBrowseHistoryLog(object).execute();
                         if (response != null && response.isSuccessful()) {
                             UserBrowseHistory userBrowseHistory = response.body();
-                           // if (userBrowseHistory != null && !TextUtils.isEmpty(userBrowseHistory.getObjectId())) {
+                            // if (userBrowseHistory != null && !TextUtils.isEmpty(userBrowseHistory.getObjectId())) {
                             if (userBrowseHistory != null) {
                                 if (!TextUtils.isEmpty(object.getDocId())) {
                                     mSyncServiceModel.deleteUserBrowseHistory(object.getDocId());

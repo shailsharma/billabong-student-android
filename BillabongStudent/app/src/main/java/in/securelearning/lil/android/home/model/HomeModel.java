@@ -2,9 +2,12 @@ package in.securelearning.lil.android.home.model;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import org.jsoup.Jsoup;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -17,6 +20,8 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.app.BuildConfig;
+import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.base.constants.EventType;
 import in.securelearning.lil.android.base.dataobjects.AnalysisActivityData;
 import in.securelearning.lil.android.base.dataobjects.AnalysisActivityRecentlyRead;
@@ -64,10 +69,15 @@ import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.dataobjects.CalendarDayCounts;
 import in.securelearning.lil.android.home.dataobjects.CalendarDayEventCounts;
+import in.securelearning.lil.android.login.views.activity.LoginActivity;
+import in.securelearning.lil.android.syncadapter.dataobject.AuthToken;
+import in.securelearning.lil.android.syncadapter.dataobject.RequestOTP;
+import in.securelearning.lil.android.syncadapter.dataobject.RequestOTPResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.TeacherGradeMapping;
 import in.securelearning.lil.android.syncadapter.ftp.FtpFunctions;
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
+import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 import in.securelearning.lil.android.syncadapter.utils.PrefManagerStudentSubjectMapping;
 import io.reactivex.Observable;
@@ -131,9 +141,7 @@ public class HomeModel {
     }
 
     public ArrayList<Resource> getResourceFileListFromInternalStorage() {
-//        ArrayList<Resource> list = FileUtils.getResourceFileListFromInternalStorage(mContext);
-        ArrayList<Resource> list = mResourceModel.getResourceListSync();
-        return list;
+        return mResourceModel.getResourceListSync();
     }
 
     public ArrayList<Resource> getFtpFileList() {
@@ -1093,6 +1101,137 @@ public class HomeModel {
                         }
                         subscriber.onNext(list);
                         subscriber.onComplete();
+
+                    }
+                });
+    }
+
+    /*To request OTP sms on mobile*/
+    public Observable<RequestOTPResponse> requestOTP(final String mobileNumber) {
+        return Observable.create(new ObservableOnSubscribe<RequestOTPResponse>() {
+            @Override
+            public void subscribe(ObservableEmitter<RequestOTPResponse> e) throws Exception {
+                RequestOTP requestOTP = new RequestOTP();
+                requestOTP.setCode(null);
+                requestOTP.setMobile(mobileNumber);
+                Call<RequestOTPResponse> call = mNetworkModel.requestOTP(requestOTP);
+                Response<RequestOTPResponse> response = call.execute();
+                if (response != null && response.isSuccessful()) {
+                    RequestOTPResponse body = response.body();
+                    Log.e("RequestOTPResponse--", "Successful");
+                    e.onNext(body);
+                } else if (response.code() == 404) {
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                } else if (response.code() == 400) {
+                    throw new Exception(mContext.getString(R.string.enrollment_number_not_exist_in_database));
+                } else if ((response.code() == 401) && SyncServiceHelper.refreshToken(mContext)) {
+                    Response<RequestOTPResponse> response2 = call.clone().execute();
+                    if (response2 != null && response2.isSuccessful()) {
+                        RequestOTPResponse course = response2.body();
+                        Log.e("RequestOTPResponse--", "Successful");
+                        e.onNext(course);
+                    } else if ((response2.code() == 401)) {
+                        mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
+                    } else if (response.code() == 400) {
+                        throw new Exception(mContext.getString(R.string.enrollment_number_not_exist_in_database));
+                    } else if (response2.code() == 404) {
+                        throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                    } else {
+                        Log.e("RequestOTPResponse--", "Failed");
+                        throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                    }
+                } else {
+                    Log.e("RequestOTPResponse--", "Failed");
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+
+//
+//                    ResponseBody responseBody = response.errorBody();
+//                    try {
+//                        assert responseBody != null;
+//                        String json = responseBody.string().replaceAll("\\\\", "");
+//                        JSONObject jsonObject = new JSONObject(json);
+//                        JSONObject error = jsonObject.getJSONObject("error");
+//                        String message = error.getString("message");
+//                        String code = error.getString("code");
+//                        if (!TextUtils.isEmpty(code) && code.contains("INVALID_MOBILE")) {
+//                        }
+//
+//                    } catch (JSONException e1) {
+//                        e1.printStackTrace();
+//                    } catch (IOException e1) {
+//                        e1.printStackTrace();
+//                    }
+                }
+
+                e.onComplete();
+            }
+        });
+    }
+
+    /*To verify OTP code*/
+    public Observable<AuthToken> verifyOTP(final String mobileNumber, final String verificationCode) {
+        return Observable.create(new ObservableOnSubscribe<AuthToken>() {
+            @Override
+            public void subscribe(ObservableEmitter<AuthToken> e) throws Exception {
+                RequestOTP requestOTP = new RequestOTP();
+                requestOTP.setCode(verificationCode);
+                requestOTP.setMobile(mobileNumber);
+                Call<AuthToken> call = mNetworkModel.verifyOTP(requestOTP);
+                Response<AuthToken> response = call.execute();
+                if (response != null && response.isSuccessful()) {
+                    AuthToken body = response.body();
+                    Log.e("VerifyOTPResponse--", "Successful");
+                    e.onNext(body);
+                } else if (response.code() == 404) {
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                } else if (response.code() == 400) {
+                    throw new Exception(mContext.getString(R.string.invalid_code));
+                } else if ((response.code() == 401) && SyncServiceHelper.refreshToken(mContext)) {
+                    Response<AuthToken> response2 = call.clone().execute();
+                    if (response2 != null && response2.isSuccessful()) {
+                        AuthToken course = response2.body();
+                        Log.e("VerifyOTPResponse--", "Successful");
+                        e.onNext(course);
+                    } else if ((response2.code() == 401)) {
+                        mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
+                    } else if (response.code() == 400) {
+                        throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                    } else if (response2.code() == 404) {
+                        throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                    } else {
+                        Log.e("VerifyOTPResponse--", "Failed");
+                        throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                    }
+                } else {
+                    Log.e("VerifyOTPResponse--", "Failed");
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+
+                }
+
+                e.onComplete();
+            }
+        });
+    }
+
+    public Observable<String> checkForNewVersionOnPlayStore() {
+
+        return
+                io.reactivex.Observable.create(new ObservableOnSubscribe<String>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<String> e) throws Exception {
+                        String newVersion = Jsoup.connect(
+                                "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "&hl=en")
+                                .timeout(30000)
+                                .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                                .referrer("http://www.google.com")
+                                .get()
+                                .select("div.hAyfc:nth-child(4) > span:nth-child(2) > div:nth-child(1) > span:nth-child(1)")
+                                .first()
+                                .ownText();
+                        e.onNext(newVersion);
+                        e.onComplete();
+                        Log.e("new Version", newVersion);
+
 
                     }
                 });

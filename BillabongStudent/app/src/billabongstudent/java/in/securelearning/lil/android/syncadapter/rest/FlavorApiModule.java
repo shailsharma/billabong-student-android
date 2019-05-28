@@ -32,8 +32,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class FlavorApiModule {
     private Context mContext;
     private static String BASE_URL;
-    private static String BASE_URL_FCM = "https://fcm.googleapis.com/fcm/";
-    private static final String YOUR_LEGACY_SERVER_KEY_FROM_FIREBASE_CONSOLE = BuildConfig.LEGACY_SERVER_KEY_FROM_FCM;
+   // private static String BASE_URL_FCM = "https://fcm.googleapis.com/fcm/";
+    //private static final String YOUR_LEGACY_SERVER_KEY_FROM_FIREBASE_CONSOLE = BuildConfig.LEGACY_SERVER_KEY_FROM_FCM;
 
 
     public static String getBaseUrl() {
@@ -319,7 +319,7 @@ public class FlavorApiModule {
     @Provides
     @ActivityScope
     public FlavorFCMApiInterface sendLocationData() {
-        return getFCMDirectClient(BASE_URL_FCM).create(FlavorFCMApiInterface.class);
+        return getFCMDirectClient("").create(FlavorFCMApiInterface.class);
     }
 
     private Retrofit getFCMDirectClient(String baseUrl) {
@@ -332,7 +332,7 @@ public class FlavorApiModule {
                         HttpUrl originalHttpUrl = original.url();
                         HttpUrl url = originalHttpUrl.newBuilder().build();
                         Request.Builder requestBuilder = original.newBuilder()
-                                .header("Authorization", YOUR_LEGACY_SERVER_KEY_FROM_FIREBASE_CONSOLE)
+                                .header("Authorization", "")
                                 .url(url);
                         Request request = requestBuilder.build();
                         final Request copy = request;

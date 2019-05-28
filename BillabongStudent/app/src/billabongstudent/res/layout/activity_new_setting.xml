@@ -25,9 +25,9 @@
                 android:background="?attr/selectableItemBackground"
                 android:button="@null"
                 android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:paddingBottom="16dp"
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
+                android:paddingBottom="16dp"
                 android:text="Sound"/>
 
             <View
@@ -43,8 +43,8 @@
                 android:layout_height="match_parent"
                 android:background="?attr/selectableItemBackground"
                 android:orientation="vertical"
-                android:paddingBottom="16dp"
-                android:paddingTop="16dp">
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="match_parent"
@@ -80,9 +80,9 @@
                 android:background="?attr/selectableItemBackground"
                 android:button="@null"
                 android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:paddingBottom="16dp"
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
+                android:paddingBottom="16dp"
                 android:text="Courses"/>
 
             <View
@@ -100,10 +100,10 @@
                 android:background="?attr/selectableItemBackground"
                 android:button="@null"
                 android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:paddingBottom="16dp"
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
-                android:text="Learning network"/>
+                android:paddingBottom="16dp"
+                android:text="@string/title_network"/>
 
             <View
                 android:id="@+id/viewAboveAssignment"
@@ -121,9 +121,9 @@
                 android:background="?attr/selectableItemBackground"
                 android:button="@null"
                 android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:paddingBottom="16dp"
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
+                android:paddingBottom="16dp"
                 android:text="Homework Reminder"/>
 
 
@@ -135,9 +135,9 @@
                 android:background="?attr/selectableItemBackground"
                 android:button="@null"
                 android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:paddingBottom="16dp"
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
+                android:paddingBottom="16dp"
                 android:text="vibrate"
                 android:visibility="gone"/>
 
@@ -165,10 +165,10 @@
                 android:background="?attr/selectableItemBackground"
                 android:button="@null"
                 android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:paddingBottom="16dp"
                 android:paddingLeft="16dp"
-                android:paddingRight="32dp"
                 android:paddingTop="16dp"
+                android:paddingRight="32dp"
+                android:paddingBottom="16dp"
                 android:text="Download courses only on WiFi"/>
 
             <View
@@ -186,9 +186,9 @@
                 android:background="?attr/selectableItemBackground"
                 android:button="@null"
                 android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:paddingBottom="16dp"
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
+                android:paddingBottom="16dp"
                 android:text="Auto download learning network media"
                 android:visibility="gone"/>
 
@@ -248,7 +248,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
-                        android:text="@string/assignment"
+                        android:text="@string/homework"
                         android:textColor="#000000"
                         />
 
@@ -273,7 +273,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
-                        android:text="@string/learning_network"
+                        android:text="@string/title_network"
                         android:textColor="#000000"
                         />
 
@@ -292,7 +292,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <in.securelearning.lil.android.base.widget.TextViewCustom
                         android:layout_width="match_parent"
@@ -316,7 +317,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <in.securelearning.lil.android.base.widget.TextViewCustom
                         android:layout_width="match_parent"
@@ -358,7 +360,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <in.securelearning.lil.android.base.widget.TextViewCustom
                         android:layout_width="match_parent"
@@ -387,8 +390,8 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
                 android:orientation="vertical"
-                android:paddingBottom="16dp"
-                android:paddingTop="16dp">
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="match_parent"
@@ -422,8 +425,8 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
                 android:orientation="vertical"
-                android:paddingBottom="16dp"
-                android:paddingTop="16dp">
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="match_parent"
@@ -457,8 +460,8 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
                 android:orientation="vertical"
-                android:paddingBottom="16dp"
                 android:paddingTop="16dp"
+                android:paddingBottom="16dp"
                 android:visibility="gone">
 
                 <android.support.v7.widget.AppCompatTextView
@@ -530,8 +533,8 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
                 android:orientation="vertical"
-                android:paddingBottom="16dp"
-                android:paddingTop="16dp">
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="match_parent"
@@ -557,7 +560,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:background="#CFD8DC"
-                android:visibility="visible"></View>
+                android:visibility="gone"></View>
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/general_logout"
@@ -566,7 +569,8 @@
                 android:background="?attr/selectableItemBackground"
                 android:padding="16dp"
                 android:text="Log out"
-                android:textColor="#000000"/>
+                android:textColor="#000000"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

@@ -5,6 +5,13 @@ import java.util.List;
 
 import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationParentData;
 import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationRequest;
+import in.securelearning.lil.android.analytics.dataobjects.ChartDataRequest;
+import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataRequest;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
+import in.securelearning.lil.android.analytics.dataobjects.EffortvsPerformanceData;
+import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.base.dataobjects.AboutCourse;
 import in.securelearning.lil.android.base.dataobjects.AnalysisActivityData;
 import in.securelearning.lil.android.base.dataobjects.AnalysisActivityRecentlyRead;
@@ -58,19 +65,13 @@ import in.securelearning.lil.android.syncadapter.dataobject.RolePermissions;
 import in.securelearning.lil.android.syncadapter.dataobject.SearchPeriodicEventsParams;
 import in.securelearning.lil.android.syncadapter.dataobject.SearchPeriodsResults;
 import in.securelearning.lil.android.syncadapter.dataobject.ServerDataPackage;
-import in.securelearning.lil.android.analytics.dataobjects.ChartDataRequest;
-import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataRequest;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
-import in.securelearning.lil.android.syncadapter.dataobjects.LRPAPost;
+import in.securelearning.lil.android.syncadapter.dataobjects.LRPARequest;
 import in.securelearning.lil.android.syncadapter.dataobjects.LRPAResult;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterResult;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectDetails;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectResult;
-import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfile;
 import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
@@ -94,9 +95,6 @@ public interface DownloadApiInterface {
 
     @GET("AssignmentResponses/getAssignmentResponse")
     Call<ServerDataPackage> getServerDataPackage();
-
-//    @GET("Assignments/{objectId}")
-//    Call<Assignment> getAssignment(@Path("objectId") String objectId);
 
     @GET("Assignments/getAssignment/{objectId}")
     Call<Assignment> getAssignment(@Path("objectId") String objectId);
@@ -172,9 +170,6 @@ public interface DownloadApiInterface {
 
     @GET("AssignmentResponses/getAssignmentResponse/{objectId}")
     Call<AssignmentResponse> getAssignmentResponse(@Path("objectId") String objectId);
-
-//    @GET("AssignmentResponses/{objectId}")
-//    Call<AssignmentResponse> getAssignmentResponse(@Path("objectId") String objectId);
 
     @GET("DigitalBooks/getDigitalBook/{objectId}")
     Call<DigitalBook> getDigitalBook(@Path("objectId") String objectId);
@@ -401,8 +396,8 @@ public interface DownloadApiInterface {
     @PUT("users")
     Call<ResponseBody> changePassword(@Body PasswordChange passwordChange);
 
-    @GET("featuredcards/getDetail/{id}")
-    Call<MicroLearningCourse> getMicroLearningCourse(@Path("id") String id);
+    @GET("search/featured-card/{id}/preview")
+    Call<MicroLearningCourse> getRapidLearningCourse(@Path("id") String id);
 
     @GET("featuredcards")
     Call<java.util.ArrayList<MicroLearningCourse>> getMicroLearningCourseList();
@@ -452,14 +447,14 @@ public interface DownloadApiInterface {
 
     /*Api to fetch Learn, Reinforce, Practice and Apply by topicId and type*/
     @POST("search/lessonPlanConfiguration/lrpa")
-    Call<LRPAResult> fetchLRPA(@Body LRPAPost lrpaPost);
+    Call<LRPAResult> fetchLRPA(@Body LRPARequest lrpaRequest);
 
     @GET("users/profile")
     Call<StudentProfile> getStudentProfile();
 
     /*Api to fetch third party meta information*/
     @POST("TPCurriculumMappings/fetchTPCurriculumMapping")
-    Call<ThirdPartyMapping> fetchThirdPartyMapping(@Body ThirdPartyMapping thirdPartyMapping);
+    Call<java.util.ArrayList<String>> fetchThirdPartyMapping(@Body ThirdPartyMapping thirdPartyMapping);
 
     /*Api to fetch coverage data for particular subject*/
     @POST("users/getCoverage")
@@ -480,6 +475,10 @@ public interface DownloadApiInterface {
     /*Api to fetch effort (time spent) data for all subjects*/
     @POST("userlogs/getUserSubjectsTimeSpent")
     Call<EffortChartDataParent> fetchEffortData(@Body EffortChartDataRequest effortChartDataRequest);
+
+    /*Api to fetch effort (time spent) data for all subjects*/
+    @GET("users/getSubjectLevelPerformance")
+    Call<java.util.ArrayList<EffortvsPerformanceData>> fetchEffortvsPerformanceData();
 
     /*Api to fetch effort (time spent) data for individual subject*/
     @POST("userlogs/getUserTopicTimeSpent")

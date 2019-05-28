@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +13,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,19 +28,16 @@ import javax.inject.Inject;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutCourseDetailPageBinding;
 import in.securelearning.lil.android.app.databinding.LayoutCourseSectionItemBinding;
-import in.securelearning.lil.android.base.dataobjects.CourseProgress;
 import in.securelearning.lil.android.base.dataobjects.CourseSection;
 import in.securelearning.lil.android.base.dataobjects.MetaInformation;
 import in.securelearning.lil.android.base.dataobjects.MicroLearningCourse;
-import in.securelearning.lil.android.base.dataobjects.SectionProgress;
 import in.securelearning.lil.android.base.dataobjects.Thumbnail;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.widget.TextViewCustom;
 import in.securelearning.lil.android.player.microlearning.InjectorPlayer;
 import in.securelearning.lil.android.player.microlearning.model.PlayerModel;
-import in.securelearning.lil.android.syncadapter.utils.TextToSpeechUtils;
+import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -63,10 +58,10 @@ public class RapidLearningSectionListActivity extends AppCompatActivity {
     private String mId;
     private String mColor;
     private int mSavedIndex = -1;
-    private RecyclerViewAdapter mAdapter;
-    public static TextToSpeechUtils mTextToSpeechUtils;
+//    public static TextToSpeechUtils mTextToSpeechUtils;
 
     private final int CHECK_CODE = 1;
+    private String mCourseType;
 
     @Override
     public void onBackPressed() {
@@ -77,39 +72,40 @@ public class RapidLearningSectionListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         handleIntent();
-        if (mAdapter != null) {
-            mAdapter.refreshItem(mSavedIndex);
-        }
+
+//        if (mAdapter != null) {
+//            mAdapter.refreshItem(mSavedIndex);
+//        }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mTextToSpeechUtils != null) {
-            mTextToSpeechUtils.destroyTTS();
-            Log.d("TTS", "TTS destroyed");
-        }
-    }
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        if (mTextToSpeechUtils != null) {
+//            mTextToSpeechUtils.destroyTTS();
+//            Log.d("TTS", "TTS destroyed");
+//        }
+//    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CHECK_CODE) {
-            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-                mTextToSpeechUtils = new TextToSpeechUtils(getBaseContext());
-            } else {
-                Intent install = new Intent();
-                install.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-                startActivity(install);
-            }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == CHECK_CODE) {
+//            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+//                mTextToSpeechUtils = new TextToSpeechUtils(getBaseContext());
+//            } else {
+//                Intent install = new Intent();
+//                install.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+//                startActivity(install);
+//            }
+//        }
+//    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InjectorPlayer.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_course_detail_page);
-        checkTTS();
+//        checkTTS();
     }
 
     private void handleIntent() {
@@ -127,63 +123,54 @@ public class RapidLearningSectionListActivity extends AppCompatActivity {
         }
     }
 
-    private void checkTTS() {
-        Intent check = new Intent();
-        check.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        startActivityForResult(check, CHECK_CODE);
-    }
+    /*Checking TTS availability on device.*/
+//    private void checkTTS() {
+//        Intent check = new Intent();
+//        check.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+//        startActivityForResult(check, CHECK_CODE);
+//    }
 
     @SuppressLint("CheckResult")
     private void getCourseDetail(final String id) {
         if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
             mBinding.progressBar.setVisibility(View.VISIBLE);
-            mPlayerModel.getMicroLearningCourseOnline(id)
+            mBinding.scrollView.setVisibility(View.GONE);
+            mPlayerModel.getRapidLearningCourse(id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<MicroLearningCourse>() {
                         @Override
                         public void accept(MicroLearningCourse microLearningCourse) throws Exception {
-                            mBinding.progressBar.setVisibility(View.GONE);
+
                             if (microLearningCourse != null && microLearningCourse.getObjectId().equals(id)) {
-                                mBinding.scrollView.setVisibility(View.VISIBLE);
-                                if (microLearningCourse.getCourseSections() != null && !microLearningCourse.getCourseSections().isEmpty()) {
-                                    mBinding.recyclerView.setVisibility(View.VISIBLE);
-                                    mBinding.textViewNoLesson.setVisibility(View.GONE);
-
-                                } else {
-                                    mBinding.textViewNoLesson.setVisibility(View.VISIBLE);
-                                    mBinding.recyclerView.setVisibility(View.GONE);
-
-                                }
                                 initializeUiAndListeners(microLearningCourse);
                                 setUpToolbar();
                             } else {
-                                Toast.makeText(getBaseContext(), getString(R.string.error_something_went_wrong), Toast.LENGTH_SHORT).show();
-                                finish();
+                                unableToFetchData();
                             }
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
-                            if (throwable instanceof SocketTimeoutException) {
-                                Toast.makeText(getBaseContext(), getString(R.string.error_something_went_wrong), Toast.LENGTH_SHORT).show();
-                                finish();
-                            } else if (throwable.getMessage().equals(getString(R.string.messageCourseDetailNotFound))) {
-                                Toast.makeText(getBaseContext(), getString(R.string.error_something_went_wrong), Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
-                        }
-                    }, new Action() {
-                        @Override
-                        public void run() throws Exception {
                             mBinding.progressBar.setVisibility(View.GONE);
+                            if (throwable instanceof SocketTimeoutException) {
+                                unableToFetchData();
 
+                            } else if (throwable.getMessage().equals(getString(R.string.messageCourseDetailNotFound))) {
+                                unableToFetchData();
+
+                            }
                         }
                     });
         } else {
             showRetryLayout(getString(R.string.error_message_no_internet));
         }
+    }
+
+    private void unableToFetchData() {
+        Toast.makeText(getBaseContext(), getString(R.string.error_something_went_wrong), Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     public static Intent getStartIntent(Context context, String id) {
@@ -206,6 +193,7 @@ public class RapidLearningSectionListActivity extends AppCompatActivity {
     }
 
     private void initializeUiAndListeners(final MicroLearningCourse course) {
+        mBinding.scrollView.setVisibility(View.VISIBLE);
         setSessionListTitle(course.getMetaInformation(), course.getCourseSections().size());
         setBackgroundColor(course);
         setThumbnail(course.getThumbnail());
@@ -215,6 +203,7 @@ public class RapidLearningSectionListActivity extends AppCompatActivity {
         setCourseCurator(course.getAuthor().getName());
         setCourseDescription(course.getDescription());
         initializeRecyclerView(course.getObjectId(), course.getCourseSections(), getString(R.string.label_section));
+        mCourseType = course.getCourseType();
 
         mBinding.layoutRating.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -336,7 +325,7 @@ public class RapidLearningSectionListActivity extends AppCompatActivity {
 
     private void setCourseCurator(String name) {
         if (!TextUtils.isEmpty(name)) {
-            String value = "Curated by " + name;
+            String value = getString(R.string.curatedBy) + name;
             mBinding.textViewCurator.setText(value);
         } else {
             mBinding.textViewCurator.setVisibility(View.GONE);
@@ -377,26 +366,29 @@ public class RapidLearningSectionListActivity extends AppCompatActivity {
                 mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false));
             }
 
-            mAdapter = new RecyclerViewAdapter(courseId, list, suffix);
-            mBinding.recyclerView.setAdapter(mAdapter);
+            RecyclerViewAdapter adapter = new RecyclerViewAdapter(courseId, list, suffix);
+            mBinding.recyclerView.setAdapter(adapter);
+
+            mBinding.recyclerView.setVisibility(View.VISIBLE);
+            mBinding.textViewNoLesson.setVisibility(View.GONE);
         } else {
             mBinding.recyclerView.setVisibility(View.GONE);
             mBinding.textViewNoLesson.setVisibility(View.VISIBLE);
         }
 
-
+        mBinding.progressBar.setVisibility(View.GONE);
     }
 
     private class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
         private ArrayList<CourseSection> mList;
         private String mSuffix, mCourseId;
-        private CourseProgress mCourseProgress;
+        //private CourseProgress mCourseProgress;
 
-        public RecyclerViewAdapter(String courseId, ArrayList<CourseSection> list, String suffix) {
+        RecyclerViewAdapter(String courseId, ArrayList<CourseSection> list, String suffix) {
             mCourseId = courseId;
             mList = list;
             mSuffix = suffix;
-            mCourseProgress = mPlayerModel.getCourseProgress(mCourseId);
+            // mCourseProgress = mPlayerModel.getCourseProgress(mCourseId);
 
         }
 
@@ -418,47 +410,59 @@ public class RapidLearningSectionListActivity extends AppCompatActivity {
 
         private void refreshItem(int index) {
             if (index > -1 && index < mList.size()) {
-                mCourseProgress = mPlayerModel.getCourseProgress(mCourseId);
+                // mCourseProgress = mPlayerModel.getCourseProgress(mCourseId);
                 notifyItemChanged(index);
             }
-
 
         }
 
         private void setProgress(LayoutCourseSectionItemBinding binding, final CourseSection object, final int position) {
-            int progress = 0;
+            int progress;
             float textProgress;
             int max = object.getCourseSectionCards().size();
             binding.progressBar.setMax(max);
-            if (mCourseProgress != null && !TextUtils.isEmpty(mCourseProgress.getObjectId())) {
-                ArrayList<SectionProgress> list = mCourseProgress.getSectionProgresses();
-                if (list != null && !list.isEmpty()) {
-                    int index = list.indexOf(new SectionProgress(object.getObjectId(), 0));
-                    if (index > -1 && list.get(index).getProgress() > -1) {
-                        progress = list.get(index).getProgress();
-                        binding.progressBar.setProgress(progress + 1);
+//            if (mCourseProgress != null && !TextUtils.isEmpty(mCourseProgress.getObjectId())) {
+//                ArrayList<SectionProgress> list = mCourseProgress.getSectionProgresses();
+//                if (list != null && !list.isEmpty()) {
+//                    int index = list.indexOf(new SectionProgress(object.getObjectId(), 0));
+//                    if (index > -1 && list.get(index).getProgress() > -1) {
+            progress = object.getSectionProgress();
+            binding.progressBar.setProgress(progress);
 
-                        textProgress = binding.progressBar.getProgress();
-                        float averageProgress = (textProgress / max) * 100;
-                        String progressValue = String.valueOf(Math.round(averageProgress)) + "%";
-                        binding.textViewProgress.setText(progressValue);
-                    }
-                }
-            }
+            textProgress = binding.progressBar.getProgress();
+            float averageProgress = (textProgress / max) * 100;
+            String progressValue = Math.round(averageProgress) + "%";
+            binding.textViewProgress.setText(progressValue);
+//                    }
+//                }
+//            }
 
-            final int finalProgress = progress;
+            final int sectionProgress = progress;
             binding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!TextUtils.isEmpty(mId) && !TextUtils.isEmpty(object.getObjectId()) && object.getCourseSectionCards() != null && !object.getCourseSectionCards().isEmpty()) {
-                        if (object.getCourseSectionCards().size() == finalProgress) {
-                            mSavedIndex = -1;
-                            startActivity(RapidLearningCardsActivity.getStartIntent(getBaseContext(), mId, object.getTitle(), object.getObjectId(), mColor, object.getCourseSectionCards(), 0));
-                        } else {
-                            mSavedIndex = position;
-                            startActivity(RapidLearningCardsActivity.getStartIntent(getBaseContext(), mId, object.getTitle(), object.getObjectId(), mColor, object.getCourseSectionCards(), finalProgress));
+                    if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
+                        if (!TextUtils.isEmpty(mId) && !TextUtils.isEmpty(object.getObjectId()) && object.getCourseSectionCards() != null && !object.getCourseSectionCards().isEmpty()) {
+//                        if (object.getCourseSectionCards().size() == sectionProgress) {
+//                            mSavedIndex = -1;
+//                            startActivity(RapidLearningCardsActivity.getStartIntent(getBaseContext(), mId, object.getTitle(), object.getObjectId(), mColor, object.getCourseSectionCards(), mCourseType, 0));
+//                        } else {
+//                            mSavedIndex = position;
+//                            startActivity(RapidLearningCardsActivity.getStartIntent(getBaseContext(), mId, object.getTitle(), object.getObjectId(), mColor, object.getCourseSectionCards(), mCourseType, object.getLastCardIndex()));
+//
+//                        }
+                            if (object.getLastCardIndex() == (object.getCourseSectionCards().size() - 1)) {
+                                startActivity(RapidLearningCardsActivity.getStartIntent(getBaseContext(), mId, object.getTitle(), object.getObjectId(), mColor, object.getCourseSectionCards(), mCourseType, 0));
 
+                            } else {
+                                startActivity(RapidLearningCardsActivity.getStartIntent(getBaseContext(), mId, object.getTitle(), object.getObjectId(), mColor, object.getCourseSectionCards(), mCourseType, object.getLastCardIndex()));
+
+                            }
+                        } else {
+                            SnackBarUtils.showSnackBar(getBaseContext(), mBinding.getRoot(), getString(R.string.error_something_went_wrong), SnackBarUtils.UNSUCCESSFUL);
                         }
+                    } else {
+                        SnackBarUtils.showNoInternetSnackBar(getBaseContext(), mBinding.getRoot());
                     }
                 }
             });
@@ -492,10 +496,10 @@ public class RapidLearningSectionListActivity extends AppCompatActivity {
             return mList.size();
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder {
             LayoutCourseSectionItemBinding mBinding;
 
-            public ViewHolder(LayoutCourseSectionItemBinding binding) {
+            ViewHolder(LayoutCourseSectionItemBinding binding) {
                 super(binding.getRoot());
                 mBinding = binding;
             }

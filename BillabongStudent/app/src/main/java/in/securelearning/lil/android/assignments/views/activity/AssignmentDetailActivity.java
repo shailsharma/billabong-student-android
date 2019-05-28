@@ -590,11 +590,11 @@ public class AssignmentDetailActivity extends AppCompatActivity {
             } else if (assignmentType.contains("interactivevi")) {
                 type = "Interactive Video";
                 mObjectClass = InteractiveVideo.class;
-            } else if (assignmentType.contains("pop")) {
-                type = "Pop Up";
-                mObjectClass = PopUps.class;
             } else {
-                type = "Pre read";
+                if (assignmentType.contains("pop")) {
+                    type = "Pop Up";
+                    mObjectClass = PopUps.class;
+                }
             }
 
             mCardScore.setVisibility(View.GONE);

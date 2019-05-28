@@ -15,6 +15,7 @@ import in.securelearning.lil.android.home.model.FlavorHomeModel;
 import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.home.model.SearchModel;
 import in.securelearning.lil.android.learningnetwork.model.PostDataLearningModel;
+import in.securelearning.lil.android.mindspark.model.MindSparkModel;
 import in.securelearning.lil.android.syncadapter.ftp.FtpFunctions;
 import in.securelearning.lil.android.syncadapter.model.FlavorNetworkModel;
 import in.securelearning.lil.android.syncadapter.model.JobModel;
@@ -121,5 +122,11 @@ public class HomeModule {
     @ActivityScope
     public AnalyticsModel analyticsModel() {
         return new AnalyticsModel();
+    }
+
+    @Provides
+    @ActivityScope
+    public MindSparkModel mindSparkModel() {
+        return new MindSparkModel();
     }
 }

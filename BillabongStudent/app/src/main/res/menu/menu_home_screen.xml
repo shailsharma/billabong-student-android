@@ -38,7 +38,7 @@
         android:icon="@drawable/action_done_square_multiple_w"
         android:orderInCategory="101"
         android:title="@string/string_submitted_assignments"
-        android:visible="true"
+        android:visible="false"
         app:showAsAction="always"/>
 
     <item
@@ -46,7 +46,7 @@
         android:icon="@drawable/filter_white"
         android:orderInCategory="102"
         android:title="@string/string_filter"
-        android:visible="true"
+        android:visible="false"
         app:showAsAction="always"/>
 
     <!--<item-->

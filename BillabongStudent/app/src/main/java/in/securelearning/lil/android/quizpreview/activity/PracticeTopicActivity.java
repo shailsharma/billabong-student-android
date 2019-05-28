@@ -357,19 +357,6 @@ public class PracticeTopicActivity extends AppCompatActivity {
             uploadQuizResponse(mQuizResponse);
         }
 
-//        if (mComplexityLevel == 0) {
-//            mLowQuestionsCounter++;
-//            if (mLowQuestionsCounter >= mSkillMasteryQuestionGetData.getLowLevelQuestion().getResults().size()) {
-//
-//            }
-//            mQuestion = mSkillMasteryQuestionGetData.getLowLevelQuestion().getResults().get(mLowQuestionsCounter);
-//        } else if (mComplexityLevel == 1) {
-//            mMediumQuestionsCounter++;
-//            mQuestion = mSkillMasteryQuestionGetData.getMediumLevelQuestion().getResults().get(mMediumQuestionsCounter);
-//        } else if (mComplexityLevel > 2 || mComplexityLevel == 2) {
-//            mHighQuestionsCounter++;
-//        }
-
 
     }
 
@@ -435,14 +422,9 @@ public class PracticeTopicActivity extends AppCompatActivity {
 
                     final Call<ArrayList<SkillMasteryQuestionGetData>> questionCall = mNetworkModel.fetchBySkillListAndComplexityLevel(masteryRequestObject);
                     Response<ArrayList<SkillMasteryQuestionGetData>> response = questionCall.execute();
-//                    final Call<SkillMasteryQuestionGetData> questionCall = mNetworkModel.fetchBySkillAndComplexityLevel(masteryRequestObject);
-//                    Response<SkillMasteryQuestionGetData> response = questionCall.execute();
 
                     if (response != null && response.isSuccessful()) {
                         mSkillMasteryQuestionGetData = response.body();
-//                        mSkillMasteryQuestionGetData.add(response.body());
-//                        mSkillMasteryQuestionGetData.add(response.body());
-//                        mSkillMasteryQuestionGetData.add(response.body());
                         Log.e("QuestionFetch1--", "Successful");
 
                         subscriber.onNext(mSkillMasteryQuestionGetData);
@@ -450,12 +432,8 @@ public class PracticeTopicActivity extends AppCompatActivity {
 
                     } else if ((response.code() == 401) && SyncServiceHelper.refreshToken(getBaseContext())) {
                         Response<ArrayList<SkillMasteryQuestionGetData>> response2 = questionCall.clone().execute();
-//                        Response<SkillMasteryQuestionGetData> response2 = questionCall.clone().execute();
                         if (response2 != null && response2.isSuccessful()) {
                             mSkillMasteryQuestionGetData = response2.body();
-//                            mSkillMasteryQuestionGetData.add(response2.body());
-//                            mSkillMasteryQuestionGetData.add(response2.body());
-//                            mSkillMasteryQuestionGetData.add(response2.body());
                             Log.e("QuestionsFetch2--", "Successful");
                             subscriber.onNext(mSkillMasteryQuestionGetData);
                         } else if ((response2.code() == 401)) {
@@ -479,8 +457,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
                             progressDialog.dismiss();
                             mSkillMasteryQuestionGetData = questionGetDataList;
                             int totalQuestions = 0;
-                            for (SkillMasteryQuestionGetData questionGetData :
-                                    questionGetDataList) {
+                            for (SkillMasteryQuestionGetData questionGetData : questionGetDataList) {
                                 if (questionGetData != null && questionGetData.getLowLevelQuestion() != null
                                         && questionGetData.getMediumLevelQuestion() != null
                                         && questionGetData.getHighLevelQuestion() != null) {
@@ -550,6 +527,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
         mBinding.textViewQuestion.setText(TextViewMore.stripHtml(question.getQuestionText()));
         HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(mBinding.textViewQuestion);
         htmlHttpImageGetter.enableCompressImage(true, 80);
+        // String newText = question.getQuestionText().replace("#000000", "#ffffff");
         mBinding.textViewQuestion.setText(Html.fromHtml(TextViewMore.stripHtmlForQuiz(question.getQuestionText()).trim(), htmlHttpImageGetter, new TextViewMore.UlTagHandler()));
     }
 

@@ -3,6 +3,7 @@ package in.securelearning.lil.android.home.views.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +37,7 @@ import java.util.TimerTask;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.analytics.activity.StudentAnalyticsActivity;
+import in.securelearning.lil.android.analytics.activity.StudentAnalyticsTabActivity;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutDashboardFragmentBinding;
 import in.securelearning.lil.android.app.databinding.LayoutDashboardStudentSubjectItemBinding;
@@ -54,11 +56,12 @@ import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
 import in.securelearning.lil.android.home.events.HomeworkTabOpeningEvent;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
+import in.securelearning.lil.android.home.utils.PermissionPrefs;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
 import in.securelearning.lil.android.home.utils.RecyclerViewPagerIndicator;
 import in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity;
 import in.securelearning.lil.android.home.views.activity.SubjectDetailsActivity;
-import in.securelearning.lil.android.learningnetwork.events.LoadNewAssignmentDownloadEvent;
+import in.securelearning.lil.android.learningnetwork.events.AssignmentResponseDownloadEvent;
 import in.securelearning.lil.android.learningnetwork.events.LoadRefreshAssignmentStageEvent;
 import in.securelearning.lil.android.learningnetwork.views.activity.NotificationActivity;
 import in.securelearning.lil.android.player.microlearning.view.activity.RapidLearningSectionListActivity;
@@ -75,6 +78,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class DashboardFragment extends Fragment {
 
@@ -99,6 +104,9 @@ public class DashboardFragment extends Fragment {
     private Disposable mSubscription;
     private Context mContext;
     private Timer mGreetingTimer;
+    private static final int DASHBOARD_SUBJECT_SPAN_COUNT = 4;
+    ArrayList<String> mSnackBarMsg = new ArrayList<>();
+    private boolean isUserVisible = false;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -117,6 +125,7 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -128,14 +137,8 @@ public class DashboardFragment extends Fragment {
         getTodayRecaps();
         initializeUIAndClickListeners();
 
-//        mBinding.layoutSubjectProgressBar.setVisibility(View.GONE);
-//        mBinding.recyclerView.setVisibility(View.VISIBLE);
-//        LessonPlanSubject lessonPlanSubject = new LessonPlanSubject();
-//        lessonPlanSubject.setIconUrl("");
-//        lessonPlanSubject.setName("LightSail");
-//        initializeSubjectRecyclerView(new ArrayList<LessonPlanSubject>(Collections.singleton(lessonPlanSubject)));
-
         return mBinding.getRoot();
+
     }
 
 
@@ -144,6 +147,24 @@ public class DashboardFragment extends Fragment {
         super.onResume();
         getAssignmentCounts();
         handleGreetingTimer();
+
+
+        if (PermissionPrefs.setRanBefore(mContext)) {
+            showDynamicSnackBar();
+        }
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
     }
 
     /*handling greeting timer calling from onResume*/
@@ -231,21 +252,11 @@ public class DashboardFragment extends Fragment {
             }
         });
 
-        mBinding.assignmentView.buttonAssignmentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                if (PermissionPrefsCommon.getDashboardTeacherViewPermission(mContext)) {
-//                    mListener.onDashboardFragmentInteraction(AssignmentFragmentTeacher.class);
-//                } else {
-//                    mListener.onDashboardFragmentInteraction(AssignmentStudentFragment.class);
-//                }
-            }
-        });
-
         mBinding.buttonAnalyticsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(StudentAnalyticsActivity.getStartIntent(getContext()));
+                //  startActivity(StudentAnalyticsActivity.getStartIntent(getContext()));
+                startActivity(StudentAnalyticsTabActivity.getStartIntent(getContext()));
             }
         });
 
@@ -338,68 +349,55 @@ public class DashboardFragment extends Fragment {
     private void getAssignmentCounts() {
         final String mEndDate = getTodayDate();
         final String mStartDate = "";
-        final String mPendingFromDate = getDayAfterTomorrow();
-        final String mUserId = mAppUserModel.getObjectId();
 
-        if (PermissionPrefsCommon.getDashboardStudentViewPermission(mContext)) {
+        mAssignmentResponseStudentModel.getNewAssignmentsCount().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Integer>() {
+            @Override
+            public void accept(Integer integer) throws Exception {
+                makeCountBold(String.valueOf(integer), mContext.getString(R.string.string_new), mBinding.assignmentView.textViewAssignmentCount1);
+                //  mSnackBarMsg.add(1,String.valueOf(integer));
 
-            mAssignmentResponseStudentModel.getNewAssignmentsCount().subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Integer>() {
-                @Override
-                public void accept(Integer integer) throws Exception {
-                    makeCountBold(String.valueOf(integer), mContext.getString(R.string.string_new), mBinding.assignmentView.textViewAssignmentCount1);
+            }
+        });
 
-                }
-            });
+        mAssignmentResponseStudentModel.getOverDueAssignmentList(mStartDate, mEndDate, "", 0, 0).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<ArrayList<AssignmentStudent>>() {
+            @Override
+            public void accept(final ArrayList<AssignmentStudent> overDueAssignment) throws Exception {
+                mAssignmentResponseStudentModel.getPendingAssignmentList(mStartDate, mEndDate, "", 0, 0).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<ArrayList<AssignmentStudent>>() {
+                    @Override
+                    public void accept(ArrayList<AssignmentStudent> pendingAssignment) throws Exception {
+                        makeCountBold(String.valueOf(pendingAssignment.size()), mContext.getString(R.string.string_due), mBinding.assignmentView.textViewAssignmentCount2);
+                        makeCountBold(String.valueOf(overDueAssignment.size()), mContext.getString(R.string.string_over_due), mBinding.assignmentView.textViewAssignmentCount3);
+                        // mSnackBarMsg.add(2,String.valueOf(pendingAssignment.size()));
+                        // mSnackBarMsg.add(3,String.valueOf(overDueAssignment.size()));
+                    }
+                });
 
-            mAssignmentResponseStudentModel.getOverDueAssignmentList(mStartDate, mEndDate, "", 0, 0).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<ArrayList<AssignmentStudent>>() {
-                @Override
-                public void accept(final ArrayList<AssignmentStudent> overDueAssignment) throws Exception {
-                    mAssignmentResponseStudentModel.getPendingAssignmentList(mStartDate, mEndDate, "", 0, 0).subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<ArrayList<AssignmentStudent>>() {
-                        @Override
-                        public void accept(ArrayList<AssignmentStudent> pendingAssignment) throws Exception {
-                            makeCountBold(String.valueOf(pendingAssignment.size()), mContext.getString(R.string.string_due), mBinding.assignmentView.textViewAssignmentCount2);
-                            makeCountBold(String.valueOf(overDueAssignment.size()), mContext.getString(R.string.string_over_due), mBinding.assignmentView.textViewAssignmentCount3);
+            }
+        });
 
 
-                        }
-                    });
+    }
 
-                }
-            });
+    private void showDynamicSnackBar() {
+        String msg = getString(R.string.snakbar_before_dashboard);
+        if (mAppUserModel != null && mAppUserModel.getName() != null && !mAppUserModel.getName().trim().equalsIgnoreCase("")) {
+            msg = String.format(msg, mAppUserModel.getName());
+            mSnackBarMsg.add(0, mAppUserModel.getName());
+            SnackBarUtils.getInstance().getSnackBarWithImage(
+                    getActivity(), mBinding.getRoot(), R.drawable.m_lil_red_main, "left",
+                    mSnackBarMsg, 0, R.color.white, msg);
 
         } else {
+            msg = getString(R.string.snakbar_before_dashboard_1);
+            SnackBarUtils.getInstance().getSnackBarWithImage(
+                    getActivity(), mBinding.getRoot(), R.drawable.m_lil_red_main, "left",
+                    mSnackBarMsg, 0, R.color.white, msg);
 
-            mTeacherModel.getAllPendingAndOverDueAssignmentCounts(mUserId, "", mStartDate, mEndDate, 0, 0).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Integer>() {
-                @Override
-                public void accept(Integer integer) throws Exception {
-                    makeCountBold(String.valueOf(integer), mContext.getString(R.string.string_pending), mBinding.assignmentView.textViewAssignmentCount1);
-                }
-            });
-
-            mTeacherModel.getSubmittedAssignmentResponseCount("", "").subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Integer>() {
-                @Override
-                public void accept(Integer integer) throws Exception {
-                    makeCountBold(String.valueOf(integer), mContext.getString(R.string.string_turned_in), mBinding.assignmentView.textViewAssignmentCount2);
-                }
-            });
-
-
-            mTeacherModel.getAllPendingAndOverDueAssignmentCounts(mUserId, "", mEndDate, mStartDate, 0, 0).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Integer>() {
-                @Override
-                public void accept(Integer integer) throws Exception {
-                    makeCountBold(String.valueOf(integer), mContext.getString(R.string.string_over_due), mBinding.assignmentView.textViewAssignmentCount3);
-                }
-            });
-
-            Calendar cal = Calendar.getInstance();
-            mTeacherModel.getAssignmentListAssignedByTeacherToday(cal.getTime());
         }
+
     }
 
     @SuppressLint("CheckResult")
@@ -481,6 +479,7 @@ public class DashboardFragment extends Fragment {
 
                         }
                     });
+
         } else {
             showInternetSnackBar();
         }
@@ -492,8 +491,7 @@ public class DashboardFragment extends Fragment {
 
         mBinding.recyclerView.setNestedScrollingEnabled(false);
         mBinding.recyclerView.setHasFixedSize(true);
-        int columnCount = 4;
-        mBinding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnCount, GridLayoutManager.VERTICAL, false));
+        mBinding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(), DASHBOARD_SUBJECT_SPAN_COUNT, GridLayoutManager.VERTICAL, false));
 
         SubjectAdapter subjectAdapter = new SubjectAdapter(lessonPlanSubjects);
         mBinding.recyclerView.setAdapter(subjectAdapter);
@@ -509,14 +507,14 @@ public class DashboardFragment extends Fragment {
 
 
     /**
-     * Create Rxbus Disposable for the listen event raised from anywhere in the app
+     * Create RxBus Disposable for the listen event raised from anywhere in the app
      */
     private void listenRxBusEvents() {
         mSubscription = mRxBus.toFlowable().observeOn(Schedulers.computation()).subscribe(new Consumer<Object>() {
             @SuppressLint("CheckResult")
             @Override
             public void accept(Object event) {
-                if (event instanceof LoadNewAssignmentDownloadEvent) {
+                if (event instanceof AssignmentResponseDownloadEvent) {
                     getAssignmentCounts();
                 } else if (event instanceof LoadRefreshAssignmentStageEvent) {
                     getAssignmentCounts();
@@ -525,8 +523,15 @@ public class DashboardFragment extends Fragment {
                 } else if (event instanceof AnimateFragmentEvent) {
                     int id = ((AnimateFragmentEvent) event).getId();
                     if (id == R.id.nav_dashboard) {
-                        AnimationUtils.fadeInFast(getContext(), mBinding.scrollView);
-                        AnimationUtils.fadeIn(getContext(), mBinding.layoutToolbar);
+                        Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                AnimationUtils.fadeInFast(getContext(), mBinding.scrollView);
+                                AnimationUtils.fadeIn(getContext(), mBinding.layoutToolbar);
+
+                            }
+                        });
+
                     }
                 }
                 if (event instanceof ObjectDownloadComplete && ((ObjectDownloadComplete) event).getObjectClass().equals(UserProfile.class)) {
@@ -591,6 +596,7 @@ public class DashboardFragment extends Fragment {
         }
     }
 
+    /*initializing recap recycler view pager*/
     private void initializeRecapPager(ArrayList<LessonPlanMinimal> lessonPlanMinimals) {
 
         mBinding.recapView.recycleViewRecap.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -674,15 +680,10 @@ public class DashboardFragment extends Fragment {
         return DateUtils.getISO8601DateStringFromSeconds(date);
     }
 
-    private String getDayAfterTomorrow() {
-        long date = DateUtils.getSecondsForMidnightFromDate(new Date(DateUtils.getFutureDay(new Date(), 1) * 1000));
-        return DateUtils.getISO8601DateStringFromSeconds(date);
-    }
-
     private class RecapPagerAdapter extends RecyclerView.Adapter<RecapPagerAdapter.ViewHolder> {
         private ArrayList<LessonPlanMinimal> mList;
 
-        public RecapPagerAdapter(ArrayList<LessonPlanMinimal> list) {
+        RecapPagerAdapter(ArrayList<LessonPlanMinimal> list) {
             mList = list;
         }
 
@@ -776,7 +777,7 @@ public class DashboardFragment extends Fragment {
 
         private ArrayList<LessonPlanSubject> mList;
 
-        public SubjectAdapter(ArrayList<LessonPlanSubject> list) {
+        SubjectAdapter(ArrayList<LessonPlanSubject> list) {
             this.mList = list;
         }
 
@@ -826,7 +827,7 @@ public class DashboardFragment extends Fragment {
 
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder {
             LayoutDashboardStudentSubjectItemBinding mBinding;
 
             public ViewHolder(LayoutDashboardStudentSubjectItemBinding binding) {

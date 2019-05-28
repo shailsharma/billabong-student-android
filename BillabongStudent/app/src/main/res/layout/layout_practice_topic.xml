@@ -6,7 +6,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/gradient_app_without_center"
+        android:background="@drawable/gradient_app"
         android:fitsSystemWindows="true"
         android:orientation="vertical">
 
@@ -127,9 +127,9 @@
                 android:layout_below="@+id/layoutQuestionCounter"
                 android:layout_marginStart="@dimen/margin_8dp"
                 android:alpha="0.8"
-                tools:text="@string/single_correct"
                 android:textColor="@color/colorWhite"
-                android:visibility="visible"/>
+                android:visibility="visible"
+                tools:text="@string/single_correct"/>
 
         </RelativeLayout>
 
@@ -171,7 +171,7 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/buttonDone"
             android:layout_below="@+id/layoutTop"
-            >
+            android:requiresFadingEdge="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -368,17 +368,14 @@
         <Button
             android:id="@+id/buttonDone"
             style="@style/Base.Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:backgroundTint="#7b1fa2"
-            android:padding="16dp"
+            android:layout_margin="@dimen/margin_16dp"
+            android:background="@drawable/chip_accent_color"
+            android:padding="@dimen/padding_8dp"
             android:text="@string/submit"
-            android:textColor="#fff"
+            android:textColor="@color/colorWhite"
             android:textSize="20sp"
             android:visibility="gone"/>
 

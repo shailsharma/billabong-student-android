@@ -100,7 +100,8 @@ public class UserProfileActivity extends AppCompatActivity {
     private LayoutUserProfileActivityBinding mBinding;
     private List<String> mEarnBadges = new java.util.ArrayList<>();
     public static String USER_ID = "userId";
-
+    private String userProfilePath = "";
+    boolean canFullView = false;
     @Inject
     RxBus mRxBus;
     @Inject
@@ -454,7 +455,7 @@ public class UserProfileActivity extends AppCompatActivity {
         setGrade(userProfile.getGrade());
         setSection(userProfile.getSection());
         setBoard(userProfile.getBoard());
-        setDesignation(userProfile.getDesignation(), userProfile.getDepartment());
+        //setDesignation(userProfile.getDesignation(), userProfile.getDepartment());
         setQualification(userProfile.getQualification());
 
         if (mBinding.layoutEmail.getVisibility() == View.GONE &&

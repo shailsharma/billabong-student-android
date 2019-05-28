@@ -5,8 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
-
 public class LessonPlanSubjectDetails implements Serializable {
 
     @SerializedName("subjectDetail")
@@ -19,7 +17,7 @@ public class LessonPlanSubjectDetails implements Serializable {
 
     @SerializedName("GroupDetail")
     @Expose
-    private IdNameObject mGroup;
+    private LessonPlanGroupDetails mGroup;
 
     public LessonPlanSubject getSubject() {
         return mSubject;
@@ -37,11 +35,11 @@ public class LessonPlanSubjectDetails implements Serializable {
         mTopic = topic;
     }
 
-    public IdNameObject getGroup() {
+    public LessonPlanGroupDetails getGroup() {
         return mGroup;
     }
 
-    public void setGroup(IdNameObject group) {
+    public void setGroup(LessonPlanGroupDetails group) {
         mGroup = group;
     }
 }

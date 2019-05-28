@@ -3,6 +3,7 @@ package in.securelearning.lil.android.player.microlearning.di.module;
 import dagger.Module;
 import dagger.Provides;
 import in.securelearning.lil.android.base.di.scope.ActivityScope;
+import in.securelearning.lil.android.base.model.UserCourseProgressModel;
 import in.securelearning.lil.android.player.microlearning.model.PlayerModel;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 
@@ -25,5 +26,11 @@ public class PlayerModule {
         return new PlayerModel();
     }
 
+
+    @Provides
+    @ActivityScope
+    public UserCourseProgressModel userCourseProgressModel() {
+        return new UserCourseProgressModel();
+    }
 
 }

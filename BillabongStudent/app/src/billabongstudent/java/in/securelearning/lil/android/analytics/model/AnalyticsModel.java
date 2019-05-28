@@ -26,6 +26,7 @@ import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataRequest;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
+import in.securelearning.lil.android.analytics.dataobjects.EffortvsPerformanceData;
 import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsTimeSpentDetailPopupBinding;
@@ -423,6 +424,7 @@ public class AnalyticsModel {
                 ChartConfigurationRequest chartConfigurationRequest = new ChartConfigurationRequest();
                 chartConfigurationRequest.setPerformance(true);
                 chartConfigurationRequest.setCoverage(true);
+                chartConfigurationRequest.setPerformanceStandards(true);
                 Call<ChartConfigurationParentData> call = mFlavorNetworkModel.fetchChartConfiguration(chartConfigurationRequest);
                 Response<ChartConfigurationParentData> response = call.execute();
 
@@ -535,5 +537,38 @@ public class AnalyticsModel {
     /*Configurable Bar Width*/
     public float barWidth() {
         return 0.36f;
+    }
+
+    /*To fetch effort (time spent) data for all subjects*/
+    public Observable<ArrayList<EffortvsPerformanceData>> fetchEffortvsPerformanceData() {
+        return Observable.create(new ObservableOnSubscribe<ArrayList<EffortvsPerformanceData>>() {
+            @Override
+            public void subscribe(ObservableEmitter<ArrayList<EffortvsPerformanceData>> e) throws Exception {
+                Call<ArrayList<EffortvsPerformanceData>> call = mFlavorNetworkModel.fetchEffortvsPerformanceData();
+                Response<ArrayList<EffortvsPerformanceData>> response = call.execute();
+
+                if (response != null && response.isSuccessful()) {
+                    Log.e("EffortChartData", "Successful");
+                    e.onNext(response.body());
+                } else if (response.code() == 404) {
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                } else if (response.code() == 401 && SyncServiceHelper.refreshToken(mContext)) {
+                    Response<ArrayList<EffortvsPerformanceData>> response2 = call.clone().execute();
+                    if (response2 != null && response2.isSuccessful()) {
+                        Log.e("EffortChartData", "Successful");
+                        e.onNext(response.body());
+                    } else if (response2.code() == 401) {
+                        mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
+                    } else if (response2.code() == 404) {
+                        throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                    }
+                } else {
+                    Log.e("EffortChartData", "Failed");
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                }
+                e.onComplete();
+
+            }
+        });
     }
 }

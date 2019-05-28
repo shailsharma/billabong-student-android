@@ -36,6 +36,7 @@ android {
             resValue "drawable", "notification_icon", '@drawable/notification_release'
             resValue "string", "authorities", '@string/search_provider_authority'
             resValue "string", "authorities_file", '@string/file_provider_authority'
+            resValue "string", "freadom_url", '@string/base_url_freadom_prod'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'SUBSCRIBE_FCM_PREFIX', '"release"'
@@ -50,6 +51,7 @@ android {
             resValue "drawable", "notification_icon", '@drawable/notification_debug'
             resValue "string", "authorities", '@string/search_provider_authority_debug'
             resValue "string", "authorities_file", '@string/file_provider_authority_debug'
+            resValue "string", "freadom_url", '@string/base_url_freadom_dev'
             buildConfigField 'String', 'SUBSCRIBE_FCM_PREFIX', '"debug"'
             applicationIdSuffix '.debug'
             resValue "string", "app_name", "@string/app_name_debug"
@@ -64,6 +66,7 @@ android {
             resValue "drawable", "notification_icon", '@drawable/notification_release'
             resValue "string", "authorities", '@string/search_provider_authority_test'
             resValue "string", "authorities_file", '@string/file_provider_authority_test'
+            resValue "string", "freadom_url", '@string/base_url_freadom_dev'
             buildConfigField 'String', 'SUBSCRIBE_FCM_PREFIX', '"test"'
             applicationIdSuffix '.test'
             resValue "string", "app_name", "@string/app_name_test"
@@ -165,11 +168,12 @@ dependencies {
     implementation 'petrov.kristiyan:colorpicker-library:1.1.4'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation 'com.github.GoodieBag:Pinview:v1.3'
-    implementation 'com.github.stfalcon:smsverifycatcher:0.3.1'
+    implementation 'com.github.stfalcon:smsverifycatcher:0.3.2'
     implementation 'com.github.yalantis:ucrop:2.2.1'
     implementation 'com.afollestad:material-camera:0.4.4'
     implementation 'org.sufficientlysecure:html-textview:3.6'
     implementation 'com.github.chuross:expandable-layout:1.0.5'
+    implementation 'org.jsoup:jsoup:1.8.3'
 
     testImplementation 'junit:junit:4.12'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.14.1'

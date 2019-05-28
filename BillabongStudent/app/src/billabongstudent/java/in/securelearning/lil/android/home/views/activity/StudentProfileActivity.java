@@ -222,6 +222,7 @@ public class StudentProfileActivity extends AppCompatActivity {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         throwable.printStackTrace();
+                        initializeUIAndListeners(userProfile);
                         mProgressDialog.dismiss();
                     }
                 });

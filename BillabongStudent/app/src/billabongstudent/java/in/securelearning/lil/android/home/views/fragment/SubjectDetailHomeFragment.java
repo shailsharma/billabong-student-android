@@ -6,12 +6,14 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,29 +37,30 @@ import in.securelearning.lil.android.app.databinding.LayoutVideoListItemBinding;
 import in.securelearning.lil.android.base.customchrometabutils.CustomChromeTabHelper;
 import in.securelearning.lil.android.base.dataobjects.MetaInformation;
 import in.securelearning.lil.android.base.dataobjects.MicroLearningCourse;
+import in.securelearning.lil.android.base.dataobjects.Skill;
 import in.securelearning.lil.android.base.dataobjects.Thumbnail;
+import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.home.events.FetchSubjectDetailEvent;
+import in.securelearning.lil.android.home.events.MindSparkNoUnitEvent;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
 import in.securelearning.lil.android.home.model.HomeModel;
-import in.securelearning.lil.android.home.views.activity.MindSparkAllTopicListActivity;
+import in.securelearning.lil.android.mindspark.dataobjects.MindSparkContentDetails;
+import in.securelearning.lil.android.mindspark.dataobjects.MindSparkLoginResponse;
+import in.securelearning.lil.android.mindspark.dataobjects.MindSparkTopicData;
+import in.securelearning.lil.android.mindspark.model.MindSparkModel;
+import in.securelearning.lil.android.mindspark.views.activity.MindSparkAllTopicListActivity;
+import in.securelearning.lil.android.mindspark.views.activity.MindSparkPlayerActivity;
 import in.securelearning.lil.android.player.microlearning.view.activity.RapidLearningSectionListActivity;
-import in.securelearning.lil.android.player.views.activity.PracticePlayerActivity;
+import in.securelearning.lil.android.player.mindspark.dataobjects.MindSparkUnitData;
 import in.securelearning.lil.android.quizpreview.activity.PracticeTopicActivity;
 import in.securelearning.lil.android.syncadapter.dataobjects.AboutCourseMinimal;
+import in.securelearning.lil.android.syncadapter.dataobjects.LRPARequest;
 import in.securelearning.lil.android.syncadapter.dataobjects.LRPAResult;
-import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkContentDetails;
-import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkLoginResponse;
-import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkTopicData;
-import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkUnitData;
-import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -70,23 +74,49 @@ public class SubjectDetailHomeFragment extends Fragment {
     FlavorHomeModel mFlavorHomeModel;
 
     @Inject
+    MindSparkModel mMindSparkModel;
+
+    @Inject
     RxBus mRxBus;
+
+    @Inject
+    AppUserModel mAppUserModel;
     private Context mContext;
     private static final String TOPIC_ID = "topicId";
     private static final String TOPIC_NAME = "topicName";
     private static final String SUBJECT_NAME = "subjectName";
-    private static final String THIRD_PARTY_TOPIC_ID = "thirdPartyTopicId";
+    private static final String GRADE_NAME = "gradeName";
+    private static final String THIRD_PARTY_TOPIC_ID_LIST = "thirdPartyTopicIdList";
     private static final String SUBJECT_BANNER_URL = "subjectBannerUrl";
     private String mSubjectName;
+    private String mGradeName;
     private String mSubjectBannerURL;
-    private String mThirdPartyTopicId;
+    private ArrayList<String> mThirdPartyTopicIds;
     LayoutSubjectDetailsHomeFragmentBinding mBinding;
 
-    private Disposable mDisposable;
     private String mTopicName;
 
     public SubjectDetailHomeFragment() {
         // Required empty public constructor
+    }
+
+
+    public static SubjectDetailHomeFragment newInstance(String topicId, String topicName, String subjectName, String gradeName, ArrayList<String> thirdPartyTopicIds, String bannerUrl) {
+        SubjectDetailHomeFragment fragment = new SubjectDetailHomeFragment();
+        Bundle args = new Bundle();
+        args.putString(TOPIC_ID, topicId);
+        args.putString(TOPIC_NAME, topicName);
+        args.putString(SUBJECT_NAME, subjectName);
+        args.putString(GRADE_NAME, gradeName);
+        args.putStringArrayList(THIRD_PARTY_TOPIC_ID_LIST, thirdPartyTopicIds);
+        args.putString(SUBJECT_BANNER_URL, bannerUrl);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -94,31 +124,21 @@ public class SubjectDetailHomeFragment extends Fragment {
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_subject_details_home_fragment, container, false);
         getBundleData();
-        listenRxEvent();
         return mBinding.getRoot();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mContext = context;
+        mContext = getActivity();
     }
+
 
     @Override
     public void onDetach() {
         super.onDetach();
         mContext = null;
-        if (mDisposable != null) {
-            mDisposable.dispose();
-        }
-    }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (mDisposable != null) {
-            mDisposable.dispose();
-        }
     }
 
     private void getBundleData() {
@@ -126,7 +146,8 @@ public class SubjectDetailHomeFragment extends Fragment {
             String topicId = getArguments().getString(TOPIC_ID);
             mTopicName = getArguments().getString(TOPIC_NAME);
             mSubjectName = getArguments().getString(SUBJECT_NAME);
-            mThirdPartyTopicId = getArguments().getString(THIRD_PARTY_TOPIC_ID);
+            mGradeName = getArguments().getString(GRADE_NAME);
+            mThirdPartyTopicIds = getArguments().getStringArrayList(THIRD_PARTY_TOPIC_ID_LIST);
             mSubjectBannerURL = getArguments().getString(SUBJECT_BANNER_URL);
             if (!TextUtils.isEmpty(topicId)) {
                 fetchLearnList(topicId);
@@ -134,36 +155,13 @@ public class SubjectDetailHomeFragment extends Fragment {
         }
     }
 
-    @SuppressLint("CheckResult")
-    private void listenRxEvent() {
-        mDisposable = mRxBus.toFlowable().observeOn(Schedulers.io()).subscribe(new Consumer<Object>() {
-            @Override
-            public void accept(final Object event) throws Exception {
-                if (event instanceof FetchSubjectDetailEvent) {
-                    Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            String topicId = ((FetchSubjectDetailEvent) event).getId();
-                            fetchLearnList(topicId);
-
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            throwable.printStackTrace();
-                        }
-                    });
-                }
-            }
-        });
-    }
 
     @SuppressLint("CheckResult")
     private void fetchLearnList(final String topicId) {
         mBinding.listLearn.setVisibility(View.GONE);
         mBinding.progressBarLearn.setVisibility(View.VISIBLE);
         mBinding.textViewNoDataLearn.setVisibility(View.GONE);
-        mFlavorHomeModel.fetchLRPA(topicId, "l")
+        mFlavorHomeModel.fetchLRPA(topicId, LRPARequest.TYPE_LEARN)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<LRPAResult>() {
@@ -198,7 +196,7 @@ public class SubjectDetailHomeFragment extends Fragment {
         mBinding.listReinforce.setVisibility(View.GONE);
         mBinding.progressBarReinforce.setVisibility(View.VISIBLE);
         mBinding.textViewNoDataReinforce.setVisibility(View.GONE);
-        mFlavorHomeModel.fetchLRPA(topicId, "r")
+        mFlavorHomeModel.fetchLRPA(topicId, LRPARequest.TYPE_REINFORCE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<LRPAResult>() {
@@ -221,7 +219,6 @@ public class SubjectDetailHomeFragment extends Fragment {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         throwable.printStackTrace();
-
                         checkSubject(topicId);
                         mBinding.listReinforce.setVisibility(View.GONE);
                         mBinding.progressBarReinforce.setVisibility(View.GONE);
@@ -233,23 +230,29 @@ public class SubjectDetailHomeFragment extends Fragment {
 
     /*To fetch practice if subject is maths then from mind spark
      * else from LIL*/
+    /*TODO hard coded logic for subject check, remove when dynamically done*/
     private void checkSubject(String topicId) {
-//        if (mSubjectName.contains("Math")) {
-//            fetchMindSparkData(mThirdPartyTopicId, topicId);
-//        } else if (mSubjectName.contains("Eng")) {
-//            displayLightSailCard();
-//            fetchApplyList(topicId);
-//        } else {
-//            fetchPracticeList(topicId);
-//        }
-        fetchPracticeList(topicId);
-
+        if (mSubjectName.contains("Math")) {
+            fetchMindSparkData(mThirdPartyTopicIds, topicId);
+        } else if (mSubjectName.contains("Eng")) {
+            /*TODO hard coded logic, remove when dynamically done*/
+            if (mGradeName.equals("PG") || mGradeName.equals("EuroJunior") || mGradeName.equals("EuroSenior")
+                    || mGradeName.equals("Nursery") || mGradeName.equals("I")
+                    || mGradeName.equals("II") || mGradeName.equals("III")) {
+                displayFreadomCard();
+            } else {
+                displayLightSailCard();
+            }
+            fetchApplyList(topicId);
+        } else {
+            fetchPracticeList(topicId);
+        }
     }
 
     /*Check whether thirdPartyTopicId null or empty*/
-    private void fetchMindSparkData(String thirdPartyTopicId, String topicId) {
-        if (!TextUtils.isEmpty(thirdPartyTopicId)) {
-            loginUserToMindSpark(thirdPartyTopicId, topicId);
+    private void fetchMindSparkData(ArrayList<String> thirdPartyTopicIds, String topicId) {
+        if (thirdPartyTopicIds != null && !thirdPartyTopicIds.isEmpty()) {
+            loginUserToMindSparkAndFetchPractice(thirdPartyTopicIds, topicId);
         } else {
             mBinding.progressBarPractice.setVisibility(View.GONE);
             mBinding.textViewNoDataPractice.setVisibility(View.VISIBLE);
@@ -265,11 +268,34 @@ public class SubjectDetailHomeFragment extends Fragment {
         mBinding.cardViewPractice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (GeneralUtils.isNetworkAvailable(getContext())) {
-                    String jwt = AppPrefs.getIdToken(getContext());
-                    CustomChromeTabHelper.loadCustomDataUsingColorResource(getContext(), "https://reader.lightsailed.com/Reader/index.html?jwtToken=" + jwt, R.color.colorPrimary);
+                if (GeneralUtils.isNetworkAvailable(mContext)) {
+                    String jwt = AppPrefs.getIdToken(mContext);
+                    CustomChromeTabHelper.loadCustomDataUsingColorResource(mContext, mContext.getString(R.string.base_url_lightsail) + jwt, R.color.colorPrimary);
+                    Log.e("LightSail---", mContext.getString(R.string.base_url_lightsail) + jwt);
                 } else {
-                    Toast.makeText(getContext(), getString(R.string.connect_internet), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, getString(R.string.connect_internet), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    /*Display Freadom card if subject is English*/
+    private void displayFreadomCard() {
+        mBinding.progressBarPractice.setVisibility(View.GONE);
+        mBinding.cardViewPractice.setVisibility(View.VISIBLE);
+        Picasso.with(mContext).load(R.drawable.logo_freadom).placeholder(R.drawable.image_placeholder).into(mBinding.imageViewPractice);
+        mBinding.imageViewPractice.setColorFilter(R.color.colorPrimary);
+
+        mBinding.cardViewPractice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (GeneralUtils.isNetworkAvailable(mContext)) {
+                    String jwt = AppPrefs.getIdToken(mContext);
+                    String email = mAppUserModel.getApplicationUser().getEmail();
+                    CustomChromeTabHelper.loadCustomDataUsingColorResource(mContext, mContext.getString(R.string.freadom_url) + "?email=" + email + "&token=" + jwt, R.color.colorPrimary);
+                    Log.e("Freadom---", mContext.getString(R.string.freadom_url) + "?email=" + email + "&token=" + jwt);
+                } else {
+                    Toast.makeText(mContext, getString(R.string.connect_internet), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -303,7 +329,11 @@ public class SubjectDetailHomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (GeneralUtils.isNetworkAvailable(mContext)) {
-                    startActivity(PracticePlayerActivity.getStartIntent(mContext, mindSparkContentDetails.getContentId()));
+                    if (mindSparkContentDetails.getUnitsOverall() > 0) {
+                        startActivity(MindSparkPlayerActivity.getStartIntent(mContext, mindSparkContentDetails.getContentId(), mindSparkContentDetails.getContentName()));
+                    } else {
+                        mRxBus.send(new MindSparkNoUnitEvent());
+                    }
                 }
             }
         });
@@ -344,7 +374,7 @@ public class SubjectDetailHomeFragment extends Fragment {
         mBinding.listPractice.setVisibility(View.GONE);
         mBinding.progressBarPractice.setVisibility(View.VISIBLE);
         mBinding.textViewNoDataPractice.setVisibility(View.GONE);
-        mFlavorHomeModel.fetchLRPA(topicId, "p")
+        mFlavorHomeModel.fetchLRPA(topicId, LRPARequest.TYPE_PRACTICE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<LRPAResult>() {
@@ -368,7 +398,9 @@ public class SubjectDetailHomeFragment extends Fragment {
                                 ArrayList<String> skillIds = new ArrayList<>();
                                 HomeModel.SkillMap skillMap = getSkillMap(metaInformationList.get(0));
                                 for (int i = 0; i < metaInformationList.size(); i++) {
-                                    skillIds.addAll(getSkillIds(metaInformationList.get(i)));
+                                    if (!metaInformationList.get(i).getSkills().isEmpty()) {
+                                        skillIds.addAll(getSkillIds(metaInformationList.get(i).getSkills()));
+                                    }
                                 }
 
                                 /*removing duplicate entries if any*/
@@ -407,7 +439,7 @@ public class SubjectDetailHomeFragment extends Fragment {
         mBinding.listApply.setVisibility(View.GONE);
         mBinding.progressBarApply.setVisibility(View.VISIBLE);
         mBinding.textViewNoDataApply.setVisibility(View.GONE);
-        mFlavorHomeModel.fetchLRPA(topicId, "a")
+        mFlavorHomeModel.fetchLRPA(topicId, LRPARequest.TYPE_APPLY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<LRPAResult>() {
@@ -437,24 +469,24 @@ public class SubjectDetailHomeFragment extends Fragment {
     }
 
     @SuppressLint("CheckResult")
-    private void loginUserToMindSpark(String thirdPartyTopicId, final String topicId) {
+    private void loginUserToMindSparkAndFetchPractice(ArrayList<String> thirdPartyTopicIds, final String topicId) {
         mBinding.listPractice.setVisibility(View.GONE);
         mBinding.progressBarPractice.setVisibility(View.VISIBLE);
         mBinding.textViewNoDataPractice.setVisibility(View.GONE);
-        mFlavorHomeModel.loginUserToMindSpark(thirdPartyTopicId)
+        mMindSparkModel.loginUserToMindSpark(thirdPartyTopicIds)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<MindSparkLoginResponse>() {
+                .subscribe(new Consumer<ArrayList<MindSparkLoginResponse>>() {
                     @Override
-                    public void accept(MindSparkLoginResponse mindSparkLoginResponse) throws Exception {
+                    public void accept(ArrayList<MindSparkLoginResponse> responseArrayList) throws Exception {
+
                         fetchApplyList(topicId);
 
                         mBinding.progressBarPractice.setVisibility(View.GONE);
-                        if (mindSparkLoginResponse != null && mindSparkLoginResponse.getMindSparkContentDetails() != null) {
-                            //ArrayList<MindSparkLoginResponse> list = new ArrayList<>(Collections.singleton(mindSparkLoginResponse));
-                            //initializeRecyclerViewPracticeMS(list);
-                            displayMindSparkCard(mindSparkLoginResponse);
-                            mBinding.listPractice.setVisibility(View.GONE);
+                        if (responseArrayList != null && !responseArrayList.isEmpty()) {
+                            //displayMindSparkCard(responseArrayList);
+                            initializeRecyclerViewPracticeMS(responseArrayList);
+                            mBinding.listPractice.setVisibility(View.VISIBLE);
                             mBinding.textViewNoDataPractice.setVisibility(View.GONE);
                         } else {
                             mBinding.listPractice.setVisibility(View.GONE);
@@ -465,25 +497,15 @@ public class SubjectDetailHomeFragment extends Fragment {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         throwable.printStackTrace();
+
                         fetchApplyList(topicId);
+
                         mBinding.listPractice.setVisibility(View.GONE);
                         mBinding.progressBarPractice.setVisibility(View.GONE);
                         mBinding.textViewNoDataPractice.setVisibility(View.VISIBLE);
                         mBinding.textViewNoDataPractice.setText(throwable.getMessage());
                     }
                 });
-    }
-
-    public static SubjectDetailHomeFragment newInstance(String topicId, String topicName, String subjectName, String thirdPartyTopicId, String bannerUrl) {
-        SubjectDetailHomeFragment fragment = new SubjectDetailHomeFragment();
-        Bundle args = new Bundle();
-        args.putString(TOPIC_ID, topicId);
-        args.putString(TOPIC_NAME, topicName);
-        args.putString(SUBJECT_NAME, subjectName);
-        args.putString(THIRD_PARTY_TOPIC_ID, thirdPartyTopicId);
-        args.putString(SUBJECT_BANNER_URL, bannerUrl);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     /*Recycler view initialization*/
@@ -509,8 +531,7 @@ public class SubjectDetailHomeFragment extends Fragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mBinding.listPractice.setLayoutManager(layoutManager);
-        PracticeAdapterMS practiceAdapterMS = new PracticeAdapterMS(mContext, list);
-        mBinding.listPractice.setAdapter(practiceAdapterMS);
+        mBinding.listPractice.setAdapter(new PracticeAdapterMS(mContext, list));
         mBinding.buttonMorePractice.setVisibility(View.VISIBLE);
         mBinding.imageViewMindSparkLogo.setVisibility(View.VISIBLE);
         mBinding.buttonMorePractice.setOnClickListener(new View.OnClickListener() {
@@ -539,12 +560,12 @@ public class SubjectDetailHomeFragment extends Fragment {
 
     }
 
-    private ArrayList<String> getSkillIds(MetaInformation metaInformation) {
-        if (metaInformation != null) {
+    private ArrayList<String> getSkillIds(List<Skill> skillIdList) {
+        if (skillIdList != null) {
             ArrayList<String> skillIds = new ArrayList<>();
-            if (metaInformation.getSkills() != null && !metaInformation.getSkills().isEmpty()) {
-                for (int i = 0; i < metaInformation.getSkills().size(); i++) {
-                    skillIds.add(metaInformation.getSkills().get(i).getId());
+            if (!skillIdList.isEmpty()) {
+                for (int i = 0; i < skillIdList.size(); i++) {
+                    skillIds.add(skillIdList.get(i).getId());
                 }
                 return skillIds;
             } else {
@@ -799,7 +820,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                 public void onClick(View view) {
                     if (!TextUtils.isEmpty(course.getId())) {
 
-                        ArrayList<String> skillIds = getSkillIds(course.getMetaInformation());
+                        ArrayList<String> skillIds = getSkillIds(course.getMetaInformation().getSkills());
                         HomeModel.SkillMap skillMap = getSkillMap(course.getMetaInformation());
 
                         if (skillMap != null && skillIds != null && !skillIds.isEmpty()) {
@@ -835,10 +856,10 @@ public class SubjectDetailHomeFragment extends Fragment {
             return mList.size();
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder {
             LayoutMicroCourseListItemBinding mBinding;
 
-            public ViewHolder(LayoutMicroCourseListItemBinding binding) {
+            ViewHolder(LayoutMicroCourseListItemBinding binding) {
                 super(binding.getRoot());
                 mBinding = binding;
             }
@@ -866,7 +887,7 @@ public class SubjectDetailHomeFragment extends Fragment {
             final MindSparkLoginResponse response = mList.get(position);
             final MindSparkContentDetails mindSparkContentDetails = response.getMindSparkContentDetails();
             MindSparkTopicData mindSparkTopicData = response.getMindSparkTopicData();
-            if (mindSparkTopicData.getMindSparkUnitList() != null && mindSparkTopicData.getMindSparkUnitList().size() > 0) {
+            if (mindSparkTopicData.getMindSparkUnitList() != null && !mindSparkTopicData.getMindSparkUnitList().isEmpty()) {
                 MindSparkUnitData mindSparkUnitData = mindSparkTopicData.getMindSparkUnitList().get(0);
                 holder.mBinding.textViewSubTitle.setText(mindSparkUnitData.getUnitName());
 
@@ -879,8 +900,13 @@ public class SubjectDetailHomeFragment extends Fragment {
             holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (GeneralUtils.isNetworkAvailable(getContext())) {
-                        startActivity(PracticePlayerActivity.getStartIntent(getContext(), mindSparkContentDetails.getContentId()));
+                    if (GeneralUtils.isNetworkAvailable(mContext)) {
+                        if (mindSparkContentDetails.getUnitsOverall() > 0) {
+                            startActivity(MindSparkPlayerActivity.getStartIntent(mContext, mindSparkContentDetails.getContentId(), mindSparkContentDetails.getContentName()));
+
+                        } else {
+                            mRxBus.send(new MindSparkNoUnitEvent());
+                        }
                     }
                 }
             });

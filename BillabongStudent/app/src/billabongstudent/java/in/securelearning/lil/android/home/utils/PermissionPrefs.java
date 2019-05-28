@@ -32,6 +32,22 @@ public class PermissionPrefs {
         editor.commit();
     }
 
+    public static boolean setRanBefore(Context context) {
+        SharedPreferences preferences = getSharePreference(context);
+        boolean ranBefore = PermissionPrefsCommon.isRanBefore(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        if (!ranBefore) {
+            // first time
+            editor.putBoolean(PermissionPrefsCommon.IS_RAN_BEFORE, true);
+            editor.apply();
+        }
+        return !ranBefore;
+
+
+
+
+    }
+
     public static void clearPrefs(Context context) {
         SharedPreferences preferences = getSharePreference(context);
         preferences.edit().clear().commit();

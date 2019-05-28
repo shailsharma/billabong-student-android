@@ -8,12 +8,18 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class AuthToken {
+
     @SerializedName("id_token")
     @Expose
-    private String mToken = "";
+    private String mToken;
+
     @SerializedName("access_token")
     @Expose
-    private String mAccessToken = "";
+    private String mAccessToken;
+
+    @SerializedName("userId")
+    @Expose
+    private String mUserId;
 
     public String getToken() {
         return mToken;
@@ -29,5 +35,13 @@ public class AuthToken {
 
     public void setAccessToken(String accessToken) {
         mAccessToken = accessToken;
+    }
+
+    public String getUserId() {
+        return mUserId;
+    }
+
+    public void setUserId(String userId) {
+        mUserId = userId;
     }
 }

@@ -71,7 +71,7 @@ public class CourseService extends IntentService {
                 if (ACTION_SYNC.equals(action)) {
                     handleActionSync();
                 } else if (ACTION_DOWNLOAD_BROADCAST_NOTIFICATION.equals(action)) {
-                    handleActionDownloadBroadcastNotification();
+                    //handleActionDownloadBroadcastNotification();
                 }
             }
         } catch (Exception e) {
@@ -90,8 +90,8 @@ public class CourseService extends IntentService {
     }
 
     private void handleActionSync() {
-//        if (GeneralUtils.isNetworkAvailable(CourseService.this))
-//            startSync();
+        //if (GeneralUtils.isNetworkAvailable(CourseService.this))
+        //startSync();
     }
 
     public void startSync() {

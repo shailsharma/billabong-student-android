@@ -15,7 +15,6 @@
     <color name="colorWhite99">#99ffffff</color>
 
 
-
     <!--Dashboard colors-->
     <color name="colorNewAssignment">#259B23</color>
     <color name="colorDueAssignment">#F7931E</color>
@@ -27,6 +26,7 @@
     <color name="colorCalendarFloating">#666666</color>
     <color name="colorTransparentGrey">#90bdbdbd</color>
     <color name="colorTransparent">#00000000</color>
+    <color name="colorGrey11">#11000000</color>
     <color name="colorItemSelectedBar">#FD5177</color>
     <color name="colorItemSelectedBg">#EEEEEE</color>
     <color name="colorUnselected">#ffffff</color>
@@ -209,4 +209,6 @@
     <color name="color10_foreground">#77ff22a7</color>
 
 
+    <color name="colorRedAlert">#FF0000</color>
+    <color name="colorGreenSuccessful">#61BD4F</color>
 </resources>

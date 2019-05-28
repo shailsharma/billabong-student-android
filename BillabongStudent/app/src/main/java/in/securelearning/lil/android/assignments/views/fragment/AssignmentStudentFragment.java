@@ -32,7 +32,6 @@ import in.securelearning.lil.android.assignments.model.AssignmentResponseStudent
 import in.securelearning.lil.android.assignments.views.activity.AssignmentDetailActivity;
 import in.securelearning.lil.android.base.constants.AssignmentStatus;
 import in.securelearning.lil.android.base.constants.AssignmentType;
-import in.securelearning.lil.android.base.dataobjects.AssignmentResponse;
 import in.securelearning.lil.android.base.dataobjects.AssignmentStudent;
 import in.securelearning.lil.android.base.dataobjects.FilterList;
 import in.securelearning.lil.android.base.rxbus.RxBus;
@@ -42,8 +41,8 @@ import in.securelearning.lil.android.home.dataobjects.Category;
 import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
 import in.securelearning.lil.android.home.events.HomeworkTabOpeningEvent;
 import in.securelearning.lil.android.home.views.widget.PeriodDetailPopUp;
+import in.securelearning.lil.android.learningnetwork.events.AssignmentResponseDownloadEvent;
 import in.securelearning.lil.android.quizpreview.events.AssignmentSubmittedEvent;
-import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -125,13 +124,6 @@ public class AssignmentStudentFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        if (mIsOverDueQueryExecutedOnce) {
-//            if (mOverDueSkip > 0 && mBinding.viewPager.getAdapter() != null && mBinding.viewPager.getAdapter().getCount() > 0) {
-//                mBinding.viewPager.setCurrentItem(0, false);
-//            } else if (mBinding.viewPager.getAdapter() != null && mBinding.viewPager.getAdapter().getCount() > 1) {
-//                mBinding.viewPager.setCurrentItem(1, false);
-//            }
-//        }
 
     }
 
@@ -153,7 +145,7 @@ public class AssignmentStudentFragment extends Fragment {
             @SuppressLint("CheckResult")
             @Override
             public void accept(Object event) throws Exception {
-                if (event instanceof AssignmentSubmittedEvent || (event instanceof ObjectDownloadComplete && ((ObjectDownloadComplete) event).getObjectClass().equals(AssignmentResponse.class))) {
+                if (event instanceof AssignmentSubmittedEvent || (event instanceof AssignmentResponseDownloadEvent)) {
                     Completable.complete().observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Action() {
                                 @Override
@@ -175,7 +167,14 @@ public class AssignmentStudentFragment extends Fragment {
                 } else if (event instanceof AnimateFragmentEvent) {
                     int id = ((AnimateFragmentEvent) event).getId();
                     if (id == R.id.nav_assignments) {
-                        AnimationUtils.fadeInFast(getContext(), mBinding.viewPager);
+                        Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                AnimationUtils.fadeInFast(getContext(), mBinding.viewPager);
+
+
+                            }
+                        });
                     }
                 } else if (event instanceof HomeworkTabOpeningEvent) {
                     final int index = ((HomeworkTabOpeningEvent) event).getIndex();

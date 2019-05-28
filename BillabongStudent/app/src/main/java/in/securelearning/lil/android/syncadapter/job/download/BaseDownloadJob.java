@@ -84,21 +84,23 @@ public abstract class BaseDownloadJob<T extends BaseDataObject> {
         if (doJsonRefresh || object == null || !getObjectId().equals(object.getObjectId()) || !object.getSyncStatus().equals(SyncStatus.COMPLETE_SYNC.toString())) {
             try {
                 Log.d(TAG, "Fetching Object");
-            /*fetch the object from the server*/
+                /*fetch the object from the server*/
                 Response<T> response = fetchFromNetwork(id).execute();
 
-            /*if fetch if successful*/
+                /*if fetch if successful*/
                 if (response.isSuccessful()) {
-
-                /*handle the downloaded object*/
+                    Log.e("backgroundObject--", String.valueOf(response.code()));
+                    /*handle the downloaded object*/
                     actionFetchSuccess(response.body());
 
                 } else {
-                /*handle failure*/
+                    /*handle failure*/
+                    Log.e("backgroundObject--", String.valueOf(response.code()));
                     actionFailure(response.code());
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.e("backgroundObject--", "Failed");
                 Log.e(TAG, "" + e.getMessage());
 
             }
@@ -145,7 +147,7 @@ public abstract class BaseDownloadJob<T extends BaseDataObject> {
         /*send sync success message to server*/
 //        sendSyncSuccessToServer(getObjectIdList(t));
 //        && !android.text.TextUtils.isEmpty(t.getDocId())
-           /*send sync success message to server*/
+        /*send sync success message to server*/
         if (notificationId != null && !notificationId.isEmpty()) {
             // sendSyncSuccessToServer(Collections.singletonList(notificationId));
             updateNotificationStatus(notificationId, SyncStatus.COMPLETE_SYNC.toString());

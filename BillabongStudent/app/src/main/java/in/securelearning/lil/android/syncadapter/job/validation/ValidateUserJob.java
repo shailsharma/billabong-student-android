@@ -44,11 +44,15 @@ public class ValidateUserJob extends BaseValidationJob<UserProfile> {
      */
     private int resourceCount() {
         int count = 0;
-        if (!mDataObject.getThumbnail().getThumb().isEmpty()) count++;
-        if (!mDataObject.getThumbnail().getUrl().isEmpty()) count++;
-        if (!mDataObject.getThumbnail().getSecureUrl().isEmpty()) count++;
+        if (mDataObject.getThumbnail() != null) {
+            if (!mDataObject.getThumbnail().getThumb().isEmpty()) count++;
+            if (!mDataObject.getThumbnail().getUrl().isEmpty()) count++;
+            if (!mDataObject.getThumbnail().getSecureUrl().isEmpty()) count++;
+
+        }
         if (!TextUtils.isEmpty(mDataObject.getAssociation().getThumbnail().getUrl())) count++;
-        if (!TextUtils.isEmpty(mDataObject.getAssociation().getSplashThumbnail().getUrl())) count++;
+        if (!TextUtils.isEmpty(mDataObject.getAssociation().getSplashThumbnail().getUrl()))
+            count++;
         return count;
     }
 
@@ -63,9 +67,6 @@ public class ValidateUserJob extends BaseValidationJob<UserProfile> {
         /*if  User profile  is available validate it*/
         if (mDataObject != null && mDataObject.getObjectId().equals(mDataObject.getObjectId())) {
 
-//            createDownloadJobForGroups(mDataObject);
-//            JobCreator.createCurriculumDownloadJob().execute();
-//            JobCreator.createPeriodNewDownloadJob().execute();
             final String filePathPrefix = "file://" + mContext.getFilesDir() + File.separator;
 
             Log.e(TAG, "------------------------------------------------------------------------------------");
@@ -77,85 +78,87 @@ public class ValidateUserJob extends BaseValidationJob<UserProfile> {
 
 
             //Download User profile 's thumbnail image
-            String url = mDataObject.getThumbnail().getUrl();
-            if (url != null && !url.isEmpty() && !url.endsWith(File.separator) && url.startsWith("http")) {
-                Resource resourceLocal = FileUtils.createResourceFromUrl(mDataObject.getObjectId(), url);
+            if (mDataObject.getThumbnail() != null) {
+                String url = mDataObject.getThumbnail().getUrl();
+                if (url != null && !url.isEmpty() && !url.endsWith(File.separator) && url.startsWith("http")) {
+                    Resource resourceLocal = FileUtils.createResourceFromUrl(mDataObject.getObjectId(), url);
 
-                if (!resourceLocal.getDeviceURL().isEmpty() && mResourceNetworkOperation.downloadResource(mContext, resourceLocal)) {
+                    if (!resourceLocal.getDeviceURL().isEmpty() && mResourceNetworkOperation.downloadResource(mContext, resourceLocal)) {
 
-                    /*increment download count*/
-                    downloadCount++;
+                        /*increment download count*/
+                        downloadCount++;
 
-                    url = filePathPrefix + resourceLocal.getDeviceURL();
+                        url = filePathPrefix + resourceLocal.getDeviceURL();
 
-                    mDataObject.getThumbnail().setUrl(url);
+                        mDataObject.getThumbnail().setUrl(url);
 
-                    //Updating current user thumbnail with the file path
-                    if (mDataObject.getObjectId().equalsIgnoreCase(Injector.INSTANCE.getComponent().appUserModel().getObjectId()))
-                        Injector.INSTANCE.getComponent().appUserModel().getApplicationUser().getThumbnail().setUrl(url);
+                        //Updating current user thumbnail with the file path
+                        if (mDataObject.getObjectId().equalsIgnoreCase(Injector.INSTANCE.getComponent().appUserModel().getObjectId()))
+                            Injector.INSTANCE.getComponent().appUserModel().getApplicationUser().getThumbnail().setUrl(url);
 
-                    mJobModel.saveUserProfile(mDataObject);
+                        mJobModel.saveUserProfile(mDataObject);
 
-                    Log.e(TAG, "user profile image downloaded");
+                        Log.e(TAG, "user profile image downloaded");
+                    }
+                    resourceLocal = null;
                 }
-                resourceLocal = null;
-            }
 
-            //Download User profile 's  thumbnail image
-            url = mDataObject.getThumbnail().getThumb();
-            if (url != null && !url.isEmpty() && !url.endsWith(File.separator) && url.startsWith("http")) {
-                Resource resourceLocal = FileUtils.createResourceFromUrl(mDataObject.getObjectId(), url);
+                //Download User profile 's  thumbnail image
+                url = mDataObject.getThumbnail().getThumb();
+                if (url != null && !url.isEmpty() && !url.endsWith(File.separator) && url.startsWith("http")) {
+                    Resource resourceLocal = FileUtils.createResourceFromUrl(mDataObject.getObjectId(), url);
 
-                if (!resourceLocal.getDeviceURL().isEmpty() && mResourceNetworkOperation.downloadResource(mContext, resourceLocal)) {
+                    if (!resourceLocal.getDeviceURL().isEmpty() && mResourceNetworkOperation.downloadResource(mContext, resourceLocal)) {
 
-                    /*increment download count*/
-                    downloadCount++;
+                        /*increment download count*/
+                        downloadCount++;
 
-                    url = filePathPrefix + resourceLocal.getDeviceURL();
+                        url = filePathPrefix + resourceLocal.getDeviceURL();
 
-                    mDataObject.getThumbnail().setThumb(url);
+                        mDataObject.getThumbnail().setThumb(url);
 
-                    //Updating current user thumbnail with the file path
-                    if (mDataObject.getObjectId().equalsIgnoreCase(Injector.INSTANCE.getComponent().appUserModel().getObjectId()))
-                        Injector.INSTANCE.getComponent().appUserModel().getApplicationUser().getThumbnail().setThumb(url);
+                        //Updating current user thumbnail with the file path
+                        if (mDataObject.getObjectId().equalsIgnoreCase(Injector.INSTANCE.getComponent().appUserModel().getObjectId()))
+                            Injector.INSTANCE.getComponent().appUserModel().getApplicationUser().getThumbnail().setThumb(url);
 
-                    mJobModel.saveUserProfile(mDataObject);
+                        mJobModel.saveUserProfile(mDataObject);
 
 
-                    Log.e(TAG, "user profile thumb_image downloaded");
+                        Log.e(TAG, "user profile thumb_image downloaded");
+                    }
+                    resourceLocal = null;
                 }
-                resourceLocal = null;
-            }
 
-            //Download User profile 's  secure image
-            url = mDataObject.getThumbnail().getSecureUrl();
-            if (url != null && !url.isEmpty() && !url.endsWith(File.separator) && url.startsWith("http")) {
-                Resource resourceLocal = FileUtils.createResourceFromUrl(mDataObject.getObjectId(), url);
+                //Download User profile 's  secure image
+                url = mDataObject.getThumbnail().getSecureUrl();
+                if (url != null && !url.isEmpty() && !url.endsWith(File.separator) && url.startsWith("http")) {
+                    Resource resourceLocal = FileUtils.createResourceFromUrl(mDataObject.getObjectId(), url);
 
-                if (!resourceLocal.getDeviceURL().isEmpty() && mResourceNetworkOperation.downloadResource(mContext, resourceLocal)) {
+                    if (!resourceLocal.getDeviceURL().isEmpty() && mResourceNetworkOperation.downloadResource(mContext, resourceLocal)) {
 
-                    /*increment download count*/
-                    downloadCount++;
+                        /*increment download count*/
+                        downloadCount++;
 
-                    url = filePathPrefix + resourceLocal.getDeviceURL();
+                        url = filePathPrefix + resourceLocal.getDeviceURL();
 
-                    mDataObject.getThumbnail().setSecureUrl(url);
+                        mDataObject.getThumbnail().setSecureUrl(url);
 
-                    //Updating current user thumbnail with the file path
-                    if (mDataObject.getObjectId().equalsIgnoreCase(Injector.INSTANCE.getComponent().appUserModel().getObjectId()))
-                        Injector.INSTANCE.getComponent().appUserModel().getApplicationUser().getThumbnail().setSecureUrl(url);
+                        //Updating current user thumbnail with the file path
+                        if (mDataObject.getObjectId().equalsIgnoreCase(Injector.INSTANCE.getComponent().appUserModel().getObjectId()))
+                            Injector.INSTANCE.getComponent().appUserModel().getApplicationUser().getThumbnail().setSecureUrl(url);
 
-                    mJobModel.saveUserProfile(mDataObject);
+                        mJobModel.saveUserProfile(mDataObject);
 
-                    Log.e(TAG, "User Profile secure_url image downloaded");
+                        Log.e(TAG, "User Profile secure_url image downloaded");
+                    }
+                    resourceLocal = null;
                 }
-                resourceLocal = null;
             }
 
             Institution institute = getInstitute(mDataObject.getAssociation().getId());
             if (institute != null && institute.getThumbnail() != null && !TextUtils.isEmpty(institute.getThumbnail().getThumb())) {
                 mDataObject.getAssociation().setThumbnail(institute.getThumbnail());
-                url = mDataObject.getAssociation().getThumbnail().getUrl();
+                String url = mDataObject.getAssociation().getThumbnail().getUrl();
                 if (url != null && !url.isEmpty() && !url.endsWith(File.separator) && url.startsWith("http")) {
                     Resource resourceLocal = FileUtils.createResourceFromUrl(mDataObject.getObjectId(), url);
 
@@ -180,7 +183,7 @@ public class ValidateUserJob extends BaseValidationJob<UserProfile> {
 
             if (institute != null && institute.getSplashThumbnail() != null && !TextUtils.isEmpty(institute.getSplashThumbnail().getUrl())) {
                 mDataObject.getAssociation().setSplashThumbnail(institute.getSplashThumbnail());
-                url = mDataObject.getAssociation().getSplashThumbnail().getThumb();
+                String url = mDataObject.getAssociation().getSplashThumbnail().getThumb();
                 if (url != null && !url.isEmpty() && !url.endsWith(File.separator) && url.startsWith("http")) {
                     Resource resourceLocal = FileUtils.createResourceFromUrl(mDataObject.getObjectId(), url);
 

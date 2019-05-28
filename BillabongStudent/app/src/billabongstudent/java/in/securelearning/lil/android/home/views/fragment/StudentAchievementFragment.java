@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.home.views.fragment;
 
+import android.app.Dialog;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,22 +9,29 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import in.securelearning.lil.android.app.R;
+import in.securelearning.lil.android.app.databinding.LayoutDialogSubjectItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutMyAchievementItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutMyAchievementsBinding;
+import in.securelearning.lil.android.home.views.adapter.SubjectTopicsRewardAdapter;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
-import in.securelearning.lil.android.syncadapter.dataobjects.StudentReward;
+import in.securelearning.lil.android.syncadapter.dataobjects.StudentSubjectReward;
 
 public class StudentAchievementFragment extends Fragment {
 
-    LayoutMyAchievementsBinding mBinding;
     public static final String STUDENT_ACHIEVEMENT = "studentAchievement";
+    LayoutMyAchievementsBinding mBinding;
 
     public static StudentAchievementFragment newInstance(StudentAchievement studentAchievement) {
         StudentAchievementFragment fragment = new StudentAchievementFragment();
@@ -65,7 +73,7 @@ public class StudentAchievementFragment extends Fragment {
         }
     }
 
-    private void setRewards(final ArrayList<StudentReward> rewardsList, int totalRewards) {
+    private void setRewards(final ArrayList<StudentSubjectReward> rewardsList, int totalRewards) {
 
         mBinding.textViewTotalRewards.setText(String.valueOf(totalRewards));
         mBinding.recyclerViewRewards.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -193,10 +201,43 @@ public class StudentAchievementFragment extends Fragment {
         return list;
     }
 
-    private class RewardsRecyclerViewAdapter extends RecyclerView.Adapter<RewardsRecyclerViewAdapter.ViewHolder> {
-        private ArrayList<StudentReward> mList;
+    private void hideDividerForLastIndex(int size, int position, View viewDivider) {
+        if (size == position) {
+            viewDivider.setVisibility(View.GONE);
+        } else {
+            viewDivider.setVisibility(View.VISIBLE);
+        }
+    }
 
-        private RewardsRecyclerViewAdapter(ArrayList<StudentReward> list) {
+    private void setSubjectTopicsRewards(String subjectName, String score, String thumbnailUrl, ArrayList<StudentSubjectReward> topicList) {
+        if (topicList != null && !topicList.isEmpty()) {
+            final Dialog dialog = new Dialog(getContext());
+
+            LayoutDialogSubjectItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.layout_dialog_subject_item, null, false);
+            dialog.setCancelable(true);
+            dialog.setContentView(binding.getRoot());
+            binding.textViewTopicName.setText(subjectName);
+            binding.textViewScore.setText(score);
+            if (!TextUtils.isEmpty(thumbnailUrl)) {
+                Picasso.with(getContext()).load(thumbnailUrl).placeholder(R.drawable.icon_book).fit().centerCrop().into(binding.imageViewThumbnail);
+            } else {
+                Picasso.with(getContext()).load(R.drawable.icon_book).placeholder(R.drawable.icon_book).fit().centerCrop().into(binding.imageViewThumbnail);
+            }
+            binding.recyclerViewTopic.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+            binding.recyclerViewTopic.setNestedScrollingEnabled(false);
+            binding.recyclerViewTopic.setAdapter(new SubjectTopicsRewardAdapter(topicList));
+
+            DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
+            int width = metrics.widthPixels;
+            dialog.getWindow().setLayout((6 * width) / 7, LinearLayout.LayoutParams.WRAP_CONTENT);
+            dialog.show();
+        }
+    }
+
+    private class RewardsRecyclerViewAdapter extends RecyclerView.Adapter<RewardsRecyclerViewAdapter.ViewHolder> {
+        private ArrayList<StudentSubjectReward> mList;
+
+        private RewardsRecyclerViewAdapter(ArrayList<StudentSubjectReward> list) {
             this.mList = list;
         }
 
@@ -208,13 +249,36 @@ public class StudentAchievementFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final RewardsRecyclerViewAdapter.ViewHolder holder, int position) {
-            StudentReward studentReward = mList.get(position);
-            holder.mBinding.textViewName.setText(studentReward.getSubjectName());
-            String rewards = "+" + String.valueOf(studentReward.getPointsRewarded());
+        public void onBindViewHolder(@NonNull final RewardsRecyclerViewAdapter.ViewHolder holder, final int position) {
+            final StudentSubjectReward studentSubjectReward = mList.get(position);
+            final String subjectName = studentSubjectReward.getSubjectName();
+            final String thumbnailUrl = studentSubjectReward.getThumbnailUrl();
+            hideDividerForLastIndex(mList.size() - 1, position, holder.mBinding.viewDivider);
+            holder.mBinding.textViewName.setText(studentSubjectReward.getSubjectName());
+            final String rewards = "+" + String.valueOf(studentSubjectReward.getPointsRewarded());
             holder.mBinding.textViewScore.setText(rewards);
-            holder.mBinding.imageViewIcon.setImageResource(R.drawable.icon_rewards);
-            holder.mBinding.imageViewIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+            // holder.mBinding.imageViewIcon.setImageResource(R.drawable.icon_rewards);
+            // holder.mBinding.imageViewIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+            if (!TextUtils.isEmpty(thumbnailUrl)) {
+                Picasso.with(getContext()).load(thumbnailUrl).placeholder(R.drawable.icon_book).fit().centerCrop().into(holder.mBinding.imageViewIcon);
+            } else {
+                Picasso.with(getContext()).load(R.drawable.icon_book).placeholder(R.drawable.icon_book).fit().centerCrop().into(holder.mBinding.imageViewIcon);
+            }
+            // trello.com/c/0VRYno15/267-as-a-student-i-want-reward-points-to-be-show-topic-wise start
+            //need to pass topic list related to subjects ,
+            holder.mBinding.getRoot().
+                    setOnClickListener(new View.OnClickListener() {
+                                           @Override
+                                           public void onClick(View view) {
+                                               ArrayList<StudentSubjectReward> topicRewardList = mList.get(position).getTopicRewardList();
+
+                                               setSubjectTopicsRewards(subjectName, rewards, thumbnailUrl, topicRewardList);
+
+                                           }
+                                       }
+                    );
+
+
         }
 
 
@@ -251,6 +315,7 @@ public class StudentAchievementFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull final TrophiesRecyclerViewAdapter.ViewHolder holder, int position) {
             String trophy = mList.get(position);
+            hideDividerForLastIndex(mList.size() - 1, position, holder.mBinding.viewDivider);
             holder.mBinding.textViewName.setText(trophy);
             holder.mBinding.textViewScore.setVisibility(View.INVISIBLE);
             holder.mBinding.imageViewIcon.setImageResource(R.drawable.icon_trophies);
@@ -289,8 +354,9 @@ public class StudentAchievementFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull final BadgesRecyclerViewAdapter.ViewHolder holder, int position) {
-            String trophy = mList.get(position);
-            holder.mBinding.textViewName.setText(trophy);
+            String badge = mList.get(position);
+            hideDividerForLastIndex(mList.size() - 1, position, holder.mBinding.viewDivider);
+            holder.mBinding.textViewName.setText(badge);
             holder.mBinding.textViewScore.setVisibility(View.INVISIBLE);
             holder.mBinding.imageViewIcon.setImageResource(R.drawable.icon_badges);
             holder.mBinding.imageViewIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimary));
@@ -312,4 +378,6 @@ public class StudentAchievementFragment extends Fragment {
 
     }
 
+
 }
+

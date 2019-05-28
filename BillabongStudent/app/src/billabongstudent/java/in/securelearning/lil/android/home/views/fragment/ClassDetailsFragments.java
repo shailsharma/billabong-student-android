@@ -217,7 +217,6 @@ public class ClassDetailsFragments extends Fragment {
                         return AssignmentFragmentTeacherForClassDetails.newInstance(subjectId, topicId, gradeId, sectionId, date, columnCount, subjectName, mGroupId);
                     } else {
                         return AssignmentFragmentStudentClassDetails.newInstance(columnCount, mSubjectName,"");
-
                     }
                 case 1:
                     return RecommendedListFragment.newInstanceForTopicBrowse(subjects, topicId, gradeId, columnCount);

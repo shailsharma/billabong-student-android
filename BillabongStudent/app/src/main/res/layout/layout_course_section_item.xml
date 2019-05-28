@@ -46,11 +46,10 @@
 
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
                 android:layout_marginEnd="@dimen/margin_8dp"
-                android:gravity="center_vertical"
+                android:gravity="end|center_vertical"
                 android:orientation="horizontal">
 
                 <ProgressBar
@@ -62,11 +61,13 @@
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/textViewProgress"
-                    android:layout_width="wrap_content"
+                    android:layout_width="36dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_8dp"
+                    android:textColor="@color/colorGreyDark"
                     android:text="0%"
-                    android:textColor="@color/colorGreyDark"/>
+                    android:textSize="@dimen/textSize_10sp"
+                    android:maxLength="4"/>
             </LinearLayout>
 
         </LinearLayout>

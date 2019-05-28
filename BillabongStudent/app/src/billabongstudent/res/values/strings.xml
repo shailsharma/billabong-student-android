@@ -14,10 +14,16 @@
     <!--test/qa urls-->
     <string name="base_api_url_test">https://billabong-test.learnindialearn.in/api/</string>
     <string name="base_web_url_test">https://billabong-test.learnindialearn.in/</string>
-
     <!--mind spark's strings-->
     <string name="mind_spark_x_api_key">zS72YNPKoA9gK6Z6j9Msj4VO1p2SxUnx21Kwuz4P</string>
     <string name="mind_spark_base_url">https://www.mindspark.in/api/</string>
+
+    <!--Freadom url-->
+    <string name="base_url_freadom_dev">https://euro-web-dev.getfreadom.com/euro-login/</string>
+    <string name="base_url_freadom_prod">https://euro-web.getfreadom.com/euro-login/</string>
+
+    <!--Lightsail url-->
+    <string name="base_url_lightsail">https://s2m-euro-reader.lightsailed.com/Reader/index.html?jwtToken=</string>
 
     <string name="title_activity_settings_preference_flavor">Settings</string>
 
@@ -144,6 +150,7 @@
     <string name="messageNoStudyReferencesFound">No Study References found for selected topic.\nPlease select another topic.</string>
     <string name="labelClassPerformance">Class Performance</string>
     <string name="recap">Recap</string>
+    <string name="labelAndroid">android</string>
 
 
     <string name="labelNoOfSessions">No. of Sessions</string>
@@ -171,8 +178,9 @@
 
     <!--Euro@Home-->
     <string name="messageNoDataFound">No data found</string>
-    <string name="no_subject_available">No subject available.</string>
-    <string name="no_recap_for_today">No recap for today.</string>
+    <string name="messagePracticeAvailable">No practice available</string>
+    <string name="no_subject_available">No subject available</string>
+    <string name="no_recap_for_today">No recap for today</string>
     <string name="labelLearn">Learn</string>
     <string name="labelReinforce">Reinforce</string>
     <string name="labelApply">Apply</string>
@@ -181,6 +189,9 @@
     <string name="chapter">Chapter</string>
     <string name="go_back">Go Back</string>
     <string name="homework">Homework</string>
+    <string name="messageNewUpdateIsAvailable">A new update is available to download.\nPlease update the app for better experience.</string>
+    <string name="labelUpdateAvailable">Update Available</string>
+    <string name="labelUpdate">Update</string>
 
     <string name="labelColon">:</string>
     <string name="labelAadhaarNumber">Aadhaar Number</string>
@@ -194,14 +205,16 @@
     <string name="labelName">Name</string>
     <string name="labelMobile">Mobile</string>
     <string name="labelEmail">Email</string>
+    <string name="labelEmailOrEnrollmentNumber">Email/Enrollment number</string>
+    <string name="labelEnrollmentNumber">Enrollment number</string>
     <string name="labelMotherDetails">Mother Details</string>
     <string name="labelTotalRewards">Total Rewards</string>
-    <string name="no_homework_available">No homework available</string>
+    <string name="no_due_homework_for_today">No due homework for today.</string>
     <string name="pass">pass</string>
     <string name="fail">fail</string>
     <string name="messageGettingNextQuestion">Getting Next Question</string>
     <string name="messageMSEndTopic">Congratulations your practice on this topic submitted.\nPlease Go Back and try practice for another topic.</string>
-    <string name="messageMSNoMCQ">No MCQ type questions available for this topic.\nPlease Go Back and try practice for another topic.</string>
+    <string name="messageMSNoMCQ">No more questions available for this topic.\nPlease Go Back and try practice for another topic.</string>
     <string name="total_trophies">Total Trophies</string>
     <string name="total_badges">Total Badges</string>
     <string name="daily_efforts_min">Daily Efforts (min)</string>
@@ -211,10 +224,35 @@
     <string name="progress">Progress</string>
     <string name="single_correct">Single Correct</string>
     <string name="multiple_correct">Multiple Correct</string>
+    <string name="fill_the_blanks">Fill the blanks</string>
+    <string name="select_correct_answer">Select the correct answer</string>
+    <string name="dropdown">Dropdown</string>
+    <string name="please_fill_all_the_blanks">Please fill all the blanks</string>
+    <string name="please_fill_all_the_dropdown">Please fill all the dropdown</string>
     <string name="efforts_based_on_time_spent">Efforts Based On Time Spent</string>
     <string name="performance_based_on_assessments">Performance Based On Assessments</string>
     <string name="progress_based_on_coverage">Progress Based On Coverage</string>
     <string name="time_spent">Time Spent</string>
+    <string name="login">Login</string>
+    <string name="generate_password">Generate Password</string>
+    <string name="labelGetStarted">Get Started</string>
+    <string name="are_you_sure">Are you sure ?</string>
+    <string name="logout_message">Would you like to logout from App ?</string>
+    <string name="logout">Logout</string>
+    <string name="message_multiple_login">You are already logged in from another device.\nAre you sure you want to logout from previous device ?</string>
+    <string name="message_invalidate_other_login_success">You have been logged out from your previous device.</string>
+    <string name="mindSparkNoUnitMessageHome">No question available for this topic, please try practice on another topic by clicking on \'More\'</string>
+    <string name="mindSparkNoUnitMessageList">No question available for this topic, please try practice on another topic.</string>
+    <string name="error_loading_groups">Failed to load groups</string>
+    <string name="message_loading_groups">Loading groups…</string>
+    <string name="error_loading_profile">Failed to load your Profile</string>
+    <string name="error_invalid_user">Sorry! you are not allowed to login.</string>
+    <string name="curatedBy">Curated by</string>
+    <string name="please_enter_you_answer">Please enter you answer</string>
+    <string name="please_select_you_answer">Please select you answer</string>
+    <string name="labelClear">Clear</string>
+    <string name="labelSearch">Search</string>
+
 
     <string-array name="array_subject_detail_tab_no_post">
         <item>@string/label_home</item>
@@ -236,10 +274,27 @@
     <item name="selectedChoiceIndex" type="id"/>
     <item name="coverageSubjectId" type="id"/>
     <item name="coverageSubjectName" type="id"/>
+    <item name="correctAnswer" type="id"/>
+    <item name="isCorrect" type="id"/>
 
     <string-array name="array_student_profile_tab">
         <item>@string/label_achievement</item>
         <item>@string/label_personal</item>
         <item>@string/label_parent</item>
     </string-array>
+
+    <string name="performance">Performance</string>
+    <string name="efforts">Efforts</string>
+    <string name="excellence">Excellence</string>
+    <string name="you_are_briliant">You are Brilliant!</string>
+    <string name="you_are_catching">You are\n Catching up well</string>
+    <string name="you_are_harder">You need to \nWork Harder!</string>
+    <string name="you_are_study">You are\n Studying A Lot</string>
+    <string name="high">High</string>
+    <string name="low">Low</string>
+    <string name="zero">0</string>
+    <string name="chart_configuration">Please provide the chart configuration </string>
+    <string name="coverage">Coverage</string>
+    <string name="snakbar_before_dashboard"><![CDATA[<i>Hey</i> <b>%1$s</b>\n "Great to have you back"]]></string>
+    <string name="snakbar_before_dashboard_1"><![CDATA[<i>Hey</i>\n "Great to have you back"]]></string>
 </resources>

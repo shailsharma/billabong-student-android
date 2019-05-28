@@ -20,6 +20,11 @@ public class ChartConfigurationParentData implements Serializable {
         return mPerformanceConfiguration;
     }
 
+    // Getting
+    @SerializedName("performanceStandards")
+    @Expose
+     private BenchMarkPerformance mBenchMarkPerformance;
+
     public void setPerformanceConfiguration(ArrayList<ChartConfigurationData> performanceConfiguration) {
         mPerformanceConfiguration = performanceConfiguration;
     }
@@ -28,7 +33,39 @@ public class ChartConfigurationParentData implements Serializable {
         return mCoverageConfiguration;
     }
 
+    public BenchMarkPerformance getBenchMarkPerformance() {
+        return mBenchMarkPerformance;
+    }
+
     public void setCoverageConfiguration(ArrayList<ChartConfigurationData> coverageConfiguration) {
         mCoverageConfiguration = coverageConfiguration;
+
+    }
+
+    public class BenchMarkPerformance implements Serializable {
+
+        @SerializedName("time")
+        @Expose
+        private double benchMarkTime;
+
+        @SerializedName("percentage")
+        @Expose
+        private double benchMarkPercentage;
+
+        public double getBenchMarkTime() {
+            return benchMarkTime;
+        }
+
+        public double getBenchMarkPercentage() {
+            return benchMarkPercentage;
+        }
+
+        public void setBenchMarkTime(double benchMarkTime) {
+            this.benchMarkTime = benchMarkTime;
+        }
+
+        public void setBenchMarkPercentage(double benchMarkPercentage) {
+            this.benchMarkPercentage = benchMarkPercentage;
+        }
     }
 }

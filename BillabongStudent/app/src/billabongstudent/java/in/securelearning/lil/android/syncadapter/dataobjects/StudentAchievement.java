@@ -10,17 +10,17 @@ public class StudentAchievement implements Serializable {
 
     @SerializedName("rewardsList")
     @Expose
-    private ArrayList<StudentReward> mRewardsList;
+    private ArrayList<StudentSubjectReward> mRewardsList;
 
     @SerializedName("totalRewards")
     @Expose
     private int mTotalRewards;
 
-    public ArrayList<StudentReward> getRewardsList() {
+    public ArrayList<StudentSubjectReward> getRewardsList() {
         return mRewardsList;
     }
 
-    public void setRewardsList(ArrayList<StudentReward> rewardsList) {
+    public void setRewardsList(ArrayList<StudentSubjectReward> rewardsList) {
         mRewardsList = rewardsList;
     }
 

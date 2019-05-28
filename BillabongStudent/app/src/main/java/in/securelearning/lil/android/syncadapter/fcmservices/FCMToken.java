@@ -10,6 +10,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 import java.io.IOException;
 
 import in.securelearning.lil.android.app.BuildConfig;
+import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.base.Injector;
 import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
@@ -59,6 +60,7 @@ public class FCMToken extends FirebaseInstanceIdService {
                 RefreshFCMToken refreshFCMToken = new RefreshFCMToken();
                 refreshFCMToken.setToken(token);
                 refreshFCMToken.setType(1);
+                refreshFCMToken.setUserDeviceType(context.getString(R.string.labelAndroid));
                 Call<ResponseBody> responseBodyCall = networkModel.sendRegistrationToServer(refreshFCMToken);
                 Response<ResponseBody> response = responseBodyCall.execute();
                 if (response.isSuccessful()) {

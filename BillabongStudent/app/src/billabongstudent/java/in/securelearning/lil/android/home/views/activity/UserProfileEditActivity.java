@@ -443,7 +443,7 @@ public class UserProfileEditActivity extends AppCompatActivity {
         userProfile.setBoard(null);
         userProfile.setCreationTime(null);
         userProfile.setDepartment(null);
-        userProfile.setDesignation(null);
+        userProfile.setDesignationId(null);
         userProfile.setDob(null);
         userProfile.setDoj(null);
         userProfile.setEmailVerified(null);

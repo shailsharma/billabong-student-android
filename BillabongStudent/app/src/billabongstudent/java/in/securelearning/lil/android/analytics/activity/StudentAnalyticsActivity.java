@@ -305,10 +305,10 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
                 ContextCompat.getColor(getBaseContext(), R.color.dot_dark_screen5),
                 ContextCompat.getColor(getBaseContext(), R.color.dot_dark_screen6),
                 ContextCompat.getColor(getBaseContext(), R.color.dot_dark_screen7),
-                ContextCompat.getColor(getBaseContext(), R.color.colorGreyDark),
-                ContextCompat.getColor(getBaseContext(), R.color.colorCenterGradient),
-                ContextCompat.getColor(getBaseContext(), R.color.colorLNRed),
-                ContextCompat.getColor(getBaseContext(), R.color.colorGreyDark)};
+                ContextCompat.getColor(getBaseContext(), R.color.dot_dark_screen8),
+                ContextCompat.getColor(getBaseContext(), R.color.dot_dark_screen9),
+                ContextCompat.getColor(getBaseContext(), R.color.dot_dark_screen10),
+                ContextCompat.getColor(getBaseContext(), R.color.dot_dark_screen11)};
         dataSet.setColors(ColorTemplate.createColors(colors));
         dataSet.setSliceSpace(2f);
 

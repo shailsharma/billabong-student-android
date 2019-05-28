@@ -274,10 +274,10 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="error_field_email_phone">Enter email or phone number</string>
+    <string name="error_field_email_enrollment_number">Enter email or enrollment number</string>
+    <string name="error_field_enrollment_number">Enter enrollment number</string>
     <string name="error_field_password">Enter password</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."
     </string>
 
 
@@ -428,15 +428,17 @@
     <!--Login validation message-->
     <string name="incorrect_password">Invalid password!</string>
     <string name="incorrect_email_or_password">Invalid email or password</string>
+    <string name="incorrect_email_enrollment_number_or_password">Invalid Email/Enrollment number or password</string>
+    <string name="incorrect_enrollment_number_or_password">Invalid Enrollment number or Password</string>
     <string name="incorrect_phone_number_or_password">Invalid phone number or password</string>
     <string name="incorrect_login_information">Invalid login information</string>
     <string name="check_your_password_or_enable_internet">Check your password or enable internet</string>
-    <string name="message_login">Setting up your profile\n Please wait...</string>
-    <string name="message_login_wait">Logging you in...</string>
+    <string name="message_login">Setting up your profile\n Please wait…</string>
+    <string name="message_login_wait">Logging you in…</string>
 
     <!--User Profile-->
-    <string name="message_fetching_user_profile">Fetching user profile...</string>
-    <string name="message_updating_user_profile">Updating profile...</string>
+    <string name="message_fetching_user_profile">Fetching user profile…</string>
+    <string name="message_updating_user_profile">Updating profile…</string>
     <string name="error_fetching_user_profile">Error fetching user profile</string>
 
     <!--Learning Network-->
@@ -731,6 +733,7 @@
     <string name="no_favorites_items">No Favorites</string>
     <string name="propmt_assign_message">You can\'t assign the assignment, because you are not a moderator of any group.</string>
     <string name="exit">Exit</string>
+    <string name="label_continue">Continue</string>
     <string name="error_no_groups">You have no groups</string>
     <string name="added_to_download_queue">Added to Download Queue</string>
     <string name="label_capital_hour">HOUR</string>
@@ -743,8 +746,8 @@
     <string name="label_low">low</string>
     <string name="label_medium">medium</string>
     <string name="label_high">high</string>
-    <string name="message_fetching_question">Hold On...\nLoading questions.</string>
-    <string name="error_no_question_found">Sorry , no questions found.</string>
+    <string name="message_fetching_question">Hold On…\nLoading questions.</string>
+    <string name="error_no_question_found">Sorry, no questions found.</string>
     <string name="error_message_no_internet">Internet connection not available, please connect to internet and retry.</string>
     <string name="error_something_went_wrong">Request not proceed , something went wrong.</string>
     <string name="no_more_hints">No more hints to show.</string>
@@ -765,7 +768,9 @@
     <string name="messageTrainingGroupFetchFailed">Unable to fetch Training Group</string>
     <string name="messageEnrollTrainingFailed">Unable to join Training.</string>
     <string name="messagePasswordChangeFailed">Failed to change password, try again.</string>
+    <string name="messageChangePasswordLogout">Your password has been changed successfully.\n\nPlease login with your updated password.</string>
     <string name="messagePasswordChangeSuccess">Password changed successfully.</string>
+    <string name="messagePasswordGenerateSuccess">Password generated successfully.\nPlease login with your updated password.</string>
     <string name="messageCoursesNotFound">No Courses Found.</string>
     <string name="messageCoursesFetchFailed">Unable to fetch Courses.</string>
     <string name="messageResourcesNotFound">No Resources Found.</string>
@@ -862,6 +867,28 @@
     <string name="label_parent">Parent</string>
     <string name="question">Question</string>
     <string name="questionTypeMCQ">MCQ</string>
-    <string name="labelPassword">Password</string>
-    <string name="label_forgot_password">Forgot Password</string>
+    <string name="unable_to_play_youtube_video">Unable to play youtube video.</string>
+
+    <string name="mobile_no">Mobile No.</string>
+    <string name="login">Login</string>
+    <string name="generate_password">Generate Password</string>
+    <string name="request_otp">Request OTP</string>
+    <string name="verification_code">Verification Code</string>
+    <string name="please_enter_the_verification_code_sent_to">Please enter the verification code sent to</string>
+    <string name="did_not_receive_otp">Didn’t receive otp?</string>
+    <string name="resend">RESEND</string>
+    <string name="enter_your_mobile_number">Enter your mobile number</string>
+    <string name="enter_your_enrollment_number">Enter your enrollment number</string>
+    <string name="request_otp_message">Tap REQUEST OTP to verify your enrollment number with our database.\nAn SMS will be sent to verify your number.</string>
+    <string name="verifying_your_mobile_number">Verifying your mobile number…</string>
+    <string name="verifying_your_enrollment_number">Verifying your mobile number…</string>
+    <string name="enrollment_number_not_exist_in_database">It seems like entered enrollment number not exist in our database. Please retry with correct enrollment number.</string>
+    <string name="verification_code_should_be_4_digit_long">Verification code should be 4 digit long.</string>
+    <string name="verify_otp">Verify OTP</string>
+    <string name="code_verified_successfully">Code verified successfully.</string>
+    <string name="verifying_code">Verifying code…</string>
+    <string name="invalid_code">Invalid code.</string>
+    <string name="label_efforts">Efforts</string>
+    <string name="label_excellence">Excellence</string>
+    <string name="label_progress">Progress</string>
 </resources>

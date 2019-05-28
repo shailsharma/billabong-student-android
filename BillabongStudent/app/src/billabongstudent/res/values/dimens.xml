@@ -56,7 +56,8 @@
     <!--Font size-->
     <dimen name="textSize_10sp">10sp</dimen>
     <dimen name="textSize_12sp">12sp</dimen>
-    <dimen name="textSize_14sp">14sp</dimen><!--This equals to textAppearance and textAppearance.Small-->
+    <dimen name="textSize_14sp">14sp
+    </dimen><!--This equals to textAppearance and textAppearance.Small-->
     <dimen name="textSize_16sp">16sp</dimen>
     <dimen name="textSize_18sp">18sp</dimen><!--This equals to textAppearance.Medium-->
     <dimen name="textSize_20sp">20sp</dimen>
@@ -80,4 +81,9 @@
     <dimen name="elevation_2dp">2dp</dimen>
     <dimen name="elevation_4dp">4dp</dimen>
     <dimen name="elevation_8dp">8dp</dimen>
+
+
+    <!--chip button height-->
+    <dimen name="chipButtonHeight_36dp">36dp</dimen>
+    <dimen name="chipButtonHeight_48dp">48dp</dimen>
 </resources>

@@ -11,8 +11,8 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
             android:theme="@style/AppTheme.AppBarOverlay"
+            android:fitsSystemWindows="true"
             app:elevation="4dp">
 
             <FrameLayout
@@ -26,9 +26,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:background="@drawable/gradient_app"
-                    android:elevation="4dp"
+                    app:popupTheme="@style/AppTheme.PopupOverlay"
                     android:fitsSystemWindows="true"
-                    app:popupTheme="@style/AppTheme.PopupOverlay">
+                    android:elevation="4dp">
 
 
                 </android.support.v7.widget.Toolbar>
@@ -49,8 +49,8 @@
             android:id="@+id/container_assignment_student"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/image_dashboard_background"
             android:visibility="visible"
+            android:background="@drawable/image_dashboard_background"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
     </android.support.design.widget.CoordinatorLayout>
 </layout>

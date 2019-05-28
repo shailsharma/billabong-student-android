@@ -15,6 +15,10 @@ public class RefreshFCMToken implements Serializable {
     @Expose
     private int mType;
 
+    @SerializedName("userDeviceType")
+    @Expose
+    private String mUserDeviceType;
+
     public RefreshFCMToken() {
     }
 
@@ -37,5 +41,13 @@ public class RefreshFCMToken implements Serializable {
 
     public void setType(int type) {
         mType = type;
+    }
+
+    public String getUserDeviceType() {
+        return mUserDeviceType;
+    }
+
+    public void setUserDeviceType(String userDeviceType) {
+        mUserDeviceType = userDeviceType;
     }
 }

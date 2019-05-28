@@ -148,7 +148,4 @@ public interface SearchApiInterface {
 
     @POST("QuestionResponses/bulkUpload")
     Call<ResponseBody> uploadQuizResponse(@Body QuizResponse quizResponse);
-
-
-
 }

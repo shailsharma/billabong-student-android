@@ -270,7 +270,7 @@ public class QuestionPlayerActivity extends AppCompatActivity {
     }
 
     private void setUpToolbar() {
-//        getWindow().setStatusBarColor(ContextCompat.getColor(PracticePlayerActivity.this, R.color.colorGreen));
+//        getWindow().setStatusBarColor(ContextCompat.getColor(MindSparkPlayerActivity.this, R.color.colorGreen));
 //        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(getBaseContext(), R.color.colorGreen)));
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.action_close_w);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -168,7 +168,7 @@ public class ChaptersFragment extends Fragment {
 
         final ExpandableListAdapter expandableAdapter = new ExpandableListAdapter(listDataHeader, listDataChild);
         mBinding.expandableListViewChapters.setAdapter(expandableAdapter);
-
+        mBinding.expandableListViewChapters.setNestedScrollingEnabled(false);
         mBinding.expandableListViewChapters.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {

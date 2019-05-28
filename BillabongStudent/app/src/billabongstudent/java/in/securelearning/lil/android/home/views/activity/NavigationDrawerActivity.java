@@ -1,10 +1,14 @@
 package in.securelearning.lil.android.home.views.activity;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -13,6 +17,7 @@ import android.databinding.DataBindingUtil;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,6 +59,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -75,6 +82,7 @@ import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AppPrefs;
+import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerActivity;
 import in.securelearning.lil.android.base.widget.NavigationDrawerTypeface;
 import in.securelearning.lil.android.blog.views.activity.BlogNewActivity;
@@ -113,6 +121,7 @@ import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
 import in.securelearning.lil.android.syncadapter.utils.NotificationUtil;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 import in.securelearning.lil.android.syncadapter.utils.ShortcutUtil;
+import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import in.securelearning.lil.android.tracking.view.activity.TrackingActivityForStudent;
 import in.securelearning.lil.android.tracking.view.activity.TrackingActivityForTeacher;
 import io.reactivex.Completable;
@@ -179,11 +188,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     private UserProfile mLoggedInUser;
     private String[] mSubjects;
 
-//    @Inject
-//    PostDataLearningModel mPostDataLearningModel;
-//    @Inject
-//    AssignmentResponseStudentModel mAssignmentResponseStudentModel;
-
     @Inject
     HomeModel mHomeModel;
     @Inject
@@ -222,7 +226,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 }, 2000);
             } else {
                 super.onBackPressed();
-                return;
             }
         }
     }
@@ -272,6 +275,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     @Override
     protected void onResume() {
+        super.onResume();
+        isNewVersionAvailable();
         InjectorHome.INSTANCE.getComponent().inject(this);
         SyncServiceHelper.startSyncService(this);
         FlavorSyncServiceHelper.startReminderIntentService(this);
@@ -285,7 +290,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             onNavigationItemSelected(mBinding.appBar.navContent.bottomNavigation.getMenu().findItem(R.id.nav_learning_network));
             mBinding.appBar.navContent.bottomNavigation.getMenu().findItem(R.id.nav_learning_network).setChecked(true);
         }
-        super.onResume();
+
     }
 
     private void handleIntentActions() {
@@ -314,6 +319,41 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         } else if (getIntent().getAction() != null && getIntent().getAction().equals(ShortcutUtil.ACTION_SHORTCUT_TRAINING) && BuildConfig.IS_TRAINING_ENABLED) {
             if (PermissionPrefsCommon.getTrainingJoinPermission(getBaseContext())) {
                 startActivity(TrainingsActivity.getStartIntent(NavigationDrawerActivity.this));
+            }
+        }
+
+    }
+
+
+    /*checking if current app version is different from published app on play store*/
+    @SuppressLint("CheckResult")
+    private void isNewVersionAvailable() {
+        if (BuildConfig.BUILD_TYPE.equalsIgnoreCase("release")) {
+            if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
+                mHomeModel.checkForNewVersionOnPlayStore().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String playStoreVersion) throws Exception {
+                        if (!BuildConfig.VERSION_NAME.equalsIgnoreCase(playStoreVersion)) {
+                            new AlertDialog.Builder(NavigationDrawerActivity.this)
+                                    .setTitle(getString(R.string.labelUpdateAvailable))
+                                    .setMessage(getString(R.string.messageNewUpdateIsAvailable))
+                                    .setCancelable(false)
+                                    .setPositiveButton(getString(R.string.labelUpdate), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse
+                                                    ("market://details?id=" + BuildConfig.APPLICATION_ID)));
+                                        }
+                                    }).show();
+                        }
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
+                });
             }
         }
 
@@ -717,8 +757,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 mBinding.appBar.toolbar.setVisibility(View.GONE);
                 mFilterList = buildFilter(FILTER_TYPE_DASHBOARD);
                 setTitle(item.getTitle());
-                //getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorStartGradient));
-                //mToolbar.setBackgroundColor(ContextCompat.getColor(NavigationDrawerActivity.this, R.color.colorPrimary));
+
                 mAppBarLayout.setElevation(10);
                 params.setScrollFlags(0);
                 FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
@@ -772,12 +811,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
                 FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
                 fragmentTransaction = hideFragment(fragmentTransaction, mCurrentFragmentId);
-
                 if (mCurrentFragmentId != id) {
                     mRxBus.send(new AnimateFragmentEvent(R.id.nav_assignments));
 
                 }
-
                 if (PermissionPrefsCommon.getAssignmentCreatePermission(getBaseContext())) {
                     if (mFragmentAssignmentTeacher != null) {
                         fragmentTransaction.show(mFragmentAssignmentTeacher)
@@ -827,6 +864,16 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
             }
             break;
+
+            case R.id.navLogout: {
+                if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
+                    logoutFromApp(NavigationDrawerActivity.this);
+                } else {
+                    SnackBarUtils.showNoInternetSnackBar(getBaseContext(), mBinding.getRoot());
+                }
+
+            }
+            break;
             case R.id.nav_quizess: {
 
                 startActivity(QuizNewActivity.getStartIntent(NavigationDrawerActivity.this));
@@ -851,8 +898,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     mRxBus.send(new AnimateFragmentEvent(R.id.nav_learning_network));
                 }
                 if (mFragmentLearningNetwork != null) {
-                    fragmentTransaction.show(mFragmentLearningNetwork)
-                            .commit();
+                    fragmentTransaction.show(mFragmentLearningNetwork).commit();
 
                 } else {
                     mFragmentLearningNetwork = LearningNetworkGroupListFragment.newInstance(mColCount);
@@ -935,6 +981,27 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         mDrawerLayout.closeDrawer(Gravity.START);
         return true;
+    }
+
+    /*Showing logout dialog to logout.*/
+    /*Only activity context is allowed here.*/
+    private void logoutFromApp(final Activity context) {
+        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+        builder.setMessage(context.getString(R.string.logout_message))
+                .setPositiveButton(context.getString(R.string.logout), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        SyncServiceHelper.performUserLogout(context);
+                    }
+                })
+                .setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+
+                    }
+                })
+                .setCancelable(false);
+        final android.app.AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void unregisterConnectivityChangeReceiver() {
@@ -1071,6 +1138,17 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         getSupportActionBar().setTitle(title);
     }
 
+    /*To check occurrence of word in a string.*/
+    public static int checkWordOccurrence(String fullString, String occurrenceWord) {
+        int i = 0;
+        Pattern p = Pattern.compile(occurrenceWord);
+        Matcher m = p.matcher(fullString);
+        while (m.find()) {
+            i++;
+        }
+        return i;
+    }
+
     /**
      * set up navigation drawer
      */
@@ -1096,9 +1174,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             }
         });
 
-        mNavEmail = (TextView) headerView.findViewById(R.id.textview_email);
-        mNavUsername = (TextView) headerView.findViewById(R.id.textview_username);
-        mNavThumbnail = (ImageView) headerView.findViewById(R.id.imageView_UserProfile);
+        mNavEmail = headerView.findViewById(R.id.textview_email);
+        mNavUsername = headerView.findViewById(R.id.textview_username);
+        mNavThumbnail = headerView.findViewById(R.id.imageView_UserProfile);
 
         if (PermissionPrefsCommon.getAssignmentCreatePermission(getBaseContext())) {
             mBinding.appBar.navContent.bottomNavigation.getMenu().findItem(R.id.nav_assignments).setTitle(R.string.title_assigned);

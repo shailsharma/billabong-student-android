@@ -65,7 +65,7 @@ public class AssignmentCompletedTeacherActivity extends AppCompatActivity implem
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorAssignmentPrimary));
+        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorCenterGradient));
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_assignment_teacher);
         setTitle(getString(R.string.string_completed));
         setSupportActionBar(mBinding.toolbar);
