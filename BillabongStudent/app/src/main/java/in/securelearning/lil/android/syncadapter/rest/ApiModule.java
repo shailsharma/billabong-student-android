@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
-import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.base.dataobjects.BaseDataObject;
 import in.securelearning.lil.android.base.di.scope.ActivityScope;
@@ -31,18 +30,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class ApiModule {
     private Context moContext;
-    //    private static String BASE_URL2 = "http://192.124.120.199:3000/api/";
-//    private static String BASE_URL = "http://192.124.120.199:3000/api/";
-//    private static String BASE_URL2 = "https://learnindialearn.com/api/";
-//    private static String BASE_URL = "https://learnindialearn.com/api/";
-    // made public for use in FitnessNetworkModel
     private String BASE_URL;
-    //            private static String BASE_URL2 = "https://www.securelearning.in/securelearning/";
-//    private static String BASE_URL = "https://www.securelearning.in/securelearning/";
-    //    private static String BASE_URL = "http ://192.168.0.118:3000/api/";
-//    private static String BASE_URL2 = "http://192.168.0.118:3000/api/";
     private static String BASE_URL_FCM = "https://fcm.googleapis.com/fcm/";
-    private static final String YOUR_LEGACY_SERVER_KEY_FROM_FIREBASE_CONSOLE = BuildConfig.LEGACY_SERVER_KEY_FROM_FCM;
 
 
     public String getBaseUrl() {
@@ -286,7 +275,6 @@ public class ApiModule {
                         HttpUrl url = originalHttpUrl.newBuilder()
                                 .build();
 
-                        // Request customization: add request headers
                         Request.Builder requestBuilder = original.newBuilder()
                                 .header("x-api-key", moContext.getString(R.string.mind_spark_x_api_key))
                                 .url(url);
@@ -305,7 +293,7 @@ public class ApiModule {
                 .connectTimeout(25, TimeUnit.SECONDS)
                 .readTimeout(25, TimeUnit.SECONDS)
                 .build();
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setLenient().create();
 
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -499,8 +487,8 @@ public class ApiModule {
 
     @Provides
     @ActivityScope
-    public MindSparkLoginApiInterface getMindSparkLoginClient() {
-        return getMindSparkClient(moContext.getString(R.string.mind_spark_base_url)).create(MindSparkLoginApiInterface.class);
+    public MindSparkApiInterface getMindSparkLoginClient() {
+        return getMindSparkClient(moContext.getString(R.string.mind_spark_base_url)).create(MindSparkApiInterface.class);
 
     }
 
@@ -514,7 +502,7 @@ public class ApiModule {
                         HttpUrl originalHttpUrl = original.url();
                         HttpUrl url = originalHttpUrl.newBuilder().build();
                         Request.Builder requestBuilder = original.newBuilder()
-                                .header("Authorization", YOUR_LEGACY_SERVER_KEY_FROM_FIREBASE_CONSOLE)
+                                .header("Authorization", "")
                                 .url(url);
                         Request request = requestBuilder.build();
                         final Request copy = request;

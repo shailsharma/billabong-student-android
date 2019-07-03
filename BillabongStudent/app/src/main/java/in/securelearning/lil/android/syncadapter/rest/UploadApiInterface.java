@@ -1,9 +1,8 @@
 package in.securelearning.lil.android.syncadapter.rest;
 
-import org.json.JSONObject;
-
 import in.securelearning.lil.android.base.dataobjects.AssignmentResponse;
 import in.securelearning.lil.android.base.dataobjects.BlogComment;
+import in.securelearning.lil.android.base.dataobjects.UserCourseProgress;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.syncadapter.dataobject.RefreshFCMToken;
 import okhttp3.ResponseBody;
@@ -36,4 +35,8 @@ public interface UploadApiInterface {
 
     @DELETE("Annotations/{id}")
     Call<ResponseBody> deleteAnnotation(@Path("id") String id);
+
+
+    @POST("courseprogresses/create")
+    Call<ResponseBody> uploadUserCourseProgress(@Body UserCourseProgress userCourseProgress);
 }

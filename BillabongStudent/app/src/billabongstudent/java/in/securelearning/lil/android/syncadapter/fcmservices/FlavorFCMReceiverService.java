@@ -1,10 +1,12 @@
 package in.securelearning.lil.android.syncadapter.fcmservices;
 
 import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -15,13 +17,15 @@ import java.util.List;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.base.rxbus.RxBus;
+import in.securelearning.lil.android.homework.event.RefreshHomeworkEvent;
+import in.securelearning.lil.android.homework.views.activity.HomeworkDetailActivity;
+import in.securelearning.lil.android.login.views.activity.LoginActivity;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.events.TrackingPostEvent;
-import in.securelearning.lil.android.syncadapter.events.UserProfileChangeEvent;
+import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
-import in.securelearning.lil.android.syncadapter.service.BroadcastNotificationService;
-import in.securelearning.lil.android.syncadapter.service.MessageService;
 import in.securelearning.lil.android.syncadapter.service.UserService;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.NotificationUtil;
 
 
@@ -41,44 +45,55 @@ public class FlavorFCMReceiverService extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
         if (remoteMessage.getData().size() > 0 && remoteMessage.getData().containsKey("type")) {
             final String type = remoteMessage.getData().get("type");
-            if (type.equals(NetworkModel.TYPE_TRACKING)) {
-                if (!TextUtils.isEmpty(remoteMessage.getFrom())) {
+            switch (type) {
+                case NetworkModel.TYPE_POST_DATA:
+                    String postId = remoteMessage.getData().get("id");
+                    JobCreator.createDownloadPostDataJob(postId, ConstantUtil.BLANK, true).execute();
+                    break;
+                case NetworkModel.TYPE_POST_RESPONSE:
+                    String responseId = remoteMessage.getData().get("id");
+                    JobCreator.createPostResponseDownloadJob(responseId, ConstantUtil.BLANK, true).execute();
+                    break;
+                case NetworkModel.TYPE_HOMEWORK:
+                    String homeworkTitle = remoteMessage.getData().get("title");
+                    String homeworkId = remoteMessage.getData().get("id");
+                    String notificationTitle = "New Homework";
+                    NotificationUtil.showNotification(getBaseContext(),
+                            HomeworkDetailActivity.getStartIntent(this, homeworkId, homeworkTitle),
+                            homeworkTitle, notificationTitle);
+                    mRxBus.send(new RefreshHomeworkEvent());
+                    break;
 
-                    if (remoteMessage.getFrom().length() > 7) {
-                        scheduleJob(remoteMessage.getFrom().substring(8), remoteMessage.getSentTime(), remoteMessage.getData().get("payload"));
-                    }
+                case NetworkModel.TYPE_USER_PROFILE:
+                    final String userId = remoteMessage.getData().get("userId");
+                    final String groupId = remoteMessage.getData().get("groupId");
+                    final String userName = remoteMessage.getData().get("userFullName");
+                    UserService.startActionUpdateUserProfile(this, userId, groupId);
+                    break;
+                case NetworkModel.TYPE_INSTITUTE_UPDATE: {
+                    final String id = remoteMessage.getData().get("id");
+                    UserService.startActionUpdateInstitute(this, id);
+                    break;
                 }
+                case NetworkModel.TYPE_GROUP_UPDATE: {
+                    final String id = remoteMessage.getData().get("groupId");
+                    UserService.startActionUpdateGroup(this, id);
+                    break;
+                }
+                case NetworkModel.TYPE_USER_ARCHIVED:
+                    Intent intent = LoginActivity.getUserArchivedIntent(getBaseContext());
+                    startActivity(intent);
+                    int pendingIntentId = 123456;
+                    PendingIntent mPendingIntent = PendingIntent.getActivity(getBaseContext(), pendingIntentId, intent,
+                            PendingIntent.FLAG_CANCEL_CURRENT);
+                    AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                    assert mgr != null;
+                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                    System.exit(0);
+                    break;
 
-            } else if (type.equals(NetworkModel.TYPE_POST_DATA)) {
-//                JobCreator.createPostDataValidationJob(GeneralUtils.fromGson(remoteMessage.getData().get("payload"), PostData.class)).execute();
-                BroadcastNotificationService.startActionDownloadBroadcastNotification(this);
-            } else if (type.equals(NetworkModel.TYPE_POST_RESPONSE)) {
-//                JobCreator.createPostResponseValidationJob(GeneralUtils.fromGson(remoteMessage.getData().get("payload"), PostResponse.class)).execute();
-                BroadcastNotificationService.startActionDownloadBroadcastNotification(this);
-            } else if (type.equals(NetworkModel.TYPE_CALENDAR_EVENT)) {
-                final String id = remoteMessage.getData().get("id");
-                //  BroadcastNotificationService.startActionDownloadBroadcastNotification(this);
-                MessageService.startActionDownloadCalendarEvent(this, id);
-            } else if (type.equals(NetworkModel.TYPE_ASSIGNMENT)) {
-                BroadcastNotificationService.startActionDownloadBroadcastNotification(this);
-            } else if (type.equals(NetworkModel.TYPE_ASSIGNMENT_RESPONSE)) {
-                BroadcastNotificationService.startActionDownloadBroadcastNotification(this);
-            } else if (type.equals(NetworkModel.TYPE_USER_PROFILE)) {
-                final String userId = remoteMessage.getData().get("userId");
-                final String groupId = remoteMessage.getData().get("groupId");
-                final String userName = remoteMessage.getData().get("userFullName");
-
-//                if (!TextUtils.isEmpty(userId) && !TextUtils.isEmpty(userName)) {
-//                    mRxBus.send(new UserProfileChangeEvent(userId, userName));
-//                }
-                UserService.startActionUpdateUserProfile(this, userId, groupId);
-            } else if (type.equals(NetworkModel.TYPE_INSTITUTE_UPDATE)) {
-                final String id = remoteMessage.getData().get("id");
-                UserService.startActionUpdateInstitute(this, id);
-            } else if (type.equals(NetworkModel.TYPE_GROUP_UPDATE)) {
-                final String id = remoteMessage.getData().get("groupId");
-                UserService.startActionUpdateGroup(this, id);
             }
+
         }
         if (remoteMessage.getNotification() != null) {
             if (isAppIsInBackground(getBaseContext())) { // If app is in background
@@ -87,6 +102,7 @@ public class FlavorFCMReceiverService extends FirebaseMessagingService {
             }
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
+
     }
 
     private void scheduleJob(String objectId, long creationTime, String text) {

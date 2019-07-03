@@ -1,4 +1,3 @@
-
 package in.securelearning.lil.android.home.views.fragment;
 
 import android.annotation.SuppressLint;
@@ -35,39 +34,40 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
-import in.securelearning.lil.android.analytics.activity.StudentAnalyticsActivity;
+import in.securelearning.lil.android.analytics.views.activity.StudentAnalyticsTabActivity;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutDashboardFragmentBinding;
 import in.securelearning.lil.android.app.databinding.LayoutDashboardStudentSubjectItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutLessonPlanCardItemBinding;
 import in.securelearning.lil.android.assignments.model.AssignmentResponseStudentModel;
 import in.securelearning.lil.android.assignments.model.AssignmentTeacherModel;
-import in.securelearning.lil.android.assignments.views.fragment.AssignmentStudentFragment;
-import in.securelearning.lil.android.base.dataobjects.AssignmentStudent;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AnimationUtils;
-import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
+import in.securelearning.lil.android.gamification.dataobject.GamificationEvent;
+import in.securelearning.lil.android.gamification.model.GamificationModel;
+import in.securelearning.lil.android.gamification.views.fragment.GamificationDialog;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
 import in.securelearning.lil.android.home.events.HomeworkTabOpeningEvent;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
-import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
 import in.securelearning.lil.android.home.utils.RecyclerViewPagerIndicator;
 import in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity;
 import in.securelearning.lil.android.home.views.activity.SubjectDetailsActivity;
-import in.securelearning.lil.android.learningnetwork.events.LoadNewAssignmentDownloadEvent;
-import in.securelearning.lil.android.learningnetwork.events.LoadRefreshAssignmentStageEvent;
+import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
+import in.securelearning.lil.android.homework.event.RefreshHomeworkEvent;
+import in.securelearning.lil.android.homework.views.fragment.HomeworkFragment;
 import in.securelearning.lil.android.learningnetwork.views.activity.NotificationActivity;
-import in.securelearning.lil.android.player.microlearning.view.activity.RapidLearningSectionListActivity;
-import in.securelearning.lil.android.quizpreview.events.AssignmentSubmittedEvent;
+import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
 import in.securelearning.lil.android.syncadapter.dataobject.LessonPlanMinimal;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubject;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectResult;
 import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -78,27 +78,29 @@ import io.reactivex.schedulers.Schedulers;
 
 public class DashboardFragment extends Fragment {
 
+    private static final int DASHBOARD_SUBJECT_SPAN_COUNT = 4;
     @Inject
     public RxBus mRxBus;
-
     @Inject
     public AppUserModel mAppUserModel;
-
     @Inject
     public AssignmentTeacherModel mTeacherModel;
-
+    @Inject
+    public GamificationDialog mGamificationDialog;
     @Inject
     AssignmentResponseStudentModel mAssignmentResponseStudentModel;
-
     @Inject
     FlavorHomeModel mFlavorHomeModel;
-
     LayoutDashboardFragmentBinding mBinding;
-
+    ArrayList<String> mSnackBarMsg = new ArrayList<>();
+    @Inject
+    GamificationModel mGamificationModel;
     private OnDashboardFragmentInteractionListener mListener;
     private Disposable mSubscription;
     private Context mContext;
     private Timer mGreetingTimer;
+    private String mStudentId;
+    private int mOverDueCount = 0, mNewCount = 0, mDueSoonCount = 0;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -117,6 +119,7 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -125,25 +128,54 @@ public class DashboardFragment extends Fragment {
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.layout_dashboard_fragment, container, false);
         listenRxBusEvents();
-        getTodayRecaps();
         initializeUIAndClickListeners();
+        getTodayRecaps();
 
-//        mBinding.layoutSubjectProgressBar.setVisibility(View.GONE);
-//        mBinding.recyclerView.setVisibility(View.VISIBLE);
-//        LessonPlanSubject lessonPlanSubject = new LessonPlanSubject();
-//        lessonPlanSubject.setIconUrl("");
-//        lessonPlanSubject.setName("LightSail");
-//        initializeSubjectRecyclerView(new ArrayList<LessonPlanSubject>(Collections.singleton(lessonPlanSubject)));
 
         return mBinding.getRoot();
+
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        getAssignmentCounts();
+
         handleGreetingTimer();
+        checkGamificationEvent();
+//        if (PermissionPrefs.setRanBefore(mContext)) {
+//            //showDynamicSnackBar();
+//
+//            //showGamificationDialog();
+//            // checkGamificationEvent();
+//
+//        }
+
+
+    }
+
+    private void showGamificationDialog() {
+        String msg;
+
+        if (mAppUserModel != null && mAppUserModel.getApplicationUser() != null) {
+            UserProfile userProfile = mAppUserModel.getApplicationUser();
+            msg = String.format(getString(R.string.snackbar_login_msg), userProfile.getFirstName());
+        } else {
+            msg = getString(R.string.snackbar_login_msg_without_name);
+        }
+        mGamificationDialog.display(getFragmentManager(), mContext, msg, null);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
     }
 
     /*handling greeting timer calling from onResume*/
@@ -231,21 +263,10 @@ public class DashboardFragment extends Fragment {
             }
         });
 
-        mBinding.assignmentView.buttonAssignmentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                if (PermissionPrefsCommon.getDashboardTeacherViewPermission(mContext)) {
-//                    mListener.onDashboardFragmentInteraction(AssignmentFragmentTeacher.class);
-//                } else {
-//                    mListener.onDashboardFragmentInteraction(AssignmentStudentFragment.class);
-//                }
-            }
-        });
-
         mBinding.buttonAnalyticsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(StudentAnalyticsActivity.getStartIntent(getContext()));
+                startActivity(StudentAnalyticsTabActivity.getStartIntent(getContext()));
             }
         });
 
@@ -266,7 +287,8 @@ public class DashboardFragment extends Fragment {
         mBinding.assignmentView.textViewAssignmentCount1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onDashboardFragmentInteraction(AssignmentStudentFragment.class);
+                mListener.onDashboardFragmentInteraction(HomeworkFragment.class);
+                mRxBus.send(new HomeworkTabOpeningEvent(HomeworkTabOpeningEvent.DUE));
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -281,7 +303,7 @@ public class DashboardFragment extends Fragment {
         mBinding.assignmentView.textViewAssignmentCount2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onDashboardFragmentInteraction(AssignmentStudentFragment.class);
+                mListener.onDashboardFragmentInteraction(HomeworkFragment.class);
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -297,7 +319,7 @@ public class DashboardFragment extends Fragment {
         mBinding.assignmentView.textViewAssignmentCount3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onDashboardFragmentInteraction(AssignmentStudentFragment.class);
+                mListener.onDashboardFragmentInteraction(HomeworkFragment.class);
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -336,75 +358,153 @@ public class DashboardFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void getAssignmentCounts() {
-        final String mEndDate = getTodayDate();
-        final String mStartDate = "";
-        final String mPendingFromDate = getDayAfterTomorrow();
-        final String mUserId = mAppUserModel.getObjectId();
+//Making Homework online
+        if (GeneralUtils.isNetworkAvailable(mContext)) {
 
-        if (PermissionPrefsCommon.getDashboardStudentViewPermission(mContext)) {
 
-            mAssignmentResponseStudentModel.getNewAssignmentsCount().subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Integer>() {
-                @Override
-                public void accept(Integer integer) throws Exception {
-                    makeCountBold(String.valueOf(integer), mContext.getString(R.string.string_new), mBinding.assignmentView.textViewAssignmentCount1);
-
-                }
-            });
-
-            mAssignmentResponseStudentModel.getOverDueAssignmentList(mStartDate, mEndDate, "", 0, 0).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<ArrayList<AssignmentStudent>>() {
-                @Override
-                public void accept(final ArrayList<AssignmentStudent> overDueAssignment) throws Exception {
-                    mAssignmentResponseStudentModel.getPendingAssignmentList(mStartDate, mEndDate, "", 0, 0).subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<ArrayList<AssignmentStudent>>() {
+            mFlavorHomeModel.fetchHomeworkCount(mStudentId).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<AssignedHomeworkParent>() {
                         @Override
-                        public void accept(ArrayList<AssignmentStudent> pendingAssignment) throws Exception {
-                            makeCountBold(String.valueOf(pendingAssignment.size()), mContext.getString(R.string.string_due), mBinding.assignmentView.textViewAssignmentCount2);
-                            makeCountBold(String.valueOf(overDueAssignment.size()), mContext.getString(R.string.string_over_due), mBinding.assignmentView.textViewAssignmentCount3);
+                        public void accept(AssignedHomeworkParent assignedHomeworkParent) throws Exception {
+                            getMySubjects();
+
+                            if (assignedHomeworkParent != null) {
+
+                                if (assignedHomeworkParent.getNewStudentAssignment() != null) {
+                                    mNewCount = assignedHomeworkParent.getNewStudentAssignment().getCount();
+                                    makeCountBold(String.valueOf(mNewCount), mContext.getString(R.string.string_new), mBinding.assignmentView.textViewAssignmentCount1);
+
+                                } else {
+                                    makeCountBold(String.valueOf(mNewCount), mContext.getString(R.string.string_new), mBinding.assignmentView.textViewAssignmentCount1);
+                                }
+                                if (assignedHomeworkParent.getOverDueStudentAssignment() != null) {
+                                    mOverDueCount = assignedHomeworkParent.getOverDueStudentAssignment().getCount();
+                                    makeCountBold(String.valueOf(mOverDueCount), mContext.getString(R.string.string_over_due), mBinding.assignmentView.textViewAssignmentCount3);
+
+                                } else {
+                                    makeCountBold(String.valueOf(mOverDueCount), mContext.getString(R.string.string_over_due), mBinding.assignmentView.textViewAssignmentCount3);
+                                }
+                                if (assignedHomeworkParent.getTodayStudentAssignment() != null) {
+                                    mDueSoonCount = assignedHomeworkParent.getTodayStudentAssignment().getCount();
+                                }
+                                if (assignedHomeworkParent.getUpComingStudentAssignment() != null) {
+                                    mDueSoonCount = mDueSoonCount + assignedHomeworkParent.getUpComingStudentAssignment().getCount();
+                                }
+                                makeCountBold(String.valueOf(mDueSoonCount), mContext.getString(R.string.due_soon), mBinding.assignmentView.textViewAssignmentCount2);
+
+
+                            }
 
 
                         }
-                    });
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            getMySubjects();
+                            throwable.printStackTrace();
 
+                        }
+                    });
+        } else {
+            showInternetSnackBar();
+        }
+
+//        final String mEndDate = getTodayDate();
+//        final String mStartDate = "";
+//
+//        mAssignmentResponseStudentModel.getNewAssignmentsCount().subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Integer>() {
+//            @Override
+//            public void accept(Integer integer) throws Exception {
+//                makeCountBold(String.valueOf(integer), mContext.getString(R.string.string_new), mBinding.assignmentView.textViewAssignmentCount1);
+//                //  mSnackBarMsg.add(1,String.valueOf(integer));
+//
+//            }
+//        });
+//
+//        mAssignmentResponseStudentModel.getOverDueAssignmentList(mStartDate, mEndDate, "", 0, 0).subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<ArrayList<AssignmentStudent>>() {
+//            @Override
+//            public void accept(final ArrayList<AssignmentStudent> overDueAssignment) throws Exception {
+//                mAssignmentResponseStudentModel.getPendingAssignmentList(mStartDate, mEndDate, "", 0, 0).subscribeOn(Schedulers.io())
+//                        .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<ArrayList<AssignmentStudent>>() {
+//                    @Override
+//                    public void accept(ArrayList<AssignmentStudent> pendingAssignment) throws Exception {
+//                        makeCountBold(String.valueOf(pendingAssignment.size()), mContext.getString(R.string.string_due), mBinding.assignmentView.textViewAssignmentCount2);
+//                        makeCountBold(String.valueOf(overDueAssignment.size()), mContext.getString(R.string.string_over_due), mBinding.assignmentView.textViewAssignmentCount3);
+//                        // mSnackBarMsg.add(2,String.valueOf(pendingAssignment.size()));
+//                        // mSnackBarMsg.add(3,String.valueOf(overDueAssignment.size()));
+//                    }
+//                });
+//
+//            }
+//        });
+//
+
+    }
+
+    private void checkGamificationEvent() {
+        ArrayList<GamificationEvent> eventList = mGamificationModel.getGamificationEvent();
+        String msg = null;
+        String userName = "";
+        if (mAppUserModel != null && mAppUserModel.getApplicationUser() != null) {
+            userName = mAppUserModel.getApplicationUser().getFirstName();
+        }
+        if (eventList != null && !eventList.isEmpty()) {
+            for (GamificationEvent event : eventList) {
+                if (event != null) {
+                    if (event.getActivity().equalsIgnoreCase("dashboard") && event.getEventType().equalsIgnoreCase("message")) {
+                        if (event.getEventOccurrenceDate() == null && !event.isGamingEventDone()) {
+                            msg = String.format(event.getMessage(), userName);
+                            mGamificationDialog.display(getFragmentManager(), mContext, msg, event);
+                            break;
+                        } else if (CommonUtils.getInstance().getDateDiff(event.getEventOccurrenceDate())) {
+                            msg = String.format(event.getMessage(), userName);
+                            mGamificationDialog.display(getFragmentManager(), mContext, msg, event);
+                            break;
+
+                        }
+                    }
+
+                    if (event.getActivity().equalsIgnoreCase("dashboard") && event.getOnActionCriteria().equalsIgnoreCase("new_assignment_count") && mNewCount != 0) {
+                        if (event.getEventOccurrenceDate() == null && !event.isGamingEventDone()) {
+                            msg = String.format(event.getMessage(), userName, mNewCount);
+                            mGamificationDialog.display(getFragmentManager(), mContext, msg, event);
+                            break;
+                        } else if (CommonUtils.getInstance().getDateDiff(event.getEventOccurrenceDate())) {
+                            msg = String.format(event.getMessage(), userName, mNewCount);
+                            mGamificationDialog.display(getFragmentManager(), mContext, msg, event);
+                            break;
+                        }
+                    }
                 }
-            });
+            }
+        }
+    }
+
+    private void showDynamicSnackBar() {
+        String msg = getString(R.string.snackbar_login_msg);
+        if (mAppUserModel != null && mAppUserModel.getName() != null && !mAppUserModel.getName().trim().equalsIgnoreCase("")) {
+            msg = String.format(msg, mAppUserModel.getName());
+            mSnackBarMsg.add(0, mAppUserModel.getName());
+            SnackBarUtils.getInstance().getSnackBarWithImage(
+                    getActivity(), mBinding.getRoot(), R.drawable.m_lil_red_main, "left",
+                    mSnackBarMsg, 0, R.color.white, msg);
 
         } else {
+            msg = getString(R.string.snackbar_login_msg_without_name);
+            SnackBarUtils.getInstance().getSnackBarWithImage(
+                    getActivity(), mBinding.getRoot(), R.drawable.m_lil_red_main, "left",
+                    mSnackBarMsg, 0, R.color.white, msg);
 
-            mTeacherModel.getAllPendingAndOverDueAssignmentCounts(mUserId, "", mStartDate, mEndDate, 0, 0).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Integer>() {
-                @Override
-                public void accept(Integer integer) throws Exception {
-                    makeCountBold(String.valueOf(integer), mContext.getString(R.string.string_pending), mBinding.assignmentView.textViewAssignmentCount1);
-                }
-            });
-
-            mTeacherModel.getSubmittedAssignmentResponseCount("", "").subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Integer>() {
-                @Override
-                public void accept(Integer integer) throws Exception {
-                    makeCountBold(String.valueOf(integer), mContext.getString(R.string.string_turned_in), mBinding.assignmentView.textViewAssignmentCount2);
-                }
-            });
-
-
-            mTeacherModel.getAllPendingAndOverDueAssignmentCounts(mUserId, "", mEndDate, mStartDate, 0, 0).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Integer>() {
-                @Override
-                public void accept(Integer integer) throws Exception {
-                    makeCountBold(String.valueOf(integer), mContext.getString(R.string.string_over_due), mBinding.assignmentView.textViewAssignmentCount3);
-                }
-            });
-
-            Calendar cal = Calendar.getInstance();
-            mTeacherModel.getAssignmentListAssignedByTeacherToday(cal.getTime());
         }
+
     }
 
     @SuppressLint("CheckResult")
     private void getTodayRecaps() {
-        if (GeneralUtils.isNetworkAvailable(getContext())) {
+        if (GeneralUtils.isNetworkAvailable(mContext)) {
             mBinding.recapView.layoutRecapProgressBar.setVisibility(View.VISIBLE);
             mBinding.recapView.recycleViewRecap.setVisibility(View.GONE);
             mBinding.recapView.textViewErrorRecap.setVisibility(View.GONE);
@@ -414,7 +514,7 @@ public class DashboardFragment extends Fragment {
                     .subscribe(new Consumer<ArrayList<LessonPlanMinimal>>() {
                         @Override
                         public void accept(ArrayList<LessonPlanMinimal> lessonPlanMinimals) throws Exception {
-                            getMySubjects();
+                            getAssignmentCounts();
                             mBinding.recapView.layoutRecapProgressBar.setVisibility(View.GONE);
                             if (!lessonPlanMinimals.isEmpty()) {
                                 mBinding.recapView.recycleViewRecap.setVisibility(View.VISIBLE);
@@ -428,7 +528,7 @@ public class DashboardFragment extends Fragment {
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
-                            getMySubjects();
+                            getAssignmentCounts();
                             mBinding.recapView.layoutRecapProgressBar.setVisibility(View.GONE);
                             mBinding.recapView.recycleViewRecap.setVisibility(View.GONE);
                             mBinding.recapView.textViewErrorRecap.setVisibility(View.VISIBLE);
@@ -445,7 +545,7 @@ public class DashboardFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void getMySubjects() {
-        if (GeneralUtils.isNetworkAvailable(getContext())) {
+        if (GeneralUtils.isNetworkAvailable(mContext)) {
             mBinding.layoutSubjectProgressBar.setVisibility(View.VISIBLE);
             mBinding.textViewErrorSubject.setVisibility(View.GONE);
             mBinding.recyclerView.setVisibility(View.GONE);
@@ -455,6 +555,7 @@ public class DashboardFragment extends Fragment {
                     .subscribe(new Consumer<LessonPlanSubjectResult>() {
                         @Override
                         public void accept(LessonPlanSubjectResult lessonPlanSubjectResult) throws Exception {
+                            // PreferenceSettingUtilClass.setDashboardDataFetch(true, mContext);
 
                             mBinding.layoutSubjectProgressBar.setVisibility(View.GONE);
                             mBinding.swipeRefreshLayout.setRefreshing(false);
@@ -474,6 +575,8 @@ public class DashboardFragment extends Fragment {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
+                            //PreferenceSettingUtilClass.setDashboardDataFetch(true, mContext);
+
                             mBinding.swipeRefreshLayout.setRefreshing(false);
                             mBinding.layoutSubjectProgressBar.setVisibility(View.GONE);
                             mBinding.textViewErrorSubject.setVisibility(View.VISIBLE);
@@ -481,6 +584,7 @@ public class DashboardFragment extends Fragment {
 
                         }
                     });
+
         } else {
             showInternetSnackBar();
         }
@@ -492,11 +596,9 @@ public class DashboardFragment extends Fragment {
 
         mBinding.recyclerView.setNestedScrollingEnabled(false);
         mBinding.recyclerView.setHasFixedSize(true);
-        int columnCount = 4;
-        mBinding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnCount, GridLayoutManager.VERTICAL, false));
+        mBinding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(), DASHBOARD_SUBJECT_SPAN_COUNT, GridLayoutManager.VERTICAL, false));
 
-        SubjectAdapter subjectAdapter = new SubjectAdapter(lessonPlanSubjects);
-        mBinding.recyclerView.setAdapter(subjectAdapter);
+        mBinding.recyclerView.setAdapter(new SubjectAdapter(lessonPlanSubjects));
 
     }
 
@@ -509,24 +611,34 @@ public class DashboardFragment extends Fragment {
 
 
     /**
-     * Create Rxbus Disposable for the listen event raised from anywhere in the app
+     * Create RxBus Disposable for the listen event raised from anywhere in the app
      */
     private void listenRxBusEvents() {
         mSubscription = mRxBus.toFlowable().observeOn(Schedulers.computation()).subscribe(new Consumer<Object>() {
             @SuppressLint("CheckResult")
             @Override
             public void accept(Object event) {
-                if (event instanceof LoadNewAssignmentDownloadEvent) {
-                    getAssignmentCounts();
-                } else if (event instanceof LoadRefreshAssignmentStageEvent) {
-                    getAssignmentCounts();
-                } else if (event instanceof AssignmentSubmittedEvent) {
-                    getAssignmentCounts();
+                if (event instanceof RefreshHomeworkEvent) {
+                    Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
+                        @Override
+                        public void run() throws Exception {
+                            getAssignmentCounts();
+
+
+                        }
+                    });
                 } else if (event instanceof AnimateFragmentEvent) {
                     int id = ((AnimateFragmentEvent) event).getId();
                     if (id == R.id.nav_dashboard) {
-                        AnimationUtils.fadeInFast(getContext(), mBinding.scrollView);
-                        AnimationUtils.fadeIn(getContext(), mBinding.layoutToolbar);
+                        Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                AnimationUtils.fadeInFast(getContext(), mBinding.scrollView);
+                                AnimationUtils.fadeIn(getContext(), mBinding.layoutToolbar);
+
+                            }
+                        });
+
                     }
                 }
                 if (event instanceof ObjectDownloadComplete && ((ObjectDownloadComplete) event).getObjectClass().equals(UserProfile.class)) {
@@ -543,21 +655,6 @@ public class DashboardFragment extends Fragment {
         });
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnDashboardFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onDashboardFragmentInteraction(Class aClass);
-
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -591,6 +688,7 @@ public class DashboardFragment extends Fragment {
         }
     }
 
+    /*initializing recap recycler view pager*/
     private void initializeRecapPager(ArrayList<LessonPlanMinimal> lessonPlanMinimals) {
 
         mBinding.recapView.recycleViewRecap.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -668,21 +766,27 @@ public class DashboardFragment extends Fragment {
         });
     }
 
-    private String getTodayDate() {
 
-        long date = DateUtils.getSecondsForMorningFromDate(new Date());
-        return DateUtils.getISO8601DateStringFromSeconds(date);
-    }
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnDashboardFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onDashboardFragmentInteraction(Class aClass);
 
-    private String getDayAfterTomorrow() {
-        long date = DateUtils.getSecondsForMidnightFromDate(new Date(DateUtils.getFutureDay(new Date(), 1) * 1000));
-        return DateUtils.getISO8601DateStringFromSeconds(date);
     }
 
     private class RecapPagerAdapter extends RecyclerView.Adapter<RecapPagerAdapter.ViewHolder> {
         private ArrayList<LessonPlanMinimal> mList;
 
-        public RecapPagerAdapter(ArrayList<LessonPlanMinimal> list) {
+        RecapPagerAdapter(ArrayList<LessonPlanMinimal> list) {
             mList = list;
         }
 
@@ -703,6 +807,7 @@ public class DashboardFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     if (GeneralUtils.isNetworkAvailable(mContext)) {
+                        mFlavorHomeModel.checkUserStatus(ConstantUtil.TYPE_LESSON_PLAN);
                         startActivity(RapidLearningSectionListActivity.getStartIntent(mContext, lessonPlan.getCourseId()));
                     } else {
                         SnackBarUtils.showNoInternetSnackBar(mContext, mBinding.getRoot());
@@ -761,10 +866,10 @@ public class DashboardFragment extends Fragment {
             }
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder {
             LayoutLessonPlanCardItemBinding mBinding;
 
-            public ViewHolder(LayoutLessonPlanCardItemBinding binding) {
+            ViewHolder(LayoutLessonPlanCardItemBinding binding) {
                 super(binding.getRoot());
                 mBinding = binding;
             }
@@ -776,7 +881,7 @@ public class DashboardFragment extends Fragment {
 
         private ArrayList<LessonPlanSubject> mList;
 
-        public SubjectAdapter(ArrayList<LessonPlanSubject> list) {
+        SubjectAdapter(ArrayList<LessonPlanSubject> list) {
             this.mList = list;
         }
 
@@ -789,14 +894,13 @@ public class DashboardFragment extends Fragment {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             final LessonPlanSubject lessonPlanSubject = mList.get(position);
-            setSubjectName(lessonPlanSubject.getName(), holder.mBinding.textViewSubjectName);
+            setSubjectName(lessonPlanSubject.getShortName(), lessonPlanSubject.getName(), holder.mBinding.textViewSubjectName);
             setSubjectIcon(lessonPlanSubject.getIconUrl(), holder.mBinding.imageViewSubjectIcon);
 
             holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (GeneralUtils.isNetworkAvailable(getContext())) {
-                        //startActivity(SampleWebActivity.getStartIntent(getContext()));
                         startActivity(SubjectDetailsActivity.getStartIntent(getContext(), lessonPlanSubject.getId()));
                     } else {
                         Toast.makeText(getContext(), getString(R.string.connect_internet), Toast.LENGTH_SHORT).show();
@@ -813,8 +917,10 @@ public class DashboardFragment extends Fragment {
             }
         }
 
-        private void setSubjectName(String name, AppCompatTextView textView) {
-            if (!TextUtils.isEmpty(name)) {
+        private void setSubjectName(String shortName, String name, AppCompatTextView textView) {
+            if (!TextUtils.isEmpty(shortName)) {
+                textView.setText(shortName);
+            } else if (!TextUtils.isEmpty(name)) {
                 textView.setText(name);
             }
         }
@@ -826,7 +932,7 @@ public class DashboardFragment extends Fragment {
 
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder {
             LayoutDashboardStudentSubjectItemBinding mBinding;
 
             public ViewHolder(LayoutDashboardStudentSubjectItemBinding binding) {

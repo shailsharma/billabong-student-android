@@ -1,29 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <android.support.design.widget.CoordinatorLayout
         android:background="@color/colorWhite"
-        android:fitsSystemWindows="true">
-
-
-        <include
-            android:id="@+id/includeIntro"
-            layout="@layout/layout_app_intro"/>
+        android:fitsSystemWindows="true"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
 
         <include
             android:id="@+id/includeLoginEmail"
             layout="@layout/layout_app_login_email"/>
 
         <include
-            android:id="@+id/includeLoginPhone"
-            layout="@layout/layout_app_login_phone"/>
-
-        <include
             android:id="@+id/includeLoginProgress"
             layout="@layout/layout_app_login_progress"/>
 
-    </RelativeLayout>
+    </android.support.design.widget.CoordinatorLayout>
 </layout>

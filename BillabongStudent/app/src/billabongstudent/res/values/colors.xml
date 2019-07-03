@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--App color-->
     <color name="colorPrimary">#644299</color>
     <color name="colorPrimaryDark">#644299</color>
     <color name="colorAccent">#644299</color>
     <color name="colorAccentTransparent">#99644299</color>
-    <color name="notification_small_background">#03a9f4</color>
+    <color name="colorEndGradient">#644299</color>
+    <color name="colorCenterGradient">#9e005d</color>
+    <color name="colorStartGradient">#fbbd18</color>
 
+    <color name="notification_small_background">#03a9f4</color>
     <color name="colorPrimarySettings">#3F51B5</color>
     <color name="colorPrimaryDarkSettings">#303F9F</color>
     <color name="colorAccentSettings">#03A9F4</color>
@@ -42,8 +46,9 @@
     <color name="colorClassPlannerPrimary">#0071bc</color>
      
     <color name="bg_screen">#ffffff</color>
+
      <!-- dots active colors -->
-        
+       
     <color name="dot_dark_screen1">#ff1d25</color>    
     <color name="dot_dark_screen2">#2f66f7</color>    
     <color name="dot_dark_screen3">#ff9800</color>
@@ -51,6 +56,10 @@
     <color name="dot_dark_screen5">#2e3192</color>
     <color name="dot_dark_screen6">#02568E</color>
     <color name="dot_dark_screen7">#FF5278</color>
+    <color name="dot_dark_screen8">#363F46</color>
+    <color name="dot_dark_screen9">#2ba3e0</color>
+    <color name="dot_dark_screen10">#BD3326</color>
+    <color name="dot_dark_screen11">#FD5177</color>
      
         <!-- dots inactive colors -->
         
@@ -78,21 +87,21 @@
     <color name="colorBottomTabs">#F8F8F8</color>
     <array name="array_dot_active">
                 
-        <item>@color/dot_dark_screen2</item>
         <item>@color/dot_dark_screen1</item>
+        <item>@color/dot_dark_screen2</item>
         <item>@color/dot_dark_screen4</item>
         <item>@color/dot_dark_screen3</item>
-        <!--<item>@color/dot_dark_screen5</item>-->
+        <item>@color/dot_dark_screen5</item>
         <item>@color/dot_dark_screen6</item>
         <item>@color/dot_dark_screen7</item>
+        <item>@color/colorGreyDark</item>
+        <item>@color/colorCenterGradient</item>
+        <item>@color/colorLNRed</item>
+        <item>@color/colorGreyDark</item>
             
     </array>
 
 
-    <color name="colorEndGradient">#644299</color>
-    <color name="colorCenterGradient">#9e005d</color>
-    <color name="colorStartGradient">#fbbd18</color>
-        
     <color name="colorRyanBlack">#424242</color>
     <color name="colorRyanGreyDescription">#9e9e9e</color>
 
@@ -112,4 +121,18 @@
     <color name="colorGreenEndGradient">#b6e021</color>
 
     <color name="colorButtonRippleChip">#88FFFFFF</color>
+    <color name="color_brilliant">#42A5F5</color>
+    <color name="color_catching">#66BB6A</color>
+    <color name="color_need_work_harder">#E53935</color>
+    <color name="color_studying">#F6BE1A</color>
+
+    <color name="snackbar_background">#f28231</color>
+
+    <color name="colorEndGradientDark">#188177</color>
+    <color name="colorCenterGradientDark">#1C648A</color>
+    <color name="colorStartGradientDark">#167097</color>
+
+    <color name="colorEndGradientLight">#69F3E6</color>
+    <color name="colorCenterGradientLight">#6ABDF0</color>
+    <color name="colorStartGradientLight">#55B7E6</color>
 </resources>

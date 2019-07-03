@@ -52,23 +52,23 @@ public class UploadPostResponseJob extends BaseUploadJob<PostResponse> {
                 saveJsonToDatabase(mDataObject);
             } else if (response.code() == 422 || response.code() == 500) {
 
-            /*upload data object*/
+                /*upload data object*/
                 Response<PostResponse> response2 = fetchByAlias(mDataObject.getAlias()).execute();
 
-            /*if upload is successful*/
+                /*if upload is successful*/
                 if (response2.isSuccessful()) {
-                /*retrieve assignment response*/
+                    /*retrieve assignment response*/
                     PostResponse postResponse = response2.body();
 
                     Log.e(TAG, " PostResponse  posted : " + postResponse.getObjectId());
 
-                /*set sync status*/
+                    /*set sync status*/
                     mDataObject.setSyncStatus(SyncStatus.COMPLETE_SYNC.toString());
 
-                /*set object id*/
+                    /*set object id*/
                     mDataObject.setObjectId(postResponse.getObjectId());
 
-                /*save json to database*/
+                    /*save json to database*/
                     saveJsonToDatabase(mDataObject);
                 }
             } else if (response.code() == 401 && mLoginAttempts < MAX_LOGIN_ATTEMPT) {
@@ -201,13 +201,13 @@ public class UploadPostResponseJob extends BaseUploadJob<PostResponse> {
     public void saveJsonToDatabase(PostResponse postResponse) {
         /*save postResponse response*/
         mJobModel.savePostResponse(postResponse);
-        try {
-            Response<MessageResponse> response = uploadJsonToServerFCM(postResponse.getGroupId(), postResponse.getObjectId(), postResponse.getCreatedTime()).execute();
-            if (response.isSuccessful()) {
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Response<MessageResponse> response = uploadJsonToServerFCM(postResponse.getGroupId(), postResponse.getObjectId(), postResponse.getCreatedTime()).execute();
+//            if (response.isSuccessful()) {
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
 }

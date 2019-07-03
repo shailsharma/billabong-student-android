@@ -138,7 +138,7 @@ public class PostDataBadgeAdapter extends RecyclerView.Adapter<PostDataBadgeAdap
             public void run() {
 
                 mPostDataModel.savePostResponse(postResponse);
-                SyncServiceHelper.startUploadPostResponse(mContext, postResponse.getAlias());
+                //SyncServiceHelper.startUploadPostResponse(mContext, postResponse.getAlias());
             }
         });
 

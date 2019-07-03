@@ -76,6 +76,11 @@
                 android:id="@+id/nav_setting"
                 android:icon="@drawable/logo_setting"
                 android:title="Settings"/>
+
+            <item
+                android:id="@+id/navLogout"
+                android:icon="@drawable/icon_exit_colored"
+                android:title="@string/logout"/>
         </menu>
     </item>
 

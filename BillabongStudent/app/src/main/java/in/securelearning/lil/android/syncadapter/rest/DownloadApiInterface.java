@@ -5,6 +5,13 @@ import java.util.List;
 
 import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationParentData;
 import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationRequest;
+import in.securelearning.lil.android.analytics.dataobjects.ChartDataRequest;
+import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataRequest;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
+import in.securelearning.lil.android.analytics.dataobjects.EffortvsPerformanceData;
+import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.base.dataobjects.AboutCourse;
 import in.securelearning.lil.android.base.dataobjects.AnalysisActivityData;
 import in.securelearning.lil.android.base.dataobjects.AnalysisActivityRecentlyRead;
@@ -44,12 +51,18 @@ import in.securelearning.lil.android.base.dataobjects.UserRating;
 import in.securelearning.lil.android.base.dataobjects.VideoCourse;
 import in.securelearning.lil.android.base.utils.ArrayList;
 import in.securelearning.lil.android.courses.dataobject.CourseReview;
+import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
+import in.securelearning.lil.android.homework.dataobject.Homework;
+import in.securelearning.lil.android.homework.dataobject.HomeworkSubmitResponse;
+import in.securelearning.lil.android.player.dataobject.PracticeParent;
+import in.securelearning.lil.android.player.dataobject.PracticeQuestionResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.AboutCourseExt;
 import in.securelearning.lil.android.syncadapter.dataobject.ActivityData;
 import in.securelearning.lil.android.syncadapter.dataobject.AppUserAuth0;
 import in.securelearning.lil.android.syncadapter.dataobject.BlogResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.BroadcastNotification;
 import in.securelearning.lil.android.syncadapter.dataobject.EnrollTrainingResponse;
+import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
 import in.securelearning.lil.android.syncadapter.dataobject.LessonPlanMinimal;
 import in.securelearning.lil.android.syncadapter.dataobject.PasswordChange;
 import in.securelearning.lil.android.syncadapter.dataobject.PrerequisiteCoursesPostData;
@@ -58,19 +71,13 @@ import in.securelearning.lil.android.syncadapter.dataobject.RolePermissions;
 import in.securelearning.lil.android.syncadapter.dataobject.SearchPeriodicEventsParams;
 import in.securelearning.lil.android.syncadapter.dataobject.SearchPeriodsResults;
 import in.securelearning.lil.android.syncadapter.dataobject.ServerDataPackage;
-import in.securelearning.lil.android.analytics.dataobjects.ChartDataRequest;
-import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataRequest;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
-import in.securelearning.lil.android.syncadapter.dataobjects.LRPAPost;
+import in.securelearning.lil.android.syncadapter.dataobjects.LRPARequest;
 import in.securelearning.lil.android.syncadapter.dataobjects.LRPAResult;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterResult;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectDetails;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectResult;
-import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfile;
 import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
@@ -94,9 +101,6 @@ public interface DownloadApiInterface {
 
     @GET("AssignmentResponses/getAssignmentResponse")
     Call<ServerDataPackage> getServerDataPackage();
-
-//    @GET("Assignments/{objectId}")
-//    Call<Assignment> getAssignment(@Path("objectId") String objectId);
 
     @GET("Assignments/getAssignment/{objectId}")
     Call<Assignment> getAssignment(@Path("objectId") String objectId);
@@ -168,13 +172,10 @@ public interface DownloadApiInterface {
     Call<ResponseBody> getQuizWeb(@Path("objectId") String objectId);
 
     @GET("LearningNetworkPosts/fetchAllPost/{objectId}")
-    Call<GroupPostsNResponse> fetchAllPostNResponse(@Path("objectId") String objectId);
+    Call<GroupPostsNResponse> fetchGroupPostAndResponse(@Path("objectId") String objectId);
 
     @GET("AssignmentResponses/getAssignmentResponse/{objectId}")
     Call<AssignmentResponse> getAssignmentResponse(@Path("objectId") String objectId);
-
-//    @GET("AssignmentResponses/{objectId}")
-//    Call<AssignmentResponse> getAssignmentResponse(@Path("objectId") String objectId);
 
     @GET("DigitalBooks/getDigitalBook/{objectId}")
     Call<DigitalBook> getDigitalBook(@Path("objectId") String objectId);
@@ -190,6 +191,9 @@ public interface DownloadApiInterface {
 
     @GET("popupactivities/getPopupActivity/{objectId}")
     Call<ResponseBody> getActivityChecklistJson(@Path("objectId") String objectId);
+
+    @GET("courseprogresses/fetchDBProgress/{courseId}")
+    Call<ResponseBody> fetchCourseProgress(@Path("courseId") String courseId);
 
     @GET("LILGoogleAPIs/fetchVideoDuration/{objectId}")
     Call<ResponseBody> getYoutubeVideoDuration(@Path("objectId") String objectId);
@@ -401,8 +405,8 @@ public interface DownloadApiInterface {
     @PUT("users")
     Call<ResponseBody> changePassword(@Body PasswordChange passwordChange);
 
-    @GET("featuredcards/getDetail/{id}")
-    Call<MicroLearningCourse> getMicroLearningCourse(@Path("id") String id);
+    @GET("search/featured-card/{id}/preview")
+    Call<MicroLearningCourse> getRapidLearningCourse(@Path("id") String id);
 
     @GET("featuredcards")
     Call<java.util.ArrayList<MicroLearningCourse>> getMicroLearningCourseList();
@@ -452,14 +456,14 @@ public interface DownloadApiInterface {
 
     /*Api to fetch Learn, Reinforce, Practice and Apply by topicId and type*/
     @POST("search/lessonPlanConfiguration/lrpa")
-    Call<LRPAResult> fetchLRPA(@Body LRPAPost lrpaPost);
+    Call<LRPAResult> fetchLRPA(@Body LRPARequest lrpaRequest);
 
     @GET("users/profile")
     Call<StudentProfile> getStudentProfile();
 
     /*Api to fetch third party meta information*/
     @POST("TPCurriculumMappings/fetchTPCurriculumMapping")
-    Call<ThirdPartyMapping> fetchThirdPartyMapping(@Body ThirdPartyMapping thirdPartyMapping);
+    Call<java.util.ArrayList<String>> fetchThirdPartyMapping(@Body ThirdPartyMapping thirdPartyMapping);
 
     /*Api to fetch coverage data for particular subject*/
     @POST("users/getCoverage")
@@ -481,6 +485,10 @@ public interface DownloadApiInterface {
     @POST("userlogs/getUserSubjectsTimeSpent")
     Call<EffortChartDataParent> fetchEffortData(@Body EffortChartDataRequest effortChartDataRequest);
 
+    /*Api to fetch effort (time spent) data for all subjects*/
+    @GET("users/getSubjectLevelPerformance")
+    Call<java.util.ArrayList<EffortvsPerformanceData>> fetchEffortvsPerformanceData();
+
     /*Api to fetch effort (time spent) data for individual subject*/
     @POST("userlogs/getUserTopicTimeSpent")
     Call<EffortChartDataParent> fetchSubjectWiseEffortData(@Body EffortChartDataRequest effortChartDataRequest);
@@ -496,4 +504,32 @@ public interface DownloadApiInterface {
     /*Api to fetch chart configuration for performance and coverage*/
     @POST("GlobalConfigs/fetchConfig")
     Call<ChartConfigurationParentData> fetchChartConfiguration(@Body ChartConfigurationRequest chartConfigurationRequest);
+    /*Api to fetch chart configuration for performance and coverage*/
+
+    /*Api to fetch assignment for student*/
+    @GET("Assignments/getUserStatusWithCount")
+    Call<AssignedHomeworkParent> fetchHomework(@Query("subjectId") String subjectId);
+
+    /*Api to fetch detail of student homework passing homework id*/
+    @GET("Assignments/homeworkDetail/{id}")
+    Call<Homework> fetchHomeworkDetail(@Path("id") String homeworkId);
+
+    /*Api to fetch detail of student homework passing homework id*/
+    @GET("Assignments/submit/{id}")
+    Call<HomeworkSubmitResponse> submitHomework(@Path("id") String homeworkId);
+
+    /*Api call to send status of application for various user activity*/
+    @GET("userlogs/userStatus/{status}")
+    Call<ResponseBody> checkUserStatus(@Path("status") String status);
+
+    /*Api to fetch questions for practice*/
+//    @POST("http://192.168.0.116:8082/question/getQuestions")
+    @POST("search/question/getQuestions")
+    Call<PracticeQuestionResponse> fetchQuestions(@Body PracticeParent practiceParent);
+
+
+    /*Api to fetch learning network groups*/
+    @GET("Groups/learning-network")
+    Call<java.util.ArrayList<IdNameObject>> fetchNetworkGroup(@Query("skip") int skip, @Query("limit") int limit);
+
 }

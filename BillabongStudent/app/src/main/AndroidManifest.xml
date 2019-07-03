@@ -17,12 +17,12 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <!--<uses-permission android:name="android.permission.CALL_PHONE"/>-->
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
     <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT"/>
 
     <application
-        android:name="in.securelearning.lil.android.base.App"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/launcher_icon"
         android:label="@string/app_name"
@@ -183,7 +183,6 @@
             android:label="@string/title_settings"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/FullscreenTheme"/>
-
         <activity
             android:name="in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -537,11 +536,6 @@
                 android:resource="@xml/searchable2"/>
         </activity>
 
-        <activity
-            android:name="in.securelearning.lil.android.assignments.views.activity.TeacherAnalysisForStudentActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait">
-        </activity>
         <activity android:name="in.securelearning.lil.android.home.views.activity.ProfileSample">
         </activity>
         <activity
@@ -639,10 +633,18 @@
         <activity
             android:name="in.securelearning.lil.android.quizpreview.activity.PracticeTopicActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Skill Name"
+            android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppThemePracticeTest">
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name="in.securelearning.lil.android.player.view.activity.PracticeQuestionActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
             android:name="in.securelearning.lil.android.home.views.activity.ViewAllResoursesActivity"
@@ -663,13 +665,13 @@
             android:name="in.securelearning.lil.android.home.views.activity.PlayVimeoFullScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/FullscreenTheme"
+            android:screenOrientation="user"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
         <activity
-            android:name="in.securelearning.lil.android.player.microlearning.view.activity.RapidLearningCardsActivity"
+            android:name="in.securelearning.lil.android.player.view.activity.RapidLearningCardsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="sensorPortrait"
@@ -678,7 +680,7 @@
         </activity>
 
         <activity
-            android:name="in.securelearning.lil.android.player.microlearning.view.activity.RapidLearningSectionListActivity"
+            android:name="in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="sensorPortrait"
@@ -686,14 +688,6 @@
             android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
-        <activity
-            android:name="in.securelearning.lil.android.player.microlearning.view.activity.FeaturedCardListActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateAlwaysHidden">
-        </activity>
         <activity
             android:name="in.securelearning.lil.android.home.views.activity.AvailableTrainingListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

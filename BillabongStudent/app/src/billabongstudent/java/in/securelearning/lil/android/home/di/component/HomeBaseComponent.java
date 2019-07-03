@@ -1,13 +1,21 @@
 package in.securelearning.lil.android.home.di.component;
 
 
-import in.securelearning.lil.android.analytics.activity.PerformanceDetailActivity;
-import in.securelearning.lil.android.analytics.activity.ProgressDetailActivity;
-import in.securelearning.lil.android.analytics.activity.StudentAnalyticsActivity;
-import in.securelearning.lil.android.analytics.activity.TimeEffortDetailActivity;
 import in.securelearning.lil.android.analytics.model.AnalyticsModel;
+import in.securelearning.lil.android.analytics.views.activity.PerformanceDetailActivity;
+import in.securelearning.lil.android.analytics.views.activity.ProgressDetailActivity;
+import in.securelearning.lil.android.analytics.views.activity.StudentAnalyticsActivity;
+import in.securelearning.lil.android.analytics.views.activity.StudentAnalyticsTabActivity;
+import in.securelearning.lil.android.analytics.views.activity.TimeEffortDetailActivity;
+import in.securelearning.lil.android.analytics.views.fragment.StudentCoverageFragment;
+import in.securelearning.lil.android.analytics.views.fragment.StudentEffortFragment;
+import in.securelearning.lil.android.analytics.views.fragment.StudentExcellenceFragment;
+import in.securelearning.lil.android.analytics.views.fragment.StudentPerformanceFragment;
+import in.securelearning.lil.android.app.MyApplication;
 import in.securelearning.lil.android.base.di.component.BaseComponent;
 import in.securelearning.lil.android.base.model.GroupModel;
+import in.securelearning.lil.android.gamification.model.GamificationModel;
+import in.securelearning.lil.android.gamification.views.fragment.GamificationDialog;
 import in.securelearning.lil.android.home.model.CalendarEventModel;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
 import in.securelearning.lil.android.home.model.HomeModel;
@@ -17,7 +25,6 @@ import in.securelearning.lil.android.home.views.activity.AnnouncementCreationAct
 import in.securelearning.lil.android.home.views.activity.CalendarActivityNew;
 import in.securelearning.lil.android.home.views.activity.CalendarEventListActivity;
 import in.securelearning.lil.android.home.views.activity.CalendarPeriodListActivity;
-import in.securelearning.lil.android.home.views.activity.MindSparkAllTopicListActivity;
 import in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity;
 import in.securelearning.lil.android.home.views.activity.NewSearchCourseFilterActivity;
 import in.securelearning.lil.android.home.views.activity.NewSearchResourceFilterActivity;
@@ -51,12 +58,20 @@ import in.securelearning.lil.android.home.views.fragment.StudentAchievementFragm
 import in.securelearning.lil.android.home.views.fragment.StudentParentFragment;
 import in.securelearning.lil.android.home.views.fragment.StudentPersonalFragment;
 import in.securelearning.lil.android.home.views.fragment.SubjectDetailHomeFragment;
+import in.securelearning.lil.android.home.views.fragment.SubjectHomeworkFragment;
 import in.securelearning.lil.android.home.views.fragment.TraineeLearningObjectiveFragment;
 import in.securelearning.lil.android.home.views.fragment.TraineePrerequisiteCoursesFragment;
 import in.securelearning.lil.android.home.views.fragment.TraineeSessionsFragment;
 import in.securelearning.lil.android.home.views.fragment.TrainingDetailsFragment;
 import in.securelearning.lil.android.home.views.fragment.TrainingStaticDetailsFragment;
-import in.securelearning.lil.android.player.views.activity.PracticePlayerActivity;
+import in.securelearning.lil.android.homework.model.HomeworkModel;
+import in.securelearning.lil.android.homework.views.activity.HomeworkDetailActivity;
+import in.securelearning.lil.android.homework.views.activity.SubmitHomeworkActivity;
+import in.securelearning.lil.android.homework.views.fragment.HomeworkFragment;
+import in.securelearning.lil.android.login.views.activity.GeneratePasswordActivity;
+import in.securelearning.lil.android.mindspark.model.MindSparkModel;
+import in.securelearning.lil.android.mindspark.views.activity.MindSparkAllTopicListActivity;
+import in.securelearning.lil.android.mindspark.views.activity.MindSparkPlayerActivity;
 
 /**
  * Created by Prabodh Dhabaria on 14-11-2016.
@@ -152,25 +167,55 @@ public interface HomeBaseComponent extends BaseComponent {
 
     void inject(SubjectDetailsActivity subjectDetailsActivity);
 
-    void inject(PracticePlayerActivity questionPlayerActivity);
+    void inject(StudentProfileActivity studentProfileActivity);
 
-    void inject(StudentProfileActivity studentUserProfileActivity);
+    void inject(StudentPersonalFragment studentPersonalFragment);
 
-    void inject(StudentPersonalFragment userProfilePersonalFragment);
-
-    void inject(StudentParentFragment userProfileParentFragment);
+    void inject(StudentParentFragment studentParentFragment);
 
     void inject(MindSparkAllTopicListActivity mindSparkAllTopicListActivity);
 
-    void inject(StudentAchievementFragment userProfileAchievementFragment);
+    void inject(StudentAchievementFragment studentAchievementFragment);
 
     void inject(StudentAnalyticsActivity studentAnalyticsActivity);
 
     void inject(AnalyticsModel analyticsModel);
 
+    void inject(TimeEffortDetailActivity timeEffortDetailActivity);
+
     void inject(PerformanceDetailActivity performanceDetailActivity);
 
     void inject(ProgressDetailActivity progressDetailActivity);
 
-    void inject(TimeEffortDetailActivity timeEffortDetailActivity);
+    void inject(GeneratePasswordActivity generatePasswordActivity);
+
+    void inject(MindSparkModel mindSparkModel);
+
+    void inject(MindSparkPlayerActivity mindSparkPlayerActivity);
+
+    void inject(StudentAnalyticsTabActivity studentAnalyticsTabActivity);
+
+    void inject(StudentEffortFragment studentEffortFragment);
+
+    void inject(StudentExcellenceFragment studentExcellenceFragment);
+
+    void inject(StudentCoverageFragment studentCoverageFragment);
+
+    void inject(StudentPerformanceFragment studentPerformanceFragment);
+
+    void inject(HomeworkModel homeworkModel);
+
+    void inject(SubmitHomeworkActivity submitHomeworkActivity);
+
+    void inject(HomeworkFragment homeworkFragment);
+
+    void inject(SubjectHomeworkFragment subjectHomeworkFragment);
+
+    void inject(HomeworkDetailActivity homeworkDetailActivity);
+
+    void inject(MyApplication myApplication);
+
+    void inject(GamificationDialog gamificationDialog);
+
+    void inject(GamificationModel gamificationModel);
 }

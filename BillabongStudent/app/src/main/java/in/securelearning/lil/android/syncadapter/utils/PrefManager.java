@@ -30,6 +30,8 @@ public class PrefManager {
     private static final String SHOULD_SYNC_PERIODIC_EVENT = "shouldSyncPeriodicEvent";
     private static final String NOTIFICATIONS_LAST_BROADCAST_TIME = "notifications_last_broadcast_time";
     private static final String LAST_SYNC_TIME = "last_sync_time";
+    private static final String SHOULD_DOWNLOAD_NETWORK_GROUP = "shouldDownloadNetworkGroup";
+
     public static final long MINIMUM_SYNC_DELAY = 180000L;
 
     private static SharedPreferences getPrefs(Context context) {
@@ -240,6 +242,19 @@ public class PrefManager {
         }
 
         return map;
+    }
+
+
+    public static boolean shouldDownloadNetworkGroup(Context context) {
+        SharedPreferences pref = getPrefs(context);
+        return pref.getBoolean(SHOULD_DOWNLOAD_NETWORK_GROUP, true);
+    }
+
+    public static void setShouldDownloadNetworkGroup(boolean should, Context context) {
+        SharedPreferences sharedPrefs = getPrefs(context);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(SHOULD_DOWNLOAD_NETWORK_GROUP, should);
+        editor.commit();
     }
 
     public static SubjectExt getDefaultSubject() {

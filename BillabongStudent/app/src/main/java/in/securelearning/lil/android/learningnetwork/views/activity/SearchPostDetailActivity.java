@@ -491,7 +491,7 @@ public class SearchPostDetailActivity extends AppCompatActivity {
                     AnimationUtils.zoomIn(SearchPostDetailActivity.this, mBinding.includeResponseClicks.imageBtnLikeThumb);
                     PostResponse postResponse = getPostResponse(postData, PostResponseType.TYPE_RECOMMEND);
                     mLearningModel.savePostResponse(postResponse);
-                    SyncServiceHelper.startUploadPostResponse(SearchPostDetailActivity.this, postResponse.getAlias());
+                    //SyncServiceHelper.startUploadPostResponse(SearchPostDetailActivity.this, postResponse.getAlias());
                     postDataDetail.getPostResponses().add(postResponse);
                     likeCount++;
                     mBinding.includeResponseClicks.textViewLikeCount.setText(String.valueOf(likeCount));
@@ -957,7 +957,7 @@ public class SearchPostDetailActivity extends AppCompatActivity {
                 postDataDetail.getPostResponses().add(postResponse);
                 mBinding.editTextWriteComment.setText("");
                 mLearningModel.savePostResponse(postResponse);
-                SyncServiceHelper.startUploadPostResponse(SearchPostDetailActivity.this, postResponse.getAlias());
+                //SyncServiceHelper.startUploadPostResponse(SearchPostDetailActivity.this, postResponse.getAlias());
                 commentAdapter.mPostResponses.add(postResponse);
                 commentAdapter.notifyDataSetChanged();
                 commentCount++;

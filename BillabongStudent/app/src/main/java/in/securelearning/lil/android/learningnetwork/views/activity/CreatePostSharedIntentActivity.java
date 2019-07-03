@@ -1,6 +1,7 @@
 package in.securelearning.lil.android.learningnetwork.views.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -19,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -58,6 +60,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -77,6 +80,7 @@ import in.securelearning.lil.android.base.dataobjects.PostData;
 import in.securelearning.lil.android.base.dataobjects.PostToGroup;
 import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.dataobjects.Result;
+import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.base.model.PostDataModel;
@@ -96,6 +100,7 @@ import in.securelearning.lil.android.learningnetwork.events.LoadNewPostCreatedEv
 import in.securelearning.lil.android.learningnetwork.model.PostDataLearningModel;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
 import in.securelearning.lil.android.syncadapter.dataobject.FileChooser;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.OgUtils;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import io.reactivex.Completable;
@@ -136,15 +141,12 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
     private ArrayList<Group> mGroupsList = new ArrayList<>();
     private ArrayList<String> mAttachPathList = new ArrayList<>();
     private String mLearningNetworkFolder;
-    private ResourceGridAdapter mResourceGridAdapter;
-    private static String GROUP_ID = "group_object_id";
     private MenuItem mAttachMenuItem;
     private Group mGroup;
     private int mPrimaryColor = 0;
     private LayoutCreatePostSharedIntentBinding mBinding;
     private String mFirstUrl = "";
     private File mBaseFolder;
-    private Dialog mDialog;
     private String mSelectedGroupId = "";
     private AlertDialog mLoginDialog;
     private String mGroupName, mPostType;
@@ -188,9 +190,16 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
         mPrimaryColor = ContextCompat.getColor(getBaseContext(), R.color.colorPrimaryLN);
         mBaseFolder = getFilesDir();
         initializeResourceFolders(getString(R.string.pathLearningNetwork));
+        setUpToolbar();
         initializeUiAndListeners();
         handleSharedIntent();
 
+    }
+
+    private void setUpToolbar() {
+        getWindow().setStatusBarColor(mPrimaryColor);
+        setSupportActionBar(mBinding.toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
     private void isUserLoggedIn() {
@@ -207,11 +216,11 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
         String type = intent.getType();
         if (Intent.ACTION_SEND.equals(action) && type != null) {
 
-            if (type.equals("text/plain")) {
+            if (type.equals(ConstantUtil.MIME_TYPE_IMAGE)) {
                 handleSharedTextIntent(intent);
-            } else if (type.startsWith("image/")) {
+            } else if (type.startsWith(ConstantUtil.MIME_TYPE_IMAGE)) {
                 handleSharedImageIntent(intent);
-            } else if (type.startsWith("video/")) {
+            } else if (type.startsWith(ConstantUtil.MIME_TYPE_VIDEO)) {
                 handleSharedVideoIntent(intent);
             }
         }
@@ -219,39 +228,39 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
     }
 
     private void handleSharedImageIntent(Intent intent) {
-        Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        Uri imageUri = ShareCompat.IntentReader.from(CreatePostSharedIntentActivity.this).getStream();
+
         if (imageUri != null) {
             startCropping(imageUri);
-
         }
 
     }
 
     private void handleSharedVideoIntent(Intent intent) {
         try {
-
+            Uri videoUri = ShareCompat.IntentReader.from(CreatePostSharedIntentActivity.this).getStream();
+            if (videoUri != null) {
+                String[] filePath = {MediaStore.Video.Media.DATA};
+                Cursor c = getContentResolver().query(videoUri, filePath, null, null, null);
+                c.moveToFirst();
+                int columnIndex = c.getColumnIndex(filePath[0]);
+                String videoPathOriginal = c.getString(columnIndex);
+                c.close();
+                if (videoPathOriginal.endsWith(".mp4")) {
+                    String strPath = copyFiles(videoPathOriginal, mBaseFolder + "", mLearningNetworkFolder, String.valueOf(System.currentTimeMillis()) + ".mp4");
+                    addFileToPreviewLayout(strPath);
+                } else {
+                    ToastUtils.showToastAlert(getBaseContext(), getString(R.string.format_not_supported));
+                }
+            } else {
+                Toast.makeText(getBaseContext(), getString(R.string.cant_pick_this_file), Toast.LENGTH_LONG).show();
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getBaseContext(), "Can't receive image from this app", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), getString(R.string.cant_receive_video_from_this_app), Toast.LENGTH_LONG).show();
             finish();
         }
-        Uri videoUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        if (videoUri != null) {
-            String[] filePath = {MediaStore.Video.Media.DATA};
-            Cursor c = getContentResolver().query(videoUri, filePath, null, null, null);
-            c.moveToFirst();
-            int columnIndex = c.getColumnIndex(filePath[0]);
-            String videoPathOriginal = c.getString(columnIndex);
-            c.close();
-            if (videoPathOriginal.endsWith(".mp4")) {
-                String strPath = copyFiles(videoPathOriginal, mBaseFolder + "", mLearningNetworkFolder, String.valueOf(System.currentTimeMillis()) + ".mp4");
-                addFileToPreviewLayout(strPath);
-            } else {
-                ToastUtils.showToastAlert(getBaseContext(), getString(R.string.format_not_supported));
-            }
-        } else {
-            Toast.makeText(getBaseContext(), "Can't pick this file", Toast.LENGTH_LONG).show();
-        }
+
 
     }
 
@@ -260,7 +269,6 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(sharedText)) {
 
             mBinding.includeEditText.editTextWritePost.requestFocus();
-            // mBinding.includeEditText.editTextWritePost.setCursorVisible(true);
             mBinding.includeEditText.editTextWritePost.append(sharedText);
         }
     }
@@ -364,6 +372,7 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
         return postTypeList;
     }
 
+    @SuppressLint("CheckResult")
     private void getGroupList() {
         mPostDataLearningModel.getGroupForUser().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Group>() {
@@ -373,6 +382,12 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
                 if (mGroupsList.isEmpty()) {
                     Toast.makeText(getBaseContext(), getString(R.string.error_no_groups), Toast.LENGTH_LONG).show();
                     finish();
+                } else {
+                    String text = getString(R.string.selected_group) + " - " + mGroupsList.get(0).getGroupName();
+                    mBinding.textViewSelectedGroup.setText(text);
+                    mSelectedGroupId = mGroupsList.get(0).getObjectId();
+                    mGroupName = mGroupsList.get(0).getGroupName();
+                    mGroup = mGroupsList.get(0);
                 }
             }
         }, new Consumer<Throwable>() {
@@ -386,7 +401,8 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
                 if (!mGroupsList.isEmpty()) {
                     mSelectedGroupId = mGroupsList.get(0).getObjectId();
                     mGroup = mGroupsList.get(0);
-                    mBinding.textViewSelectedGroup.setText(getString(R.string.selected_group) + " - " + mGroupsList.get(0).getGroupName());
+                    String text = getString(R.string.selected_group) + " - " + mGroupsList.get(0).getGroupName();
+                    mBinding.textViewSelectedGroup.setText(text);
                     mGroupName = mGroupsList.get(0).getGroupName();
                 }
 
@@ -467,14 +483,13 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
 
     private void initializeUiAndListeners() {
 
-        getWindow().setStatusBarColor(mPrimaryColor);
-        setSupportActionBar(mBinding.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mBinding.toolbar.setBackgroundColor(mPrimaryColor);
+
         setTitle(getString(R.string.label_create_post));
         ArrayList<String> postType = getPostTypeList();
         if (postType != null && !postType.isEmpty()) {
-            mBinding.textViewSelectedPostType.setText(getString(R.string.select_post_type) + " - " + postType.get(0));
+            String text = getString(R.string.select_post_type) + " - " + postType.get(0);
+            mBinding.textViewSelectedPostType.setText(text);
             mPostType = postType.get(0);
             mBinding.includeEditText.editTextWritePost.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -530,6 +545,7 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
                 }
             });
         } else {
+            GeneralUtils.showToastShort(getBaseContext(), "You are not allowed to create post.");
             finish();
         }
 
@@ -543,6 +559,7 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
         return list;
     }
 
+    @SuppressLint("CheckResult")
     private void fetchOgFromServer(ArrayList<String> urlArrayList) {
         if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
             try {
@@ -570,7 +587,7 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
 
                                 }
                             });
-                        } else if (response != null) {
+                        } else {
 
                             Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
                                 @Override
@@ -615,20 +632,20 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
 
     private void showGroupListDialog(final ArrayList adapterData, int type) {
         LayoutRecyclerviewPopupBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getBaseContext()), R.layout.layout_recyclerview_popup, null, false);
-        mDialog = new Dialog(CreatePostSharedIntentActivity.this);
-        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mDialog.setContentView(binding.getRoot());
-        mDialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
+        Dialog dialog = new Dialog(CreatePostSharedIntentActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(binding.getRoot());
+        dialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
         binding.textViewTitle.setVisibility(View.VISIBLE);
         binding.listviewEdittextData.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false));
 
         if (type == POST_TYPE_LIST) {
             binding.textViewTitle.setText(getString(R.string.select_post_type));
-            final PostTypeAdapter arrayAdapter = new PostTypeAdapter(getBaseContext(), adapterData, mDialog);
+            final PostTypeAdapter arrayAdapter = new PostTypeAdapter(getBaseContext(), adapterData, dialog);
             binding.listviewEdittextData.setAdapter(arrayAdapter);
         } else if (type == GROUP_LIST) {
             binding.textViewTitle.setText(getString(R.string.select_group));
-            final GroupAdapter arrayAdapter = new GroupAdapter(getBaseContext(), adapterData, mDialog);
+            final GroupAdapter arrayAdapter = new GroupAdapter(getBaseContext(), adapterData, dialog);
             binding.listviewEdittextData.setAdapter(arrayAdapter);
         }
 
@@ -637,17 +654,19 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
         Double width = metrics.widthPixels * 0.80;
-        Window win = mDialog.getWindow();
+        Window win = dialog.getWindow();
         win.setLayout(width.intValue(), ViewGroup.LayoutParams.WRAP_CONTENT);
-        mDialog.show();
+        dialog.show();
 
     }
 
     private String setUserRole() {
-        if (PermissionPrefsCommon.getPostBadgeAssignPermission(this)) {
-            return AppUser.USERTYPE.TEACHER.toString();
+        UserProfile userProfile = mAppUserModel.getApplicationUser();
+        if (userProfile.getRole() != null && !TextUtils.isEmpty(userProfile.getRole().getName())) {
+            return userProfile.getRole().getName();
         } else {
-            return AppUser.USERTYPE.STUDENT.toString();
+            return ConstantUtil.BLANK;
+
         }
     }
 
@@ -883,28 +902,25 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
 
     private void startCropping(Uri uri) {
         try {
-            if (FileChooser.fileSize(getBaseContext(), uri) < 10) {
-                File tempFile = new File(mBaseFolder + THUMB_FILE_PATH);
-                if (!tempFile.exists()) {
-                    tempFile.getParentFile().mkdirs();
-                }
-                UCrop.Options options = new UCrop.Options();
-                options.setToolbarColor(mPrimaryColor);
-                options.setStatusBarColor(mPrimaryColor);
-                Uri destinationUri = Uri.fromFile(tempFile);
-                UCrop.of(uri, destinationUri)
-                        .useSourceImageAspectRatio()
-                        .withOptions(options)
-                        .start(this);
-
-            } else {
-                ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit));
+            File tempFile = new File(mBaseFolder + THUMB_FILE_PATH);
+            if (!tempFile.exists()) {
+                tempFile.getParentFile().mkdirs();
             }
+            UCrop.Options options = new UCrop.Options();
+            options.setToolbarColor(mPrimaryColor);
+            options.setStatusBarColor(mPrimaryColor);
+            Uri destinationUri = Uri.fromFile(tempFile);
+            UCrop.of(uri, destinationUri)
+                    .useSourceImageAspectRatio()
+                    .withOptions(options)
+                    .start(this);
+
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getBaseContext(), "Can't receive image from this app", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), getString(R.string.cant_receive_image_from_this_app), Toast.LENGTH_LONG).show();
             finish();
         }
+
 
     }
 
@@ -928,8 +944,8 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
                 }
             }
 
-            mResourceGridAdapter = new ResourceGridAdapter(CreatePostSharedIntentActivity.this);
-            mBinding.recyclerViewResource.setAdapter(mResourceGridAdapter);
+            ResourceGridAdapter resourceGridAdapter = new ResourceGridAdapter(CreatePostSharedIntentActivity.this);
+            mBinding.recyclerViewResource.setAdapter(resourceGridAdapter);
 
             if (!URLConnection.guessContentTypeFromName(mAttachPathList.get(0)).contains("image")) {
                 menuAttachVisibility(false);
@@ -972,8 +988,7 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
             holder.mRootView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SpannableString title = new SpannableString(getString(R.string.selected_group) + " - " + holder.mItemTextView.getText().toString());
-                    title.setSpan(new TypefaceSpan("sans-serif-condensed"), 0, title.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    String title = getString(R.string.selected_group) + " - " + holder.mItemTextView.getText().toString();
                     mBinding.textViewSelectedGroup.setText(title);
                     mBinding.textViewSelectedGroup.setTag(group.getObjectId());
                     mSelectedGroupId = group.getObjectId();
@@ -1080,19 +1095,19 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
 
                 holder.mResourceImageView.setImageBitmap(bitmap);
 //                Picasso.with(mContext).load(filePath).into(holder.mResourceImageView);
-                holder.mResourceTypeImageView.setImageResource(R.drawable.icon_image_white);
+                holder.mResourceTypeImageView.setImageResource(R.drawable.icon_image_w);
             } else if (fileType.contains("video")) {
                 Bitmap mBitmap = getScaledBitmapFromPath(mContext.getResources(), filePath);
                 holder.mResourceImageView.setImageBitmap(mBitmap);
-                holder.mResourceTypeImageView.setImageResource(R.drawable.icon_video_white);
+                holder.mResourceTypeImageView.setImageResource(R.drawable.icon_video_w);
             } else if (fileType.contains("audio")) {
-                holder.mResourceTypeImageView.setImageResource(R.drawable.icon_audio_white);
+                holder.mResourceTypeImageView.setImageResource(R.drawable.icon_audio_w);
             } else if (fileType.contains("pdf")) {
-                holder.mResourceTypeImageView.setImageResource(R.drawable.icon_pdf_white);
+                holder.mResourceTypeImageView.setImageResource(R.drawable.icon_pdf_w);
             } else if (fileType.contains("doc")) {
-                holder.mResourceTypeImageView.setImageResource(R.drawable.icon_document_white);
+                holder.mResourceTypeImageView.setImageResource(R.drawable.icon_document_w);
             } else {
-                holder.mResourceTypeImageView.setImageResource(R.drawable.icon_file_white);
+                holder.mResourceTypeImageView.setImageResource(R.drawable.icon_file_w);
             }
 
             holder.mRemoveResourceImageView.setOnClickListener(new View.OnClickListener() {
@@ -1113,14 +1128,12 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
                 }
             });
 
-            holder.mResourceImageView.setOnClickListener(new View.OnClickListener()
-
-            {
+            holder.mResourceImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     String mimeType = URLConnection.guessContentTypeFromName(mAttachPathList.get(position));
                     if (mimeType.contains("image")) {
-                        FullScreenImage.setUpFullImageView(CreatePostSharedIntentActivity.this, position, true, true,FullScreenImage.getResourceArrayList(mAttachPathList));
+                        FullScreenImage.setUpFullImageView(CreatePostSharedIntentActivity.this, position, true, true, FullScreenImage.getResourceArrayList(mAttachPathList));
                     } else if (mimeType.contains("video")) {
                         Resource item = new Resource();
                         item.setType("video");

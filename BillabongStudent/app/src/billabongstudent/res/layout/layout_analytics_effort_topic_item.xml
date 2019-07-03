@@ -8,7 +8,7 @@
         android:layout_marginTop="@dimen/margin_8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:weightSum="3">
+       >
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/textViewTopicName"
@@ -26,6 +26,7 @@
             android:layout_marginStart="@dimen/margin_8dp"
             android:layout_marginEnd="@dimen/margin_8dp"
             android:layout_weight=".6"
+            android:gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/colorBlack"
             tools:text="92"/>
@@ -34,6 +35,8 @@
             android:id="@+id/progressBar"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="0dp"
+            android:max="100"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_weight=".7"/>
 

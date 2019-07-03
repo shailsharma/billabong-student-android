@@ -69,7 +69,7 @@ public class ShortcutUtil {
                     ACTION_SHORTCUT_TRAINING,
                     ACTION_SHORTCUT_LEARNING_MAP};
 
-            String[] labels = {context.getString(R.string.assignment),
+            String[] labels = {context.getString(R.string.homework),
                     context.getString(R.string.learning_network),
                     context.getString(R.string.string_calendar),
                     context.getString(R.string.label_workspace),

@@ -131,7 +131,8 @@ public class PostResponseListFragment extends Fragment {
             mPostId = getArguments().getString(POST_ID);
             mPostAlias = getArguments().getString(POST_ALIAS);
             mGroup = mGroupModel.getGroupFromUidSync(mGroupId);
-            getPostByAlias(mPostAlias);
+            //getPostByAlias(mPostAlias);
+            getPostById(mPostId);
         }
 
     }
@@ -144,6 +145,10 @@ public class PostResponseListFragment extends Fragment {
                 mPostData = postData;
             }
         });
+    }
+
+    private void getPostById(String id) {
+        mPostData = mPostDataLearningModel.getPostDataByObjectId(id);
     }
 
     @Override

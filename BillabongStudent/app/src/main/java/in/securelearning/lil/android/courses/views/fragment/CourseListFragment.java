@@ -46,7 +46,7 @@ import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.courses.views.activity.CourseDetailActivity;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
-import in.securelearning.lil.android.player.microlearning.view.activity.RapidLearningSectionListActivity;
+import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
 import in.securelearning.lil.android.resources.model.ResourcesMapModel;
 import in.securelearning.lil.android.resources.view.InjectorYoutube;
 import in.securelearning.lil.android.syncadapter.dataobject.AboutCourseExt;

@@ -7,20 +7,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_4dp"
+        android:layout_marginBottom="@dimen/margin_4dp"
+
         android:orientation="vertical">
 
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:paddingStart="@dimen/padding_16dp"
             android:orientation="horizontal">
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/imageViewIcon"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight=".4"
-                android:padding="@dimen/padding_8dp"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 tools:srcCompat="@drawable/icon_trophies"/>
 
             <android.support.v7.widget.AppCompatTextView
@@ -28,9 +29,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
-                tools:text="@string/error_something_went_wrong"
+                android:layout_marginStart="@dimen/margin_16dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/colorBlack"/>
+                android:textColor="@color/colorBlack"
+                tools:text="@string/error_something_went_wrong"/>
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textViewScore"
@@ -38,17 +40,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".4"
                 android:gravity="center_horizontal"
-                tools:text="+470"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                tools:text="+470"/>
 
         </android.support.v7.widget.LinearLayoutCompat>
 
         <View
+            android:id="@+id/viewDivider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_marginTop="@dimen/margin_4dp"
             android:layout_marginStart="@dimen/margin_16dp"
+            android:layout_marginTop="@dimen/margin_4dp"
             android:layout_marginEnd="@dimen/margin_16dp"
             android:background="@color/itemDivider"/>
     </android.support.v7.widget.LinearLayoutCompat>

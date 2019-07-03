@@ -18,6 +18,7 @@ public class InternalNotificationActionUtils {
     final static public int ACTION_TYPE_QUESTION_RESPONSE_UPLOAD = 100010;
     final static public int ACTION_TYPE_COURSE_PROGRESS_UPLOAD = 100011;
     final static public int ACTION_TYPE_COURSE_SHARED = 100012;
+    final static public int ACTION_TYPE_USER_COURSE_PROGRESS_UPLOAD = 100012;
 
 
     final static public int OBJECT_TYPE_QUIZ = 210001;
@@ -42,6 +43,7 @@ public class InternalNotificationActionUtils {
     final static public int OBJECT_TYPE_POST_RESPONSE = 272001;
     final static public int OBJECT_TYPE_CALENDAR_EVENT = 281001;
     final static public int OBJECT_TYPE_COURSE_PROGRESS = 291001;
+    final static public int OBJECT_TYPE_USER_COURSE_PROGRESS = 301001;
 
 //
 //    /**

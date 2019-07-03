@@ -49,7 +49,7 @@ import in.securelearning.lil.android.courses.views.activity.CourseDetailActivity
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
-import in.securelearning.lil.android.player.microlearning.view.activity.RapidLearningSectionListActivity;
+import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import io.reactivex.Observable;

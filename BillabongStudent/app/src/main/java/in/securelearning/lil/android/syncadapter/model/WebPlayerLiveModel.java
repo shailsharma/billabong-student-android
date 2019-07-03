@@ -1,12 +1,9 @@
 package in.securelearning.lil.android.syncadapter.model;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Handler;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -28,6 +25,7 @@ import in.securelearning.lil.android.base.interfaces.WebPlayerLiveModelInterface
 import in.securelearning.lil.android.base.model.BlogCommentModel;
 import in.securelearning.lil.android.base.model.BlogModel;
 import in.securelearning.lil.android.base.model.WebQuizResponseModel;
+import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity;
 import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
 import in.securelearning.lil.android.home.views.activity.PlayVimeoFullScreenActivity;
@@ -172,6 +170,12 @@ public class WebPlayerLiveModel implements WebPlayerLiveModelInterface {
         return null;
     }
 
+    @Override
+    public Response<ResponseBody> saveBookmark(JSONObject jsonObject) {
+        RequestBody body = GeneralUtils.jsonToRequestBody(jsonObject.toString());
+        return webCallExecutor(mNetworkModel.saveBookmark(body));
+    }
+
     public Response<ResponseBody> uploadQuizResponse(String response1) {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), response1);
         return webCallExecutor(mNetworkModel.uploadQuizResponse(body));
@@ -179,7 +183,7 @@ public class WebPlayerLiveModel implements WebPlayerLiveModelInterface {
 
     @Override
     public Response<ResponseBody> uploadAnnotation(JSONObject s) {
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), s.toString());
+        RequestBody body = GeneralUtils.jsonToRequestBody(s.toString());
         return webCallExecutor(mNetworkModel.uploadAnnotation(body));
 
     }
@@ -262,6 +266,42 @@ public class WebPlayerLiveModel implements WebPlayerLiveModelInterface {
     public Response<ResponseBody> getReportByQuizId(JSONObject jsonObject) {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonObject.toString());
         return webCallExecutor(mNetworkModel.getReportByQuizId(body));
+    }
+
+    @Override
+    public Response<ResponseBody> fetchAssessmentConfiguration(String s) {
+        return null;
+    }
+
+    @Override
+    public Response<ResponseBody> fetchAssessmentExam(String s) {
+        return null;
+    }
+
+    @Override
+    public Response<ResponseBody> submitAssessmentExam(String s) {
+        return null;
+    }
+
+    @Override
+    public Response<ResponseBody> uploadPartialAssessmentResponse(String s) {
+        return null;
+    }
+
+    @Override
+    public Response<ResponseBody> fetchAssessmentReport(String s) {
+        return null;
+    }
+
+    @Override
+    public Response<ResponseBody> fetchCourseProgress(String id) {
+        return webCallExecutor(mNetworkModel.fetchCourseProgress(id));
+    }
+
+    @Override
+    public Response<ResponseBody> saveCourseProgress(String s) {
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), s);
+        return webCallExecutor(mNetworkModel.saveCourseProgress(body));
     }
 
     public boolean addBlogRating(UserRating rating, String id) {

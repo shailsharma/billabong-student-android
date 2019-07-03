@@ -40,6 +40,8 @@ import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.NotificationUtil;
 import in.securelearning.lil.android.syncadapter.utils.ShortcutUtil;
 
+import static in.securelearning.lil.android.home.views.activity.PasswordChangeActivity.FROM_OTHER;
+
 
 public class SettingNewActivity extends AppCompatActivity implements OnClickListener {
 
@@ -183,7 +185,7 @@ public class SettingNewActivity extends AppCompatActivity implements OnClickList
                 PreferenceSettingUtilClass.setAssignment(mBinding.notificationAssignment.isChecked(), this);
 
                 if (mBinding.notificationAssignment.isChecked()) {
-                    FlavorSyncServiceHelper.startReminderIntentService(this);
+                   // FlavorSyncServiceHelper.startReminderIntentService(this);
                 } else {
                     NotificationManager nMgr = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
                     nMgr.cancel(NotificationUtil.REMINDER_ASSIGNMENT_PENDING);
@@ -246,7 +248,8 @@ public class SettingNewActivity extends AppCompatActivity implements OnClickList
                 break;
 
             case R.id.changePassword:
-                startActivity(PasswordChangeActivity.getStartIntent(SettingNewActivity.this));
+                startActivity(PasswordChangeActivity.getStartIntent(SettingNewActivity.this, mAppUserModel.getObjectId(), getString(R.string.messagePasswordChangeSuccess), getString(R.string.labelChangePassword), FROM_OTHER));
+
                 break;
 
             case R.id.assignmentShortcut:
@@ -334,7 +337,7 @@ public class SettingNewActivity extends AppCompatActivity implements OnClickList
                     public void onClick(DialogInterface dialog, int id) {
                         ShortcutUtil.removeShortcut(getBaseContext());
                         Intent intent = LoginActivity.getLogoutIntent(SettingNewActivity.this);
-                        //startActivity(intent);
+                        startActivity(intent);
                         finishAffinity();
                         int pendingIntentId = 1234567;
                         PendingIntent mPendingIntent = PendingIntent.getActivity(SettingNewActivity.this, pendingIntentId, intent,

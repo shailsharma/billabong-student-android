@@ -21,9 +21,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.DeadObjectException;
-import android.os.Handler;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.provider.ContactsContract;
@@ -39,10 +37,8 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -57,7 +53,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -67,10 +62,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -78,49 +69,46 @@ import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.ActivityWelcomeBinding;
 import in.securelearning.lil.android.app.databinding.LayoutAppMainLoginBinding;
-import in.securelearning.lil.android.base.dataobjects.Group;
-import in.securelearning.lil.android.base.dataobjects.GroupAbstract;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
-import in.securelearning.lil.android.base.db.query.DatabaseQueryHelper;
 import in.securelearning.lil.android.base.model.AppUserModel;
-import in.securelearning.lil.android.base.model.CorporateSettingsModel;
-import in.securelearning.lil.android.base.model.CuratorMappingModel;
-import in.securelearning.lil.android.base.model.CurriculumModel;
-import in.securelearning.lil.android.base.model.GroupModel;
-import in.securelearning.lil.android.base.model.PeriodicEventsModel;
+import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
-import in.securelearning.lil.android.base.utils.KeyBoardUtil;
+import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.home.utils.PermissionPrefs;
+import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
 import in.securelearning.lil.android.home.utils.PreferenceSettingUtilClass;
 import in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity;
+import in.securelearning.lil.android.home.views.activity.PasswordChangeActivity;
 import in.securelearning.lil.android.learningnetwork.views.activity.CreatePostSharedIntentActivity;
 import in.securelearning.lil.android.login.InjectorLogin;
-import in.securelearning.lil.android.login.sample.SampleLandingPageData;
+import in.securelearning.lil.android.login.events.AlreadyLoggedInEvent;
+import in.securelearning.lil.android.login.events.PasswordChangeEvent;
 import in.securelearning.lil.android.login.views.activity.startup.MyViewPagerAdapter;
-import in.securelearning.lil.android.syncadapter.dataobject.RequestOTP;
-import in.securelearning.lil.android.syncadapter.dataobject.RequestOTPResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.RolePermissions;
-import in.securelearning.lil.android.syncadapter.dataobject.StudentGradeMapping;
+import in.securelearning.lil.android.syncadapter.fcmservices.FCMToken;
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
-import in.securelearning.lil.android.syncadapter.model.JobModel;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.NotificationUtil;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 import in.securelearning.lil.android.syncadapter.utils.PrefManagerStudentSubjectMapping;
 import in.securelearning.lil.android.syncadapter.utils.ShortcutUtil;
+import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Response;
+
+import static in.securelearning.lil.android.home.views.activity.PasswordChangeActivity.FROM_LOGIN;
 
 /**
  * A refreshToken screen that offers refreshToken via email/password.
@@ -128,6 +116,9 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     public static final String ACTION_LOGOUT = "in.securelearning.lil.android.action.ACTION_LOGOUT";
+    //    public static final String ACTION_UNAUTHORIZED_LOGOUT = "in.securelearning.lil.android.action.ACTION_UNAUTHORIZED_LOGOUT";
+    public static final String ACTION_USER_ARCHIVED = "in.securelearning.lil.android.action.ACTION_USER_ARCHIVED";
+
     public static final String ACTION_UNAUTHORIZED = "in.securelearning.lil.android.action.ACTION_UNAUTHORIZED";
     public static final String ACTION_LEARNING_NETWORK = "in.securelearning.lil.android.action.ACTION_LEARNING_NETWORK";
     public static final String ACTION_NOTIFICATION = "in.securelearning.lil.android.action.NOTIFICATION";
@@ -137,7 +128,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int MY_PERMISSIONS_REQUEST = 1;
-    private final String TAG = LoginActivity.class.getCanonicalName();
     /**
      * Keep track of the refreshToken task to ensure we can cancel it if requested.
      */
@@ -146,39 +136,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Inject
     AppUserModel mAppUserModel;
     @Inject
-    GroupModel mGroupModel;
-    @Inject
-    CorporateSettingsModel mCorporateSettingsModel;
-    @Inject
-    CurriculumModel mCurriculumModel;
-    @Inject
-    PeriodicEventsModel mPeriodicEventsModel;
-    @Inject
-    DatabaseQueryHelper mDatabaseQueryHelper;
-    @Inject
-    JobModel mJobModel;
-    @Inject
     NetworkModel mNetworkModel;
     @Inject
-    CuratorMappingModel mCuratorMappingModel;
-    private UserProfile mLoggedInUser;
+    RxBus mRxBus;
+    @Inject
+    HomeModel mHomeModel;
     private String mAction = "";
     private LayoutAppMainLoginBinding mBinding;
-    int[] layouts = new int[]{
-            R.layout.layout_intro_course,
-            R.layout.layout_intro_network,
-            R.layout.layout_intro_assignment,
-            R.layout.layout_intro_learning_map,
-            R.layout.layout_intro_blog,
-            R.layout.layout_intro_calendar
-    };
-    private int mPageCount = 0;
-    private boolean isOTPCounterIsRunning = false;
-    //private SmsVerifyCatcher smsVerifyCatcher;
-    private String phoneNumberOTP = "", codeOTP = "";
-    private TextWatcher mEmailWatcher, mPasswordWatcher;
+
     private final static String EMAIL_PHONE_SHARED_PREFERENCE = "email_phone_pref";
     private final static String SET_LOGGED_IN_EMAIL_PHONE = "set_logged_in_email_phone";
+    private boolean mIsAlreadyLoggedIn;
 
     public static Intent startIntentLoginActivity(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -186,42 +154,63 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         return intent;
     }
 
-
-    private CountDownTimer mCountDownTimer;
-
     @Override
     public void onBackPressed() {
-//        if (mBinding.includeIntro.layoutAppIntro.getVisibility() == View.GONE && mBinding.includeLoginProgress.layoutLoginProgress.getVisibility() == View.GONE) {
-//            if (mBinding.includeLoginEmail.layoutLoginEmail.getVisibility() == View.VISIBLE) {
-//                hideLoginViaEmail();
-//            } else if (mBinding.includeLoginPhone.layoutOTPProgress.getVisibility() == View.GONE && mBinding.includeLoginPhone.layoutLoginPhone.getVisibility() == View.VISIBLE) {
-//                hideLoginViaPhone();
-//            } else {
-//                finish();
-//            }
-//        } else {
-        switch (mAction) {
-            case Intent.ACTION_MAIN:
-                finish();
-                break;
-            case ACTION_LOGOUT:
-                finishAndRemoveTask();
-                break;
-            case ACTION_UNAUTHORIZED:
-                finishAffinity();
-                break;
-            default:
-                finish();
-                break;
-        }
-        //  }
+
+        getAppExitIntent();
+    }
+
+
+    @SuppressLint("CheckResult")
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        if (BuildConfig.BUILD_TYPE.equalsIgnoreCase("release")) {
+//            mHomeModel.checkForNewVersionOnPlayStore()
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new Consumer<String>() {
+//                        @Override
+//                        public void accept(String playStoreVersion) throws Exception {
+//                            if (!BuildConfig.VERSION_NAME.equalsIgnoreCase(playStoreVersion)) {
+//
+//                                new android.app.AlertDialog.Builder(LoginActivity.this)
+//                                        .setTitle(getString(R.string.labelUpdateAvailable))
+//                                        .setMessage(getString(R.string.messageNewUpdateIsAvailable))
+//                                        .setCancelable(false)
+//                                        .setPositiveButton(getString(R.string.labelUpdate), new DialogInterface.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(DialogInterface dialog, int which) {
+//                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse
+//                                                        ("market://details?id=" + BuildConfig.APPLICATION_ID)));
+//                                            }
+//                                        }).show();
+//                            }
+//
+//                        }
+//                    }, new Consumer<Throwable>() {
+//                        @Override
+//                        public void accept(Throwable throwable) throws Exception {
+//                            throwable.printStackTrace();
+//                        }
+//                    });
+//        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InjectorLogin.INSTANCE.getComponent().inject(this);
-        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorGrey55));
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            View decor = getWindow().getDecorView();
+            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
+        } else {
+            getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorGrey55));
+        }
         handleUpgrade();
 
         final Intent intent = getIntent();
@@ -235,17 +224,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             } else {
 
                 mBinding = DataBindingUtil.setContentView(this, R.layout.layout_app_main_login);
-                //setUpViewPager();
                 setDefaults();
                 if (mAction.equals(ACTION_UNAUTHORIZED)) {
-                    intentActionDialog("Your session has expired. Please login again to continue using the app.");
+                    intentActionDialog(getString(R.string.message_unauthorized));
+                } else if (mAction.equals(ACTION_USER_ARCHIVED)) {
+                    intentActionDialog(getString(R.string.message_user_archived));
                 }
-//                else if (mAction.equals(ACTION_USER_ARCHIVED)) {
-//                    intentActionDialog("Request has been denied. Please contact your system administrator!");
-//                }
                 initializeUiAndClickListeners();
-                handleException();
+                //handleException();
                 requestAndroidPermission();
+                listenRxEvent();
+
             }
         }
     }
@@ -253,88 +242,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void intentActionDialog(String message) {
         new AlertDialog.Builder(this)
                 .setMessage(message)
-                .setTitle("Message")
-                .setPositiveButton("Ok", null)
+                .setPositiveButton(android.R.string.ok, null)
                 .show();
     }
 
-    private void startFullscreen() {
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
-    }
-
-    private void stopFullscreen() {
-
-    }
-
-
-    private void hideLoginViaEmail() {
-        hideSoftKeyboard();
-        mBinding.includeLoginEmail.editTextLoginEmail.removeTextChangedListener(mEmailWatcher);
-        mBinding.includeLoginEmail.editTextLoginPassword.removeTextChangedListener(mPasswordWatcher);
-        mBinding.includeLoginEmail.inputLayoutLoginEmail.setErrorEnabled(false);
-        mBinding.includeLoginEmail.inputLayoutLoginPassword.setErrorEnabled(false);
-        mBinding.includeLoginEmail.editTextLoginEmail.setText("");
-        mBinding.includeLoginEmail.editTextLoginPassword.setText("");
-        mBinding.includeLoginEmail.layoutLoginEmail.setVisibility(View.GONE);
-        mBinding.includeLoginPhone.layoutLoginPhone.setVisibility(View.GONE);
-        mBinding.includeIntro.layoutAppIntro.setVisibility(View.VISIBLE);
-        AnimationUtils.pushDownExit(getBaseContext(), mBinding.includeLoginEmail.layoutLoginEmail);
-        AnimationUtils.pushDownEnter(getBaseContext(), mBinding.includeIntro.layoutAppIntro);
-    }
-
-    private void hideLoginViaPhone() {
-        if (isOTPCounterIsRunning) {
-            mCountDownTimer.cancel();
-            isOTPCounterIsRunning = false;
-        }
-        hideSoftKeyboard();
-        mBinding.includeLoginPhone.editTextLoginPhone.setText("");
-        mBinding.includeLoginPhone.pinViewOTP.setValue("");
-        mBinding.includeLoginPhone.textViewOTPTimer.setText("");
-        mBinding.includeLoginPhone.layoutSubmitOTP.setVisibility(View.GONE);
-        mBinding.includeLoginPhone.layoutLoginPhone.setVisibility(View.GONE);
-        mBinding.includeIntro.layoutAppIntro.setVisibility(View.VISIBLE);
-        AnimationUtils.pushDownExit(getBaseContext(), mBinding.includeLoginEmail.layoutLoginEmail);
-        AnimationUtils.pushDownExit(getBaseContext(), mBinding.includeLoginPhone.layoutLoginPhone);
-        AnimationUtils.pushDownEnter(getBaseContext(), mBinding.includeIntro.layoutAppIntro);
-    }
-
-    private void showLoginViaEmail() {
-        mBinding.includeIntro.layoutAppIntro.setVisibility(View.GONE);
-        mBinding.includeLoginPhone.layoutLoginPhone.setVisibility(View.GONE);
-        mBinding.includeLoginEmail.layoutLoginEmail.setVisibility(View.VISIBLE);
-        AnimationUtils.pushUpExit(getBaseContext(), mBinding.includeIntro.layoutAppIntro);
-        AnimationUtils.pushUpEnter(getBaseContext(), mBinding.includeLoginEmail.layoutLoginEmail);
-        mBinding.includeLoginEmail.editTextLoginEmail.addTextChangedListener(mEmailWatcher);
-        mBinding.includeLoginEmail.editTextLoginPassword.addTextChangedListener(mPasswordWatcher);
-    }
-
-    private void showLoginViaPhone() {
-        mBinding.includeIntro.layoutAppIntro.setVisibility(View.GONE);
-        mBinding.includeLoginPhone.layoutLoginPhone.setVisibility(View.VISIBLE);
-        mBinding.includeLoginPhone.layoutRequestOTP.setVisibility(View.VISIBLE);
-        mBinding.includeLoginPhone.layoutSubmitOTP.setVisibility(View.GONE);
-        AnimationUtils.pushUpExit(getBaseContext(), mBinding.includeIntro.layoutAppIntro);
-        AnimationUtils.pushUpEnter(getBaseContext(), mBinding.includeLoginPhone.layoutLoginPhone);
-        focusPhoneNumberInput();
-
-    }
-
-    private void focusPhoneNumberInput() {
-        mBinding.includeLoginPhone.editTextLoginPhone.setFocusableInTouchMode(true);
-        mBinding.includeLoginPhone.editTextLoginPhone.setFocusable(true);
-        mBinding.includeLoginPhone.editTextLoginPhone.requestFocus();
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                KeyBoardUtil.showSoftKeyboard(mBinding.includeLoginPhone.editTextLoginPhone, getBaseContext());
-
-            }
-        }, 800);
-    }
-
+    @SuppressLint("CheckResult")
     private void unSubscribeFCM() {
         if (GeneralUtils.isNetworkAvailable(LoginActivity.this)) {
             Observable.create(new ObservableOnSubscribe<Object>() {
@@ -362,15 +274,41 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+
     private void requestAndroidPermission() {
-        if (Build.VERSION.SDK_INT < 23) {
-        } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkAndRequestPermission();
         }
     }
 
+
+    /*Listen or catch the respective events*/
+    private void listenRxEvent() {
+        Disposable subscription = mRxBus.toFlowable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Object>() {
+                    @SuppressLint("CheckResult")
+                    @Override
+                    public void accept(final Object event) throws Exception {
+                        if (event instanceof AlreadyLoggedInEvent) {
+                            mIsAlreadyLoggedIn = ((AlreadyLoggedInEvent) event).isAlreadyLoggedIn();
+                            hideSoftKeyboard();
+                            showProgress(true);
+                            attemptLogin(mBinding.getRoot(), mIsAlreadyLoggedIn);
+                        } else if (event instanceof PasswordChangeEvent) {
+                            mBinding.includeLoginEmail.editTextLoginPassword.setText("");
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
+                });
+    }
+
     /**
-     * Handle exception and send log file to `stered mail ids
+     * Handle exception and send log file to registered mail ids
      */
     private void handleException() {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -386,7 +324,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
                 }
                 if (t != null && t.getId() == Looper.getMainLooper().getThread().getId()) {
-                    restartApp(LoginActivity.this);
+                    //restartApp(LoginActivity.this);
                 }
             }
         });
@@ -452,18 +390,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         notifyMgr.notify(NotificationUtil.BUG_REPORT, builder.build());
 
 
-//                if (Looper.getMainLooper().isCurrentThread()) {
-//
-//                    Intent intent = LoginActivity.startIntentLoginActivity(getBaseContext());
-//                    startActivity(intent);
-//                    finishAffinity();
-//                    int pendingIntentId = 123456;
-//                    PendingIntent mPendingIntent = PendingIntent.getActivity(LoginActivity.this, pendingIntentId, intent,
-//                            PendingIntent.FLAG_CANCEL_CURRENT);
-//                    AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-//                    System.exit(0);
-//                }
     }
 
     @SuppressLint("CheckResult")
@@ -475,22 +401,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 final Intent intent = getIntent();
                 if (intent != null && !TextUtils.isEmpty(intent.getAction())) {
-                    if (mAction.equals(Intent.ACTION_MAIN) || mAction.equals(ACTION_LEARNING_NETWORK) || mAction.equals(ACTION_NOTIFICATION) || mAction.equals(ACTION_LN_SHARE)) {
-                        Log.e("in", "actionMain setDef");
+                    switch (mAction) {
+                        case Intent.ACTION_MAIN:
+                        case ACTION_LEARNING_NETWORK:
+                        case ACTION_NOTIFICATION:
+                        case ACTION_LN_SHARE:
+                            Log.e("in", "actionMain setDef");
 
-                        Log.e("in", "actionMain showIntro");
+                            Log.e("in", "actionMain showIntro");
 
-                    } else if (mAction.equals(ACTION_LOGOUT)) {
-                        unSubscribeFCM();
-                        logoutAction();
-                    } else if (mAction.equals(ACTION_UNAUTHORIZED)) {
-                        unSubscribeFCM();
-                        unauthorizedAction();
+                            break;
+                        case ACTION_LOGOUT:
+                            unSubscribeFCM();
+                            logoutAction();
+                            break;
+                        case ACTION_UNAUTHORIZED:
+                            unSubscribeFCM();
+                            unauthorizedAction();
+                            break;
+                        case ACTION_USER_ARCHIVED:
+                            unSubscribeFCM();
+                            unauthorizedAction();
+                            break;
                     }
-//                    else if (mAction.equals(ACTION_USER_ARCHIVED)) {
-//                        unSubscribeFCM();
-//                        unauthorizedAction();
-//                    }
+
                 } else if (AppPrefs.isLoggedIn(LoginActivity.this)) {
                     actionOfflineLogin();
                 }
@@ -503,7 +437,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int version = PrefManager.getUpdatedToVersion(this);
 
         if (version < 147) {
-            actionVersionLessThan147();
             PrefManager.setUpdatedToVersion(this, BuildConfig.VERSION_CODE);
             version = 147;
         }
@@ -511,78 +444,47 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     }
 
-    private void actionVersionLessThan41() {
-        try {
-            mDatabaseQueryHelper.reIndexViewFromDatabaseNotifications(mDatabaseQueryHelper.VIEW_NAME_EVENT_LIST_BY_CREATION_TIME);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void actionVersionLessThan147() {
-        try {
-            mJobModel.updateSubjectIcons(LoginActivity.this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void deletePreviousPeriods() {
-        mPeriodicEventsModel.removeAll();
-    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        //smsVerifyCatcher.onStart();
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //showSplash();
-
-    }
-
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //smsVerifyCatcher.onStop();
+//        if (mSubscription != null) {
+//            mSubscription.dispose();
+//        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+//        if (mSubscription != null) {
+//            mSubscription.dispose();
+//        }
     }
 
     private void logoutAction() {
         SyncServiceHelper.stopSyncService(LoginActivity.this);
-//        removePeriods();
-//        AppPrefs.setUserId("", this);
-//        AppPrefs.setUserName("", this);
-//        AppPrefs.setUserPassword("", this);
-//        AppPrefs.setLoggedIn(false, this);
         clearPreferences(LoginActivity.this);
         mAppUserModel.changeToGuestUser();
-        mAppUserModel.setApplicationUser(new UserProfile());
+        // mAppUserModel.setApplicationUser(new UserProfile());
         //clear notifications
         NotificationManagerCompat.from(LoginActivity.this).cancelAll();
     }
 
-    private void removePeriods() {
-        mPeriodicEventsModel.removeAll();
-    }
-
     private void unauthorizedAction() {
         SyncServiceHelper.stopSyncService(this);
-        clearPreferences(LoginActivity.this);
+        //clearPreferences(LoginActivity.this);
         mAppUserModel.changeToGuestUser();
-        mAppUserModel.setApplicationUser(new UserProfile());
+        //mAppUserModel.setApplicationUser(new UserProfile());
         //clear notifications
         NotificationManagerCompat.from(this).cancelAll();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initializeUiAndClickListeners() {
         if (getEmailOrPhoneFromSharedPref() != null && !getEmailOrPhoneFromSharedPref().isEmpty()) {
             ArrayList<String> arrayList = new ArrayList<>();
@@ -602,44 +504,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        mBinding.includeLoginPhone.buttonBack.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-//        mBinding.includeIntro.imageButtonLoginFacebook.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent mIntent = new Intent(LoginActivity.this, FacebookConnectActivity.class);
-//                startActivity(mIntent);
-//            }
-//        });
-//
-//        mBinding.includeIntro.imageButtonLoginGooglePlus.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent mIntent = new Intent(LoginActivity.this, GoogleConnectActivity.class);
-//                startActivity(mIntent);
-//            }
-//        });
-
-        mBinding.includeIntro.buttonIntroLoginViaEmail.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showLoginViaEmail();
-
-            }
-        });
-
-        mBinding.includeIntro.buttonIntroLoginViaPhone.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showLoginViaPhone();
-
-            }
-        });
 
         mBinding.includeLoginEmail.layoutLoginEmail.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -649,95 +513,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        mBinding.includeLoginPhone.layoutLoginPhone.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                hideSoftKeyboard();
-                return false;
-            }
-        });
-
-
-//        mBinding.includeLoginEmail.editTextLoginPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-//                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-//                    attemptLogin(textView);
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-
 
         mBinding.includeLoginEmail.buttonLogin.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard();
-                attemptLogin(view);
-
-            }
-        });
-
-        mBinding.includeLoginPhone.editTextLoginPhone.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (mBinding.includeLoginPhone.editTextLoginPhone.getText().toString().trim().length() == 10) {
-                    mBinding.includeLoginPhone.buttonRequestOTP.setEnabled(true);
-                    mBinding.includeLoginPhone.buttonRequestOTP.setClickable(true);
-                    mBinding.includeLoginPhone.inputLayoutLoginPhone.setHint("");
-                    hideSoftKeyboard();
-                } else {
-                    mBinding.includeLoginPhone.buttonRequestOTP.setEnabled(false);
-                    mBinding.includeLoginPhone.buttonRequestOTP.setClickable(false);
-                    mBinding.includeLoginPhone.inputLayoutLoginPhone.setHint("Enter 10 digit mobile number");
-
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        mBinding.includeLoginPhone.buttonRequestOTP.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mBinding.includeLoginPhone.pinViewOTP.setValue("");
-                mBinding.includeLoginPhone.pinViewOTP.setEnabled(true);
-                mBinding.includeLoginPhone.pinViewOTP.setClickable(true);
-                mBinding.includeLoginPhone.pinViewOTP.setFocusable(true);
-                mBinding.includeLoginPhone.pinViewOTP.setFocusableInTouchMode(true);
-                performOTPRequest(view, mBinding.includeLoginPhone.editTextLoginPhone.getText().toString().trim());
-
-            }
-        });
-
-        mBinding.includeLoginPhone.buttonSubmitOTP.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!TextUtils.isEmpty(phoneNumberOTP)) {
-                    try {
-
-                        performOnlineLogin(view, phoneNumberOTP, mBinding.includeLoginPhone.pinViewOTP.getValue().toString().trim(), true);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-        });
-
-        mBinding.includeLoginPhone.textViewOTPTimer.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideOTPSubmissionLayout();
+                attemptLogin(view, mIsAlreadyLoggedIn);
 
             }
         });
@@ -750,208 +531,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        mBinding.includeIntro.buttonIntroCreateAccount.setOnClickListener(new OnClickListener() {
+
+        mBinding.includeLoginEmail.buttonLoginForgetPassword.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view) {
-                signUp();
+            public void onClick(View v) {
+                if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
+                    startActivity(GeneratePasswordActivity.getStartIntent(getBaseContext()));
+                } else {
+                    SnackBarUtils.showNoInternetSnackBar(getBaseContext(), v);
+                }
             }
         });
 
-        mEmailWatcher = new TextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (mBinding.includeLoginEmail.editTextLoginEmail.getText().toString().trim().isEmpty()) {
-                    mBinding.includeLoginEmail.inputLayoutLoginEmail.setError(getString(R.string.error_field_email_phone));
-                    mBinding.includeLoginEmail.inputLayoutLoginEmail.setErrorEnabled(true);
-                } else if (!isEmailValid(mBinding.includeLoginEmail.editTextLoginEmail.getText().toString().trim())) {
-                    mBinding.includeLoginEmail.inputLayoutLoginEmail.setError(getString(R.string.error_invalid_email));
-                } else {
-                    mBinding.includeLoginEmail.inputLayoutLoginEmail.setErrorEnabled(false);
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-        };
-
-        mPasswordWatcher = new TextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (mBinding.includeLoginEmail.editTextLoginPassword.getText().toString().trim().isEmpty()) {
-                    mBinding.includeLoginEmail.inputLayoutLoginPassword.setError(getString(R.string.error_field_password));
-                    mBinding.includeLoginEmail.inputLayoutLoginPassword.setErrorEnabled(true);
-                } else if (!isPasswordValid(mBinding.includeLoginEmail.editTextLoginPassword.getText().toString().trim())) {
-                    mBinding.includeLoginEmail.inputLayoutLoginPassword.setError(getString(R.string.error_invalid_password));
-                } else {
-                    mBinding.includeLoginEmail.inputLayoutLoginPassword.setErrorEnabled(false);
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-        };
-
-    }
-
-    /**
-     * Parse verification code
-     *
-     * @param message sms message
-     * @return only six numbers from massage string
-     */
-    private String parseCode(String message) {
-        Pattern p = Pattern.compile("\\b\\d{6}\\b");
-        Matcher m = p.matcher(message);
-        String code = "";
-        while (m.find()) {
-            code = m.group(0);
-        }
-        return code;
-    }
-
-    private void performOTPRequest(final View view, String mobileNo) {
-
-        if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-            mBinding.includeLoginPhone.pinViewOTP.setValue("");
-            mBinding.includeLoginPhone.textViewOTPTimer.setText("");
-            if (mCountDownTimer != null && !isOTPCounterIsRunning) {
-                mCountDownTimer.cancel();
-            }
-            mBinding.includeLoginPhone.containerPhoneLogin.setVisibility(View.GONE);
-            mBinding.includeLoginPhone.layoutOTPProgress.setVisibility(View.VISIBLE);
-            RequestOTP requestOTP = new RequestOTP();
-            requestOTP.setCode(null);
-            requestOTP.setMobile("+91" + mobileNo);
-            final Call<RequestOTPResponse> appUserCall = mNetworkModel.requestOTP(requestOTP);
-
-            Observable.create(new ObservableOnSubscribe<RequestOTPResponse>() {
-                @Override
-                public void subscribe(ObservableEmitter<RequestOTPResponse> subscriber) {
-
-                    try {
-                        Response<RequestOTPResponse> response = appUserCall.execute();
-                        if (response != null && response.isSuccessful()) {
-                            com.couchbase.lite.util.Log.e("OTP", "successful");
-                            RequestOTPResponse requestOTPResponse = response.body();
-                            if (!TextUtils.isEmpty(requestOTPResponse.getPhoneNumber())) {
-                                subscriber.onNext(requestOTPResponse);
-                            } else if (!TextUtils.isEmpty(requestOTPResponse.getOnError())) {
-                                subscriber.onError(new Throwable(requestOTPResponse.getOnError()));
-                            }
-
-                        } else {
-                            Log.e("OTP", "api failed to connect" + response.message());
-                            subscriber.onError(new Throwable("Failed to connect to server"));
-                        }
-                        subscriber.onComplete();
-                    } catch (SocketTimeoutException t) {
-                        subscriber.onError(new Throwable("OTP request timeout"));
-                        subscriber.onComplete();
-                        t.printStackTrace();
-                        Log.e("OTP", "request timeout" + t.toString());
-                    } catch (Exception t) {
-                        subscriber.onComplete();
-                        t.printStackTrace();
-                        Log.e("OTP", "err getting OTP" + t.toString());
-                    }
-
-                }
-            }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.computation())
-                    .subscribe(new Consumer<RequestOTPResponse>() {
-                        @Override
-                        public void accept(RequestOTPResponse requestOTPResponse) {
-
-                            showOTPSubmissionLayout(requestOTPResponse.getPhoneNumber());
-                            phoneNumberOTP = requestOTPResponse.getPhoneNumber();
-                            //startReceivingOTPCodeFromSMS(view,requestOTPResponse);
-
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable t) {
-                            mBinding.includeLoginPhone.layoutOTPProgress.setVisibility(View.GONE);
-                            mBinding.includeLoginPhone.containerPhoneLogin.setVisibility(View.VISIBLE);
-                            Snackbar.make(view, t.getMessage(), Snackbar.LENGTH_LONG).show();
-                            t.printStackTrace();
-
-                        }
-                    }, new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            mBinding.includeLoginPhone.layoutOTPProgress.setVisibility(View.GONE);
-                            mBinding.includeLoginPhone.containerPhoneLogin.setVisibility(View.VISIBLE);
-
-                        }
-                    });
-        } else {
-            Snackbar.make(view, getString(R.string.connect_internet), Snackbar.LENGTH_LONG).show();
-        }
-
-    }
-
-    private void startReceivingOTPCodeFromSMS(final View view, final RequestOTPResponse requestOTPResponse) {
-
-    }
-
-    private void hideOTPSubmissionLayout() {
-        if (mBinding.includeLoginPhone.textViewOTPTimer.getText().toString().trim().equals(getString(R.string.label_request_otp_again))) {
-            mBinding.includeLoginPhone.layoutSubmitOTP.setVisibility(View.GONE);
-            mBinding.includeLoginPhone.layoutRequestOTP.setVisibility(View.VISIBLE);
-            mBinding.includeLoginPhone.textViewOTPTimer.setText("");
-            KeyBoardUtil.hideSoftKeyboard(mBinding.includeLoginPhone.pinViewOTP, getBaseContext());
-            focusPhoneNumberInput();
-        }
-    }
-
-    private void showOTPSubmissionLayout(String phoneNumber) {
-        KeyBoardUtil.showSoftKeyboard(mBinding.includeLoginPhone.pinViewOTP, getBaseContext());
-        mBinding.includeLoginPhone.layoutRequestOTP.setVisibility(View.GONE);
-        mBinding.includeLoginPhone.containerPhoneLogin.setVisibility(View.GONE);
-        mBinding.includeLoginPhone.layoutSubmitOTP.setVisibility(View.VISIBLE);
-        mBinding.includeLoginPhone.textViewOTPTimer.setVisibility(View.VISIBLE);
-        mBinding.includeLoginPhone.textViewOTPText.setText(getString(R.string.label_otp_text)
-                + " " + phoneNumber);
-
-        mCountDownTimer = new CountDownTimer(180000, 1000) { // adjust the milli seconds here
-
-            public void onTick(long millis) {
-                isOTPCounterIsRunning = true;
-                long seconds = (millis / 1000) % 60;
-                String strSeconds = "";
-                if (seconds <= 9) {
-                    strSeconds = "0" + String.valueOf(seconds);
-                } else {
-                    strSeconds = String.valueOf(seconds);
-                }
-                mBinding.includeLoginPhone.textViewOTPTimer.setText("0" + String.valueOf((millis / 1000) / 60) + ":" + strSeconds);
-            }
-
-            public void onFinish() {
-                isOTPCounterIsRunning = false;
-                mBinding.includeLoginPhone.textViewOTPText.setText(getString(R.string.label_otp_not_received));
-                mBinding.includeLoginPhone.textViewOTPTimer.setText(getString(R.string.label_request_otp_again));
-                mBinding.includeLoginPhone.pinViewOTP.setValue("");
-            }
-
-        }.start();
     }
 
     private void signUp() {
@@ -960,7 +551,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         overridePendingTransition(R.anim.push_up_in, R.anim.push_up_out);
     }
 
-    private boolean checkAndRequestPermission() {
+    private void checkAndRequestPermission() {
         int permissionCAMERA = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         int storagePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         int receiveSMSPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS);
@@ -982,10 +573,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (!listPermissionsNeeded.isEmpty()) {
             ActivityCompat.requestPermissions(this,
                     listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MY_PERMISSIONS_REQUEST);
-            return false;
         }
 
-        return true;
     }
 
     /**
@@ -1006,23 +595,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-//    /**
-//     * need for Android 6 real time permissions
-//     */
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        smsVerifyCatcher.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//    }
-
     /**
      * Attempts to sign in or register the account specified by the refreshToken form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual refreshToken attempt is made.
      *
      * @param view
+     * @param isAlreadyLoggedIn
      */
-    private void attemptLogin(final View view) {
+    private void attemptLogin(final View view, boolean isAlreadyLoggedIn) {
 
         // Reset errors.
         mBinding.includeLoginEmail.inputLayoutLoginEmail.setErrorEnabled(false);
@@ -1039,17 +620,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         View focusView = null;
 
 
-        // Check for a valid email address.
+        /*Check for a valid email address and enrollment number.*/
         if (TextUtils.isEmpty(email)) {
-            mBinding.includeLoginEmail.inputLayoutLoginEmail.setError(getString(R.string.error_field_email_phone));
-            focusView = mBinding.includeLoginEmail.editTextLoginEmail;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mBinding.includeLoginEmail.inputLayoutLoginEmail.setError(getString(R.string.error_invalid_email));
+            mBinding.includeLoginEmail.inputLayoutLoginEmail.setError(getString(R.string.error_field_enrollment_number));
             focusView = mBinding.includeLoginEmail.editTextLoginEmail;
             cancel = true;
         }
-        // Check for a valid password, if the user entered one.
+
+
+        /*Check for a valid password, if the user entered one.*/
         else if (TextUtils.isEmpty(password)) {
             mBinding.includeLoginEmail.inputLayoutLoginPassword.setError(getString(R.string.error_field_password));
             focusView = mBinding.includeLoginEmail.editTextLoginPassword;
@@ -1070,7 +649,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             hideSoftKeyboard();
 
 
-            performLogin(view, email, password, false);
+            performLogin(view, email, password, isAlreadyLoggedIn);
         }
 
 
@@ -1083,11 +662,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * @return
      */
     private boolean isEmailValid(String email) {
-//        if (email.contains("@") && email.contains(".")) {
-//            return true;
-//        } else if (email.length() == 10 && TextUtils.isDigitsOnly(email)) {
-//            return true;
-//        }
+        if (email.contains("@") && email.contains(".")) {
+            return true;
+        } else if (email.length() == 10 && TextUtils.isDigitsOnly(email)) {
+            return true;
+        }
         return true;
     }
 
@@ -1106,45 +685,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Shows the progress UI and hides the refreshToken form.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show, final boolean isOTPLogin) {
+    private void showProgress(final boolean show) {
 
 
         runOnUiThread(new Runnable() {
+            @SuppressLint("ObsoleteSdkInt")
             @Override
             public void run() {
-                if (isOTPLogin) {
-                    mBinding.includeLoginPhone.layoutLoginPhone.setVisibility(View.VISIBLE);
-                    mBinding.includeLoginProgress.layoutLoginProgress.setVisibility(View.GONE);
+
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+
+                    mBinding.includeLoginEmail.containerLogin.setVisibility(show ? View.GONE : View.VISIBLE);
+                    mBinding.includeLoginProgress.layoutLoginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+
                 } else {
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-                        //                       int shortAnimTime = getResources().getInteger(android.R.integer.config_longAnimTime);
+                    mBinding.includeLoginProgress.layoutLoginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+                    mBinding.includeLoginEmail.containerLogin.setVisibility(show ? View.GONE : View.VISIBLE);
 
-                        mBinding.includeLoginEmail.containerLogin.setVisibility(show ? View.GONE : View.VISIBLE);
-//                        mBinding.includeLoginEmail.containerLogin.animate().setDuration(shortAnimTime).alpha(
-//                                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-//                            @Override
-//                            public void onAnimationEnd(Animator animation) {
-//                                mBinding.includeLoginEmail.containerLogin.setVisibility(show ? View.GONE : View.VISIBLE);
-//                            }
-//                        });
-
-                        mBinding.includeLoginProgress.layoutLoginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-//                        mBinding.includeLoginProgress.layoutLoginProgress.animate().setDuration(shortAnimTime).alpha(
-//                                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-//                            @Override
-//                            public void onAnimationEnd(Animator animation) {
-//                                mBinding.includeLoginProgress.layoutLoginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-//                            }
-//                        });
-
-
-                    } else {
-
-                        mBinding.includeLoginProgress.layoutLoginProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-                        mBinding.includeLoginEmail.containerLogin.setVisibility(show ? View.GONE : View.VISIBLE);
-
-                    }
                 }
 
 
@@ -1204,29 +763,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         inputMethodManager.showSoftInput(view, 0);
     }
 
-    private void performLogin(final View view, final String email, final String password, final boolean isFromOTP) {
-        showProgress(true, false);
+    /*Perform user login from initially*/
+    @SuppressLint("CheckResult")
+    private void performLogin(final View view, final String email, final String password, final boolean isAlreadyLoggedIn) {
+        showProgress(true);
 
-//        AppPrefs.setUserName(email, LoginActivity.this);
-//        AppPrefs.setUserPassword(password, LoginActivity.this);
-
-        //Check if user is exist in local database
         Observable.just(LoginActivity.this).subscribeOn(Schedulers.io()).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws IOException {
-                //First time user profile not available so refreshToken online
+
                 if (GeneralUtils.isNetworkAvailable(LoginActivity.this)) {
-                    performOnlineLogin(view, email, password, isFromOTP);
+                    performOnlineLogin(view, email, password, isAlreadyLoggedIn);
                 } else {
                     Snackbar.make(view, getString(R.string.connect_internet), Snackbar.LENGTH_LONG).show();
-                    showProgress(false, false);
+                    showProgress(false);
                 }
             }
         }, new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
                 throwable.printStackTrace();
-                showProgress(false, false);
+                showProgress(false);
             }
         });
     }
@@ -1235,7 +792,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         final String userId = AppPrefs.getUserId(this);
         mAppUserModel.changeToUserDatabase(userId);
         copyUserProfileFromGuestDB(userId);
-//            setUpUserProfileForApplication(appUser);
+        // refreshDashboardData(false);
+
         if (mAction != null && mAction.equals(ACTION_LEARNING_NETWORK)) {
             startHomeActivityForLearningNetwork();
             Log.e("in", "actionMain startLN");
@@ -1285,40 +843,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    /*Set refreshToken user credentials for future use*/
-//    public void setUpUserProfileForApplication(AppUser user) {
-//        user.setUserType(getUserType(user.getUserInfo()));
-//        Injector.INSTANCE.getComponent().appUserModel().setApplicationUser(user);
-//    }
-
+    /*Login through server if network is available*/
     @SuppressLint("CheckResult")
-    void performOnlineLogin(final View view, final String email, final String password, final boolean isFromOTP) throws IOException {
-        //Here we unSubscribe fcm
-//        if (FirebaseInstanceId.getInstance()!=null){
-//            FirebaseInstanceId.getInstance().deleteInstanceId();
-//        }
+    void performOnlineLogin(final View view, final String email, final String password, final boolean isAlreadyLoggedIn) throws IOException {
+
         stopServicesAndCancelNotifications(LoginActivity.this);
-        //Login through server if network is available
+
         if (GeneralUtils.isNetworkAvailable(LoginActivity.this)) {
 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (isFromOTP) {
 
-                        mBinding.includeLoginPhone.layoutLoginPhone.setVisibility(View.GONE);
-                        mBinding.includeLoginPhone.layoutSubmitOTP.setVisibility(View.GONE);
-                        mBinding.includeLoginPhone.layoutRequestOTP.setVisibility(View.VISIBLE);
-                        mBinding.includeLoginProgress.layoutLoginProgress.setVisibility(View.VISIBLE);
-                    }
                     AnimationUtils.continueBlinkAnimation(mBinding.includeLoginProgress.textViewLoadingMessage);
-                    if (mLoggedInUser != null) {
-                        mBinding.includeLoginProgress.textViewLoadingMessage.setText(getString(R.string.message_login_wait));
-                    } else {
-                        mBinding.includeLoginProgress.textViewLoadingMessage.setText(getString(R.string.message_login_wait));
-                        //mBinding.includeLoginProgress.textViewLoadingMessage.setText(getString(R.string.message_login));
 
-                    }
+                    mBinding.includeLoginProgress.textViewLoadingMessage.setText(getString(R.string.message_login_wait));
 
                 }
             });
@@ -1327,67 +866,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 @Override
                 public void subscribe(ObservableEmitter<Object> subscriber) {
                     try {
-                        if (SyncServiceHelper.login(LoginActivity.this, email, password, isFromOTP)) {
-
-                            AppPrefs.setUserName(email, LoginActivity.this);
-                            AppPrefs.setUserPassword(password, LoginActivity.this);
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mBinding.includeLoginProgress.textViewLoadingMessage.setText(R.string.message_login);
-
-                                }
-                            });
-                            if (SyncServiceHelper.setCurrentUserProfile(LoginActivity.this)) {
-                                String userId = AppPrefs.getUserId(LoginActivity.this);
-                                final UserProfile userProfile = mAppUserModel.getUserProfileFromUidSyncGuestDB(userId);
-                                userProfile.setDocId("");
-                                if (!performLoginSuccessAction(mContext, userId, userProfile)) {
-                                    throw new Exception("Failed to load your Profile");
-                                }
-                                new SampleLandingPageData().insertSampleData();
-                                fetchAndSetRolePermissions(getBaseContext());
-                                SyncServiceHelper.updateProfile();
-                                fetchUserSubjectsFromInstituteGradeSection();
-
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mBinding.includeLoginProgress.textViewLoadingMessage.setText("Loading groups...");
-
-                                    }
-                                });
-                                try {
-                                    createDownloadJobForGroups(userProfile);
-                                } catch (Exception e) {
-                                    throw new SocketTimeoutException("Failed to load groups");
-                                }
-
-                                Set<String> editTextValues = getEmailOrPhoneFromSharedPref();
-                                editTextValues.add(mBinding.includeLoginEmail.editTextLoginEmail.getText().toString().trim());
-                                saveEmailOrPhoneToSharedPref(editTextValues);
-                                if (mAction != null && mAction.equals(ACTION_LN_SHARE)) {
-                                    startCreatePostActivity();
-                                } else {
-                                    startHomeActivity();
-                                }
-                                AppPrefs.setLoggedIn(true, LoginActivity.this);
-                            } else {
-                                throw new SocketTimeoutException("Failed to load your Profile");
-                            }
-
+                        if (isAlreadyLoggedIn) {
+                            setUserNameAndPasswordInPref(email, password);
+                            getCurrentUserProfile();
                         } else {
-                            if (email.contains("@") && email.contains(".")) {
-                                Snackbar.make(view, getString(R.string.incorrect_email_or_password), Snackbar.LENGTH_LONG).show();
-                            } else if (email.length() == 10 && TextUtils.isDigitsOnly(email)) {
-                                Snackbar.make(view, getString(R.string.incorrect_phone_number_or_password), Snackbar.LENGTH_LONG).show();
-
+                            if (SyncServiceHelper.login(LoginActivity.this, email, password)) {
+                                setUserNameAndPasswordInPref(email, password);
+                                getCurrentUserProfile();
                             } else {
-                                Snackbar.make(view, getString(R.string.incorrect_login_information), Snackbar.LENGTH_LONG).show();
+                                showProgress(false);
+                                shakeAlert();
                             }
-                            showProgress(false, isFromOTP);
-                            shakeAlert();
                         }
 
 
@@ -1395,7 +884,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         t.printStackTrace();
                         Log.e("LoginActivity", "err refreshToken" + t.toString());
                         Snackbar.make(view, t.getMessage(), Snackbar.LENGTH_LONG).show();
-                        showProgress(false, isFromOTP);
+                        showProgress(false);
                     }
                 }
             }).subscribeOn(Schedulers.computation()).subscribe(new Consumer<Object>() {
@@ -1409,26 +898,108 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     String message = t.getMessage();
                     Log.e("LoginActivity", "err refreshToken" + message);
                     Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
-                    showProgress(false, isFromOTP);
+                    showProgress(false);
                 }
             }, new Action() {
                 @Override
                 public void run() throws Exception {
-//                    showProgress(false, isFromOTP);
                 }
             });
 
 
         } else {
             Snackbar.make(view, getString(R.string.connect_internet), Snackbar.LENGTH_LONG).show();
-            if (isFromOTP) {
-                mBinding.includeLoginPhone.layoutLoginPhone.setVisibility(View.VISIBLE);
-                mBinding.includeLoginProgress.layoutLoginProgress.setVisibility(View.GONE);
-            } else {
-                showProgress(false, false);
-            }
+
+            showProgress(false);
+
         }
 
+    }
+
+    /*Fetch details of logged in user.*/
+    private void getCurrentUserProfile() throws Exception {
+        if (SyncServiceHelper.setCurrentUserProfile(LoginActivity.this)) {
+            String userId = AppPrefs.getUserId(LoginActivity.this);
+            final UserProfile userProfile = mAppUserModel.getUserProfileFromUidSyncGuestDB(userId);
+            userProfile.setDocId("");
+            if (!performLoginSuccessAction(mContext, userId, userProfile)) {
+                throw new Exception(getString(R.string.error_loading_profile));
+            }
+
+            /*Storing the permissions*/
+            boolean isPermissionSet = fetchAndSetRolePermissions(getBaseContext());
+
+            /*Checking if user isLearner to allow him to login into app, else exit the user.*/
+            if (isPermissionSet && !PermissionPrefsCommon.isLearner(getBaseContext())) {
+                throw new Exception(getString(R.string.error_invalid_user));
+            }
+
+            /*To update UserProfile object stored  locally.*/
+            SyncServiceHelper.updateProfile();
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mBinding.includeLoginProgress.textViewLoadingMessage.setText(getString(R.string.message_loading_groups));
+
+                }
+            });
+
+            /*Starting download job to fetch and save user's group.*/
+            JobCreator.createNetworkGroupDownloadJob().execute();
+
+               /*If login successful, then saving logged in users
+              emails to shared preferences, and showing saved emails
+              when user tries to login next time*/
+            Set<String> editTextValues = getEmailOrPhoneFromSharedPref();
+            editTextValues.add(mBinding.includeLoginEmail.editTextLoginEmail.getText().toString().trim());
+            saveEmailOrPhoneToSharedPref(editTextValues);
+
+            //refreshDashboardData(false);
+
+            /*Make mIsAlreadyLoggedIn value false because user already logged in.*/
+            mIsAlreadyLoggedIn = false;
+
+            /*checking if user has changed password once,
+             *if not then navigating the user to change password screen.
+             *if isResetInitialPassword value is false, then only perform this*/
+            if (!userProfile.isResetInitialPassword()) {
+                startChangePasswordActivity();
+                showProgress(false);
+            }
+
+            /*Handling intent for opening post activity*/
+            else if (mAction != null && mAction.equals(ACTION_LN_SHARE)) {
+                startCreatePostActivity();
+            } else {
+                /*Handling intent for home activity*/
+                startHomeActivity();
+                AppPrefs.setLoggedIn(true, LoginActivity.this);
+            }
+            /*register device FCM token to lil server*/
+            FCMToken.sendRegistrationToServer(getBaseContext(), FirebaseInstanceId.getInstance().getToken());
+        } else {
+            throw new SocketTimeoutException(getString(R.string.error_loading_profile));
+        }
+    }
+
+
+    /*Save credentials to preference which are entered in respective fields*/
+    private void setUserNameAndPasswordInPref(String email, String password) {
+        AppPrefs.setUserName(email, LoginActivity.this);
+        AppPrefs.setUserPassword(password, LoginActivity.this);
+    }
+
+
+    private void startChangePasswordActivity() {
+
+        startActivity(PasswordChangeActivity.getStartIntent(getBaseContext(), mAppUserModel.getObjectId(), getString(R.string.messageChangePasswordLogout), getString(R.string.labelChangePassword), FROM_LOGIN));
+
+    }
+
+    /*To refresh dashboard data when boolean value is false*/
+    private void refreshDashboardData(boolean shouldRefresh) {
+        PreferenceSettingUtilClass.setDashboardDataFetch(shouldRefresh, LoginActivity.this);
     }
 
     private boolean fetchAndSetRolePermissions(Context context) throws IOException {
@@ -1436,7 +1007,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         Response<RolePermissions> response = call.execute();
         if (response.isSuccessful()) {
             RolePermissions permissions = response.body();
-            if (permissions != null && permissions.getPermissions() != null && permissions.getPermissions().length > 0) {
+            if (permissions != null && permissions.getPermissions() != null && permissions.getPermissions().length > 0 && response.body() != null) {
                 PermissionPrefs.setPermissions(response.body(), context);
                 return true;
             }
@@ -1456,29 +1027,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         SharedPreferences sharedPrefs = getSharedPreferences(EMAIL_PHONE_SHARED_PREFERENCE, 0);
         if (sharedPrefs.getStringSet(SET_LOGGED_IN_EMAIL_PHONE, null) != null && !sharedPrefs.getStringSet(SET_LOGGED_IN_EMAIL_PHONE, null).isEmpty()) {
-            Set<String> s = new HashSet<String>(sharedPrefs.getStringSet(SET_LOGGED_IN_EMAIL_PHONE, new HashSet<String>()));
-            return s;
+            return new HashSet<String>(sharedPrefs.getStringSet(SET_LOGGED_IN_EMAIL_PHONE, new HashSet<String>()));
         } else {
             return new HashSet<String>();
         }
 
-    }
-
-    private void fetchUserSubjectsFromInstituteGradeSection() throws IOException {
-        UserProfile userProfile = mAppUserModel.getApplicationUser();
-        if (userProfile != null
-                && userProfile.getAssociation() != null
-                && userProfile.getGrade() != null
-                && userProfile.getSection() != null
-                && !TextUtils.isEmpty(userProfile.getAssociation().getId())
-                && !TextUtils.isEmpty(userProfile.getGrade().getId())
-                && !TextUtils.isEmpty(userProfile.getSection().getId())) {
-            Call<StudentGradeMapping> arrayListCall = mNetworkModel.getSubjectFromInstituteGradeSection(userProfile.getAssociation().getId(), userProfile.getGrade().getId(), userProfile.getSection().getId());
-            Response<StudentGradeMapping> response = arrayListCall.execute();
-            if (response != null && response.isSuccessful()) {
-                PrefManagerStudentSubjectMapping.setSubjectList(response.body().getSubjects(), getBaseContext());
-            }
-        }
     }
 
     private void shakeAlert() {
@@ -1498,88 +1051,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
 
-    }
-
-    private void createDownloadJobForGroups(ArrayList<String> groupsIdsList) {
-
-        if (groupsIdsList != null && groupsIdsList.size() > 0) {
-            for (final String s : groupsIdsList) {
-                if (!TextUtils.isEmpty(s)) {
-                    JobCreator.createDownloadGroupJob(s).execute();
-//                    JobCreator.createTrackingRouteDownloadJob(s).execute();
-                }
-            }
-            for (final String s : groupsIdsList) {
-                if (!TextUtils.isEmpty(s)) {
-                    FirebaseMessaging.getInstance().subscribeToTopic(BuildConfig.SUBSCRIBE_FCM_PREFIX + s);
-                }
-            }
-        }
-    }
-
-    private void createDownloadJobForGroups(UserProfile userProfile) throws SocketTimeoutException {
-        HashSet<String> groupSet = new HashSet<String>();
-
-        for (GroupAbstract groupAbstract :
-                userProfile.getMemberGroups()) {
-            if (groupAbstract != null && !TextUtils.isEmpty(groupAbstract.getObjectId())) {
-                String groupId = groupAbstract.getObjectId();
-                if (!groupSet.contains(groupId)) {
-
-                    groupSet.add(groupId);
-                    JobCreator.createDownloadGroupJob(groupId).execute();
-                    Group group = mGroupModel.getGroupFromUidSync(groupId);
-                    if (group == null || TextUtils.isEmpty(group.getObjectId())) {
-                        throw new SocketTimeoutException("Failed to load groups");
-                    }
-                }
-            }
-
-
-        }
-
-        for (GroupAbstract groupAbstract :
-                userProfile.getModeratedGroups()) {
-            if (groupAbstract != null && !TextUtils.isEmpty(groupAbstract.getObjectId())) {
-                String groupId = groupAbstract.getObjectId();
-                if (!groupSet.contains(groupId)) {
-                    groupSet.add(groupId);
-                    JobCreator.createDownloadGroupJob(groupId).execute();
-                    Group group = mGroupModel.getGroupFromUidSync(groupId);
-                    if (group == null || TextUtils.isEmpty(group.getObjectId())) {
-                        throw new SocketTimeoutException("Failed to load groups");
-                    }
-                }
-
-
-            }
-        }
-
-
-        if (groupSet != null && groupSet.size() > 0) {
-            for (final String s : groupSet) {
-                if (!TextUtils.isEmpty(s)) {
-                    FirebaseMessaging.getInstance().subscribeToTopic(BuildConfig.SUBSCRIBE_FCM_PREFIX + s);
-                }
-            }
-        }
-    }
-
-    private ArrayList<String> fetchGroupsIdsList(UserProfile mLoggedInUserProfile) {
-        ArrayList<String> groupsIdsList = new ArrayList<>();
-        if (mLoggedInUserProfile.getModeratedGroups() != null) {
-
-            for (GroupAbstract groupAbstract : mLoggedInUserProfile.getModeratedGroups()) {
-                if (groupAbstract != null) groupsIdsList.add(groupAbstract.getObjectId());
-            }
-        }
-        if (mLoggedInUserProfile.getMemberGroups() != null) {
-            for (GroupAbstract groupAbstract : mLoggedInUserProfile.getMemberGroups()) {
-                if (groupAbstract != null) groupsIdsList.add(groupAbstract.getObjectId());
-            }
-        }
-
-        return groupsIdsList;
     }
 
     private boolean performLoginSuccessAction(Context context, String email, UserProfile userProfile) {
@@ -1614,6 +1085,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void startHomeActivity() {
 
         Intent intent = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
 
@@ -1650,18 +1122,37 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         finish();
     }
 
-    public static Intent getLogoutIntent(Context context) {
-        clearPreferences(context);
+    public static Intent getStartIntent(Context context, String action) {
         Intent intent = new Intent(context, LoginActivity.class);
-        intent.setAction(ACTION_LOGOUT);
+        intent.setAction(action);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 
+    public static Intent getLogoutIntent(Context context) {
+        clearPreferences(context);
+        stopServicesAndCancelNotifications(context);
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.setAction(ACTION_LOGOUT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        return intent;
+    }
+
     public static Intent getUnauthorizedIntent(Context context) {
+        clearPreferences(context);
         stopServicesAndCancelNotifications(context);
         Intent intent = new Intent(context, LoginActivity.class);
         intent.setAction(ACTION_UNAUTHORIZED);
+        return intent;
+    }
+
+
+    public static Intent getUserArchivedIntent(Context context) {
+        stopServicesAndCancelNotifications(context);
+        clearPreferences(context);
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.setAction(ACTION_USER_ARCHIVED);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 
@@ -1671,6 +1162,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         PreferenceSettingUtilClass.clearPrefs(context);
         PrefManager.clearPrefs(context);
         PrefManagerStudentSubjectMapping.clearPrefs(context);
+
+    }
+
+    /*Exit from app and back to launcher's home screen*/
+    private void getAppExitIntent() {
+        Intent close = new Intent(Intent.ACTION_MAIN);
+        close.addCategory(Intent.CATEGORY_HOME);
+        close.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(close);
+        finish();
+        System.exit(0);
 
     }
 
@@ -1693,85 +1195,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
     }
-
-    private void setUpIntroViewPager() {
-        mBinding.includeIntro.layoutAppIntro.setVisibility(View.VISIBLE);
-        mBinding.includeLoginEmail.layoutLoginEmail.setVisibility(View.GONE);
-        addBottomDots(0);
-        changeStatusBarColor();
-//        final AppIntroViewPagerAdapter appIntroViewPagerAdapter = new AppIntroViewPagerAdapter(this, layouts);
-//        mBinding.includeIntro.viewPagerIntro.setAdapter(appIntroViewPagerAdapter);
-//        mBinding.includeIntro.viewPagerIntro.addOnPageChangeListener(viewPagerPageChangeListener);
-
-        final Handler handler = new Handler();
-        final Runnable update = new Runnable() {
-            public void run() {
-                mPageCount = mBinding.includeIntro.viewPagerIntro.getCurrentItem();
-                if (mPageCount == layouts.length - 1) {
-                    mPageCount = 0;
-                } else {
-                    mPageCount++;
-                }
-                mBinding.includeIntro.viewPagerIntro.setCurrentItem(mPageCount, true);
-            }
-        };
-
-
-        new Timer().schedule(new TimerTask() {
-
-            @Override
-            public void run() {
-                handler.post(update);
-            }
-        }, 500, 6000);
-    }
-
-    private void addBottomDots(int currentPage) {
-        TextView[] dots = new TextView[layouts.length];
-
-        int[] colorsActive = getResources().getIntArray(R.array.array_dot_active);
-        int[] colorsInactive = getResources().getIntArray(R.array.array_dot_inactive);
-
-        mBinding.includeIntro.layoutDots.removeAllViews();
-        for (int i = 0; i < dots.length; i++) {
-            dots[i] = new TextView(this);
-            dots[i].setText(Html.fromHtml("&#8226;"));
-            dots[i].setTextSize(35);
-            dots[i].setTextColor(colorsInactive[currentPage]);
-            mBinding.includeIntro.layoutDots.addView(dots[i]);
-        }
-
-        if (dots.length > 0) {
-            dots[currentPage].setTextColor(colorsActive[currentPage]);
-            //binding.btnNext.setTextColor(colorsActive[currentPage]);
-        }
-    }
-
-    ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
-
-        @Override
-        public void onPageSelected(int position) {
-            addBottomDots(position);
-            // changing the next button text 'NEXT' / 'GOT IT'
-            if (position == layouts.length - 1) {
-                // last page. make button text to GOT IT
-                //binding.btnNext.setText(getString(R.string.start));
-                mBinding.includeIntro.buttonSkipIntro.setVisibility(View.GONE);
-            } else {
-                // still pages are left
-                // binding.btnNext.setText(getString(R.string.next));
-                mBinding.includeIntro.buttonSkipIntro.setVisibility(View.GONE);
-            }
-        }
-
-        @Override
-        public void onPageScrolled(int arg0, float arg1, int arg2) {
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int arg0) {
-        }
-    };
 
     private void changeStatusBarColor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

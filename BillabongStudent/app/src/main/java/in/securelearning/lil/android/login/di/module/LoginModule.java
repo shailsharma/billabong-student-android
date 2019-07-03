@@ -2,10 +2,10 @@ package in.securelearning.lil.android.login.di.module;
 
 import dagger.Module;
 import dagger.Provides;
-import in.securelearning.lil.android.base.dataobjects.CorporateSettings;
 import in.securelearning.lil.android.base.di.scope.ActivityScope;
 import in.securelearning.lil.android.base.model.CorporateSettingsModel;
 import in.securelearning.lil.android.base.model.GroupModel;
+import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.syncadapter.model.JobModel;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 
@@ -37,6 +37,12 @@ public class LoginModule {
     @Provides
     public JobModel jobModel() {
         return new JobModel();
+    }
+
+    @ActivityScope
+    @Provides
+    public HomeModel homeModel() {
+        return new HomeModel();
     }
 
 }

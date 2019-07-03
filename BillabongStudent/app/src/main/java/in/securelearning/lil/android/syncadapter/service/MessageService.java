@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.syncadapter.service;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
@@ -8,12 +9,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.base.constants.SyncStatus;
 import in.securelearning.lil.android.base.dataobjects.BlogComment;
 import in.securelearning.lil.android.base.dataobjects.CalendarEvent;
+import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.dataobjects.InternalNotification;
 import in.securelearning.lil.android.base.dataobjects.Notification;
 import in.securelearning.lil.android.base.dataobjects.PostData;
@@ -22,6 +25,7 @@ import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.job.upload.BaseUploadJob;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.InternalNotificationActionUtils;
 import io.reactivex.functions.Consumer;
 
@@ -42,6 +46,8 @@ public class MessageService extends BaseService {
     private static final String ACTION_DOWNLOAD_BLOG_COMMENTS = "in.securelearning.lil.android.syncadapter.service.action.DOWNLOAD_BLOG_COMMENTS";
     private static final String ACTION_SYNC_CALENDAR_EVENT = "in.securelearning.lil.android.syncadapter.service.action.SYNC_CALENDAR_EVENT";
     private static final String ACTION_FETCH_INTERNAL_NOTIFICATION = "in.securelearning.lil.android.syncadapter.service.action.FETCH_INTERNAL_NOTIFICATION";
+    private static final String ACTION_DOWNLOAD_POST_AND_RESPONSE_BULK = "in.securelearning.lil.android.syncadapter.service.action.ACTION_DOWNLOAD_POST_AND_RESPONSE_BULK";
+
     // TODO: Rename parameters
     private static final String EXTRA_OBJECT_TYPE = "in.securelearning.lil.android.syncadapter.service.extra.OBJECT_TYPE";
     private static final String EXTRA_OBJECT_ID = "in.securelearning.lil.android.syncadapter.service.extra.COURSE_ID";
@@ -83,6 +89,13 @@ public class MessageService extends BaseService {
         Intent intent = new Intent(context, MessageService.class);
         intent.setAction(ACTION_SYNC_POST_RESPONSE);
         intent.putExtra(EXTRA_OBJECT_ID, alias);
+        context.startService(intent);
+    }
+
+
+    public static void startActionDownloadPostAndResponseBulk(Context context) {
+        Intent intent = new Intent(context, MessageService.class);
+        intent.setAction(ACTION_DOWNLOAD_POST_AND_RESPONSE_BULK);
         context.startService(intent);
     }
 
@@ -155,7 +168,7 @@ public class MessageService extends BaseService {
 ////                    @Override
 ////                    public void accept(Object o) {
 ////                        onHandleIntent(intent);
-////                    }
+////                    }s
 ////                });
 //
 //        return value;
@@ -204,11 +217,13 @@ public class MessageService extends BaseService {
                     } else if (ACTION_FETCH_INTERNAL_NOTIFICATION.equals(action)) {
                         final String id = intent.getStringExtra(EXTRA_OBJECT_ID);
                         handleActionFetchInternalNotification(id);
+                    } else if (ACTION_DOWNLOAD_POST_AND_RESPONSE_BULK.equals(action)) {
+                        handleActionDownloadGroupNetworkDataBulk();
                     }
                 }
 
 //                    if (mFirstTime) {
-                    /*start sync process*/
+                /*start sync process*/
 //                        mFirstTime = false;
 //                    startSync();
 //                        mFirstTime = true;
@@ -231,6 +246,19 @@ public class MessageService extends BaseService {
 
     }
 
+
+    private void handleActionDownloadGroupNetworkDataBulk() {
+        ArrayList<Group> groups = mSyncServiceModel.fetchAllGroups();
+        for (Group group : groups) {
+            if (ConstantUtil.GROUP_TYPE_NETWORK.equals(group.getGroupType()) && !group.isNetworkDataDownloaded()) {
+                JobCreator.createDownloadGroupPostAndResponseJob(group.getObjectId()).execute();
+                group.setNetworkDataDownloaded(true);
+                mSyncServiceModel.updateGroup(group);
+            }
+        }
+
+    }
+
     private void handleActionFetchInternalNotification(String id) {
         InternalNotification internalNotification = mSyncServiceModel.retrieveNotifications(id, InternalNotification.class);
         internalNotification.setDocId(id);
@@ -245,38 +273,26 @@ public class MessageService extends BaseService {
         if (GeneralUtils.isNetworkAvailable(MessageService.this)) {
             if (internalNotification.getObjectAction() == (InternalNotificationActionUtils.ACTION_TYPE_NETWORK_UPLOAD)) {
                 if (internalNotification.getDataObjectType() == (InternalNotificationActionUtils.OBJECT_TYPE_POST)) {
-//                if (mSyncServiceModel.isDownloadAllowed()) {
                     PostData postData = mSyncServiceModel.retrieveLearningNetwork(internalNotification.getObjectDocId(), PostData.class);
                     JobCreator.createPostLearningNetworkPostDataJob(postData).execute();
                     PostData notificationPurgePostData = mSyncServiceModel.retrieveLearningNetwork(internalNotification.getObjectDocId(), PostData.class);
                     if (notificationPurgePostData.getSyncStatus().equals(SyncStatus.COMPLETE_SYNC.toString())) {
                         mSyncServiceModel.purgeInternalNotification(internalNotification.getDocId());
                     }
-//                } else {
-//                    showPendingUploadsNotification();
-//                }
                 } else if (internalNotification.getDataObjectType() == (InternalNotificationActionUtils.OBJECT_TYPE_POST_RESPONSE)) {
-//                if (mSyncServiceModel.isDownloadAllowed()) {
                     PostResponse postResponse = mSyncServiceModel.retrieveLearningNetwork(internalNotification.getObjectDocId(), PostResponse.class);
                     JobCreator.createPostResponseJob(postResponse).execute();
                     PostResponse notificationPurgePostResponse = mSyncServiceModel.retrieveLearningNetwork(internalNotification.getObjectDocId(), PostResponse.class);
                     if (notificationPurgePostResponse.getSyncStatus().equals(SyncStatus.COMPLETE_SYNC.toString())) {
                         mSyncServiceModel.purgeInternalNotification(internalNotification.getDocId());
                     }
-//                } else {
-//                    showPendingUploadsNotification();
-//                }
                 } else if (internalNotification.getDataObjectType() == (InternalNotificationActionUtils.OBJECT_TYPE_CALENDAR_EVENT)) {
-//                if (mSyncServiceModel.isDownloadAllowed()) {
                     CalendarEvent calendarEvent = mSyncServiceModel.retrieveLearningNetwork(internalNotification.getObjectDocId(), CalendarEvent.class);
                     JobCreator.createPostCalendarEventDataJob(calendarEvent).execute();
                     CalendarEvent notificationPurgeCalendarEvent = mSyncServiceModel.retrieveLearningNetwork(internalNotification.getObjectDocId(), CalendarEvent.class);
                     if (notificationPurgeCalendarEvent.getSyncStatus().equals(SyncStatus.COMPLETE_SYNC.toString())) {
                         mSyncServiceModel.purgeInternalNotification(internalNotification.getDocId());
                     }
-//                } else {
-//                    showPendingUploadsNotification();
-//                }
                 }
             }
         }
@@ -362,107 +378,9 @@ public class MessageService extends BaseService {
 
     private void handleActionSyncPosts() {
         handleActionSyncBroadcastNotification();
-
-//        if (BuildConfig.IS_LEARNING_NETWORK_ENABLED) {
-//            mSyncServiceModel.fetchPostDataListNotSync().subscribe(new Consumer<PostData>() {
-//                @Override
-//                public void accept(PostData postData) throws Exception {
-//
-////                Collections.sort(postDatas, new SortPostByCreatedTime.PostCreatedTimeSorter());
-////                for (PostData postData :
-////                        postDatas) {
-//                    if (postData.getSyncStatus().equals(SyncStatus.JSON_SYNC.getStatus())) {
-//                        try {
-//                            if (mSyncServiceModel.isDownloadAllowed()) {
-//
-//                                JobCreator.createPostDataValidationJob(postData).execute();
-//                            } else {
-//                                stopSelf();
-//                            }
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    } else if (postData.getSyncStatus().equals(SyncStatus.NOT_SYNC.getStatus())) {
-//                        try {
-//                            if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-//                                JobCreator.createPostLearningNetworkPostDataJob(postData).execute();
-//                            } else {
-//                                stopSelf();
-//                            }
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-////                }
-//                }
-//            });
-//
-//            mSyncServiceModel.fetchPostResponseListNotSync().subscribe(new Consumer<PostResponse>() {
-//                @Override
-//                public void accept(PostResponse postResponse) throws Exception {
-////                Collections.sort(postResponses, new SortPostResponseByDate.CreatedDateSorter());
-////                for (PostResponse postResponse :
-////                        postResponses) {
-//                    if (postResponse.getSyncStatus().equals(SyncStatus.JSON_SYNC.getStatus())) {
-//                        try {
-//                            if (mSyncServiceModel.isDownloadAllowed()) {
-//                                JobCreator.createPostResponseValidationJob(postResponse).execute();
-//                            } else {
-//                                stopSelf();
-//                            }
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    } else if (postResponse.getSyncStatus().equals(SyncStatus.NOT_SYNC.getStatus())) {
-//                        try {
-//                            if (mSyncServiceModel.isDownloadAllowed()) {
-//                                JobCreator.createPostResponseJob(postResponse).execute();
-//                            } else {
-//                                stopSelf();
-//                            }
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-////                    }
-//                    }
-//
-//                }
-//
-//
-//            });
-//        }
-//        if (BuildConfig.IS_CALENDAR_ENABLED) {
-//            mSyncServiceModel.fetchCalendarEventsListNotSync()
-//                    .subscribe(new Consumer<CalendarEvent>() {
-//                        @Override
-//                        public void accept(CalendarEvent calendarEvent) throws Exception {
-//                            if (calendarEvent.getSyncStatus().equalsIgnoreCase(SyncStatus.JSON_SYNC.getStatus())) {
-//                                try {
-//                                    if (mSyncServiceModel.isDownloadAllowed()) {
-//                                        JobCreator.createCalendarEventValidationJob(calendarEvent).execute();
-//                                    } else {
-//                                        stopSelf();
-//                                    }
-//                                } catch (Exception e) {
-//                                    e.printStackTrace();
-//                                }
-//                            } else if (calendarEvent.getSyncStatus().equals(SyncStatus.NOT_SYNC.getStatus())) {
-//                                try {
-//                                    if (mSyncServiceModel.isDownloadAllowed()) {
-//                                        JobCreator.createPostCalendarEventDataJob(calendarEvent).execute();
-//                                    } else {
-//                                        stopSelf();
-//                                    }
-//                                } catch (Exception e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        }
-//                    });
-//        }
-
     }
 
+    @SuppressLint("CheckResult")
     private void handleActionSyncBroadcastNotification() {
 
         if (BuildConfig.IS_LEARNING_NETWORK_ENABLED) {
@@ -470,12 +388,9 @@ public class MessageService extends BaseService {
                 @Override
                 public void accept(Notification notification) throws Exception {
                     try {
-//                        if (mSyncServiceModel.isDownloadAllowed()) {
                         if (GeneralUtils.isNetworkAvailable(MessageService.this))
-                            JobCreator.createDownloadPostDataJob(notification.getObjectInfo().getObjectId(), notification.getObjectId()).execute();
-//                        } else {
-//                            stopSelf();
-//                        }
+                            JobCreator.createDownloadPostDataJob(notification.getObjectInfo().getObjectId(), notification.getObjectId(), false).execute();
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -485,12 +400,8 @@ public class MessageService extends BaseService {
                 @Override
                 public void accept(Notification notification) throws Exception {
                     try {
-//                        if (mSyncServiceModel.isDownloadAllowed()) {
                         if (GeneralUtils.isNetworkAvailable(MessageService.this))
-                            JobCreator.createPostResponseDownloadJob(notification.getObjectInfo().getObjectId(), notification.getObjectId()).execute();
-//                        } else {
-//                            stopSelf();
-//                        }
+                            JobCreator.createPostResponseDownloadJob(notification.getObjectInfo().getObjectId(), notification.getObjectId(), false).execute();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -525,6 +436,7 @@ public class MessageService extends BaseService {
      * start upload and download process on their
      * individual background thread
      */
+    @SuppressLint("CheckResult")
     public void startSync() {
         try {
             mSyncServiceModel.fetchInternalNotificationList().subscribe(new Consumer<InternalNotification>() {

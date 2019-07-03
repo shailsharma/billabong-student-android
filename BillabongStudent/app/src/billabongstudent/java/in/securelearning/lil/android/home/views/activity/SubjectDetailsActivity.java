@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -20,7 +22,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -30,24 +31,26 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-import in.securelearning.lil.android.analytics.activity.TimeEffortDetailActivity;
+import in.securelearning.lil.android.analytics.views.activity.TimeEffortDetailActivity;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutSubjectDetailsBinding;
-import in.securelearning.lil.android.assignments.views.fragment.AssignmentFragmentStudentClassDetails;
 import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.events.FetchSubjectDetailEvent;
+import in.securelearning.lil.android.home.events.MindSparkNoUnitEvent;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
 import in.securelearning.lil.android.home.views.fragment.ChaptersFragment;
 import in.securelearning.lil.android.home.views.fragment.SubjectDetailHomeFragment;
+import in.securelearning.lil.android.home.views.fragment.SubjectHomeworkFragment;
 import in.securelearning.lil.android.learningnetwork.views.fragment.PostListFragment;
-import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapter;
+import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanGroupDetails;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubject;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectDetails;
-import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -67,13 +70,15 @@ public class SubjectDetailsActivity extends AppCompatActivity {
     LayoutSubjectDetailsBinding mBinding;
     private final static String SUBJECT_ID = "subjectId";
     private String mSubjectId;
+    private String mGradeName;
     private String mTopicId;
     private String mTopicName;
-    private String mThirdPartyTopicId;
+    private ArrayList<String> mThirdPartyTopicIds = new ArrayList<>();
     private String mSubjectName;
     private String mGroupId;
     private String mBannerUrl;
     private Disposable mDisposable;
+    private GradientDrawable mTabsGradientDrawable;
 
     @Inject
     FlavorHomeModel mFlavorHomeModel;
@@ -122,14 +127,24 @@ public class SubjectDetailsActivity extends AppCompatActivity {
                             setTopicContent(lessonPlanChapter);
                             mBinding.viewPager.setCurrentItem(0, true);
 
-//                            if (mSubjectName.contains("Math")) {
-//                                fetchThirdPartyMapping(mSubjectId, topicId);
-//                            } else {
-//                                setUpViewPager();
-//
-//                            }
-                            setUpViewPager();
+                            if (mSubjectName.contains("Math")) {
+                                fetchThirdPartyMapping(mSubjectId, topicId);
+                            } else {
+                                handleViewPagerRefresh();
+                            }
 
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
+                        }
+                    });
+                } else if (event instanceof MindSparkNoUnitEvent) {
+                    Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
+                        @Override
+                        public void run() throws Exception {
+                            mFlavorHomeModel.showAlertDialog(SubjectDetailsActivity.this, getString(R.string.mindSparkNoUnitMessageHome));
 
                         }
                     }, new Consumer<Throwable>() {
@@ -180,12 +195,14 @@ public class SubjectDetailsActivity extends AppCompatActivity {
                             setSubjectContent(lessonPlanSubjectDetails.getSubject());
                             setTopicContent(lessonPlanSubjectDetails.getTopic());
                             checkGroupExistence(lessonPlanSubjectDetails.getGroup());
-//                            if (mSubjectName.contains("Math")) {
-//                                fetchThirdPartyMapping(lessonPlanSubjectDetails.getSubject().getId(), lessonPlanSubjectDetails.getTopic().getId());
-//                            } else {
-//                                setUpViewPager();
-//                            }
-                            setUpViewPager();
+                            setGradeDetail(lessonPlanSubjectDetails.getGroup(), subjectId);
+
+                            /*TODO hard coded logic for subject check, remove when dynamically done*/
+                            if (mSubjectName.contains("Math")) {
+                                fetchThirdPartyMapping(lessonPlanSubjectDetails.getSubject().getId(), lessonPlanSubjectDetails.getTopic().getId());
+                            } else {
+                                handleViewPagerRefresh();
+                            }
 
 
                         }
@@ -214,30 +231,49 @@ public class SubjectDetailsActivity extends AppCompatActivity {
         mFlavorHomeModel.fetchThirdPartyMapping(subjectId, topicId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ThirdPartyMapping>() {
+                .subscribe(new Consumer<ArrayList<String>>() {
                     @Override
-                    public void accept(ThirdPartyMapping thirdPartyMapping) throws Exception {
+                    public void accept(ArrayList<String> thirdPartyMapping) throws Exception {
                         progressDialog.dismiss();
-                        if (thirdPartyMapping != null && !TextUtils.isEmpty(thirdPartyMapping.getMindSparkTopicId())) {
-                            mThirdPartyTopicId = thirdPartyMapping.getMindSparkTopicId();
-                            setUpViewPager();
+                        if (thirdPartyMapping != null && !thirdPartyMapping.isEmpty()) {
+                            mThirdPartyTopicIds = thirdPartyMapping;
                         } else {
-                            onBackPressed();
-                            Toast.makeText(getBaseContext(), getString(R.string.error_something_went_wrong), Toast.LENGTH_SHORT).show();
+                            mThirdPartyTopicIds = new ArrayList<>();
                         }
+                        handleViewPagerRefresh();
+
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         throwable.printStackTrace();
                         progressDialog.dismiss();
-                        setUpViewPager();
+                        handleViewPagerRefresh();
+
                     }
                 });
     }
 
+    public static Intent getStartIntent(Context context, String subjectId) {
+        Intent intent = new Intent(context, SubjectDetailsActivity.class);
+        intent.putExtra(SUBJECT_ID, subjectId);
+        return intent;
+    }
+
+    /*If view pager is already setup,than just notify the changes
+     * and if not then setup viewpager.*/
+    private void handleViewPagerRefresh() {
+        if (mBinding.viewPager.getAdapter() != null) {
+            mBinding.viewPager.getAdapter().notifyDataSetChanged();
+            //setUpTabLayout();
+            setUpViewPager();
+        } else {
+            setUpViewPager();
+        }
+    }
+
     /*Checking group is exist or not in database*/
-    private void checkGroupExistence(IdNameObject group) {
+    private void checkGroupExistence(LessonPlanGroupDetails group) {
         if (group != null && !TextUtils.isEmpty(group.getId())) {
             Group offlineGroup = mFlavorHomeModel.getGroupFromId(group.getId());
 
@@ -286,6 +322,18 @@ public class SubjectDetailsActivity extends AppCompatActivity {
             } else {
                 setUpToolbar("");
             }
+
+            int color;
+            if (!TextUtils.isEmpty(lessonPlanSubject.getColorCode())) {
+                color = Color.parseColor(lessonPlanSubject.getColorCode());
+            } else {
+                color = ContextCompat.getColor(getBaseContext(), R.color.colorStartGradient);
+            }
+            mBinding.collapsingToolbarLayout.setContentScrim(CommonUtils.getInstance().getGradientDrawableFromSingleColor(color));
+            mBinding.collapsingToolbarLayout.setStatusBarScrim(CommonUtils.getInstance().getGradientDrawableFromSingleColor(color));
+            mTabsGradientDrawable = CommonUtils.getInstance().getGradientDrawableFromSingleColor(color);
+            mTabsGradientDrawable.setCornerRadius(ConstantUtil.LRPA_TAB_CORNER_RADIUS);
+            mTabsGradientDrawable.setStroke(ConstantUtil.LRPA_TAB_STROKE_SIZE, Color.WHITE);
         }
 
 
@@ -312,6 +360,7 @@ public class SubjectDetailsActivity extends AppCompatActivity {
         }
     }
 
+    /*get status of chapter in string value*/
     private String getChapterStatus(String status) {
         switch (status) {
             case STATUS_IN_PROGRESS:
@@ -326,18 +375,24 @@ public class SubjectDetailsActivity extends AppCompatActivity {
     }
 
 
-    public static Intent getStartIntent(Context context, String subjectId) {
-        Intent intent = new Intent(context, SubjectDetailsActivity.class);
-        intent.putExtra(SUBJECT_ID, subjectId);
-        return intent;
-    }
-
-    /*Handle intent*/
+    /*Handle intent and get bundle data*/
     private void handleIntent() {
         if (getIntent() != null) {
             mSubjectId = getIntent().getStringExtra(SUBJECT_ID);
             fetchSubjectDetails(mSubjectId);
 
+        }
+    }
+
+    private void setGradeDetail(LessonPlanGroupDetails group, String lessonPlanId) {
+        if (group != null) {
+            if (group.getGrade() != null && !TextUtils.isEmpty(group.getGrade().getName())) {
+                mGradeName = group.getGrade().getName();
+            } else {
+                retryDialog(getString(R.string.lrpaGradeNull), lessonPlanId);
+            }
+        } else {
+            retryDialog(getString(R.string.lrpaGroupNull), lessonPlanId);
         }
     }
 
@@ -348,11 +403,10 @@ public class SubjectDetailsActivity extends AppCompatActivity {
         mBinding.textViewToolbarTitle.setText(title);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        mBinding.collapsingToolbarLayout.setContentScrimResource(R.drawable.gradient_app);
-        mBinding.collapsingToolbarLayout.setStatusBarScrimResource(R.drawable.gradient_app);
 
     }
 
+    /*alert dialog to show error, message and providing option to retry the respective call*/
     private void retryDialog(String message, final String subjectId) {
         final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(SubjectDetailsActivity.this);
         builder.setMessage(message)
@@ -376,6 +430,8 @@ public class SubjectDetailsActivity extends AppCompatActivity {
 
     }
 
+
+    /*get tab titles from string array according to group availability*/
     private ArrayList<String> getTabTitles() {
         if (!TextUtils.isEmpty(mGroupId)) {
             return new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.array_subject_detail_tab)));
@@ -384,12 +440,18 @@ public class SubjectDetailsActivity extends AppCompatActivity {
         }
     }
 
+    /*setup viewpager and it adapter*/
     private void setUpViewPager() {
         final ArrayList<String> tabTitles = getTabTitles();
         mBinding.viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), tabTitles));
         mBinding.tabLayout.setupWithViewPager(mBinding.viewPager);
         mBinding.tabLayout.setSelectedTabIndicatorHeight(0);
+        setUpTabLayout();
+    }
 
+    /*setup tab layout - customization of tabs*/
+    private void setUpTabLayout() {
+        final ArrayList<String> tabTitles = getTabTitles();
         for (int i = 0; i < mBinding.tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = mBinding.tabLayout.getTabAt(i);
             assert tab != null;
@@ -397,7 +459,7 @@ public class SubjectDetailsActivity extends AppCompatActivity {
             tab.setCustomView(getTabView(i, tabTitles));
         }
 
-        highLightCurrentTab(0, tabTitles); // for initial selected tab view
+        highlightCurrentTab(0, tabTitles); // for initial selected tab view
 
         mBinding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -407,7 +469,7 @@ public class SubjectDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(final int position) {
-                highLightCurrentTab(position, tabTitles);
+                highlightCurrentTab(position, tabTitles);
 
             }
 
@@ -418,10 +480,10 @@ public class SubjectDetailsActivity extends AppCompatActivity {
 
 
         });
-
     }
 
-    private void highLightCurrentTab(int position, ArrayList<String> tabTitles) {
+    /*highlight the current active tab with different background from other tabs*/
+    private void highlightCurrentTab(int position, ArrayList<String> tabTitles) {
         for (int i = 0; i < mBinding.tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = mBinding.tabLayout.getTabAt(i);
             assert tab != null;
@@ -435,6 +497,7 @@ public class SubjectDetailsActivity extends AppCompatActivity {
         tab.setCustomView(getSelectedTabView(position, tabTitles));
     }
 
+    /*get normal or inactive tab view*/
     public View getTabView(int position, ArrayList<String> tabTitles) {
         View view = LayoutInflater.from(getBaseContext()).inflate(R.layout.layout_subject_detail_custom_tab, null);
         view.setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.chip_white));
@@ -446,9 +509,10 @@ public class SubjectDetailsActivity extends AppCompatActivity {
         return view;
     }
 
+    /*get selected or active tab view*/
     public View getSelectedTabView(int position, ArrayList<String> tabTitles) {
         View view = LayoutInflater.from(getBaseContext()).inflate(R.layout.layout_subject_detail_custom_tab, null);
-        view.setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.chip_blue_white_stroke));
+        view.setBackground(mTabsGradientDrawable);
         TextView tabTextView = view.findViewById(R.id.tabTextView);
         tabTextView.setText(tabTitles.get(position));
         tabTextView.setTextColor(ContextCompat.getColor(getBaseContext(), android.R.color.white));
@@ -457,10 +521,11 @@ public class SubjectDetailsActivity extends AppCompatActivity {
         return view;
     }
 
+    /*viewpager adapter to handle and attach the respective fragments of activity*/
     private class ViewPagerAdapter extends FragmentStatePagerAdapter {
         ArrayList<String> mList;
 
-        public ViewPagerAdapter(FragmentManager fragmentManager, ArrayList<String> list) {
+        ViewPagerAdapter(FragmentManager fragmentManager, ArrayList<String> list) {
             super(fragmentManager);
             mList = list;
         }
@@ -474,11 +539,12 @@ public class SubjectDetailsActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
 
             if (mList.get(position).equals(getString(R.string.label_home))) {
-                return SubjectDetailHomeFragment.newInstance(mTopicId, mTopicName, mSubjectName, mThirdPartyTopicId, mBannerUrl);
+                return SubjectDetailHomeFragment.newInstance(mTopicId, mTopicName, mSubjectName, mGradeName, mThirdPartyTopicIds, mBannerUrl);
             } else if (mList.get(position).equals(getString(R.string.chapters))) {
                 return ChaptersFragment.newInstance(mSubjectId);
             } else if (mList.get(position).equals(getString(R.string.homework))) {
-                return AssignmentFragmentStudentClassDetails.newInstance(1, mSubjectName, "");
+                // return AssignmentFragmentStudentClassDetails.newInstance(1, mSubjectName, "");
+                return SubjectHomeworkFragment.newInstance(mSubjectId);
             } else if (mList.get(position).equals(getString(R.string.string_post))) {
                 return PostListFragment.newInstance(1, mGroupId, false, R.color.colorPrimary);
             } else {

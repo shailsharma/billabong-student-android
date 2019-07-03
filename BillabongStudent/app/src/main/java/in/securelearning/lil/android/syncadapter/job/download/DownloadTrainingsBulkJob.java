@@ -13,6 +13,7 @@ import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.model.JobModel;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -96,7 +97,7 @@ public class DownloadTrainingsBulkJob {
 
     private void save(ArrayList<Training> trainings) {
         for (Training training : trainings) {
-            JobCreator.createDownloadGroupJob(training.getGroupId()).execute();
+            JobCreator.createDownloadGroupJob(training.getGroupId(), ConstantUtil.GROUP_TYPE_TRAINING).execute();
             mJobModel.saveTrainingAndSession(training);
         }
 

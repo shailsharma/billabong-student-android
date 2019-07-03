@@ -67,7 +67,7 @@ import in.securelearning.lil.android.quizpreview.model.QuizPreviewModel;
 import in.securelearning.lil.android.syncadapter.dataobject.MasteryRequestObject;
 import in.securelearning.lil.android.syncadapter.dataobject.MasteryRequestObjectFilter;
 import in.securelearning.lil.android.syncadapter.dataobject.QuizResponse;
-import in.securelearning.lil.android.syncadapter.dataobject.SkillMasteryQuestionGetData;
+import in.securelearning.lil.android.syncadapter.dataobject.SkillMasteryQuestionData;
 import in.securelearning.lil.android.syncadapter.dataobject.SkillMasteryQuestionLevels;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
@@ -139,7 +139,7 @@ public class QuestionPlayerActivity extends AppCompatActivity {
 //    private int mMediumQuestionsCounter = -1;
 //    private int mHighQuestionsCounter = -1;
     private ArrayList<QuestionResponse> mQuestionResponses = new ArrayList<>();
-    private SkillMasteryQuestionGetData mSkillMasteryQuestionGetData;
+    private SkillMasteryQuestionData mSkillMasteryQuestionData;
     private int mHintCounter = 0;
     private boolean mIsCorrectResponse = false;
     private Question mQuestion;
@@ -232,7 +232,7 @@ public class QuestionPlayerActivity extends AppCompatActivity {
 
             mSkillMap = (HomeModel.SkillMap) getIntent().getSerializableExtra(SKILL_MAP);
             mQuizResponse = new QuizResponse();
-            if (mSkillMasteryQuestionGetData != null) {
+            if (mSkillMasteryQuestionData != null) {
                 MetaInformation metaInformation = new MetaInformation();
                 metaInformation.setLanguage(mSkillMap.getLanguage());
                 metaInformation.setBoard(mSkillMap.getBoard());
@@ -270,7 +270,7 @@ public class QuestionPlayerActivity extends AppCompatActivity {
     }
 
     private void setUpToolbar() {
-//        getWindow().setStatusBarColor(ContextCompat.getColor(PracticePlayerActivity.this, R.color.colorGreen));
+//        getWindow().setStatusBarColor(ContextCompat.getColor(MindSparkPlayerActivity.this, R.color.colorGreen));
 //        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(getBaseContext(), R.color.colorGreen)));
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.action_close_w);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -298,10 +298,10 @@ public class QuestionPlayerActivity extends AppCompatActivity {
 
 
         if (mComplexityLevel <= MAX_QUESTION_COMPLEXITY_LEVEL && mComplexityLevel >= MIN_QUESTION_COMPLEXITY_LEVEL) {
-            if (mQuestionsCounterArray[mComplexityLevel] + 1 >= mSkillMasteryQuestionGetData.getQuestions()[mComplexityLevel].size()) {
+            if (mQuestionsCounterArray[mComplexityLevel] + 1 >= mSkillMasteryQuestionData.getQuestions()[mComplexityLevel].size()) {
                 int i = mComplexityLevel - 1;
                 while (i >= MIN_QUESTION_COMPLEXITY_LEVEL) {
-                    if (mQuestionsCounterArray[i] + 1 < mSkillMasteryQuestionGetData.getQuestions()[i].size()) {
+                    if (mQuestionsCounterArray[i] + 1 < mSkillMasteryQuestionData.getQuestions()[i].size()) {
                         mComplexityLevel = i;
                         break;
                     }
@@ -311,7 +311,7 @@ public class QuestionPlayerActivity extends AppCompatActivity {
                 if (i < MIN_QUESTION_COMPLEXITY_LEVEL) {
                     i = mComplexityLevel + 1;
                     while (i <= MAX_QUESTION_COMPLEXITY_LEVEL) {
-                        if (mQuestionsCounterArray[i] + 1 < mSkillMasteryQuestionGetData.getQuestions()[i].size()) {
+                        if (mQuestionsCounterArray[i] + 1 < mSkillMasteryQuestionData.getQuestions()[i].size()) {
                             mComplexityLevel = i;
                             break;
                         }
@@ -323,7 +323,7 @@ public class QuestionPlayerActivity extends AppCompatActivity {
             }
             if (mComplexityLevel <= MAX_QUESTION_COMPLEXITY_LEVEL && mComplexityLevel >= MIN_QUESTION_COMPLEXITY_LEVEL) {
 
-                mQuestion = mSkillMasteryQuestionGetData.getQuestions()[mComplexityLevel].get(++mQuestionsCounterArray[mComplexityLevel]);
+                mQuestion = mSkillMasteryQuestionData.getQuestions()[mComplexityLevel].get(++mQuestionsCounterArray[mComplexityLevel]);
 
                 mHintsSize = mQuestion.getQuestionHints().size();
                 setUpdateValues(mQuestionCounter, mQuestionsSize);
@@ -340,13 +340,13 @@ public class QuestionPlayerActivity extends AppCompatActivity {
 
 //        if (mComplexityLevel == 0) {
 //            mLowQuestionsCounter++;
-//            if (mLowQuestionsCounter >= mSkillMasteryQuestionGetData.getLowLevelQuestion().getResults().size()) {
+//            if (mLowQuestionsCounter >= mSkillMasteryQuestionData.getLowLevelQuestion().getResults().size()) {
 //
 //            }
-//            mQuestion = mSkillMasteryQuestionGetData.getLowLevelQuestion().getResults().get(mLowQuestionsCounter);
+//            mQuestion = mSkillMasteryQuestionData.getLowLevelQuestion().getResults().get(mLowQuestionsCounter);
 //        } else if (mComplexityLevel == 1) {
 //            mMediumQuestionsCounter++;
-//            mQuestion = mSkillMasteryQuestionGetData.getMediumLevelQuestion().getResults().get(mMediumQuestionsCounter);
+//            mQuestion = mSkillMasteryQuestionData.getMediumLevelQuestion().getResults().get(mMediumQuestionsCounter);
 //        } else if (mComplexityLevel > 2 || mComplexityLevel == 2) {
 //            mHighQuestionsCounter++;
 //        }
@@ -385,15 +385,15 @@ public class QuestionPlayerActivity extends AppCompatActivity {
                 }
             });
 
-            Observable.create(new ObservableOnSubscribe<SkillMasteryQuestionGetData>() {
+            Observable.create(new ObservableOnSubscribe<SkillMasteryQuestionData>() {
                 @Override
-                public void subscribe(ObservableEmitter<SkillMasteryQuestionGetData> subscriber) throws Exception {
+                public void subscribe(ObservableEmitter<SkillMasteryQuestionData> subscriber) throws Exception {
                     if (questions != null) {
                         mQuestionsSize = questions.size();
-                        mSkillMasteryQuestionGetData = new SkillMasteryQuestionGetData();
+                        mSkillMasteryQuestionData = new SkillMasteryQuestionData();
                         SkillMasteryQuestionLevels levels = new SkillMasteryQuestionLevels(questions, 0);
-                        mSkillMasteryQuestionGetData.setLowLevelQuestion(levels);
-                        subscriber.onNext(mSkillMasteryQuestionGetData);
+                        mSkillMasteryQuestionData.setLowLevelQuestion(levels);
+                        subscriber.onNext(mSkillMasteryQuestionData);
                     } else {
                         if (!TextUtils.isEmpty(quizId)) {
                             final Call<Quiz> call = mNetworkModel.fetchQuiz(quizId);
@@ -408,14 +408,14 @@ public class QuestionPlayerActivity extends AppCompatActivity {
 
                                 mQuizResponse.setMetaInformation(quiz.getMetaInformation());
 
-                                mSkillMasteryQuestionGetData = new SkillMasteryQuestionGetData();
+                                mSkillMasteryQuestionData = new SkillMasteryQuestionData();
                                 SkillMasteryQuestionLevels levelsL = new SkillMasteryQuestionLevels(quiz.getQuestions(), 0);
                                 SkillMasteryQuestionLevels levelsM = new SkillMasteryQuestionLevels(new ArrayList<Question>(), 0);
                                 SkillMasteryQuestionLevels levelsH = new SkillMasteryQuestionLevels(new ArrayList<Question>(), 0);
-                                mSkillMasteryQuestionGetData.setLowLevelQuestion(levelsL);
-                                mSkillMasteryQuestionGetData.setMediumLevelQuestion(levelsM);
-                                mSkillMasteryQuestionGetData.setHighLevelQuestion(levelsH);
-                                subscriber.onNext(mSkillMasteryQuestionGetData);
+                                mSkillMasteryQuestionData.setLowLevelQuestion(levelsL);
+                                mSkillMasteryQuestionData.setMediumLevelQuestion(levelsM);
+                                mSkillMasteryQuestionData.setHighLevelQuestion(levelsH);
+                                subscriber.onNext(mSkillMasteryQuestionData);
 
                             } else if ((response.code() == 401) && SyncServiceHelper.refreshToken(getBaseContext())) {
                                 Response<Quiz> secondResponse = call.clone().execute();
@@ -427,10 +427,10 @@ public class QuestionPlayerActivity extends AppCompatActivity {
 
                                     mQuizResponse.setMetaInformation(quiz.getMetaInformation());
 
-                                    mSkillMasteryQuestionGetData = new SkillMasteryQuestionGetData();
+                                    mSkillMasteryQuestionData = new SkillMasteryQuestionData();
                                     SkillMasteryQuestionLevels levels = new SkillMasteryQuestionLevels(quiz.getQuestions(), 0);
-                                    mSkillMasteryQuestionGetData.setLowLevelQuestion(levels);
-                                    subscriber.onNext(mSkillMasteryQuestionGetData);
+                                    mSkillMasteryQuestionData.setLowLevelQuestion(levels);
+                                    subscriber.onNext(mSkillMasteryQuestionData);
 
 
                                 } else if ((secondResponse.code() == 401)) {
@@ -463,22 +463,22 @@ public class QuestionPlayerActivity extends AppCompatActivity {
                             masteryRequestObject.setLimit(mQuestionsSize);
                             masteryRequestObject.setSkip(0);
 
-                            final Call<SkillMasteryQuestionGetData> questionCall = mNetworkModel.fetchBySkillAndComplexityLevel(masteryRequestObject);
-                            Response<SkillMasteryQuestionGetData> response = questionCall.execute();
+                            final Call<SkillMasteryQuestionData> questionCall = mNetworkModel.fetchBySkillAndComplexityLevel(masteryRequestObject);
+                            Response<SkillMasteryQuestionData> response = questionCall.execute();
 
                             if (response != null && response.isSuccessful()) {
-                                mSkillMasteryQuestionGetData = response.body();
+                                mSkillMasteryQuestionData = response.body();
                                 Log.e("QuestionFetch1--", "Successful");
 
-                                subscriber.onNext(mSkillMasteryQuestionGetData);
+                                subscriber.onNext(mSkillMasteryQuestionData);
 
 
                             } else if ((response.code() == 401) && SyncServiceHelper.refreshToken(getBaseContext())) {
-                                Response<SkillMasteryQuestionGetData> response2 = questionCall.clone().execute();
+                                Response<SkillMasteryQuestionData> response2 = questionCall.clone().execute();
                                 if (response2 != null && response2.isSuccessful()) {
-                                    mSkillMasteryQuestionGetData = response2.body();
+                                    mSkillMasteryQuestionData = response2.body();
                                     Log.e("QuestionsFetch2--", "Successful");
-                                    subscriber.onNext(mSkillMasteryQuestionGetData);
+                                    subscriber.onNext(mSkillMasteryQuestionData);
                                 } else if ((response2.code() == 401)) {
                                     startActivity(LoginActivity.getUnauthorizedIntent(getBaseContext()));
                                 } else {
@@ -495,9 +495,9 @@ public class QuestionPlayerActivity extends AppCompatActivity {
 
                 }
             }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<SkillMasteryQuestionGetData>() {
+                    .subscribe(new Consumer<SkillMasteryQuestionData>() {
                         @Override
-                        public void accept(SkillMasteryQuestionGetData questionGetData) throws Exception {
+                        public void accept(SkillMasteryQuestionData questionGetData) throws Exception {
                             progressDialog.dismiss();
                             if (questionGetData != null && questionGetData.getLowLevelQuestion() != null
                                     && questionGetData.getMediumLevelQuestion() != null
@@ -516,8 +516,8 @@ public class QuestionPlayerActivity extends AppCompatActivity {
                                         mQuestionsSize = questionTotalCount;
                                     }
 
-                                    mSkillMasteryQuestionGetData = questionGetData;
-                                    mSkillMasteryQuestionGetData.updateQuestions();
+                                    mSkillMasteryQuestionData = questionGetData;
+                                    mSkillMasteryQuestionData.updateQuestions();
                                     mBinding.layoutTop.setVisibility(View.VISIBLE);
                                     mBinding.buttonDone.setVisibility(View.VISIBLE);
                                     initializeQuestionUi();

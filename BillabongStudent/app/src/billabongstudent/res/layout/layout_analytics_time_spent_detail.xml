@@ -39,7 +39,8 @@
                         android:layout_marginBottom="@dimen/margin_8dp"
                         android:text="@string/time_spent"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/colorBlack"/>
+                        android:textColor="@color/colorBlack"
+                        android:textStyle="bold"/>
 
                     <FrameLayout
                         android:layout_width="match_parent"

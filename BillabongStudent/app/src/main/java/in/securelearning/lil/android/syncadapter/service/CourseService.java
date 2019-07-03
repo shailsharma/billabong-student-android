@@ -18,6 +18,7 @@ import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.model.SyncServiceModel;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.functions.Consumer;
 
 public class CourseService extends IntentService {
@@ -71,7 +72,7 @@ public class CourseService extends IntentService {
                 if (ACTION_SYNC.equals(action)) {
                     handleActionSync();
                 } else if (ACTION_DOWNLOAD_BROADCAST_NOTIFICATION.equals(action)) {
-                    handleActionDownloadBroadcastNotification();
+                    //handleActionDownloadBroadcastNotification();
                 }
             }
         } catch (Exception e) {
@@ -90,8 +91,8 @@ public class CourseService extends IntentService {
     }
 
     private void handleActionSync() {
-//        if (GeneralUtils.isNetworkAvailable(CourseService.this))
-//            startSync();
+        //if (GeneralUtils.isNetworkAvailable(CourseService.this))
+        //startSync();
     }
 
     public void startSync() {

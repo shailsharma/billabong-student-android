@@ -54,31 +54,40 @@
                 android:layout_alignParentBottom="true"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:padding="@dimen/padding_8dp"
+                android:paddingStart="@dimen/padding_8dp"
+                android:paddingTop="@dimen/padding_8dp"
+                android:paddingEnd="@dimen/padding_8dp"
+                android:paddingBottom="@dimen/padding_4dp"
                 android:textColor="@android:color/white"
                 tools:text="Digital Book"/>
 
+
         </RelativeLayout>
 
-        <!--Reward points-->
+        <!--Reward score-->
         <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/layoutReward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_margin="8dp"
+            android:layout_marginStart="@dimen/margin_8dp"
+            android:layout_marginTop="@dimen/margin_8dp"
+            android:layout_marginEnd="@dimen/margin_8dp"
+            android:layout_marginBottom="@dimen/margin_4dp"
             android:background="@drawable/chip_solid_white_rectangle"
             android:elevation="2dp"
+            android:gravity="center_vertical"
             android:visibility="gone">
 
             <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/viewCourseStatus"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_marginStart="@dimen/margin_4dp"
                 android:layout_marginTop="@dimen/margin_4dp"
                 android:layout_marginEnd="@dimen/margin_4dp"
                 android:layout_marginBottom="@dimen/margin_4dp"
-                android:background="@drawable/circle_solid_primary"/>
+                android:background="@drawable/circle_solid_primary_outlined"/>
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textViewRewardPoints"
@@ -87,7 +96,7 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginEnd="@dimen/margin_4dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorGreyDark"
                 tools:text="100"/>
 
         </android.support.v7.widget.LinearLayoutCompat>

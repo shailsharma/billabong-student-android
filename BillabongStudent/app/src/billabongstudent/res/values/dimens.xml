@@ -26,6 +26,7 @@
     <dimen name="margin_2dp">2dp</dimen>
     <dimen name="margin_4dp">4dp</dimen>
     <dimen name="margin_8dp">8dp</dimen>
+    <dimen name="margin_10dp">10dp</dimen>
     <dimen name="margin_12dp">12dp</dimen>
     <dimen name="margin_16dp">16dp</dimen>
     <dimen name="margin_20dp">20dp</dimen>
@@ -40,6 +41,7 @@
     <!--Padding-->
     <dimen name="padding_2dp">2dp</dimen>
     <dimen name="padding_4dp">4dp</dimen>
+    <dimen name="padding_6dp">6dp</dimen>
     <dimen name="padding_8dp">8dp</dimen>
     <dimen name="padding_12dp">12dp</dimen>
     <dimen name="padding_16dp">16dp</dimen>
@@ -56,7 +58,8 @@
     <!--Font size-->
     <dimen name="textSize_10sp">10sp</dimen>
     <dimen name="textSize_12sp">12sp</dimen>
-    <dimen name="textSize_14sp">14sp</dimen><!--This equals to textAppearance and textAppearance.Small-->
+    <dimen name="textSize_14sp">14sp
+    </dimen><!--This equals to textAppearance and textAppearance.Small-->
     <dimen name="textSize_16sp">16sp</dimen>
     <dimen name="textSize_18sp">18sp</dimen><!--This equals to textAppearance.Medium-->
     <dimen name="textSize_20sp">20sp</dimen>
@@ -80,4 +83,12 @@
     <dimen name="elevation_2dp">2dp</dimen>
     <dimen name="elevation_4dp">4dp</dimen>
     <dimen name="elevation_8dp">8dp</dimen>
+
+
+    <!--chip button height-->
+    <dimen name="chipButtonHeight_36dp">36dp</dimen>
+    <dimen name="chipButtonHeight_48dp">48dp</dimen>
+
+    <!-- Animation Duration -->
+    <item name="duration_point_flip_animation" type="integer">150</item>
 </resources>

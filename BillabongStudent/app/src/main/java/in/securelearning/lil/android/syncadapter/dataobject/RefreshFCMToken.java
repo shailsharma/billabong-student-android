@@ -11,16 +11,11 @@ public class RefreshFCMToken implements Serializable {
     @Expose
     private String mToken;
 
-    @SerializedName("tokenReceivedStage")
+    @SerializedName("userDeviceType")
     @Expose
-    private int mType;
+    private String mUserDeviceType;
 
     public RefreshFCMToken() {
-    }
-
-    public RefreshFCMToken(String token, int type) {
-        mToken = token;
-        mType = type;
     }
 
     public String getToken() {
@@ -31,11 +26,11 @@ public class RefreshFCMToken implements Serializable {
         mToken = token;
     }
 
-    public int getType() {
-        return mType;
+    public String getUserDeviceType() {
+        return mUserDeviceType;
     }
 
-    public void setType(int type) {
-        mType = type;
+    public void setUserDeviceType(String userDeviceType) {
+        mUserDeviceType = userDeviceType;
     }
 }

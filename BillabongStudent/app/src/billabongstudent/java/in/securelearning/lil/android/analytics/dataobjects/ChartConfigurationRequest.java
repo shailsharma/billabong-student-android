@@ -15,6 +15,10 @@ public class ChartConfigurationRequest implements Serializable {
     @Expose
     private boolean mIsCoverage;
 
+    @SerializedName("performanceStandards")
+    @Expose
+    private boolean mIsPerformanceStandards;
+
     public boolean isPerformance() {
         return mIsPerformance;
     }
@@ -29,5 +33,9 @@ public class ChartConfigurationRequest implements Serializable {
 
     public void setCoverage(boolean coverage) {
         mIsCoverage = coverage;
+    }
+
+    public void setPerformanceStandards(boolean performanceStandards) {
+        mIsPerformanceStandards = performanceStandards;
     }
 }

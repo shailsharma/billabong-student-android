@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.syncadapter.job.validation;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -61,8 +62,11 @@ public class ValidateLearningNetworkPostDataJob extends BaseValidationJob<PostDa
     @Inject
     OgUtils mOgUtils;
 
-    public ValidateLearningNetworkPostDataJob(PostData dataObject) {
+    private boolean mShouldShowNotification;
+
+    public ValidateLearningNetworkPostDataJob(PostData dataObject, boolean shouldShowNotification) {
         super(dataObject);
+        mShouldShowNotification = shouldShowNotification;
 
         /*perform injection*/
         InjectorSyncAdapter.INSTANCE.getComponent().inject(this);
@@ -245,66 +249,45 @@ public class ValidateLearningNetworkPostDataJob extends BaseValidationJob<PostDa
 
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void showDownloadSuccessfulNotification() {
-        mPostDataLearningModel.getNewPostListByGroupId(mDataObject.getTo().getId(), 0, 6)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<ArrayList<PostData>>() {
-            @Override
-            public void accept(final ArrayList<PostData> posts) throws Exception {
-                final ArrayList<String> postInfo = new ArrayList<String>();
-                if (posts.size() > 0) {
-                    for (int i = 0; i < posts.size(); i++) {
-                        String postBy = posts.get(i).getFrom().getName();
-                        String post = posts.get(i).getPostText();
-                        postInfo.add(postBy + " : " + Html.fromHtml(post).toString().trim());
-                    }
-                    mPostDataLearningModel.getUnreadPostCountForGroup(posts.get(0).getTo().getId())
-                            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Integer>() {
-                        @Override
-                        public void accept(Integer newCount) throws Exception {
-                            if (posts.size() == 1) {
-                                String title = posts.get(0).getTo().getName() + " (" + String.valueOf(newCount) + " new post)";
-                                showPostNotification(title, postInfo, posts.get(0).getTo().getId());
-                            } else {
-                                String title = posts.get(0).getTo().getName() + " (" + String.valueOf(newCount) + " new posts)";
-                                showPostNotification(title, postInfo, posts.get(0).getTo().getId());
-                            }
+        if (mShouldShowNotification) {
 
-
+            mPostDataLearningModel.getNewPostListByGroupId(mDataObject.getTo().getId(), 0, 6)
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<ArrayList<PostData>>() {
+                @Override
+                public void accept(final ArrayList<PostData> posts) throws Exception {
+                    final ArrayList<String> postInfo = new ArrayList<String>();
+                    if (posts.size() > 0) {
+                        for (int i = 0; i < posts.size(); i++) {
+                            String postBy = posts.get(i).getFrom().getName();
+                            String post = posts.get(i).getPostText();
+                            postInfo.add(postBy + " : " + Html.fromHtml(post).toString().trim());
                         }
-                    });
+                        mPostDataLearningModel.getUnreadPostCountForGroup(posts.get(0).getTo().getId())
+                                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Integer>() {
+                            @Override
+                            public void accept(Integer newCount) throws Exception {
+                                if (posts.size() == 1) {
+                                    String title = posts.get(0).getTo().getName() + " (" + String.valueOf(newCount) + " new post)";
+                                    showPostNotification(title, postInfo, posts.get(0).getTo().getId());
+                                } else {
+                                    String title = posts.get(0).getTo().getName() + " (" + String.valueOf(newCount) + " new posts)";
+                                    showPostNotification(title, postInfo, posts.get(0).getTo().getId());
+                                }
+
+
+                            }
+                        });
+
+                    }
 
                 }
 
-            }
+            });
+        }
 
-        });
-//        NotificationCompat.Builder builder =
-//                new NotificationCompat.Builder(mContext)
-//                        .setSmallIcon(getNotificationResourceId())
-//                        .setLargeIcon(getLargeNotificationBitmap())
-//                        .setColor(getSmallBackgroundColor())
-//                        .setAutoCancel(true)
-////                        .setDefaults(NotificationCompat.DEFAULT_ALL)
-//                        .setContentTitle(getSuccessfulNotificationTitle())
-//                        .setContentText(getSuccessfulNotificationText());
-//        if (isNotificationSoundEnabled()) {
-//            builder.setDefaults(NotificationCompat.FLAG_ONLY_ALERT_ONCE);
-//            builder.setOnlyAlertOnce(true);
-//            Uri uri = getNotificationSoundUri();
-//
-//            if (uri != null && !TextUtils.isEmpty(uri.toString())) {
-//                builder.setSound(uri);
-//            }
-//        }
-//        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-//        stackBuilder.addParentStack(PostListActivity.class);
-//        stackBuilder.addNextIntent(PostListActivity.getIntentForPostList(mContext, mDataObject.getTo().getId(), false));
-//        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-//        builder.setContentIntent(resultPendingIntent);
-//
-//        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(mContext);
-//        mNotifyMgr.notify(getNotificationId(), builder.build());
     }
 
     private void showPostNotification(String title, ArrayList<String> postInfo, String to) {

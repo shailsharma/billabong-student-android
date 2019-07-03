@@ -43,6 +43,14 @@ public class AboutCourseMinimal implements Serializable {
     @Expose
     private int mTotalMarks;
 
+    @SerializedName("coverage")
+    @Expose
+    private float mCoverage;
+
+    @SerializedName("colorCode")
+    @Expose
+    private String mColorCode;
+
     private boolean mIsSelected;
 
     public String getId() {
@@ -120,5 +128,21 @@ public class AboutCourseMinimal implements Serializable {
 
     public void setTotalMarks(int totalMarks) {
         mTotalMarks = totalMarks;
+    }
+
+    public float getCoverage() {
+        return mCoverage;
+    }
+
+    public void setCoverage(float coverage) {
+        mCoverage = coverage;
+    }
+
+    public String getColorCode() {
+        return mColorCode;
+    }
+
+    public void setColorCode(String colorCode) {
+        mColorCode = colorCode;
     }
 }

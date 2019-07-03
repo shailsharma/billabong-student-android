@@ -17,6 +17,7 @@ public class EffortChartDataParent implements Serializable {
     private int mDaysCount;
 
     public ArrayList<EffortChartData> getEffortChartDataList() {
+
         return mEffortChartDataList;
     }
 

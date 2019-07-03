@@ -23,8 +23,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
             android:textColor="@color/colorWhite"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textViewToolbarSubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/colorWhite"
+            android:visibility="gone"/>
     </FrameLayout>
 
 </layout>

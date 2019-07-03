@@ -23,14 +23,9 @@ public class RequestOTPResponse implements Serializable {
     @Expose
     private String onError;
 
-//    @SerializedName("request_language")
-//    @Expose
-//    private String requestLanguage;
-//
-//    @SerializedName("phone_verified")
-//    @Expose
-//    private boolean phoneVerified;
-
+    @SerializedName("mobile")
+    @Expose
+    private String mMobile;
 
     public String getId() {
         return id;
@@ -54,5 +49,13 @@ public class RequestOTPResponse implements Serializable {
 
     public void setOnError(String onError) {
         this.onError = onError;
+    }
+
+    public String getMobile() {
+        return mMobile;
+    }
+
+    public void setMobile(String mobile) {
+        mMobile = mobile;
     }
 }

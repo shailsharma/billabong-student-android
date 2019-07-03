@@ -82,7 +82,7 @@ public class ValidateBlogReviewJob extends BaseValidationJob<BlogReview> {
 
         return false;
         //Download groups Post and post response
-        //JobCreator.createDownloadGroupPostNResponseJob(mDataObject.getObjectId()).execute();
+        //JobCreator.createDownloadGroupPostAndResponseJob(mDataObject.getObjectId()).execute();
 
     }
 

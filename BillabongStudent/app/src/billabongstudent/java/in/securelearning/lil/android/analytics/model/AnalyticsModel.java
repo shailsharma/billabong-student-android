@@ -26,6 +26,7 @@ import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataRequest;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
+import in.securelearning.lil.android.analytics.dataobjects.EffortvsPerformanceData;
 import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsTimeSpentDetailPopupBinding;
@@ -64,8 +65,8 @@ public class AnalyticsModel {
 
     /*convert seconds to natural time format*/
     public String convertSecondToHourMinuteSecond(long actualSeconds) {
-        String strHours = "";
-        String strMinutes = "";
+        String strHours;
+        String strMinutes;
 
         long hours = actualSeconds / 3600;
         long hoursMod = actualSeconds % 3600;
@@ -100,7 +101,7 @@ public class AnalyticsModel {
 
     /*convert seconds to minutes*/
     public String convertSecondToMinute(long actualSeconds) {
-        String strMinutes = "";
+        String strMinutes;
 
         long hoursMod = actualSeconds % 3600;
         long minutes = hoursMod / 60;
@@ -120,6 +121,35 @@ public class AnalyticsModel {
 
 
         return strMinutes;
+    }
+
+    public String showSecondAndMinutesAndHours(long actualSeconds) {
+        String strMinutes, strSeconds, strHours;
+
+
+        long hours = actualSeconds / 3600;
+        long hoursMod = actualSeconds % 3600;
+        long minutes = hoursMod / 60;
+        long seconds = hoursMod % 60;
+
+        strHours = String.valueOf(hours);
+        strMinutes = String.valueOf(minutes);
+        strSeconds = String.valueOf(seconds);
+
+
+        if (hours >= 0 && hours <= 9) {
+            strHours = "0" + strHours;
+        }
+
+        if (minutes >= 0 && minutes <= 9) {
+            strMinutes = "0" + strMinutes;
+        }
+        if (seconds >= 0 && seconds <= 9) {
+            strSeconds = "0" + strSeconds;
+
+        }
+
+        return strHours + ":" + strMinutes + ":" + strSeconds;
     }
 
     /*convert seconds to minutes*/
@@ -160,7 +190,7 @@ public class AnalyticsModel {
                     Response<ArrayList<CoverageChartData>> response2 = call.clone().execute();
                     if (response2 != null && response2.isSuccessful()) {
                         Log.e("CoverageChartData", "Successful");
-                        e.onNext(response.body());
+                        e.onNext(response2.body());
                     } else if (response2.code() == 401) {
                         mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
                     } else if (response2.code() == 404) {
@@ -171,32 +201,6 @@ public class AnalyticsModel {
                     throw new Exception(mContext.getString(R.string.messageUnableToGetData));
                 }
 
-//                ArrayList<CoverageChartData> coverageChartData = new ArrayList<>();
-//                CoverageChartData coverageChartData1 = new CoverageChartData();
-//                coverageChartData1.setCoverage(2);
-//                coverageChartData1.setPending(8);
-//                coverageChartData1.setTotal(10);
-//                coverageChartData1.setId("5c782304b9a6350013426226");
-//                coverageChartData1.setName("Maths");
-//
-//                CoverageChartData coverageChartData2 = new CoverageChartData();
-//                coverageChartData2.setCoverage(5);
-//                coverageChartData2.setPending(5);
-//                coverageChartData2.setTotal(10);
-//                coverageChartData2.setId("5c782304b9a6350013426226");
-//                coverageChartData2.setName("Hindi");
-//
-//                CoverageChartData coverageChartData3 = new CoverageChartData();
-//                coverageChartData3.setCoverage(10);
-//                coverageChartData3.setPending(8);
-//                coverageChartData3.setTotal(10);
-//                coverageChartData3.setId("5c782304b9a6350013426226");
-//                coverageChartData3.setName("English");
-//
-//                coverageChartData.add(coverageChartData3);
-//                coverageChartData.add(coverageChartData1);
-//                coverageChartData.add(coverageChartData2);
-//                e.onNext(coverageChartData);
                 e.onComplete();
             }
         });
@@ -225,7 +229,7 @@ public class AnalyticsModel {
                     Response<ArrayList<PerformanceChartData>> response2 = call.clone().execute();
                     if (response2 != null && response2.isSuccessful()) {
                         Log.e("PerformanceChartData", "Successful");
-                        e.onNext(response.body());
+                        e.onNext(response2.body());
                     } else if (response2.code() == 401) {
                         mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
                     } else if (response2.code() == 404) {
@@ -261,7 +265,7 @@ public class AnalyticsModel {
                     Response<EffortChartDataParent> response2 = call.clone().execute();
                     if (response2 != null && response2.isSuccessful()) {
                         Log.e("EffortChartData", "Successful");
-                        e.onNext(response.body());
+                        e.onNext(response2.body());
                     } else if (response2.code() == 401) {
                         mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
                     } else if (response2.code() == 404) {
@@ -308,35 +312,6 @@ public class AnalyticsModel {
                     throw new Exception(mContext.getString(R.string.messageUnableToGetData));
                 }
 
-//                EffortChartDataParent effortChartDataParent = new EffortChartDataParent();
-//                ArrayList<EffortChartData> chartDataArrayList = new ArrayList<>();
-//                EffortChartData effortChartData1 = new EffortChartData();
-//                effortChartData1.setTotalTimeSpent(310);
-//                effortChartData1.setTotalReadTimeSpent(107);
-//                effortChartData1.setTotalVideoTimeSpent(100);
-//                effortChartData1.setTotalPracticeTimeSpent(100);
-//                effortChartData1.setTopic(new ArrayList<IdNameObject>(Collections.singleton(new IdNameObject("", "Cooking and other skills needed at home"))));
-//
-//                EffortChartData effortChartData2 = new EffortChartData();
-//                effortChartData2.setTotalTimeSpent(1200);
-//                effortChartData2.setTotalReadTimeSpent(300);
-//                effortChartData2.setTotalVideoTimeSpent(400);
-//                effortChartData2.setTotalPracticeTimeSpent(500);
-//                effortChartData2.setTopic(new ArrayList<IdNameObject>(Collections.singleton(new IdNameObject("", "The study of substances and the different ways in which they react or combine with other substances"))));
-//
-//                EffortChartData effortChartData3 = new EffortChartData();
-//                effortChartData3.setTotalTimeSpent(600);
-//                effortChartData3.setTotalReadTimeSpent(300);
-//                effortChartData3.setTotalVideoTimeSpent(150);
-//                effortChartData3.setTotalPracticeTimeSpent(150);
-//                effortChartData3.setTopic(new ArrayList<IdNameObject>(Collections.singleton(new IdNameObject("", "Driving"))));
-//                chartDataArrayList.add(effortChartData1);
-//                chartDataArrayList.add(effortChartData2);
-//                chartDataArrayList.add(effortChartData3);
-//
-//                effortChartDataParent.setEffortChartDataList(chartDataArrayList);
-//                effortChartDataParent.setDaysCount(4);
-//                e.onNext(effortChartDataParent);
                 e.onComplete();
             }
         });
@@ -362,7 +337,7 @@ public class AnalyticsModel {
                     Response<ArrayList<EffortChartDataWeekly>> response2 = call.clone().execute();
                     if (response2 != null && response2.isSuccessful()) {
                         Log.e("EffortChartDataWeekly", "Successful");
-                        e.onNext(response.body());
+                        e.onNext(response2.body());
                     } else if (response2.code() == 401) {
                         mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
                     } else if (response2.code() == 404) {
@@ -373,43 +348,6 @@ public class AnalyticsModel {
                     throw new Exception(mContext.getString(R.string.messageUnableToGetData));
                 }
 
-//                ArrayList<EffortChartDataWeekly> chartDataArrayList = new ArrayList<>();
-//                EffortChartDataWeekly effortChartDataWeekly1 = new EffortChartDataWeekly();
-//                effortChartDataWeekly1.setDate("2019-03-23T00:00:00.000Z");
-//                effortChartDataWeekly1.setTime(720);
-//
-//                EffortChartDataWeekly effortChartDataWeekly2 = new EffortChartDataWeekly();
-//                effortChartDataWeekly2.setDate("2019-03-24T00:00:00.000Z");
-//                effortChartDataWeekly2.setTime(400);
-//
-//                EffortChartDataWeekly effortChartDataWeekly3 = new EffortChartDataWeekly();
-//                effortChartDataWeekly3.setDate("2019-03-25T00:00:00.000Z");
-//                effortChartDataWeekly3.setTime(540);
-//
-//                EffortChartDataWeekly effortChartDataWeekly4 = new EffortChartDataWeekly();
-//                effortChartDataWeekly4.setDate("2019-03-26T00:00:00.000Z");
-//                effortChartDataWeekly4.setTime(999);
-//
-//                EffortChartDataWeekly effortChartDataWeekly5 = new EffortChartDataWeekly();
-//                effortChartDataWeekly5.setDate("2019-03-27T00:00:00.000Z");
-//                effortChartDataWeekly5.setTime(250);
-//
-//                EffortChartDataWeekly effortChartDataWeekly6 = new EffortChartDataWeekly();
-//                effortChartDataWeekly6.setDate("2019-03-28T00:00:00.000Z");
-//                effortChartDataWeekly6.setTime(250);
-//
-//                EffortChartDataWeekly effortChartDataWeekly7 = new EffortChartDataWeekly();
-//                effortChartDataWeekly7.setDate("2019-03-29T00:00:00.000Z");
-//                effortChartDataWeekly7.setTime(150);
-//
-//                chartDataArrayList.add(effortChartDataWeekly1);
-//                chartDataArrayList.add(effortChartDataWeekly2);
-//                chartDataArrayList.add(effortChartDataWeekly3);
-//                chartDataArrayList.add(effortChartDataWeekly4);
-//                chartDataArrayList.add(effortChartDataWeekly5);
-//                chartDataArrayList.add(effortChartDataWeekly6);
-//                chartDataArrayList.add(effortChartDataWeekly7);
-//                e.onNext(chartDataArrayList);
                 e.onComplete();
             }
         });
@@ -423,6 +361,7 @@ public class AnalyticsModel {
                 ChartConfigurationRequest chartConfigurationRequest = new ChartConfigurationRequest();
                 chartConfigurationRequest.setPerformance(true);
                 chartConfigurationRequest.setCoverage(true);
+                chartConfigurationRequest.setPerformanceStandards(true);
                 Call<ChartConfigurationParentData> call = mFlavorNetworkModel.fetchChartConfiguration(chartConfigurationRequest);
                 Response<ChartConfigurationParentData> response = call.execute();
 
@@ -435,7 +374,7 @@ public class AnalyticsModel {
                     Response<ChartConfigurationParentData> response2 = call.clone().execute();
                     if (response2 != null && response2.isSuccessful()) {
                         Log.e("ChartConfiguration", "Successful");
-                        e.onNext(response.body());
+                        e.onNext(response2.body());
                     } else if (response2.code() == 401) {
                         mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
                     } else if (response2.code() == 404) {
@@ -465,24 +404,21 @@ public class AnalyticsModel {
         dialog.setContentView(binding.getRoot());
         dialog.setCancelable(true);
 
-        String formattedTotalTimeSpent = convertSecondToHourMinuteSecond((long) finalTotalTimeSpent);
-        String formattedReadTimeSpent = convertSecondToHourMinuteSecond((long) finalTotalReadTime);
-        String formattedVideoTimeSpent = convertSecondToHourMinuteSecond((long) finalTotalVideoTime);
-        String formattedPracticeTimeSpent = convertSecondToHourMinuteSecond((long) finalTotalPracticeTime);
-
-        binding.textViewTitle.setText(context.getString(R.string.total_hrs));
+        String formattedTotalTimeSpent = showSecondAndMinutesAndHours((long) finalTotalTimeSpent);
+        String formattedReadTimeSpent = showSecondAndMinutesAndHours((long) finalTotalReadTime);
+        String formattedVideoTimeSpent = showSecondAndMinutesAndHours((long) finalTotalVideoTime);
+        String formattedPracticeTimeSpent = showSecondAndMinutesAndHours((long) finalTotalPracticeTime);
+        int readingPercentage = Math.round((finalTotalReadTime / finalTotalTimeSpent) * 100);
+        int videoPercentage = Math.round((finalTotalVideoTime / finalTotalTimeSpent) * 100);
+        int practicePercentage = Math.round((finalTotalPracticeTime / finalTotalTimeSpent) * 100);
+        binding.textViewTitle.setText(context.getString(R.string.total));
         binding.textViewTotalTimeSpent.setText(formattedTotalTimeSpent);
         binding.textViewReadingTime.setText(formattedReadTimeSpent);
         binding.textViewVideoTime.setText(formattedVideoTimeSpent);
         binding.textViewPracticeTime.setText(formattedPracticeTimeSpent);
-
-        binding.progressBarReading.setMax((int) finalTotalTimeSpent);
-        binding.progressBarVideo.setMax((int) finalTotalTimeSpent);
-        binding.progressBarPractice.setMax((int) finalTotalTimeSpent);
-
-        binding.progressBarReading.setProgress((int) finalTotalReadTime);
-        binding.progressBarVideo.setProgress((int) finalTotalVideoTime);
-        binding.progressBarPractice.setProgress((int) finalTotalPracticeTime);
+        binding.progressBarReading.setProgress(readingPercentage);
+        binding.progressBarVideo.setProgress(videoPercentage);
+        binding.progressBarPractice.setProgress(practicePercentage);
 
 
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
@@ -500,24 +436,22 @@ public class AnalyticsModel {
         dialog.setContentView(binding.getRoot());
         dialog.setCancelable(true);
 
-        String formattedTotalTimeSpent = convertSecondToMinute((long) dailyTimeSpent);
-        String formattedReadTimeSpent = convertSecondToMinute((long) dailyReadTimeSpent);
-        String formattedVideoTimeSpent = convertSecondToMinute((long) dailyVideoTimeSpent);
-        String formattedPracticeTimeSpent = convertSecondToMinute((long) dailyPracticeTimeSpent);
+        String formattedTotalTimeSpent = showSecondAndMinutesAndHours((long) dailyTimeSpent);
+        String formattedReadTimeSpent = showSecondAndMinutesAndHours((long) dailyReadTimeSpent);
+        String formattedVideoTimeSpent = showSecondAndMinutesAndHours((long) dailyVideoTimeSpent);
+        String formattedPracticeTimeSpent = showSecondAndMinutesAndHours((long) dailyPracticeTimeSpent);
+        int readingPercentage = Math.round((dailyReadTimeSpent / dailyTimeSpent) * 100);
+        int videoPercentage = Math.round((dailyVideoTimeSpent / dailyTimeSpent) * 100);
+        int practicePercentage = Math.round((dailyPracticeTimeSpent / dailyTimeSpent) * 100);
 
-        binding.textViewTitle.setText(context.getString(R.string.daily_efforts_min));
+        binding.textViewTitle.setText(context.getString(R.string.daily_efforts));
         binding.textViewTotalTimeSpent.setText(formattedTotalTimeSpent);
         binding.textViewReadingTime.setText(formattedReadTimeSpent);
         binding.textViewVideoTime.setText(formattedVideoTimeSpent);
         binding.textViewPracticeTime.setText(formattedPracticeTimeSpent);
-
-        binding.progressBarReading.setMax((int) dailyTimeSpent);
-        binding.progressBarVideo.setMax((int) dailyTimeSpent);
-        binding.progressBarPractice.setMax((int) dailyTimeSpent);
-
-        binding.progressBarReading.setProgress((int) dailyReadTimeSpent);
-        binding.progressBarVideo.setProgress((int) dailyVideoTimeSpent);
-        binding.progressBarPractice.setProgress((int) dailyPracticeTimeSpent);
+        binding.progressBarReading.setProgress(readingPercentage);
+        binding.progressBarVideo.setProgress(videoPercentage);
+        binding.progressBarPractice.setProgress(practicePercentage);
 
 
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
@@ -535,5 +469,38 @@ public class AnalyticsModel {
     /*Configurable Bar Width*/
     public float barWidth() {
         return 0.36f;
+    }
+
+    /*To fetch effort (time spent) data for all subjects*/
+    public Observable<ArrayList<EffortvsPerformanceData>> fetchEffortvsPerformanceData() {
+        return Observable.create(new ObservableOnSubscribe<ArrayList<EffortvsPerformanceData>>() {
+            @Override
+            public void subscribe(ObservableEmitter<ArrayList<EffortvsPerformanceData>> e) throws Exception {
+                Call<ArrayList<EffortvsPerformanceData>> call = mFlavorNetworkModel.fetchEffortvsPerformanceData();
+                Response<ArrayList<EffortvsPerformanceData>> response = call.execute();
+
+                if (response != null && response.isSuccessful()) {
+                    Log.e("EffortChartData", "Successful");
+                    e.onNext(response.body());
+                } else if (response.code() == 404) {
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                } else if (response.code() == 401 && SyncServiceHelper.refreshToken(mContext)) {
+                    Response<ArrayList<EffortvsPerformanceData>> response2 = call.clone().execute();
+                    if (response2 != null && response2.isSuccessful()) {
+                        Log.e("EffortChartData", "Successful");
+                        e.onNext(response2.body());
+                    } else if (response2.code() == 401) {
+                        mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
+                    } else if (response2.code() == 404) {
+                        throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                    }
+                } else {
+                    Log.e("EffortChartData", "Failed");
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                }
+                e.onComplete();
+
+            }
+        });
     }
 }

@@ -13,15 +13,13 @@ import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.assignments.views.activity.AssignmentDetailActivity;
 import in.securelearning.lil.android.assignments.views.activity.StudentSummaryActivity;
 import in.securelearning.lil.android.base.constants.SyncStatus;
-import in.securelearning.lil.android.base.dataobjects.AppUser;
 import in.securelearning.lil.android.base.dataobjects.Assignment;
 import in.securelearning.lil.android.base.dataobjects.AssignmentResponse;
 import in.securelearning.lil.android.base.dataobjects.AssignmentStudent;
 import in.securelearning.lil.android.base.dataobjects.Resource;
-import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.utils.FileUtils;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
-import in.securelearning.lil.android.learningnetwork.events.LoadNewAssignmentDownloadEvent;
+import in.securelearning.lil.android.learningnetwork.events.AssignmentResponseDownloadEvent;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.job.resource.ResourceNetworkOperation;
@@ -111,7 +109,7 @@ public class ValidateAssignmentResponseJob extends BaseValidationJob<AssignmentR
                 saveJson(mDataObject);
                 mAssignmentDocId = assignment.getDocId();
                 mAssignmentStudent = mJobModel.saveAssignmentStage(mDataObject);
-                mRxBus.send(new LoadNewAssignmentDownloadEvent(mDataObject));
+                mRxBus.send(new AssignmentResponseDownloadEvent(mDataObject));
 
                 assignment = null;
                 return true;

@@ -1,5 +1,7 @@
 package in.securelearning.lil.android.learningnetwork.views.fragment;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,6 +29,7 @@ import in.securelearning.lil.android.app.databinding.RyanLayoutItemLearningNetwo
 import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.dataobjects.PostData;
 import in.securelearning.lil.android.base.dataobjects.Resource;
+import in.securelearning.lil.android.base.dataobjects.Thumbnail;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
@@ -43,6 +46,7 @@ import in.securelearning.lil.android.learningnetwork.model.PostDataLearningModel
 import in.securelearning.lil.android.learningnetwork.views.activity.PostListActivity;
 import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -134,6 +138,7 @@ public class LearningNetworkGroupListFragment extends Fragment {
 
     private void listenRxBusEvent() {
         mSubscription = mRxBus.toFlowable().observeOn(Schedulers.computation()).subscribe(new Consumer<Object>() {
+            @SuppressLint("CheckResult")
             @Override
             public void accept(final Object event) throws Exception {
                 if (event instanceof LoadNewPostCreatedEvent) {
@@ -153,6 +158,7 @@ public class LearningNetworkGroupListFragment extends Fragment {
                                     getData();
                                 }
                             });
+
 
                 } else if (event instanceof ObjectDownloadComplete && ((ObjectDownloadComplete) event).getObjectClass().equals(Group.class)) {
                     Completable.complete().observeOn(AndroidSchedulers.mainThread())
@@ -175,8 +181,16 @@ public class LearningNetworkGroupListFragment extends Fragment {
                 } else if (event instanceof AnimateFragmentEvent) {
                     int id = ((AnimateFragmentEvent) event).getId();
                     if (id == R.id.nav_learning_network) {
-                        AnimationUtils.fadeInFast(getContext(), mBinding.layoutNoResult);
-                        AnimationUtils.fadeInFast(getContext(), mBinding.recyclerView);
+                        Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                AnimationUtils.fadeInFast(getContext(), mBinding.layoutNoResult);
+                                AnimationUtils.fadeInFast(getContext(), mBinding.recyclerView);
+
+
+                            }
+                        });
+
                     }
                 }
 
@@ -213,7 +227,8 @@ public class LearningNetworkGroupListFragment extends Fragment {
         @Override
         public void onBindViewHolder(final GroupAdapter.ViewHolder holder, final int position) {
             final Group group = mGroups.get(position);
-            setGroupThumbnail(group, holder.mBinding.imageViewGroupThumbnail);
+            //setGroupThumbnail(group, holder.mBinding.imageViewGroupThumbnail);
+
             String name = group.getGroupName();
             if (isTeacher) {
                 if (!TextUtils.isEmpty(group.getNameTeacher())) {
@@ -223,6 +238,9 @@ public class LearningNetworkGroupListFragment extends Fragment {
                 name = group.getNameStudent();
             }
             holder.mBinding.textViewGroupName.setText(name);
+            //Need to set group name according to Two Letter
+            CommonUtils.getInstance().
+                    setGroupThumbnail(getContext(), name, group.getThumbnail(), holder.mBinding.imageViewGroupThumbnail) ;
 
             setLatestPost(group, holder.mBinding);
 

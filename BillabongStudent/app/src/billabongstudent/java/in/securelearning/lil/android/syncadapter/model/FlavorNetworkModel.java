@@ -11,6 +11,13 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationParentData;
 import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationRequest;
+import in.securelearning.lil.android.analytics.dataobjects.ChartDataRequest;
+import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataRequest;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
+import in.securelearning.lil.android.analytics.dataobjects.EffortvsPerformanceData;
+import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.base.dataobjects.AboutCourse;
 import in.securelearning.lil.android.base.dataobjects.AssignedBadges;
@@ -48,6 +55,16 @@ import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.ArrayList;
 import in.securelearning.lil.android.courses.dataobject.CourseReview;
 import in.securelearning.lil.android.home.model.HomeModel;
+import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
+import in.securelearning.lil.android.homework.dataobject.Homework;
+import in.securelearning.lil.android.homework.dataobject.HomeworkSubmitResponse;
+import in.securelearning.lil.android.mindspark.dataobjects.MindSparkLoginRequest;
+import in.securelearning.lil.android.mindspark.dataobjects.MindSparkLoginResponse;
+import in.securelearning.lil.android.mindspark.dataobjects.MindSparkQuestionParent;
+import in.securelearning.lil.android.mindspark.dataobjects.MindSparkQuestionRequest;
+import in.securelearning.lil.android.mindspark.dataobjects.MindSparkQuestionSubmit;
+import in.securelearning.lil.android.mindspark.dataobjects.MindSparkTopicListRequest;
+import in.securelearning.lil.android.mindspark.dataobjects.MindSparkTopicResult;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.dataobject.AuthToken;
 import in.securelearning.lil.android.syncadapter.dataobject.BlogResponse;
@@ -74,26 +91,13 @@ import in.securelearning.lil.android.syncadapter.dataobject.SearchResults;
 import in.securelearning.lil.android.syncadapter.dataobject.ServerDataPackage;
 import in.securelearning.lil.android.syncadapter.dataobject.StudentGradeMapping;
 import in.securelearning.lil.android.syncadapter.dataobject.TeacherGradeMapping;
-import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
-import in.securelearning.lil.android.analytics.dataobjects.ChartDataRequest;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataRequest;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
-import in.securelearning.lil.android.syncadapter.dataobjects.LRPAPost;
+import in.securelearning.lil.android.syncadapter.dataobjects.LRPARequest;
 import in.securelearning.lil.android.syncadapter.dataobjects.LRPAResult;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterResult;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectDetails;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectResult;
-import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkLoginRequest;
-import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkLoginResponse;
-import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkQuestionParent;
-import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkQuestionRequest;
-import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkQuestionSubmit;
-import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkTopicListRequest;
-import in.securelearning.lil.android.syncadapter.dataobjects.MindSparkTopicResult;
-import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfile;
 import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
@@ -107,7 +111,7 @@ import in.securelearning.lil.android.syncadapter.rest.DirectUploadApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.DownloadApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.DownloadFilesApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.FCMApiInterface;
-import in.securelearning.lil.android.syncadapter.rest.MindSparkLoginApiInterface;
+import in.securelearning.lil.android.syncadapter.rest.MindSparkApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.NewUploadApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.SearchApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.SyncSuccessApiInterface;
@@ -123,7 +127,6 @@ import retrofit2.Call;
  * Model for Network Access.
  */
 public class FlavorNetworkModel extends BaseModel {
-    public final String TAG = this.getClass().getCanonicalName();
     public final static String TYPE_TRACKING = "tracking";
     public final static String TYPE_POST_DATA = "postData";
     public final static String TYPE_POST_RESPONSE = "postResponse";
@@ -133,17 +136,7 @@ public class FlavorNetworkModel extends BaseModel {
     public final static String TYPE_USER_PROFILE = "userProfile";
     public final static String TYPE_GROUP_UPDATE = "groupUpdate";
     public final static String TYPE_INSTITUTE_UPDATE = "instituteUpdate";
-    //    @Inject
-//    AppUserModel mAppUserModel;
-//    @Inject
-//    FlavorBaseApiInterface mBaseApiInterface;
-//    @Inject
-//    FlavorFCMApiInterface mFCMApiInterface;
-//    /**
-//     * for download functions
-//     */
-//    @Inject
-//    FlavorDownloadApiInterface mDownloadApiInterface;
+    public final String TAG = this.getClass().getCanonicalName();
     @Inject
     AppUserModel mAppUserModel;
     @Inject
@@ -190,7 +183,7 @@ public class FlavorNetworkModel extends BaseModel {
 
     /*for mind spark user login*/
     @Inject
-    MindSparkLoginApiInterface mMindSparkLoginApiInterface;
+    MindSparkApiInterface mMindSparkApiInterface;
 
     public FlavorNetworkModel() {
         /*perform injection*/
@@ -446,7 +439,7 @@ public class FlavorNetworkModel extends BaseModel {
     }
 
     public Call<GroupPostsNResponse> fetchGroupPostNResponse(String objectId) {
-        return mDownloadApiInterface.fetchAllPostNResponse(objectId);
+        return mDownloadApiInterface.fetchGroupPostAndResponse(objectId);
     }
 
 
@@ -1136,17 +1129,23 @@ public class FlavorNetworkModel extends BaseModel {
 
     /*To login user on mind spark*/
     public Call<MindSparkLoginResponse> loginUserToMindSpark(MindSparkLoginRequest mindSparkLoginRequest) {
-        return mMindSparkLoginApiInterface.loginUserToMindSpark(mindSparkLoginRequest);
+        return mMindSparkApiInterface.loginUserToMindSpark(mindSparkLoginRequest);
     }
 
     /*To fetch question data from mind spark*/
     public Call<MindSparkQuestionParent> getMindSparkQuestion(MindSparkQuestionRequest mindSparkQuestionRequest) {
-        return mMindSparkLoginApiInterface.getMindSparkQuestion(mindSparkQuestionRequest);
+        return mMindSparkApiInterface.getMindSparkQuestion(mindSparkQuestionRequest);
     }
 
     /*To submit current question response and fetch new question*/
     public Call<MindSparkQuestionParent> submitAndFetchNewQuestion(MindSparkQuestionSubmit mindSparkQuestionSubmit) {
-        return mMindSparkLoginApiInterface.submitAndFetchNewQuestion(mindSparkQuestionSubmit);
+        return mMindSparkApiInterface.submitAndFetchNewQuestion(mindSparkQuestionSubmit);
+
+    }
+
+    /*To fetch all topic list of mind spark*/
+    public Call<MindSparkTopicResult> getMindSparkTopicResult(MindSparkTopicListRequest mindSparkTopicListRequest) {
+        return mMindSparkApiInterface.getMindSparkTopicResult(mindSparkTopicListRequest);
 
     }
 
@@ -1156,19 +1155,13 @@ public class FlavorNetworkModel extends BaseModel {
     }
 
     /*To fetch Learn, Reinforce, Practice and Apply by topicId and type*/
-    public Call<LRPAResult> fetchLRPA(LRPAPost lrpaPost) {
-        return mDownloadApiInterface.fetchLRPA(lrpaPost);
-
-    }
-
-    /*To fetch all topic list of mind spark*/
-    public Call<MindSparkTopicResult> getMindSparkTopicResult(MindSparkTopicListRequest mindSparkTopicListRequest) {
-        return mMindSparkLoginApiInterface.getMindSparkTopicResult(mindSparkTopicListRequest);
+    public Call<LRPAResult> fetchLRPA(LRPARequest lrpaRequest) {
+        return mDownloadApiInterface.fetchLRPA(lrpaRequest);
 
     }
 
     /*To fetch third party meta information*/
-    public Call<ThirdPartyMapping> fetchThirdPartyMapping(ThirdPartyMapping thirdPartyMapping) {
+    public Call<java.util.ArrayList<String>> fetchThirdPartyMapping(ThirdPartyMapping thirdPartyMapping) {
         return mDownloadApiInterface.fetchThirdPartyMapping(thirdPartyMapping);
 
     }
@@ -1198,6 +1191,11 @@ public class FlavorNetworkModel extends BaseModel {
         return mDownloadApiInterface.fetchEffortData(effortChartDataRequest);
     }
 
+    /*To fetch effort (time spent) data for all subjects*/
+    public Call<java.util.ArrayList<EffortvsPerformanceData>> fetchEffortvsPerformanceData() {
+        return mDownloadApiInterface.fetchEffortvsPerformanceData();
+    }
+
     /*To fetch effort (time spent) data for individual subject*/
     public Call<EffortChartDataParent> fetchSubjectWiseEffortData(EffortChartDataRequest effortChartDataRequest) {
         return mDownloadApiInterface.fetchSubjectWiseEffortData(effortChartDataRequest);
@@ -1206,6 +1204,7 @@ public class FlavorNetworkModel extends BaseModel {
     /*To fetch effort (time spent) weekly data for individual subject*/
     public Call<java.util.ArrayList<EffortChartDataWeekly>> fetchWeeklyEffortData(EffortChartDataRequest effortChartDataRequest) {
         return mDownloadApiInterface.fetchWeeklyEffortData(effortChartDataRequest);
+
     }
 
     /*To fetch student's achievements*/
@@ -1218,5 +1217,27 @@ public class FlavorNetworkModel extends BaseModel {
     public Call<ChartConfigurationParentData> fetchChartConfiguration(ChartConfigurationRequest chartConfigurationRequest) {
         return mDownloadApiInterface.fetchChartConfiguration(chartConfigurationRequest);
 
+    }
+
+    /*To fetch details of overdue and pending list of student homework*/
+    public Call<AssignedHomeworkParent> fetchHomework(String subjectId) {
+        return mDownloadApiInterface.fetchHomework(subjectId);
+
+    }
+
+    /*To fetch details of overdue and pending list of student homework*/
+    public Call<Homework> fetchHomeworkDetail(String homeworkId) {
+        return mDownloadApiInterface.fetchHomeworkDetail(homeworkId);
+
+    }
+
+    public Call<HomeworkSubmitResponse> submitHomework(String homeworkId) {
+        return mDownloadApiInterface.submitHomework(homeworkId);
+
+    }
+
+    /*To send status of application for various user activity*/
+    public Call<ResponseBody> checkUserStatus(String status) {
+        return mDownloadApiInterface.checkUserStatus(status);
     }
 }

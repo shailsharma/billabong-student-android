@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.learningnetwork.model;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.text.TextUtils;
@@ -482,57 +483,76 @@ public class PostDataLearningModel extends BaseModelLearningNetwork implements P
         return postResponse;
     }
 
-    public PostResponse setPostResponseForLike(PostData postData) {
-        PostResponse postResponse = new PostResponse();
-        PostByUser fromUser = new PostByUser();
-        fromUser.setName(mAppUserModel.getApplicationUser().getName());
-        fromUser.setId(mAppUserModel.getObjectId());
-        fromUser.setRole(AppUser.USERTYPE.TEACHER.toString());
-        postResponse.setFrom(fromUser);
-        postResponse.setTo(postData.getTo());
-        postResponse.setObjectId(null);
-        postResponse.setAlias(GeneralUtils.generateAlias("LNPostResponse", "" + mAppUserModel.getObjectId(), "" + System.currentTimeMillis()));
-        postResponse.setPostID(postData.getObjectId());
-        postResponse.setResources(new ArrayList<String>());
-        postResponse.setSyncStatus(SyncStatus.NOT_SYNC.toString());
-        postResponse.setText("");
-        postResponse.setType(PostResponseType.TYPE_RECOMMEND.getPostResponseType());
-        postResponse.setCreatedTime(DateUtils.getISO8601DateStringFromDate(new Date()));
-        postResponse.setUnread(false);
-        postResponse.setUpdatedTime(new Date());
-        postResponse.setAssignedPostResponseId(null);
-        postResponse.setAssignedBadgeId(null);
-        postResponse.setGroupId(postData.getTo().getId());
-        mPostResponseModel.saveObject(postResponse);
-        createInternalNotificationForPostResponse(postResponse, ACTION_TYPE_NETWORK_UPLOAD);
-        return postResponse;
+    @SuppressLint("CheckResult")
+    public void setPostResponseForLike(final PostData postData) {
+        Completable.complete().subscribeOn(Schedulers.io()).subscribe(new Action() {
+            @Override
+            public void run() throws Exception {
+                PostResponse postResponse = new PostResponse();
+                PostByUser fromUser = new PostByUser();
+                fromUser.setName(mAppUserModel.getApplicationUser().getName());
+                fromUser.setId(mAppUserModel.getObjectId());
+                fromUser.setRole(AppUser.USERTYPE.TEACHER.toString());
+                postResponse.setFrom(fromUser);
+                postResponse.setTo(postData.getTo());
+                postResponse.setObjectId(null);
+                postResponse.setAlias(GeneralUtils.generateAlias("LNPostResponse", "" + mAppUserModel.getObjectId(), "" + System.currentTimeMillis()));
+                postResponse.setPostID(postData.getObjectId());
+                postResponse.setResources(new ArrayList<String>());
+                postResponse.setSyncStatus(SyncStatus.NOT_SYNC.toString());
+                postResponse.setText("");
+                postResponse.setType(PostResponseType.TYPE_RECOMMEND.getPostResponseType());
+                postResponse.setCreatedTime(DateUtils.getISO8601DateStringFromDate(new Date()));
+                postResponse.setUnread(false);
+                postResponse.setUpdatedTime(new Date());
+                postResponse.setAssignedPostResponseId(null);
+                postResponse.setAssignedBadgeId(null);
+                postResponse.setGroupId(postData.getTo().getId());
+                mPostResponseModel.saveObject(postResponse);
+                createInternalNotificationForPostResponse(postResponse, ACTION_TYPE_NETWORK_UPLOAD);
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                throwable.printStackTrace();
+            }
+        });
     }
 
-    public PostResponse setPostResponseForComment(PostData postData, String postResponseText) {
-
-        PostResponse postResponse = new PostResponse();
-        PostByUser fromUser = new PostByUser();
-        fromUser.setName(mAppUserModel.getApplicationUser().getName());
-        fromUser.setId(mAppUserModel.getObjectId());
-        fromUser.setRole(setUserRole());
-        postResponse.setFrom(fromUser);
-        postResponse.setTo(postData.getTo());
-        postResponse.setObjectId(null);
-        postResponse.setPostID(postData.getObjectId());
-        postResponse.setResources(null);
-        postResponse.setText(postResponseText);
-        postResponse.setType(PostResponseType.TYPE_COMMENT.getPostResponseType());
-        postResponse.setCreatedTime(DateUtils.getISO8601DateStringFromDate(new Date()));
-        postResponse.setUpdatedTime(new Date());
-        postResponse.setGroupId(postData.getTo().getId());
-        postResponse.setAlias(GeneralUtils.generateAlias("PostResponse", fromUser.getId(), "" + System.currentTimeMillis()));
-        postResponse.setSyncStatus(SyncStatus.NOT_SYNC.toString());
-        postResponse.setoGDataList(CreatePostActivity.extractUrls(postResponseText));
-        postResponse = mPostResponseModel.saveObject(postResponse);
-        createInternalNotificationForPostResponse(postResponse, ACTION_TYPE_NETWORK_UPLOAD);
-        mRxBus.send(new NewPostResponseAdded());
-        mRxBus.send(new EventLatestCommentAdded(postData.getAlias()));
-        return postResponse;
+    @SuppressLint("CheckResult")
+    public void setPostResponseForComment(final PostData postData, final String postResponseText) {
+        Completable.complete().subscribeOn(Schedulers.io()).subscribe(new Action() {
+            @Override
+            public void run() throws Exception {
+                PostResponse postResponse = new PostResponse();
+                PostByUser fromUser = new PostByUser();
+                fromUser.setName(mAppUserModel.getApplicationUser().getName());
+                fromUser.setId(mAppUserModel.getObjectId());
+                fromUser.setRole(setUserRole());
+                postResponse.setFrom(fromUser);
+                postResponse.setTo(postData.getTo());
+                postResponse.setObjectId(null);
+                postResponse.setPostID(postData.getObjectId());
+                postResponse.setResources(null);
+                postResponse.setText(postResponseText);
+                postResponse.setType(PostResponseType.TYPE_COMMENT.getPostResponseType());
+                postResponse.setCreatedTime(DateUtils.getISO8601DateStringFromDate(new Date()));
+                postResponse.setUpdatedTime(new Date());
+                postResponse.setGroupId(postData.getTo().getId());
+                postResponse.setAlias(GeneralUtils.generateAlias("PostResponse", fromUser.getId(), "" + System.currentTimeMillis()));
+                postResponse.setSyncStatus(SyncStatus.NOT_SYNC.toString());
+                postResponse.setoGDataList(CreatePostActivity.extractUrls(postResponseText));
+                postResponse = mPostResponseModel.saveObject(postResponse);
+                createInternalNotificationForPostResponse(postResponse, ACTION_TYPE_NETWORK_UPLOAD);
+                mRxBus.send(new NewPostResponseAdded());
+                mRxBus.send(new EventLatestCommentAdded(postData.getAlias()));
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                throwable.printStackTrace();
+            }
+        });
     }
 
     private String setUserRole() {

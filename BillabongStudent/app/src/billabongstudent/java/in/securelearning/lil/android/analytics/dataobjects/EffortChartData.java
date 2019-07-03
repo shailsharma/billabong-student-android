@@ -1,14 +1,20 @@
 package in.securelearning.lil.android.analytics.dataobjects;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
 
-public class EffortChartData implements Serializable {
+public class EffortChartData implements Serializable, Comparable<EffortChartData> {
+
+
+
 
     @SerializedName("_id")
     @Expose
@@ -92,5 +98,20 @@ public class EffortChartData implements Serializable {
 
     public void setTopic(ArrayList<IdNameObject> topic) {
         mTopic = topic;
+    }
+
+
+//    @Override
+//    public int compare(EffortChartData t1, EffortChartData t2) {
+//        if (t1.getTotalTimeSpent() < t2.getTotalTimeSpent()) return -1;
+//        if (t1.getTotalTimeSpent() > t2.getTotalTimeSpent()) return 1;
+//        return 0;
+//    }
+
+    @Override
+    public int compareTo(@NonNull EffortChartData effortChartData) {
+        if (this.getTotalTimeSpent() < effortChartData.getTotalTimeSpent()) return 1;
+        if (this.getTotalTimeSpent() > effortChartData.getTotalTimeSpent()) return -1;
+        return 0;
     }
 }

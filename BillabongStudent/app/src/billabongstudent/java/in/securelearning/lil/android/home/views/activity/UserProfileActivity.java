@@ -100,7 +100,8 @@ public class UserProfileActivity extends AppCompatActivity {
     private LayoutUserProfileActivityBinding mBinding;
     private List<String> mEarnBadges = new java.util.ArrayList<>();
     public static String USER_ID = "userId";
-
+    private String userProfilePath = "";
+    boolean canFullView = false;
     @Inject
     RxBus mRxBus;
     @Inject
@@ -454,8 +455,9 @@ public class UserProfileActivity extends AppCompatActivity {
         setGrade(userProfile.getGrade());
         setSection(userProfile.getSection());
         setBoard(userProfile.getBoard());
-        setDesignation(userProfile.getDesignation(), userProfile.getDepartment());
+        setDesignation(userProfile.getDesignationId(), userProfile.getDepartment());
         setQualification(userProfile.getQualification());
+
 
         if (mBinding.layoutEmail.getVisibility() == View.GONE &&
                 mBinding.layoutContact.getVisibility() == View.GONE &&
@@ -468,6 +470,18 @@ public class UserProfileActivity extends AppCompatActivity {
             mBinding.layoutPersonalInfo.setVisibility(View.GONE);
         } else {
             mBinding.layoutPersonalInfo.setVisibility(View.VISIBLE);
+        }
+
+        int childCount = mBinding.layoutPersonalInfo.getChildCount();
+        int count = 0;
+        for (int i = 0; i < childCount; i++) {
+            if (mBinding.layoutPersonalInfo.getChildAt(i).getVisibility() == View.VISIBLE) {
+                count++;
+            }
+        }
+
+        if (count == 0) {
+            mBinding.layoutPersonalInfo.setVisibility(View.GONE);
         }
 
     }
@@ -614,7 +628,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private void setDesignation(String designation, String department) {
         if (isFromLoggedInUser) {
             if (!TextUtils.isEmpty(designation)) {
-                mBinding.layoutDesignation.setVisibility(View.VISIBLE);
+                mBinding.layoutDesignation.setVisibility(View.GONE);
                 mBinding.textViewUserDesignation.setText(designation);
 
             } else {
@@ -720,16 +734,13 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void setUserEmail(String email) {
-        if (isFromLoggedInUser) {
-            if (!TextUtils.isEmpty(email)) {
-                mBinding.layoutEmail.setVisibility(View.VISIBLE);
-                mBinding.textViewUserEmail.setText(email);
-            } else {
-                mBinding.layoutEmail.setVisibility(View.GONE);
-            }
+        if (!TextUtils.isEmpty(email)) {
+            mBinding.layoutEmail.setVisibility(View.VISIBLE);
+            mBinding.textViewUserEmail.setText(email);
         } else {
             mBinding.layoutEmail.setVisibility(View.GONE);
         }
+
 
     }
 

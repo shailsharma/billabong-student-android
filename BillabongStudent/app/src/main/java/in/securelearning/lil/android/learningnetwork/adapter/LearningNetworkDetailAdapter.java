@@ -509,7 +509,7 @@ public class LearningNetworkDetailAdapter extends RecyclerView.Adapter<LearningN
                     mPostDatas.get(position).getPostResponses().add(postResponse);
                     holder.mWriteCommentEdtTxt.setText("");
                     mLearningModel.savePostResponse(postResponse);
-                    SyncServiceHelper.startUploadPostResponse(mContext, postResponse.getAlias());
+                    //SyncServiceHelper.startUploadPostResponse(mContext, postResponse.getAlias());
                     notifyItemChanged(holder.getAdapterPosition());
                 }
 

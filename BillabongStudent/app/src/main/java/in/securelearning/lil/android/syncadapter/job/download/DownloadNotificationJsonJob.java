@@ -178,10 +178,10 @@ public class DownloadNotificationJsonJob {
 
                     if (notification.getObjectInfo().getType().equalsIgnoreCase(NotificationType.TYPE_POST_DATA.getNotificationType())) {
                         if (notification.getObjectInfo().getObjectId() != null && !notification.getObjectInfo().getObjectId().trim().isEmpty())
-                            JobCreator.createDownloadPostDataJob(notification.getObjectInfo().getObjectId(), notification.getObjectId()).execute();
+                            JobCreator.createDownloadPostDataJob(notification.getObjectInfo().getObjectId(), notification.getObjectId(),false).execute();
                     } else if (notification.getObjectInfo().getType().equalsIgnoreCase(NotificationType.TYPE_POST_RESPONSE.getNotificationType())) {
                         if (notification.getObjectInfo().getObjectId() != null && !notification.getObjectInfo().getObjectId().trim().isEmpty())
-                            JobCreator.createPostResponseDownloadJob(notification.getObjectInfo().getObjectId(), notification.getObjectId()).execute();
+                            JobCreator.createPostResponseDownloadJob(notification.getObjectInfo().getObjectId(), notification.getObjectId(),false).execute();
                     } else if (notification.getObjectInfo().getType().equalsIgnoreCase(NotificationType.TYPE_ASSIGNMENT_RESPONSE.getNotificationType())) {
                         if (notification.getObjectInfo().getObjectId() != null && !notification.getObjectInfo().getObjectId().trim().isEmpty())
                             JobCreator.createDownloadAssignmentResponseJob(notification.getObjectInfo().getObjectId(), notification.getObjectId()).execute();

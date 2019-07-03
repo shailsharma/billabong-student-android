@@ -32,7 +32,7 @@ import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.courses.InjectorCourses;
 import in.securelearning.lil.android.courses.models.ItemListModel;
 import in.securelearning.lil.android.courses.views.activity.CourseDetailActivity;
-import in.securelearning.lil.android.player.microlearning.view.activity.RapidLearningSectionListActivity;
+import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
 import in.securelearning.lil.android.syncadapter.events.CourseDeleteEvent;
 import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
 import io.reactivex.Completable;

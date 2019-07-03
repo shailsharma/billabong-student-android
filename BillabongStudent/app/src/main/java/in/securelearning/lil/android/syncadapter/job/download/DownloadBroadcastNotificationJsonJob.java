@@ -1,6 +1,7 @@
 package in.securelearning.lil.android.syncadapter.job.download;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
 
 import com.couchbase.lite.util.Log;
@@ -20,6 +21,7 @@ import in.securelearning.lil.android.syncadapter.dataobject.BroadcastNotificatio
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.model.JobModel;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
+import in.securelearning.lil.android.syncadapter.service.BroadcastNotificationService;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -75,7 +77,7 @@ public class DownloadBroadcastNotificationJsonJob {
         /*perform injection*/
         InjectorSyncAdapter.INSTANCE.getComponent().inject(this);
 
-       /*initialize id of the object to download*/
+        /*initialize id of the object to download*/
         this.id = objectId;
         this.timeStamp = timestamp;
     }
@@ -160,6 +162,8 @@ public class DownloadBroadcastNotificationJsonJob {
             if (SyncServiceHelper.refreshToken(mContext)) {
                 mLoginCount++;
                 execute();
+            } else {
+                mContext.stopService(new Intent(mContext, BroadcastNotificationService.class));
             }
         }
     }
@@ -173,7 +177,7 @@ public class DownloadBroadcastNotificationJsonJob {
 
         if (notifications != null && notifications.getNotificationData().size() > 0) {
             for (Notification notification : notifications.getNotificationData()) {
-                  /*set sync status of the object to json sync*/
+                /*set sync status of the object to json sync*/
                 //notification = setSyncStatus(notification, SyncStatus.JSON_SYNC);
 
                 /*save the object into database*/

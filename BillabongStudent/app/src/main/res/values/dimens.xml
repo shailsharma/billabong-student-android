@@ -9,4 +9,5 @@
     <dimen name="image_view_height_wide_24dp">196dp</dimen>
     <dimen name="event_item_height">170dp</dimen>
 
+    <dimen name="dividerHeight">0.5dp</dimen>
 </resources>

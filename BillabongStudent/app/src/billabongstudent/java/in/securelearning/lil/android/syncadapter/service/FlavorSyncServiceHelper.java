@@ -37,13 +37,13 @@ public class FlavorSyncServiceHelper {
         }
 
 
-        Completable.complete().observeOn(Schedulers.newThread())
-                .subscribe(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        AssignmentService.startSyncService(context);
-                    }
-                });
+//        Completable.complete().observeOn(Schedulers.newThread())
+//                .subscribe(new Action() {
+//                    @Override
+//                    public void run() throws Exception {
+//                        AssignmentService.startSyncService(context);
+//                    }
+//                });
 
     }
 

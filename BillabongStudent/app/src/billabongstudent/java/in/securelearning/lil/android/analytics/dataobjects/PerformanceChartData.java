@@ -1,11 +1,13 @@
 package in.securelearning.lil.android.analytics.dataobjects;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class PerformanceChartData implements Serializable {
+public class PerformanceChartData implements Serializable ,Comparable<PerformanceChartData>{
 
     @SerializedName("performance")
     @Expose
@@ -53,5 +55,12 @@ public class PerformanceChartData implements Serializable {
 
     public void setName(String name) {
         mName = name;
+    }
+
+    @Override
+    public int compareTo(@NonNull PerformanceChartData performanceChartData) {
+        if (this.getPerformance() < performanceChartData.getPerformance()) return 1;
+        if (this.getPerformance() > performanceChartData.getPerformance()) return -1;
+        return 0;
     }
 }

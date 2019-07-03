@@ -1,11 +1,13 @@
 package in.securelearning.lil.android.analytics.dataobjects;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class CoverageChartData implements Serializable {
+public class CoverageChartData implements Serializable, Comparable<CoverageChartData> {
 
     @SerializedName("coverage")
     @Expose
@@ -27,14 +29,12 @@ public class CoverageChartData implements Serializable {
     @Expose
     private String mName;
 
-    private float mProgress;
+    public void setCoverage(float coverage) {
+        mCoverage = coverage;
+    }
 
     public float getCoverage() {
         return mCoverage;
-    }
-
-    public void setCoverage(float coverage) {
-        mCoverage = coverage;
     }
 
     public float getPending() {
@@ -69,11 +69,13 @@ public class CoverageChartData implements Serializable {
         mName = name;
     }
 
-    public float getProgress() {
-        return (mCoverage / mTotal) * 100;
+    @Override
+    public int compareTo(@NonNull CoverageChartData coverageChartData) {
+//        float coverage_1 = (coverageChartData.getCoverage() / coverageChartData.getTotal()) * 100;
+//        float coverage_2 = (this.getCoverage() /this.getTotal()) * 100;
+        if (this.getCoverage() < coverageChartData.getCoverage()) return 1;
+        if (this.getCoverage() > coverageChartData.getCoverage()) return -1;
+        return 0;
     }
 
-    public void setProgress(float progress) {
-        mProgress = progress;
-    }
 }

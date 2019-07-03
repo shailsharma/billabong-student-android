@@ -47,6 +47,7 @@ import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.dataobjects.TrackingRoute;
 import in.securelearning.lil.android.base.dataobjects.Training;
 import in.securelearning.lil.android.base.dataobjects.UserBrowseHistory;
+import in.securelearning.lil.android.base.dataobjects.UserCourseProgress;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.dataobjects.UserRating;
 import in.securelearning.lil.android.base.dataobjects.VideoCourse;
@@ -55,6 +56,8 @@ import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.ArrayList;
 import in.securelearning.lil.android.courses.dataobject.CourseReview;
 import in.securelearning.lil.android.home.model.HomeModel;
+import in.securelearning.lil.android.player.dataobject.PracticeParent;
+import in.securelearning.lil.android.player.dataobject.PracticeQuestionResponse;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.dataobject.AboutCourseExt;
 import in.securelearning.lil.android.syncadapter.dataobject.ActivityData;
@@ -63,6 +66,7 @@ import in.securelearning.lil.android.syncadapter.dataobject.BlogResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.BroadcastNotification;
 import in.securelearning.lil.android.syncadapter.dataobject.CloudinaryFileInner;
 import in.securelearning.lil.android.syncadapter.dataobject.EnrollTrainingResponse;
+import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
 import in.securelearning.lil.android.syncadapter.dataobject.LearningMapAggregatesParams;
 import in.securelearning.lil.android.syncadapter.dataobject.MasteryRequestObject;
 import in.securelearning.lil.android.syncadapter.dataobject.PasswordChange;
@@ -87,7 +91,7 @@ import in.securelearning.lil.android.syncadapter.dataobject.SearchResourceParams
 import in.securelearning.lil.android.syncadapter.dataobject.SearchResourcesResults;
 import in.securelearning.lil.android.syncadapter.dataobject.SearchResults;
 import in.securelearning.lil.android.syncadapter.dataobject.ServerDataPackage;
-import in.securelearning.lil.android.syncadapter.dataobject.SkillMasteryQuestionGetData;
+import in.securelearning.lil.android.syncadapter.dataobject.SkillMasteryQuestionData;
 import in.securelearning.lil.android.syncadapter.dataobject.StudentGradeMapping;
 import in.securelearning.lil.android.syncadapter.dataobject.TeacherGradeMapping;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfile;
@@ -118,14 +122,16 @@ import retrofit2.Call;
 public class NetworkModel extends BaseModel {
     public final String TAG = this.getClass().getCanonicalName();
     public final static String TYPE_TRACKING = "tracking";
-    public final static String TYPE_POST_DATA = "postData";
-    public final static String TYPE_POST_RESPONSE = "postResponse";
-    public final static String TYPE_ASSIGNMENT = "assignment";
-    public final static String TYPE_ASSIGNMENT_RESPONSE = "assignmentResponse";
+    public final static String TYPE_POST_DATA = "LearningNetworkPost";
+    public final static String TYPE_POST_RESPONSE = "LearningNetworkPostResponse";
+    public final static String TYPE_HOMEWORK = "homework";
+    public final static String TYPE_ASSIGNMENT_RESPONSE = "AssignmentResponse";
     public final static String TYPE_CALENDAR_EVENT = "calendarEvent";
     public final static String TYPE_USER_PROFILE = "userProfile";
     public final static String TYPE_GROUP_UPDATE = "groupUpdate";
     public final static String TYPE_INSTITUTE_UPDATE = "instituteUpdate";
+    public final static String TYPE_USER_ARCHIVED = "user_archived";
+
     @Inject
     AppUserModel mAppUserModel;
     @Inject
@@ -435,8 +441,8 @@ public class NetworkModel extends BaseModel {
         return mDownloadApiInterface.getStudentProfile();
     }
 
-    public Call<GroupPostsNResponse> fetchGroupPostNResponse(String objectId) {
-        return mDownloadApiInterface.fetchAllPostNResponse(objectId);
+    public Call<GroupPostsNResponse> fetchGroupPostAndResponse(String objectId) {
+        return mDownloadApiInterface.fetchGroupPostAndResponse(objectId);
     }
 
 
@@ -490,8 +496,22 @@ public class NetworkModel extends BaseModel {
         return mSearchApiInterface.getPopUp(objectId);
     }
 
+    public Call<ResponseBody> getActivityChecklistJson(String id) {
+        return mDownloadApiInterface.getActivityChecklistJson(id);
+
+    }
+
     public Call<ResponseBody> fetchYoutubeVideoDuration(String objectId) {
         return mDownloadApiInterface.getYoutubeVideoDuration(objectId);
+    }
+
+    public Call<ResponseBody> fetchCourseProgress(String objectId) {
+        return mDownloadApiInterface.fetchCourseProgress(objectId);
+    }
+
+    public Call<ResponseBody> saveCourseProgress(RequestBody request) {
+        return mDirectUploadApiInterface.saveCourseProgress(request);
+
     }
 
     /**
@@ -866,10 +886,6 @@ public class NetworkModel extends BaseModel {
         return mDirectUploadApiInterface.uploadQuizResponse(request);
     }
 
-//    public Call<CourseAnalytics> uploadCourseUserLog(CourseAnalytics courseAnalytics) {
-//        return mNewUploadApiInterface.uploadCourseUserLog(courseAnalytics);
-//    }
-
     public Call<UserBrowseHistory> uploadUserBrowseHistoryLog(UserBrowseHistory userBrowseHistory) {
         return mNewUploadApiInterface.uploadUserBrowseHistory(userBrowseHistory);
     }
@@ -1076,11 +1092,11 @@ public class NetworkModel extends BaseModel {
         return mSearchApiInterface.getQuestionFromSkill(strSkillId, skip, limit);
     }
 
-    public Call<SkillMasteryQuestionGetData> fetchBySkillAndComplexityLevel(MasteryRequestObject masteryRequestObject) {
+    public Call<SkillMasteryQuestionData> fetchBySkillAndComplexityLevel(MasteryRequestObject masteryRequestObject) {
         return mSearchApiInterface.fetchBySkillAndComplexityLevel(masteryRequestObject);
     }
 
-    public Call<java.util.ArrayList<SkillMasteryQuestionGetData>> fetchBySkillListAndComplexityLevel(MasteryRequestObject masteryRequestObject) {
+    public Call<java.util.ArrayList<SkillMasteryQuestionData>> fetchBySkillListAndComplexityLevel(MasteryRequestObject masteryRequestObject) {
         return mSearchApiInterface.fetchBySkillListAndComplexityLevel(masteryRequestObject);
     }
 
@@ -1190,8 +1206,8 @@ public class NetworkModel extends BaseModel {
         return mDownloadApiInterface.changePassword(passwordChange);
     }
 
-    public Call<MicroLearningCourse> getMicroLearningCourse(String id) {
-        return mDownloadApiInterface.getMicroLearningCourse(id);
+    public Call<MicroLearningCourse> getRapidLearningCourse(String id) {
+        return mDownloadApiInterface.getRapidLearningCourse(id);
     }
 
     public Call<java.util.ArrayList<MicroLearningCourse>> getMicroLearningCourseList() {
@@ -1206,10 +1222,6 @@ public class NetworkModel extends BaseModel {
         return mDirectUploadApiInterface.uploadAnnotation(bookAnnotation);
     }
 
-    public Call<ResponseBody> getActivityChecklistJson(String id) {
-        return mDownloadApiInterface.getActivityChecklistJson(id);
-    }
-
     public Call<ResponseBody> savePopupActivity(RequestBody requestBody) {
         return mDirectUploadApiInterface.savePopupActivity(requestBody);
     }
@@ -1220,6 +1232,10 @@ public class NetworkModel extends BaseModel {
 
     public Call<ResponseBody> deleteAnnotation(String id) {
         return mUploadApiInterface.deleteAnnotation(id);
+    }
+
+    public Call<ResponseBody> saveBookmark(RequestBody requestBody) {
+        return mDirectUploadApiInterface.saveBookmark(requestBody);
     }
 
     public Call<java.util.ArrayList<AnalysisActivityData>> fetchActivityData(String subid, String startdate, String enddate) {
@@ -1250,5 +1266,20 @@ public class NetworkModel extends BaseModel {
         return mDownloadApiInterface.getaggregatedResponseCount(subid);
     }
 
+    /*To upload user course progress each time object created*/
+    public Call<ResponseBody> uploadUserCourseProgress(UserCourseProgress userCourseProgress) {
+        return mUploadApiInterface.uploadUserCourseProgress(userCourseProgress);
+    }
+
+    /*To fetch questions for the practice*/
+    public Call<PracticeQuestionResponse> fetchQuestions(PracticeParent practiceParent) {
+        return mDownloadApiInterface.fetchQuestions(practiceParent);
+
+    }
+
+    /*Api to fetch learning network groups*/
+    public Call<java.util.ArrayList<IdNameObject>> fetchNetworkGroup(int skip, int limit) {
+        return mDownloadApiInterface.fetchNetworkGroup(skip, limit);
+    }
 
 }

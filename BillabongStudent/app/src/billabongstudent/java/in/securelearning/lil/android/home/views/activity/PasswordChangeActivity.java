@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.home.views.activity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,13 +19,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
+import java.util.Objects;
+
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutChangePasswordBinding;
-import in.securelearning.lil.android.base.model.AppUserModel;
+import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
+import in.securelearning.lil.android.login.events.PasswordChangeEvent;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
 import in.securelearning.lil.android.syncadapter.dataobject.PasswordChange;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
@@ -44,17 +48,30 @@ import retrofit2.Response;
  */
 
 public class PasswordChangeActivity extends AppCompatActivity {
-    @Inject
-    AppUserModel mAppUserModel;
+
     @Inject
     NetworkModel mNetworkModel;
+    @Inject
+    RxBus mRxBus;
+
     LayoutChangePasswordBinding mBinding;
 
-    private String mNewPassword, mConfirmPassword;
+    private String mConfirmPassword;
+    private static final String USER_ID = "userId";
+    private static final String SUCCESS_MESSAGE = "successMessage";
+    private static final String TOOLBAR_TITLE = "toolbarTitle";
+    private static final String FROM = "from";
+    private String mUserId;
+    private String mSuccessMessage;
+    private String mToolbarTitle;
+    private int mFrom;
+    public static final int FROM_LOGIN = 0;
+    public static final int FROM_OTHER = 1;
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        SyncServiceHelper.performUserLogout(PasswordChangeActivity.this, getString(R.string.messagePleaseWait));
+        finish();
     }
 
     @Override
@@ -62,33 +79,48 @@ public class PasswordChangeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_change_password);
+        handleIntent();
         setUpToolbar();
         initializeUiAndListeners();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public static Intent getStartIntent(Context context) {
+    public static Intent getStartIntent(Context context, String userId, String passwordChangeMessage, String toolbarTitle, int from) {
         Intent intent = new Intent(context, PasswordChangeActivity.class);
+        intent.putExtra(USER_ID, userId);
+        intent.putExtra(SUCCESS_MESSAGE, passwordChangeMessage);
+        intent.putExtra(TOOLBAR_TITLE, toolbarTitle);
+        intent.putExtra(FROM, from);
         return intent;
+    }
+
+    private void handleIntent() {
+        if (getIntent() != null) {
+            mUserId = getIntent().getStringExtra(USER_ID);
+            mSuccessMessage = getIntent().getStringExtra(SUCCESS_MESSAGE);
+            mToolbarTitle = getIntent().getStringExtra(TOOLBAR_TITLE);
+            mFrom = getIntent().getIntExtra(FROM, FROM_LOGIN);
+
+        }
     }
 
     private void setUpToolbar() {
         getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimary));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle(R.string.labelChangePassword);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        setTitle(mToolbarTitle);
     }
 
     private void initializeUiAndListeners() {
 
+        mBinding.buttonChangePassword.setText(getString(R.string.done));
         mBinding.editTextNewPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -132,13 +164,14 @@ public class PasswordChangeActivity extends AppCompatActivity {
                     return;
                 } else {
                     hideSoftKeyboard();
-                    performPasswordChange(mConfirmPassword);
+                    performPasswordChange(mUserId, mConfirmPassword);
                 }
             }
         });
     }
 
-    private void performPasswordChange(final String password) {
+    @SuppressLint("CheckResult")
+    private void performPasswordChange(final String userId, final String password) {
         if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
             final ProgressDialog progressDialog = ProgressDialog.show(this, "", getString(R.string.messagePleaseWait), false);
             progressDialog.setCancelable(true);
@@ -147,7 +180,7 @@ public class PasswordChangeActivity extends AppCompatActivity {
                 @Override
                 public void subscribe(ObservableEmitter<ResponseBody> e) throws Exception {
                     PasswordChange passwordChange = new PasswordChange();
-                    passwordChange.setId(mAppUserModel.getObjectId());
+                    passwordChange.setId(userId);
                     passwordChange.setPassword(password);
                     Call<ResponseBody> call = mNetworkModel.changePassword(passwordChange);
                     Response<ResponseBody> response = call.execute();
@@ -181,20 +214,10 @@ public class PasswordChangeActivity extends AppCompatActivity {
                         public void accept(ResponseBody responseBody) throws Exception {
                             progressDialog.dismiss();
                             if (responseBody != null) {
-                                new AlertDialog.Builder(PasswordChangeActivity.this)
-                                        .setMessage(R.string.messagePasswordChangeSuccess)
-                                        .setCancelable(false)
-                                        .setNeutralButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                dialogInterface.dismiss();
-                                                finish();
+                                showAlert(mSuccessMessage);
 
-                                            }
-
-                                        }).show();
                             } else {
-                                SnackBarUtils.showSuccessSnackBar(getBaseContext(), mBinding.layoutPassword, getString(R.string.messagePasswordChangeFailed));
+                                SnackBarUtils.showSnackBar(getBaseContext(), mBinding.layoutPassword, getString(R.string.messageUnableToGetData), SnackBarUtils.UNSUCCESSFUL);
                             }
                         }
                     }, new Consumer<Throwable>() {
@@ -211,25 +234,45 @@ public class PasswordChangeActivity extends AppCompatActivity {
 
     }
 
+    private void showAlert(String message) {
+        new AlertDialog.Builder(PasswordChangeActivity.this)
+                .setMessage(message)
+                .setCancelable(false)
+                .setNeutralButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        mRxBus.send(new PasswordChangeEvent());
+                        if (mFrom == FROM_LOGIN) {
+                            SyncServiceHelper.performUserLogout(PasswordChangeActivity.this, getString(R.string.messagePleaseWait));
+                        }
+                        finish();
+
+
+                    }
+
+                }).show();
+    }
+
     private boolean validatePassword() {
-        mNewPassword = mBinding.editTextNewPassword.getText().toString().trim();
-        if (mNewPassword.isEmpty()) {
+        String newPassword = mBinding.editTextNewPassword.getText().toString().trim();
+        if (newPassword.isEmpty()) {
             mBinding.inputLayoutNewPassword.setError(getString(R.string.error_password));
             requestFocus(mBinding.editTextNewPassword);
             return false;
-        } else if (mNewPassword.equals(mNewPassword.toLowerCase())) {
+        } else if (newPassword.equals(newPassword.toLowerCase())) {
             mBinding.inputLayoutNewPassword.setError(getString(R.string.error_password_upper_case));
             requestFocus(mBinding.editTextNewPassword);
             return false;
-        } else if (mNewPassword.equals(mNewPassword.toUpperCase())) {
+        } else if (newPassword.equals(newPassword.toUpperCase())) {
             mBinding.inputLayoutNewPassword.setError(getString(R.string.error_password_lower_case));
             requestFocus(mBinding.editTextNewPassword);
             return false;
-        } else if (!hasNumericCharacter(mNewPassword)) {
+        } else if (!hasNumericCharacter(newPassword)) {
             mBinding.inputLayoutNewPassword.setError(getString(R.string.error_password_numeric_character));
             requestFocus(mBinding.editTextNewPassword);
             return false;
-        } else if (mNewPassword.length() < 8) {
+        } else if (newPassword.length() < 8) {
             mBinding.inputLayoutNewPassword.setError(getString(R.string.error_password_length_eigth));
             requestFocus(mBinding.editTextNewPassword);
             return false;
@@ -262,7 +305,7 @@ public class PasswordChangeActivity extends AppCompatActivity {
                 return true;
             }
         }
-        
+
         return false;
     }
 

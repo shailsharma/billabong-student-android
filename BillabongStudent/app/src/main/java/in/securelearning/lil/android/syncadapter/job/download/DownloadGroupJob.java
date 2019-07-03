@@ -16,14 +16,22 @@ import retrofit2.Call;
  */
 public class DownloadGroupJob extends BaseDownloadJob<Group> {
     private final String TAG = this.getClass().getCanonicalName();
+    private String mGroupType;
 
     public DownloadGroupJob(String objectId) {
         this(objectId, true, false);
     }
 
-    public DownloadGroupJob(String objectId, boolean doJsonRefresh, boolean isValidationEnabled) {
+    private DownloadGroupJob(String objectId, boolean doJsonRefresh, boolean isValidationEnabled) {
         super(objectId, "", doJsonRefresh, isValidationEnabled);
 
+        /*perform injection*/
+        InjectorSyncAdapter.INSTANCE.getComponent().inject(this);
+    }
+
+    public DownloadGroupJob(String objectId, String groupType) {
+        super(objectId, groupType, true, false);
+        mGroupType = groupType;
         /*perform injection*/
         InjectorSyncAdapter.INSTANCE.getComponent().inject(this);
     }
@@ -93,6 +101,16 @@ public class DownloadGroupJob extends BaseDownloadJob<Group> {
                 group.setNameStudent(in.securelearning.lil.android.base.utils.TextUtils.join(" ", grade, section));
             }
         }
+
+        /*For network and training group differentiation adding groupType to group */
+        if (!TextUtils.isEmpty(mGroupType)) {
+            group.setGroupType(mGroupType);
+        }
+
+//        Group localGroup = mJobModel.getGroupByObjectId(group.getObjectId());
+//        if (localGroup != null && !TextUtils.isEmpty(localGroup.getObjectId())) {
+//            group.setNetworkDataDownloaded(localGroup.isNetworkDataDownloaded());
+//        }
 
         return mJobModel.saveGroup(group);
     }

@@ -13,8 +13,8 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.base.rxbus.RxBus;
-import in.securelearning.lil.android.player.microlearning.InjectorPlayer;
-import in.securelearning.lil.android.player.microlearning.events.SpeakCompletedEvent;
+import in.securelearning.lil.android.player.InjectorPlayer;
+import in.securelearning.lil.android.player.events.SpeakCompletedEvent;
 
 /**
  * Created by Chaitendra on 28-06-2018.

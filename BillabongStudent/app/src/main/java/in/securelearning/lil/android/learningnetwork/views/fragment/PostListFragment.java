@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.learningnetwork.views.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -134,7 +135,6 @@ public class PostListFragment extends Fragment {
     private static final String GROUP_ID = "groupId";
     private static final String COLOR = "color";
     public static final String REQUEST_FAVORITE_LIST = "requestFavoriteList";
-    private int mColumnCount = 1;
     private int mColor = 0, mAlphaColor = 0;
     private String mGroupId = "";
     private boolean mIsFavoriteListVisible = false;
@@ -142,10 +142,8 @@ public class PostListFragment extends Fragment {
     private Disposable mSubscription;
     private int mSkip = 0;
     private int mLimit = 10;
-    private String mPostType = "";
     private PostAdapter mPostAdapter;
     private Group mGroup;
-    private boolean isTeacher = false;
     private ArrayList<LILBadges> mLILBadges = new ArrayList<>();
     private Dialog mBadgeDialog;
     private int mNewPostReceivedCount = 0;
@@ -185,9 +183,9 @@ public class PostListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InjectorLearningNetwork.INSTANCE.getLearningNetworkComponent().inject(this);
-        isTeacher = PermissionPrefsCommon.getPostBadgeAssignPermission(mContext);
+        boolean isTeacher = PermissionPrefsCommon.getPostBadgeAssignPermission(mContext);
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            int columnCount = getArguments().getInt(ARG_COLUMN_COUNT);
             mGroupId = getArguments().getString(GROUP_ID);
             mIsFavoriteListVisible = getArguments().getBoolean(REQUEST_FAVORITE_LIST);
             mPostDataLearningModel.deleteAllNewPostByGroupId(mGroupId);
@@ -227,6 +225,7 @@ public class PostListFragment extends Fragment {
 
     private void listenRxBusEvent() {
         mSubscription = mRxBus.toFlowable().observeOn(Schedulers.computation()).subscribe(new Consumer<Object>() {
+            @SuppressLint("CheckResult")
             @Override
             public void accept(final Object event) throws Exception {
                 if (event instanceof PostRemovedFromFavorite) {
@@ -410,7 +409,7 @@ public class PostListFragment extends Fragment {
 
     private void setDefault() {
         mNewPostReceivedCount = 0;
-        mPostType = "";
+        String postType = "";
         mSkip = 0;
         initializeRecyclerView(new ArrayList<PostData>());
         mPostDataLearningModel.clearLearningNetworkGroupNotification(getActivity(), mGroupId.hashCode());
@@ -452,13 +451,13 @@ public class PostListFragment extends Fragment {
     }
 
     private void initializeRecyclerView(ArrayList<PostData> posts) {
-        LinearLayoutManager layoutManager = null;
+        LinearLayoutManager layoutManager;
         mBinding.recyclerView.getItemAnimator().setChangeDuration(0);
         ((DefaultItemAnimator) mBinding.recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         if (getActivity() != null) {
             layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             mBinding.recyclerView.setLayoutManager(layoutManager);
-            mPostAdapter = new PostAdapter(posts, mGroupId);
+            mPostAdapter = new PostAdapter(posts);
             mBinding.recyclerView.setAdapter(mPostAdapter);
             final LinearLayoutManager finalLayoutManager = layoutManager;
             mDataScrollListener = new RecyclerView.OnScrollListener() {
@@ -495,12 +494,10 @@ public class PostListFragment extends Fragment {
     }
 
     private class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
-        private ArrayList<PostData> mPostData = new ArrayList<>();
-        private String mSelectedGroupId = "";
+        private ArrayList<PostData> mPostData;
 
-        public PostAdapter(ArrayList<PostData> posts, String groupId) {
+        PostAdapter(ArrayList<PostData> posts) {
             this.mPostData = posts;
-            this.mSelectedGroupId = groupId;
         }
 
         @Override
@@ -513,15 +510,23 @@ public class PostListFragment extends Fragment {
         public void onBindViewHolder(final PostAdapter.ViewHolder holder, int position) {
             final PostData postData = mPostData.get(position);
 
-            setPostText(postData.getPostText(), holder.mBinding);
+            TextViewMore.setPostText(mContext, postData.getPostText(), holder.mBinding.textViewPostText, holder.mBinding.includeTextViewMoreLess.textViewMoreLess);
+
+            holder.mBinding.textViewPostText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    TextViewMore.copyTextToClipboard(mContext, postData.getPostText());
+                    return false;
+                }
+            });
             setUserName(postData.getFrom().getName(), holder.mBinding.textViewUserName);
             setPostedTime(postData.getCreatedTime(), holder.mBinding.textViewPostTime);
             setUserThumbnail(postData.getFrom().getId(), holder.mBinding.imageViewUserImage);
             setPostType(postData.getPostType(), holder.mBinding.imageViewPostType);
             setPostResources(postData, holder.mBinding);
             setOgCard(postData, holder.mBinding);
-            setBadgePermissions(holder.mBinding, postData, position);
-            setAssignedBadgeToPost(postData.getObjectId(), holder.mBinding.imageButtonAssignBadge, holder.mBinding.imageViewAssignedBadge);
+            //setBadgePermissions(holder.mBinding, postData, position);
+            //setAssignedBadgeToPost(postData.getObjectId(), holder.mBinding.imageButtonAssignBadge, holder.mBinding.imageViewAssignedBadge);
             setLikeViews(postData, holder.mBinding);
             setCommentViews(postData, holder.mBinding);
             setLatestCommentOnPost(postData, holder.mBinding);
@@ -555,6 +560,7 @@ public class PostListFragment extends Fragment {
 
         }
 
+        @SuppressLint("CheckResult")
         private void setOgCard(final PostData postData, final LayoutItemPostBinding binding) {
             if (!TextUtils.isEmpty(postData.getObjectId())) {
                 if (postData.getLocalOgDataList().size() > 0) {
@@ -563,47 +569,50 @@ public class PostListFragment extends Fragment {
                     if (GeneralUtils.isNetworkAvailable(mContext)) {
                         if (postData.getoGDataList().size() > 0) {
                             try {
-                                mOgUtils.getOgDataFromServer(postData.getoGDataList()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<OGMetaDataResponse>() {
-                                    @Override
-                                    public void accept(OGMetaDataResponse ogData) throws Exception {
-                                        Result response = new Result();
-                                        Result responseToSet = null;
-                                        for (int i = 0; i < ogData.getResults().size(); i++) {
-                                            response = ogData.getResults().get(i);
-                                            postData.getLocalOgDataList().put(response.getUrl(), response); // Here we are making Map for url as key and image as value
-                                            if (response.getOg().equals(true)) {
-                                                if (responseToSet == null) {
-                                                    responseToSet = response;
-                                                    postData.setPositiveResult(responseToSet);
+                                mOgUtils.getOgDataFromServer(postData.getoGDataList())
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new Consumer<OGMetaDataResponse>() {
+                                            @Override
+                                            public void accept(OGMetaDataResponse ogData) throws Exception {
+                                                Result response = new Result();
+                                                Result responseToSet = null;
+                                                for (int i = 0; i < ogData.getResults().size(); i++) {
+                                                    response = ogData.getResults().get(i);
+                                                    postData.getLocalOgDataList().put(response.getUrl(), response); // Here we are making Map for url as key and image as value
+                                                    if (response.getOg().equals(true)) {
+                                                        if (responseToSet == null) {
+                                                            responseToSet = response;
+                                                            postData.setPositiveResult(responseToSet);
+                                                        }
+                                                    }
                                                 }
-                                            }
-                                        }
-                                        if (responseToSet != null) {
-                                            final Result finalResponseToSet = responseToSet;
-                                            Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
-                                                @Override
-                                                public void run() {
+                                                if (responseToSet != null) {
+                                                    final Result finalResponseToSet = responseToSet;
+                                                    Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
+                                                        @Override
+                                                        public void run() {
 
-                                                    setOgViewForPost(binding, finalResponseToSet);
+                                                            setOgViewForPost(binding, finalResponseToSet);
+                                                        }
+                                                    });
+                                                } else {
+                                                    postData.setPositiveResult(response);
+                                                    Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
+                                                        @Override
+                                                        public void run() {
+                                                            binding.includeOgLayout.layoutOgCard.setVisibility(View.GONE);
+                                                        }
+                                                    });
                                                 }
-                                            });
-                                        } else if (response != null) {
-                                            postData.setPositiveResult(response);
-                                            Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
-                                                @Override
-                                                public void run() {
-                                                    binding.includeOgLayout.layoutOgCard.setVisibility(View.GONE);
-                                                }
-                                            });
-                                        }
-                                        mPostDataLearningModel.savePostForOg(postData);
-                                    }
-                                }, new Consumer<Throwable>() {
-                                    @Override
-                                    public void accept(Throwable throwable) throws Exception {
-                                        throwable.printStackTrace();
-                                    }
-                                });
+                                                mPostDataLearningModel.savePostForOg(postData);
+                                            }
+                                        }, new Consumer<Throwable>() {
+                                            @Override
+                                            public void accept(Throwable throwable) throws Exception {
+                                                throwable.printStackTrace();
+                                            }
+                                        });
                             } catch (Exception t) {
                                 t.printStackTrace();
                                 Log.e("OgIconData", "err fetching getOgIconData" + t.toString());
@@ -807,10 +816,10 @@ public class PostListFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
 
-                    if (GeneralUtils.isNetworkAvailable(getContext())) {
-                        getContext().startActivity(UserProfileActivity.getStartIntent(userId, getContext()));
+                    if (GeneralUtils.isNetworkAvailable(mContext)) {
+                        getContext().startActivity(UserProfileActivity.getStartIntent(userId, mContext));
                     } else {
-                        ToastUtils.showToastAlert(getContext(), getContext().getString(R.string.connect_internet));
+                        ToastUtils.showToastAlert(mContext, getContext().getString(R.string.connect_internet));
                     }
 
                 }
@@ -1158,7 +1167,7 @@ public class PostListFragment extends Fragment {
 
         }
 
-        public void updatePost(String alias) {
+        void updatePost(String alias) {
             for (int i = 0; i < mPostData.size(); i++) {
                 if (mPostData.get(i).getAlias().equals(alias)) {
                     notifyItemChanged(i);
@@ -1166,7 +1175,7 @@ public class PostListFragment extends Fragment {
             }
         }
 
-        public void updatePostObjectId(String alias, String objectId) {
+        void updatePostObjectId(String alias, String objectId) {
             if (!TextUtils.isEmpty(alias) && !TextUtils.isEmpty(objectId)) {
                 for (int i = 0; i < mPostData.size(); i++) {
                     if (mPostData.get(i).getAlias().equals(alias)) {
@@ -1177,10 +1186,10 @@ public class PostListFragment extends Fragment {
             }
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder {
             LayoutItemPostBinding mBinding;
 
-            public ViewHolder(LayoutItemPostBinding binding) {
+            ViewHolder(LayoutItemPostBinding binding) {
                 super(binding.getRoot());
                 mBinding = binding;
             }

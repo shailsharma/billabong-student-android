@@ -48,6 +48,9 @@ public class PermissionPrefsCommon extends PermissionPrefs {
     private final static String TRAINING_JOIN = "training.join";
     private final static String NAVIGATION_LEARNING_MAP = "navigation.learning.map";
 
+    private final static String IS_LEARNER = "configuration.institute.learner";
+    public static final String IS_RAN_BEFORE ="is_ran_before" ;
+
     public static boolean getNetworkViewPermission(Context context) {
         return getSharePreference(context).getBoolean(NETWORK_VIEW_PERMISSION, false);
     }
@@ -162,5 +165,13 @@ public class PermissionPrefsCommon extends PermissionPrefs {
 
     public static boolean getNavigationLearningMapPermission(Context context) {
         return getSharePreference(context).getBoolean(NAVIGATION_LEARNING_MAP, false);
+    }
+
+    public static boolean isLearner(Context context) {
+        return getSharePreference(context).getBoolean(IS_LEARNER, false);
+    }
+
+    public static boolean isRanBefore(Context context) {
+        return getSharePreference(context).getBoolean(IS_RAN_BEFORE, false);
     }
 }

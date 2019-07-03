@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -62,7 +62,7 @@
                 android:paddingTop="@dimen/padding_12dp"
                 android:paddingRight="@dimen/padding_16dp"
                 android:paddingBottom="@dimen/padding_12dp"
-                android:text="5 In Progress"
+                tools:text="5 In Progress"
                 android:textColor="@color/colorWhite"
                 />
 
@@ -81,7 +81,7 @@
                 android:paddingTop="@dimen/padding_12dp"
                 android:paddingRight="@dimen/padding_16dp"
                 android:paddingBottom="@dimen/padding_12dp"
-                android:text="1 Due Soon"
+                tools:text="1 Due Soon"
                 android:textColor="@color/colorWhite"
                 />
 
@@ -98,7 +98,7 @@
                 android:paddingTop="@dimen/padding_12dp"
                 android:paddingRight="@dimen/padding_16dp"
                 android:paddingBottom="@dimen/padding_12dp"
-                android:text="2 Overdue"
+                tools:text="2 Overdue"
                 android:textColor="@color/colorWhite"
                 />
 
