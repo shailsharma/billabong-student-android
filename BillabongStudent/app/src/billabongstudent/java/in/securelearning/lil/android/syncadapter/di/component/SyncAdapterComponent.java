@@ -26,11 +26,12 @@ import in.securelearning.lil.android.syncadapter.job.download.DownloadCurriculum
 import in.securelearning.lil.android.syncadapter.job.download.DownloadCustomSectionJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadDigitalBookJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadGroupJob;
-import in.securelearning.lil.android.syncadapter.job.download.DownloadGroupPostsNResponseJob;
+import in.securelearning.lil.android.syncadapter.job.download.DownloadGroupPostsAndResponseJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadInteractiveImageJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadInteractiveVideoJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadLearningDataJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadLearningMapListJob;
+import in.securelearning.lil.android.syncadapter.job.download.DownloadNetworkGroupJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadNotificationJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadPackageJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadPerformanceCountDataJsonJob;
@@ -78,7 +79,7 @@ import in.securelearning.lil.android.syncadapter.job.validation.ValidateGroupPos
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateInteractiveImageJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateInteractiveVideoJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateLearningNetworkPostDataJob;
-import in.securelearning.lil.android.syncadapter.job.validation.ValidateLearningNetworkPostReponseJob;
+import in.securelearning.lil.android.syncadapter.job.validation.ValidateLearningNetworkPostResponseJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateNotificationJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidatePopUpsJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateQuizJob;
@@ -137,7 +138,7 @@ public interface SyncAdapterComponent extends BaseComponent {
 
     void inject(DownloadQuizJsonJob job);
 
-    void inject(DownloadGroupPostsNResponseJob job);
+    void inject(DownloadGroupPostsAndResponseJob job);
 
     void inject(DownloadPostResponseJsonJob job);
 
@@ -173,7 +174,7 @@ public interface SyncAdapterComponent extends BaseComponent {
 
     void inject(ValidateGroupPostNResponseJob job);
 
-    void inject(ValidateLearningNetworkPostReponseJob job);
+    void inject(ValidateLearningNetworkPostResponseJob job);
 
     void inject(ValidateUserJob job);
 
@@ -316,4 +317,6 @@ public interface SyncAdapterComponent extends BaseComponent {
     void inject(DownloadRecentlyReadDataJsonJob downloadRecentlyReadDataJsonJob);
 
     void inject(DownloadPerformanceCountDataJsonJob downloadPerformanceCountDataJsonJob);
+
+    void inject(DownloadNetworkGroupJob downloadNetworkGroupJob);
 }

@@ -55,6 +55,9 @@ import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.ArrayList;
 import in.securelearning.lil.android.courses.dataobject.CourseReview;
 import in.securelearning.lil.android.home.model.HomeModel;
+import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
+import in.securelearning.lil.android.homework.dataobject.Homework;
+import in.securelearning.lil.android.homework.dataobject.HomeworkSubmitResponse;
 import in.securelearning.lil.android.mindspark.dataobjects.MindSparkLoginRequest;
 import in.securelearning.lil.android.mindspark.dataobjects.MindSparkLoginResponse;
 import in.securelearning.lil.android.mindspark.dataobjects.MindSparkQuestionParent;
@@ -124,7 +127,6 @@ import retrofit2.Call;
  * Model for Network Access.
  */
 public class FlavorNetworkModel extends BaseModel {
-    public final String TAG = this.getClass().getCanonicalName();
     public final static String TYPE_TRACKING = "tracking";
     public final static String TYPE_POST_DATA = "postData";
     public final static String TYPE_POST_RESPONSE = "postResponse";
@@ -134,7 +136,7 @@ public class FlavorNetworkModel extends BaseModel {
     public final static String TYPE_USER_PROFILE = "userProfile";
     public final static String TYPE_GROUP_UPDATE = "groupUpdate";
     public final static String TYPE_INSTITUTE_UPDATE = "instituteUpdate";
-
+    public final String TAG = this.getClass().getCanonicalName();
     @Inject
     AppUserModel mAppUserModel;
     @Inject
@@ -437,7 +439,7 @@ public class FlavorNetworkModel extends BaseModel {
     }
 
     public Call<GroupPostsNResponse> fetchGroupPostNResponse(String objectId) {
-        return mDownloadApiInterface.fetchAllPostNResponse(objectId);
+        return mDownloadApiInterface.fetchGroupPostAndResponse(objectId);
     }
 
 
@@ -1215,5 +1217,27 @@ public class FlavorNetworkModel extends BaseModel {
     public Call<ChartConfigurationParentData> fetchChartConfiguration(ChartConfigurationRequest chartConfigurationRequest) {
         return mDownloadApiInterface.fetchChartConfiguration(chartConfigurationRequest);
 
+    }
+
+    /*To fetch details of overdue and pending list of student homework*/
+    public Call<AssignedHomeworkParent> fetchHomework(String subjectId) {
+        return mDownloadApiInterface.fetchHomework(subjectId);
+
+    }
+
+    /*To fetch details of overdue and pending list of student homework*/
+    public Call<Homework> fetchHomeworkDetail(String homeworkId) {
+        return mDownloadApiInterface.fetchHomeworkDetail(homeworkId);
+
+    }
+
+    public Call<HomeworkSubmitResponse> submitHomework(String homeworkId) {
+        return mDownloadApiInterface.submitHomework(homeworkId);
+
+    }
+
+    /*To send status of application for various user activity*/
+    public Call<ResponseBody> checkUserStatus(String status) {
+        return mDownloadApiInterface.checkUserStatus(status);
     }
 }

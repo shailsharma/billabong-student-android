@@ -1,10 +1,10 @@
 package in.securelearning.lil.android.syncadapter.service;
 
+import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 import in.securelearning.lil.android.base.Injector;
 import in.securelearning.lil.android.base.utils.AppPrefs;
@@ -38,11 +38,9 @@ public class BroadcastNotificationService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         final ConnectivityManager connectivityManager = (ConnectivityManager) getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        final NetworkInfo info = connectivityManager.getActiveNetworkInfo();
         try {
 
             if (intent != null) {
-//                if (mSyncServiceModel.isDownloadAllowed()) {
                 final String action = intent.getAction();
                 if (ACTION_SYNC.equals(action)) {
                     handleActionSync();
@@ -72,9 +70,11 @@ public class BroadcastNotificationService extends IntentService {
 
     }
 
+    @SuppressLint("CheckResult")
     public void handleActionDownloadBroadcastNotification() {
         /*create download notification job */
 //        Log.e(TAG, "Start download broadcast notification job");
+
         if (GeneralUtils.isNetworkAvailable(BroadcastNotificationService.this)) {
             JobCreator.createDownloadBroadcastNotificationJsonJob(Injector.INSTANCE.getComponent().appUserModel().getObjectId(), AppPrefs.getLastBroadcastNotificationTime(BroadcastNotificationService.this)).execute();
 
@@ -94,14 +94,16 @@ public class BroadcastNotificationService extends IntentService {
                             SyncService.startActionDownloadBroadcastNotification(getBaseContext());
                         }
                     });
+
             Completable.complete()
                     .observeOn(Schedulers.newThread())
                     .subscribe(new Action() {
                         @Override
                         public void run() throws Exception {
-                            AssignmentService.startActionDownloadBroadcastNotification(getBaseContext());
+                            // AssignmentService.startActionDownloadBroadcastNotification(getBaseContext());
                         }
                     });
+
             Completable.complete()
                     .observeOn(Schedulers.newThread())
                     .subscribe(new Action() {

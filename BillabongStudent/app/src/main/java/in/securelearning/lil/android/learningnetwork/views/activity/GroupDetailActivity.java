@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.learningnetwork.views.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -31,19 +32,23 @@ import in.securelearning.lil.android.app.databinding.LayoutItemGroupMembersBindi
 import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.dataobjects.GroupMember;
 import in.securelearning.lil.android.base.dataobjects.Moderator;
+import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
+import in.securelearning.lil.android.home.views.activity.StudentProfileActivity;
 import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.learningnetwork.InjectorLearningNetwork;
-import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Chaitendra on 11-Aug-17.
@@ -55,14 +60,11 @@ public class GroupDetailActivity extends AppCompatActivity {
     GroupModel mGroupModel;
     @Inject
     RxBus mRxBus;
+    @Inject
+    AppUserModel mAppUserModel;
 
-    private Disposable mDisposable;
     private LayoutActivityGroupDetailBinding mBinding;
     public static final String GROUP_ID = "groupId";
-    private String mGroupId = "";
-    private String mGroupTitle = "";
-    private Group mGroup;
-    private int mColor = 0;
 
     public static Intent getIntentForGroupDetail(Context context, String groupId) {
         Intent intent = new Intent(context, GroupDetailActivity.class);
@@ -76,54 +78,70 @@ public class GroupDetailActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mDisposable != null) {
-            mDisposable.dispose();
-        }
-    }
-
-    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InjectorLearningNetwork.INSTANCE.getLearningNetworkComponent().inject(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_activity_group_detail);
-        setupSubscription();
         handleIntent();
     }
 
+    @SuppressLint("CheckResult")
     private void handleIntent() {
 
         if (getIntent() != null) {
-            mGroupId = getIntent().getStringExtra(GROUP_ID);
-            mGroup = mGroupModel.getGroupFromUidSync(mGroupId);
-            mGroupTitle = mGroup.getGroupName();
-            if (!TextUtils.isEmpty(mGroup.getNameTeacher())) {
-                mGroupTitle = mGroup.getNameTeacher();
-            }
-            PrefManager.SubjectExt subjectExt = null;
-            if (mGroup.getSubject() != null && !TextUtils.isEmpty(mGroup.getSubject().getId())) {
-                HashMap<String, PrefManager.SubjectExt> mSubjectMap = PrefManager.getSubjectMap(getBaseContext());
-                subjectExt = mSubjectMap.get(mGroup.getSubject().getId());
-            }
-            if (subjectExt == null) {
-                subjectExt = PrefManager.getDefaultSubject();
-            }
-            mColor = subjectExt.getTextColor();
-            setAppBarUi(mColor);
-            setGroupDetail();
-            setGroupMembersAndModerators();
+            final String groupId = getIntent().getStringExtra(GROUP_ID);
+            mBinding.progressBar.setVisibility(View.VISIBLE);
+
+            Observable.create(new ObservableOnSubscribe<Group>() {
+                @Override
+                public void subscribe(ObservableEmitter<Group> emitter) throws Exception {
+                    Group group = mGroupModel.getGroupFromUidSync(groupId);
+                    if (group != null) {
+                        emitter.onNext(group);
+                    } else {
+                        emitter.onError(new Exception(getString(R.string.error_something_went_wrong)));
+                    }
+                    emitter.onComplete();
+                }
+            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Group>() {
+                        @Override
+                        public void accept(Group group) throws Exception {
+                            mBinding.progressBar.setVisibility(View.GONE);
+                            mBinding.layoutContent.setVisibility(View.VISIBLE);
+
+                            PrefManager.SubjectExt subjectExt = null;
+                            if (group.getSubject() != null && !TextUtils.isEmpty(group.getSubject().getId())) {
+                                HashMap<String, PrefManager.SubjectExt> mSubjectMap = PrefManager.getSubjectMap(getBaseContext());
+                                subjectExt = mSubjectMap.get(group.getSubject().getId());
+                            }
+                            if (subjectExt == null) {
+                                subjectExt = PrefManager.getDefaultSubject();
+                            }
+                            int color = subjectExt.getTextColor();
+                            setAppBarUi(group, color);
+                            setGroupDetail(group);
+                            setGroupMembersAndModerators(group);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            mBinding.progressBar.setVisibility(View.GONE);
+                            throwable.printStackTrace();
+                        }
+                    });
+
+
         }
     }
 
-    private void setGroupDetail() {
-        setGroupBanner();
-        setGroupIcon();
-        setGroupInfo();
+    private void setGroupDetail(Group group) {
+        setGroupBanner(group);
+        setGroupIcon(group);
+        setGroupInfo(group);
     }
 
-    private void setAppBarUi(int color) {
-
+    private void setAppBarUi(Group group, int color) {
 
 
 //        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -146,7 +164,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         setSupportActionBar(mBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setNameOnToolbar();
+        setNameOnToolbar(group.getGroupName());
         mBinding.collapsingToolbar.setTitleEnabled(false);
         mBinding.collapsingToolbar.setContentScrimColor(color);
         mBinding.collapsingToolbar.setStatusBarScrimColor(color);
@@ -154,18 +172,14 @@ public class GroupDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-
-
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void setNameOnToolbar() {
+    private void setNameOnToolbar(final String groupName) {
         mBinding.appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
 
             boolean isVisible = true;
@@ -177,7 +191,7 @@ public class GroupDetailActivity extends AppCompatActivity {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    mBinding.toolbar.setTitle(mGroupTitle);
+                    mBinding.toolbar.setTitle(groupName);
                     isVisible = true;
                 } else if (isVisible) {
 
@@ -189,46 +203,46 @@ public class GroupDetailActivity extends AppCompatActivity {
 
     }
 
-    private void setGroupInfo() {
-        mBinding.textViewGroupName.setText(mGroupTitle);
-        mBinding.textViewGroupPurpose.setText(mGroup.getPurpose());
+    private void setGroupInfo(Group group) {
+        mBinding.textViewGroupName.setText(group.getGroupName());
+        mBinding.textViewGroupPurpose.setText(group.getPurpose());
     }
 
-    private void setGroupIcon() {
-        if (mGroup.getThumbnail().getLocalUrl() != null && !mGroup.getThumbnail().getLocalUrl().isEmpty()) {
-            Picasso.with(getBaseContext()).load(mGroup.getThumbnail().getLocalUrl()).transform(new CircleTransform()).placeholder(R.drawable.audience_g_w).resize(300, 300).centerCrop().into(mBinding.imageViewGroupIcon);
-        } else if (mGroup.getThumbnail().getUrl() != null && !mGroup.getThumbnail().getUrl().isEmpty()) {
-            Picasso.with(getBaseContext()).load(mGroup.getThumbnail().getUrl()).transform(new CircleTransform()).placeholder(R.drawable.audience_g_w).resize(300, 300).centerCrop().into(mBinding.imageViewGroupIcon);
-        } else if (mGroup.getThumbnail().getThumb() != null && !mGroup.getThumbnail().getThumb().isEmpty()) {
-            Picasso.with(getBaseContext()).load(mGroup.getThumbnail().getThumb()).transform(new CircleTransform()).placeholder(R.drawable.audience_g_w).resize(300, 300).centerCrop().into(mBinding.imageViewGroupIcon);
+    private void setGroupIcon(Group group) {
+        if (group.getThumbnail().getLocalUrl() != null && !group.getThumbnail().getLocalUrl().isEmpty()) {
+            Picasso.with(getBaseContext()).load(group.getThumbnail().getLocalUrl()).transform(new CircleTransform()).placeholder(R.drawable.audience_g_w).resize(300, 300).centerCrop().into(mBinding.imageViewGroupIcon);
+        } else if (group.getThumbnail().getUrl() != null && !group.getThumbnail().getUrl().isEmpty()) {
+            Picasso.with(getBaseContext()).load(group.getThumbnail().getUrl()).transform(new CircleTransform()).placeholder(R.drawable.audience_g_w).resize(300, 300).centerCrop().into(mBinding.imageViewGroupIcon);
+        } else if (group.getThumbnail().getThumb() != null && !group.getThumbnail().getThumb().isEmpty()) {
+            Picasso.with(getBaseContext()).load(group.getThumbnail().getThumb()).transform(new CircleTransform()).placeholder(R.drawable.audience_g_w).resize(300, 300).centerCrop().into(mBinding.imageViewGroupIcon);
         } else {
             Picasso.with(getBaseContext()).load(R.drawable.audience_g_w).transform(new CircleTransform()).into(mBinding.imageViewGroupIcon);
         }
     }
 
-    private void setGroupBanner() {
+    private void setGroupBanner(Group group) {
 
-        if (mGroup.getBanner().getLocalUrl() != null && !mGroup.getBanner().getLocalUrl().isEmpty()) {
-            Picasso.with(getBaseContext()).load(mGroup.getBanner().getLocalUrl()).fit().into(mBinding.imageViewGroupBanner);
-        } else if (mGroup.getBanner().getUrl() != null && !mGroup.getBanner().getUrl().isEmpty()) {
-            Picasso.with(getBaseContext()).load(mGroup.getBanner().getUrl()).fit().into(mBinding.imageViewGroupBanner);
-        } else if (mGroup.getBanner().getThumb() != null && !mGroup.getBanner().getThumb().isEmpty()) {
-            Picasso.with(getBaseContext()).load(mGroup.getBanner().getThumb()).fit().into(mBinding.imageViewGroupBanner);
+        if (group.getBanner().getLocalUrl() != null && !group.getBanner().getLocalUrl().isEmpty()) {
+            Picasso.with(getBaseContext()).load(group.getBanner().getLocalUrl()).fit().centerCrop().into(mBinding.imageViewGroupBanner);
+        } else if (group.getBanner().getUrl() != null && !group.getBanner().getUrl().isEmpty()) {
+            Picasso.with(getBaseContext()).load(group.getBanner().getUrl()).fit().centerCrop().into(mBinding.imageViewGroupBanner);
+        } else if (group.getBanner().getThumb() != null && !group.getBanner().getThumb().isEmpty()) {
+            Picasso.with(getBaseContext()).load(group.getBanner().getThumb()).fit().centerCrop().into(mBinding.imageViewGroupBanner);
         } else {
             mBinding.imageViewGroupBanner.setVisibility(View.GONE);
         }
 
     }
 
-    private void setGroupMembersAndModerators() {
+    private void setGroupMembersAndModerators(Group group) {
         mBinding.recyclerViewMembers.setNestedScrollingEnabled(false);
         mBinding.recyclerViewModerators.setNestedScrollingEnabled(false);
         mBinding.recyclerViewMembers.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false));
         mBinding.recyclerViewModerators.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false));
         ArrayList<GroupMember> groupMembers = new ArrayList<>();
         ArrayList<Moderator> moderators = new ArrayList<>();
-        groupMembers.addAll(mGroup.getMembers());
-        moderators.addAll(mGroup.getModerators());
+        groupMembers.addAll(group.getMembers());
+        moderators.addAll(group.getModerators());
 
         MemberAdapter memberAdapter = new MemberAdapter(groupMembers);
         mBinding.recyclerViewMembers.setAdapter(memberAdapter);
@@ -237,16 +251,6 @@ public class GroupDetailActivity extends AppCompatActivity {
         mBinding.recyclerViewModerators.setAdapter(moderatorAdapter);
     }
 
-    private void setupSubscription() {
-        mDisposable = mRxBus.toFlowable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Object>() {
-            @Override
-            public void accept(Object event) throws Exception {
-                if (event instanceof ObjectDownloadComplete && ((ObjectDownloadComplete) event).getObjectClass().equals(Group.class) && ((ObjectDownloadComplete) event).getId().equals(mGroupId)) {
-                    handleIntent();
-                }
-            }
-        });
-    }
 
     private class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder> {
         ArrayList<GroupMember> mGroupMembers = new ArrayList<>();
@@ -273,7 +277,11 @@ public class GroupDetailActivity extends AppCompatActivity {
                 public void onClick(View view) {
 
                     if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-                        startActivity(UserProfileActivity.getStartIntent(groupMember.getObjectId(), getBaseContext()));
+                        if (groupMember.getObjectId().equals(mAppUserModel.getObjectId())) {
+                            startActivity(StudentProfileActivity.getStartIntent(mAppUserModel.getObjectId(), getBaseContext()));
+                        } else {
+                            startActivity(UserProfileActivity.getStartIntent(groupMember.getObjectId(), getBaseContext()));
+                        }
                     } else {
                         SnackBarUtils.showNoInternetSnackBar(getBaseContext(), view);
                     }
@@ -338,8 +346,11 @@ public class GroupDetailActivity extends AppCompatActivity {
                 public void onClick(View view) {
 
                     if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-                        Intent mIntent = UserProfileActivity.getStartIntent(moderator.getId(), getBaseContext());
-                        startActivity(mIntent);
+                        if (moderator.getId().equals(mAppUserModel.getObjectId())) {
+                            startActivity(StudentProfileActivity.getStartIntent(mAppUserModel.getObjectId(), getBaseContext()));
+                        } else {
+                            startActivity(UserProfileActivity.getStartIntent(moderator.getId(), getBaseContext()));
+                        }
                     } else {
                         ToastUtils.showToastAlert(getBaseContext(), getString(R.string.connect_internet));
                     }

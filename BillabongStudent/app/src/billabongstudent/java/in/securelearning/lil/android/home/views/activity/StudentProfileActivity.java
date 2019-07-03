@@ -91,6 +91,7 @@ public class StudentProfileActivity extends AppCompatActivity {
         /*Setting status bar style immersive*/
         mFlavorHomeModel.setImmersiveStatusBar(getWindow());
 
+
     }
 
 
@@ -117,12 +118,9 @@ public class StudentProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -159,7 +157,7 @@ public class StudentProfileActivity extends AppCompatActivity {
                             subscriber.onNext(userProfile);
                             subscriber.onComplete();
 
-                        } else if (response.code() == 401 && SyncServiceHelper.refreshToken(getBaseContext())) {
+                        } else if (response != null && response.code() == 401 && SyncServiceHelper.refreshToken(getBaseContext())) {
 
                             Response<StudentProfile> response2 = appUserCall.clone().execute();
                             if (response2 != null && response2.isSuccessful()) {
@@ -235,8 +233,6 @@ public class StudentProfileActivity extends AppCompatActivity {
         setGradeSection(userProfile.getGrade(), userProfile.getSection());
         setAssociation(userProfile.getAssociation(), userProfile.getBranchDetail());
         setFullUserName(userProfile.getName());
-        // setAddress(userProfile);
-        //setInterest(userProfile);
 
         mBinding.imageViewEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -254,12 +250,13 @@ public class StudentProfileActivity extends AppCompatActivity {
     }
 
     private void setAssociation(Institution association, BranchDetail branchDetail) {
-        if (association != null && !TextUtils.isEmpty(association.getName()) && branchDetail != null && !TextUtils.isEmpty(branchDetail.getName())) {
-            String text = association.getName() + ", " + branchDetail.getName();
-            mBinding.textViewAddress.setText(text);
-        } else if (association != null && !TextUtils.isEmpty(association.getName())) {
-            mBinding.textViewAddress.setText(association.getName());
-        } else if (branchDetail != null && !TextUtils.isEmpty(branchDetail.getName())) {
+//        if (association != null && !TextUtils.isEmpty(association.getName()) && branchDetail != null && !TextUtils.isEmpty(branchDetail.getName())) {
+//            String text = association.getName() + ", " + branchDetail.getName();
+//            mBinding.textViewAddress.setText(text);
+//        } else if (association != null && !TextUtils.isEmpty(association.getName())) {
+//            mBinding.textViewAddress.setText(association.getName());
+//        } else
+        if (branchDetail != null && !TextUtils.isEmpty(branchDetail.getName())) {
             String text = branchDetail.getName();
             mBinding.textViewAddress.setText(text);
         } else {
@@ -269,7 +266,7 @@ public class StudentProfileActivity extends AppCompatActivity {
 
     private void setGradeSection(Grade grade, GradeSectionSuper section) {
         if (grade != null && !TextUtils.isEmpty(grade.getName()) && section != null && !TextUtils.isEmpty(section.getName())) {
-            String text = "Grade " + grade.getName() + ">>" + "Section " + section.getName();
+            String text = "Grade - " + grade.getName() + " (" + section.getName() + ")";
             mBinding.textViewGradeSection.setText(text);
         } else {
             mBinding.textViewGradeSection.setVisibility(View.GONE);

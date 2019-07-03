@@ -102,6 +102,7 @@ public class NotificationUtil {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationUtil.NOTIFICATION_CHANNEL_ID)
                 .setDefaults(NotificationCompat.FLAG_ONLY_ALERT_ONCE)
                 .setSmallIcon(R.drawable.notification_icon)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
                 .setAutoCancel(true)
                 .setColor(getSmallBackgroundColor(context))
                 .setContentTitle(title)
@@ -115,6 +116,7 @@ public class NotificationUtil {
         NotificationManager notifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(NotificationUtil.NOTIFICATION_CHANNEL_ID, NotificationUtil.NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+            assert notifyMgr != null;
             notifyMgr.createNotificationChannel(channel);
         }
         notifyMgr.notify((int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE), builder.build());

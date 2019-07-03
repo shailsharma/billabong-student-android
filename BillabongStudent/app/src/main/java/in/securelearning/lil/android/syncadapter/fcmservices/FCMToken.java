@@ -48,18 +48,12 @@ public class FCMToken extends FirebaseInstanceIdService {
 
     public static void sendRegistrationToServer(Context context, String token) throws IOException {
 
-        // TODO: Implement this method to send token to your app server only for logged in user
-        // TODO: only when userid / email id for user available in preferences.
-        // TODO: 17-11-2017  for login type = 1
-        // TODO: 17-11-2017  API call will require authorization
-
         if (BuildConfig.IS_FCM_APP_SERVER_SYNC_ENABLED) {
 
             if (!TextUtils.isEmpty(token) && AppPrefs.isLoggedIn(context)) {
                 NetworkModel networkModel = InjectorSyncAdapter.INSTANCE.getComponent().networkModel();
                 RefreshFCMToken refreshFCMToken = new RefreshFCMToken();
                 refreshFCMToken.setToken(token);
-                refreshFCMToken.setType(1);
                 refreshFCMToken.setUserDeviceType(context.getString(R.string.labelAndroid));
                 Call<ResponseBody> responseBodyCall = networkModel.sendRegistrationToServer(refreshFCMToken);
                 Response<ResponseBody> response = responseBodyCall.execute();

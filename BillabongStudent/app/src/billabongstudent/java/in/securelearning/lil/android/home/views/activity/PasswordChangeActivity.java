@@ -70,7 +70,7 @@ public class PasswordChangeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        SyncServiceHelper.performUserLogout(PasswordChangeActivity.this);
+        SyncServiceHelper.performUserLogout(PasswordChangeActivity.this, getString(R.string.messagePleaseWait));
         finish();
     }
 
@@ -242,9 +242,9 @@ public class PasswordChangeActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
+                        mRxBus.send(new PasswordChangeEvent());
                         if (mFrom == FROM_LOGIN) {
-                            mRxBus.send(new PasswordChangeEvent());
-                            SyncServiceHelper.performUserLogout(PasswordChangeActivity.this);
+                            SyncServiceHelper.performUserLogout(PasswordChangeActivity.this, getString(R.string.messagePleaseWait));
                         }
                         finish();
 

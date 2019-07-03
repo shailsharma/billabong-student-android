@@ -21,7 +21,7 @@ import in.securelearning.lil.android.base.dataobjects.FavouriteResource;
 import in.securelearning.lil.android.base.events.GenerateSubmissionEvent;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
-import in.securelearning.lil.android.player.microlearning.InjectorPlayer;
+import in.securelearning.lil.android.player.InjectorPlayer;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 
 import static in.securelearning.lil.android.base.utils.ImageUtils.getScaledBitmapFromPath;

@@ -64,7 +64,7 @@ import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.dataobjects.Category;
 import in.securelearning.lil.android.home.dataobjects.CategorySelection;
 import in.securelearning.lil.android.home.model.SearchModel;
-import in.securelearning.lil.android.player.microlearning.view.activity.RapidLearningSectionListActivity;
+import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
 import in.securelearning.lil.android.provider.SearchSuggestionProvider;
 import in.securelearning.lil.android.syncadapter.dataobject.AboutCourseExt;
 import in.securelearning.lil.android.syncadapter.dataobject.LearningLevelResult;

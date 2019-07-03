@@ -417,7 +417,7 @@ public class PostAssignmentJob extends BaseUploadJob<Assignment> {
     private void uploadToFCM(Assignment assignment) {
         if (assignment.getAssignedGroups().size() > 0) {
             try {
-                Call<MessageResponse> call = mNetworkModel.sendDataUsingFCM(assignment.getAssignedGroups().get(0).getId(), "New Assignment", NetworkModel.TYPE_ASSIGNMENT, assignment.getObjectId(), null);
+                Call<MessageResponse> call = mNetworkModel.sendDataUsingFCM(assignment.getAssignedGroups().get(0).getId(), "New Assignment", NetworkModel.TYPE_HOMEWORK, assignment.getObjectId(), null);
 
                 Response<MessageResponse> response = call.execute();
                 if (response.isSuccessful()) {

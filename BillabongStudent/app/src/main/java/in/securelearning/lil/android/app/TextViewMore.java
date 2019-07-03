@@ -2,6 +2,7 @@ package in.securelearning.lil.android.app;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Html;
@@ -20,9 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.xml.sax.XMLReader;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import in.securelearning.lil.android.base.customchrometabutils.LinkTransformationMethod;
 
@@ -74,24 +72,49 @@ public class TextViewMore {
         return "";
     }
 
-    public static void setPostText(final Context context, final String stringData, final TextView textView, final TextView viewMoreLessTextView) {
+    public static void setPostText(final Context context, final String postText, final TextView textView, final TextView viewMoreLessTextView) {
 
-        Spanned htmlDescription = Html.fromHtml(stringData);
-        String stringWithOutExtraSpace = new String(htmlDescription.toString()).trim();
-        final CharSequence string = htmlDescription.subSequence(0, stringWithOutExtraSpace.length());
+        //String message = (postText).replaceAll("\\n", "<br>");
+        /*Convert text to spanned for to maintain html format*/
+        Spanned html = Html.fromHtml(postText);
 
-        textView.setTransformationMethod(new LinkTransformationMethod(context,
-                Linkify.WEB_URLS |
-                        Linkify.EMAIL_ADDRESSES |
-                        Linkify.PHONE_NUMBERS, R.color.colorLearningNetworkPrimary));
+        /*Trim training white space from spanned text*/
+        String stringWithOutExtraSpace = html.toString().trim();
+
+        /*Convert to CharSequence and removed whitespace from at the end*/
+        CharSequence charSequence = html.subSequence(0, stringWithOutExtraSpace.length());
+
+        /*Again get CharSequence value in spanned*/
+        html = (Spanned) charSequence;
+
+        /*Make links highlighted and clickable*/
+        textView.setTransformationMethod(new LinkTransformationMethod(context, Linkify.ALL, R.color.colorLearningNetworkPrimary));
         textView.setMovementMethod(LinkMovementMethod.getInstance());
 
-        final SpannableString fullString = getHashTags(context, string.toString());
+        /*Get list of urls from generic method*/
+        //ArrayList<String> urls = new ArrayList<>(Arrays.asList(GeneralUtils.getArrayOfAllUrls(String.valueOf(html))));
 
-        if (fullString.length() > 200) {
-            String truncate = string.toString().substring(0, 200) + context.getString(R.string.stringTripleDot);
-            final SpannableString lessString = getHashTags(context, truncate);
-            textView.setText(lessString);
+        /*Creating SpannableString from html(spanned) to customize html text*/
+        SpannableString customSpannableString = new SpannableString(html);
+
+        // for (String url : urls) {
+        /*Here changing size of url text*/
+        //      String updatedUrl = url.trim();
+        //     customSpannableString.setSpan(new RelativeSizeSpan(0.5f), html.toString().indexOf(updatedUrl), html.toString().indexOf(updatedUrl) + url.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        //  }
+
+        /*Getting hashTags from getHashTags()*/
+        final SpannableString postSpannableString = getHashTags(context, customSpannableString);
+
+        textView.setText(postSpannableString, TextView.BufferType.SPANNABLE);
+
+        if (postSpannableString.length() > 200) {
+
+            // String truncate = string.toString().substring(0, 200) + context.getString(R.string.stringTripleDot);
+            //final SpannableString lessString = getHashTags(context, truncate);
+
+            textView.setEllipsize(TextUtils.TruncateAt.END);
+            textView.setMaxLines(4);
             viewMoreLessTextView.setVisibility(TextView.VISIBLE);
             viewMoreLessTextView.setText(context.getString(R.string.labelReadMore));
 
@@ -99,23 +122,26 @@ public class TextViewMore {
                 @Override
                 public void onClick(View view) {
                     if (viewMoreLessTextView.getText().toString().trim().equals(context.getString(R.string.labelReadMore))) {
-                        textView.setText(fullString);
+                        textView.setText(postSpannableString, TextView.BufferType.SPANNABLE);
+                        textView.setEllipsize(null);
+                        textView.setMaxLines(Integer.MAX_VALUE);
                         viewMoreLessTextView.setText(context.getString(R.string.labelReadLess));
-
                     } else {
-                        textView.setText(lessString);
+                        textView.setText(postSpannableString, TextView.BufferType.SPANNABLE);
+                        textView.setEllipsize(TextUtils.TruncateAt.END);
+                        textView.setMaxLines(4);
                         viewMoreLessTextView.setText(context.getString(R.string.labelReadMore));
                     }
 
                 }
             });
         } else {
-            textView.setText(fullString);
             viewMoreLessTextView.setVisibility(TextView.GONE);
         }
     }
 
-    public static SpannableString getHashTags(final Context context, String stringData) {
+
+    private static SpannableString getHashTags(final Context context, SpannableString stringData) {
         final SpannableString string = new SpannableString(stringData);
 
         int start = -1;
@@ -128,14 +154,13 @@ public class TextViewMore {
                         i++;
                     }
 
-                    final String tag = stringData.substring(start, i);
-                    string.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, i,
-                            Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                    final String tag = String.valueOf(stringData).substring(start, i);
+                    string.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, i, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
                     string.setSpan(new ClickableSpan() {
 
                         @Override
-                        public void onClick(View widget) {
+                        public void onClick(@NonNull View widget) {
                             Log.e("Hash", String.format("Clicked", tag));
 
                         }
@@ -248,11 +273,11 @@ public class TextViewMore {
 
     public static String stripHtml(String html) {
         String value = html.replaceAll("<.*?>", "");
-        return value.replaceAll("&nbsp;", " ").replaceAll("&[a-zA-Z0-9]+;", "").replaceAll("#000000", "#ffffff").trim();
+        return value.replaceAll("&nbsp;", " ").replaceAll("&[a-zA-Z0-9]+;", "").trim();
     }
 
     public static String stripHtmlForQuiz(String html) {
-        return html.replaceAll("&nbsp;", " ").replaceAll("&[a-zA-Z0-9]+;", "").replaceAll("#000000", "#ffffff").trim();
+        return html.replaceAll("&nbsp;", " ").replaceAll("&[a-zA-Z0-9]+;", "").trim();
     }
 
     public static void copyTextToClipboard(Context context, String text) {

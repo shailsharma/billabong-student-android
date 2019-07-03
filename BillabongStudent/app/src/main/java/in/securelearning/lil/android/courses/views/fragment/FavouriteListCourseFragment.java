@@ -41,7 +41,7 @@ import in.securelearning.lil.android.courses.InjectorCourses;
 import in.securelearning.lil.android.courses.models.CoursesModel;
 import in.securelearning.lil.android.courses.models.ItemListModel;
 import in.securelearning.lil.android.courses.views.activity.CourseDetailActivity;
-import in.securelearning.lil.android.player.microlearning.view.activity.RapidLearningSectionListActivity;
+import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
 import in.securelearning.lil.android.syncadapter.events.FavoriteAboutCourseUpdate;
 import io.reactivex.Completable;
 import io.reactivex.Observable;

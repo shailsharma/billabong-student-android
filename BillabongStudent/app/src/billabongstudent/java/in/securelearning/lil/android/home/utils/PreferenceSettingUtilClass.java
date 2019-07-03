@@ -40,6 +40,7 @@ public class PreferenceSettingUtilClass {
     private final static String NOTIFICATIONS_ASSIGNMENT_KEY = "notifications_assignment";
     private final static String NOTIFICATIONS_BUS_ARRIVING_KEY = "notifications_bus_arriving";
     private final static String NOTIFICATIONS_BUS_HAS_ARRIVING_KEY = "notifications_bus_has_arriving";
+    private final static String HAS_FETCHED_DASHBOARD_DATA = "has_fetched_dashboard_data";
 
 
     public static boolean isDownloadOnWiFi(Context con) {
@@ -172,6 +173,18 @@ public class PreferenceSettingUtilClass {
         SharedPreferences.Editor edit = sharedPrefs.edit();
         edit.putInt(NOTIFICATIONS_BUS_HAS_ARRIVING_KEY, bus_has_arrived);
         edit.commit();
+    }
+
+    public static void setDashboardDataFetch(boolean isDataFetched, Context con) {
+        SharedPreferences sharedPrefs = getSharePreference(con);
+        SharedPreferences.Editor edit = sharedPrefs.edit();
+        edit.putBoolean(HAS_FETCHED_DASHBOARD_DATA, isDataFetched);
+        edit.commit();
+    }
+
+    public static boolean isDashboardDataFetch(Context con) {
+        SharedPreferences sharedPrefs = getSharePreference(con);
+        return sharedPrefs.getBoolean(HAS_FETCHED_DASHBOARD_DATA, false);
     }
 
     public static void clearPrefs(Context context) {

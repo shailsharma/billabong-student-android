@@ -1,28 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content">
+<layout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical">
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                 android:id="@+id/frameProgressBar"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView"
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="8dp"
-            android:text="@string/fetching"
-            android:textSize="20sp"/>
+            android:orientation="vertical">
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
-    </LinearLayout>
 
-</FrameLayout>
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/margin_24dp"
+                android:layout_marginTop="@dimen/margin_24dp"
+                android:layout_marginEnd="@dimen/margin_24dp"/>
+
+            <TextView
+                android:id="@+id/texViewMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/margin_24dp"
+                android:layout_marginTop="@dimen/margin_8dp"
+                android:layout_marginEnd="@dimen/margin_24dp"
+                android:layout_marginBottom="@dimen/margin_24dp"
+                android:padding="8dp"
+                android:text="@string/fetching"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+    </FrameLayout>
+</layout>

@@ -1,5 +1,7 @@
 package in.securelearning.lil.android.mindspark.dataobjects;
 
+import android.text.Html;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -20,7 +22,7 @@ public class MindSparkDropdownQuestionChoice implements Serializable {
     private int mScore;
 
     public String getValue() {
-        return mValue;
+        return String.valueOf(Html.fromHtml(mValue));
     }
 
     public void setValue(String value) {

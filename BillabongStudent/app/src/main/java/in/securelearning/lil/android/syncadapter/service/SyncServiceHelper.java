@@ -2,28 +2,35 @@ package in.securelearning.lil.android.syncadapter.service;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Window;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
+import in.securelearning.lil.android.app.databinding.LayoutProgressBarBinding;
 import in.securelearning.lil.android.base.Injector;
 import in.securelearning.lil.android.base.dataobjects.Credentials;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
+import in.securelearning.lil.android.home.utils.PermissionPrefs;
+import in.securelearning.lil.android.home.utils.PreferenceSettingUtilClass;
 import in.securelearning.lil.android.login.events.AlreadyLoggedInEvent;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
 import in.securelearning.lil.android.syncadapter.dataobject.AppUserAuth0;
@@ -35,10 +42,12 @@ import in.securelearning.lil.android.syncadapter.rest.ApiModule;
 import in.securelearning.lil.android.syncadapter.rest.BaseApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.DownloadApiInterface;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
+import in.securelearning.lil.android.syncadapter.utils.PrefManagerStudentSubjectMapping;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Action;
@@ -59,7 +68,35 @@ public class SyncServiceHelper {
      */
     @SuppressLint("CheckResult")
     public static void startSyncService(final Context context) {
-        //if (System.currentTimeMillis() - PrefManager.getLastSyncTime(context) > PrefManager.MINIMUM_SYNC_DELAY) {
+
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            startAppSyncServices(context);
+        } else {
+            Single.just(true)
+                    .delaySubscription(300, TimeUnit.MILLISECONDS)
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean aBoolean) {
+                            if (aBoolean) {
+                                startAppSyncServices(context);
+                            }
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
+                    });
+        }
+
+
+    }
+
+    @SuppressLint("CheckResult")
+    private static void startAppSyncServices(final Context context) {
         Completable.complete().observeOn(Schedulers.newThread())
                 .subscribe(new Action() {
                     @Override
@@ -74,21 +111,20 @@ public class SyncServiceHelper {
                     .subscribe(new Action() {
                         @Override
                         public void run() throws Exception {
-                            MessageService.startSyncService(context);
+                            MessageService.startActionDownloadPostAndResponseBulk(context);
                         }
                     });
         }
-        Completable.complete().observeOn(Schedulers.newThread())
-                .subscribe(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        CourseService.startSyncService(context);
-                    }
-                });
+//        Completable.complete().observeOn(Schedulers.newThread())
+//                .subscribe(new Action() {
+//                    @Override
+//                    public void run() throws Exception {
+//                        CourseService.startSyncService(context);
+//                    }
+//                });
 
         FlavorSyncServiceHelper.startSyncService(context);
         PrefManager.setLastSyncTime(System.currentTimeMillis(), context);
-        //}
     }
 
     public static void startUploadPostData(Context context, String alias) {
@@ -150,14 +186,12 @@ public class SyncServiceHelper {
         ApiModule apiModule = new ApiModule(context);
         BaseApiInterface apiInterface = apiModule.getBaseClient();
 
-        Response<AuthToken> response = null;
-
         Log.e("Logging in", "now");
 
         Credentials credentials = new Credentials();
         credentials.setUserName(username);
         credentials.setPassword(password);
-        response = apiInterface.authLogin(credentials).execute();
+        Response<AuthToken> response = apiInterface.authLogin(credentials).execute();
 
         if (response != null && response.isSuccessful()) {
             Log.e("Logging in", "successful");
@@ -168,12 +202,23 @@ public class SyncServiceHelper {
 
             return true;
         } else if ((response.code() == 400)) {
-//            ResponseBody responseBody = response.errorBody();
-//            JSONObject jsonObject = new JSONObject(responseBody.string());
-//            JSONObject error = jsonObject.getJSONObject("error");
-//            String message = error.getString("message");
+            ResponseBody responseBody = response.errorBody();
+            try {
+                JSONObject jsonObject = new JSONObject(responseBody.string());
+                JSONObject error = jsonObject.getJSONObject("error");
+                String message = error.getString("message");
+                String code = error.getString("code");
+                if (!TextUtils.isEmpty(message) && !TextUtils.isEmpty(code) && code.contains("ACCOUNT")) {
+                    showFinishAlertDialog(context, message);
+                } else {
+                    showFinishAlertDialog(context, context.getString(R.string.incorrect_enrollment_number_or_password));
+                }
 
-            showFinishAlertDialog(context, context.getString(R.string.incorrect_enrollment_number_or_password));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
 
             return false;
@@ -274,6 +319,13 @@ public class SyncServiceHelper {
     /*To invalidate other login of current logged in user.*/
     @SuppressLint("CheckResult")
     private static synchronized void invalidateOtherLogin(final Context context, final String token, final DialogInterface dialogInterface) {
+        LayoutProgressBarBinding view = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.layout_progress_bar, null, false);
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(view.getRoot());
+        view.texViewMessage.setText(context.getString(R.string.messagePleaseWait));
+        dialog.show();
         Observable.create(new ObservableOnSubscribe<ResponseBody>() {
             @Override
             public void subscribe(ObservableEmitter<ResponseBody> emitter) throws Exception {
@@ -296,7 +348,7 @@ public class SyncServiceHelper {
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
-
+                        dialog.dismiss();
                         dialogInterface.dismiss();
                         Toast.makeText(context, context.getString(R.string.message_invalidate_other_login_success), Toast.LENGTH_SHORT).show();
                         Injector.INSTANCE.getComponent().rxBus().send(new AlreadyLoggedInEvent(true));
@@ -305,6 +357,7 @@ public class SyncServiceHelper {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         throwable.printStackTrace();
+                        dialog.dismiss();
                         dialogInterface.dismiss();
                         Toast.makeText(context, context.getString(R.string.messageUnableToGetData), Toast.LENGTH_SHORT).show();
                         Injector.INSTANCE.getComponent().rxBus().send(new AlreadyLoggedInEvent(false));
@@ -329,33 +382,36 @@ public class SyncServiceHelper {
                 startLoginActivityForUnauthorizedAction(context);
                 return false;
             } else {
-                refreshToken.setIdToken(idToken);
-                response = apiInterface.refreshToken(refreshToken).execute();
+                if (AppPrefs.isLoggedIn(context)) {
 
-                if (response != null && response.isSuccessful()) {
-                    Log.e("Logging in", "successful");
-                    final AuthToken token = response.body();
+                    refreshToken.setIdToken(idToken);
+                    response = apiInterface.refreshToken(refreshToken).execute();
 
-                    if (!TextUtils.isEmpty(token.getToken())) {
-                        AppPrefs.setIdToken(token.getToken(), context);
-                        return true;
+                    if (response != null && response.isSuccessful()) {
+                        Log.e("Logging in", "successful");
+                        final AuthToken token = response.body();
+
+                        if (!TextUtils.isEmpty(token.getToken())) {
+                            AppPrefs.setIdToken(token.getToken(), context);
+                            return true;
+                        } else {
+                            startLoginActivityForUnauthorizedAction(context);
+                            return false;
+                        }
+
+                    } else if (response != null && response.code() == 401) {
+                        startLoginActivityForUnauthorizedAction(context);
+                        Log.e("SyncService", "err refreshing token" + response.code());
+                        return false;
+                    } else if (response != null && response.code() == 403) {
+                        startLoginActivityForUnauthorizedAction(context);
+                        Log.e("SyncService", "err refreshing token" + response.code());
+                        return false;
                     } else {
                         startLoginActivityForUnauthorizedAction(context);
+                        Log.e("SyncService", "err refreshing token" + response.code());
                         return false;
                     }
-
-                } else if (response != null && response.code() == 401) {
-                    startLoginActivityForUnauthorizedAction(context);
-                    Log.e("SyncService", "err refreshing token" + response.code());
-                    return false;
-                } else if (response != null && response.code() == 403) {
-                    startLoginActivityForUnauthorizedAction(context);
-                    Log.e("SyncService", "err refreshing token" + response.code());
-                    return false;
-                } else {
-                    startLoginActivityForUnauthorizedAction(context);
-                    Log.e("SyncService", "err refreshing token" + response.code());
-                    return false;
                 }
             }
 
@@ -369,7 +425,62 @@ public class SyncServiceHelper {
 
     /*Only activity context are allowed here*/
     @SuppressLint("CheckResult")
-    public static void performUserLogout(@NonNull final Activity context) {
+    public static void performUserLogout(@NonNull final Activity context, String message) {
+        LayoutProgressBarBinding view = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.layout_progress_bar, null, false);
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(view.getRoot());
+        view.texViewMessage.setText(message);
+
+        dialog.show();
+        Observable.create(new ObservableOnSubscribe<ResponseBody>() {
+            @Override
+            public void subscribe(ObservableEmitter<ResponseBody> emitter) throws Exception {
+                ApiModule apiModule = new ApiModule(context);
+                BaseApiInterface apiInterface = apiModule.getBaseClient();
+
+                String token = AppPrefs.getIdToken(context);
+                Response<ResponseBody> response = apiInterface.authLogout(new Token(token)).execute();
+                if (response != null && response.isSuccessful()) {
+                    emitter.onNext(response.body());
+                } else {
+                    emitter.onError(new Exception(context.getString(R.string.error_something_went_wrong)));
+                }
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        dialog.dismiss();
+                        if (responseBody != null) {
+                            Intent intent = LoginActivity.getLogoutIntent(context);
+                            context.startActivity(intent);
+                            context.finishAffinity();
+//                            int pendingIntentId = 1234567;
+//                            PendingIntent mPendingIntent = PendingIntent.getActivity(context, pendingIntentId, intent,
+//                                    PendingIntent.FLAG_CANCEL_CURRENT);
+//                            AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//                            assert mgr != null;
+//                            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+//                            System.exit(0);
+
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        dialog.dismiss();
+                        Toast.makeText(context, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+
+    @SuppressLint("CheckResult")
+    public static void performSilentUserLogout(@NonNull final Context context) {
 
         Observable.create(new ObservableOnSubscribe<ResponseBody>() {
             @Override
@@ -382,7 +493,7 @@ public class SyncServiceHelper {
                 if (response != null && response.isSuccessful()) {
                     emitter.onNext(response.body());
                 } else {
-                    emitter.onError(new Exception(context.getString(R.string.messageUnableToGetData)));
+                    emitter.onError(new Exception(context.getString(R.string.error_something_went_wrong)));
                 }
                 emitter.onComplete();
             }
@@ -392,16 +503,11 @@ public class SyncServiceHelper {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
                         if (responseBody != null) {
-                            Intent intent = LoginActivity.getLogoutIntent(context);
-                            context.startActivity(intent);
-                            context.finishAffinity();
-//                            int pendingIntentId = 1234567;
-//                            PendingIntent mPendingIntent = PendingIntent.getActivity(context, pendingIntentId, intent,
-//                                    PendingIntent.FLAG_CANCEL_CURRENT);
-//                            AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-//                            assert mgr != null;
-//                            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-//                            System.exit(0);
+                            AppPrefs.clearPrefs(context);
+                            PermissionPrefs.clearPrefs(context);
+                            PreferenceSettingUtilClass.clearPrefs(context);
+                            PrefManager.clearPrefs(context);
+                            PrefManagerStudentSubjectMapping.clearPrefs(context);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -414,6 +520,7 @@ public class SyncServiceHelper {
     }
 
     private static void startLoginActivityForUnauthorizedAction(Context context) {
+        AppPrefs.setLoggedIn(false, context);
         context.startActivity(LoginActivity.getUnauthorizedIntent(context).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 

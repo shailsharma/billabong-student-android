@@ -4,15 +4,11 @@ package in.securelearning.lil.android.syncadapter.rest;
 import in.securelearning.lil.android.base.dataobjects.AssignedBadges;
 import in.securelearning.lil.android.base.dataobjects.Assignment;
 import in.securelearning.lil.android.base.dataobjects.CalendarEvent;
-import in.securelearning.lil.android.base.dataobjects.CourseAnalytics;
 import in.securelearning.lil.android.base.dataobjects.PostData;
 import in.securelearning.lil.android.base.dataobjects.PostResponse;
 import in.securelearning.lil.android.base.dataobjects.QuestionResponse;
 import in.securelearning.lil.android.base.dataobjects.Quiz;
 import in.securelearning.lil.android.base.dataobjects.UserBrowseHistory;
-import in.securelearning.lil.android.base.model.CourseAnalyticsModel;
-import in.securelearning.lil.android.syncadapter.dataobject.QuizResponse;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -51,9 +47,10 @@ public interface NewUploadApiInterface {
     @POST("")
     Call<QuestionResponse> uploadQuestionResponseCall(@Body QuestionResponse questionResponse);
 
-//    @POST("usersearchqueries")
+    //    @POST("usersearchqueries")
 //    Call<CourseAnalytics> uploadCourseUserLog(@Body CourseAnalytics courseAnalytics);
 //by rupsi
+
     @POST("UserBrowseHistories")
     Call<UserBrowseHistory> uploadUserBrowseHistory(@Body UserBrowseHistory userBrowseHistory);
 

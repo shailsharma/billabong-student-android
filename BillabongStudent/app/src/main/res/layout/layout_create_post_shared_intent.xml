@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorWhite"
@@ -14,7 +13,7 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_alignParentTop="true"
             android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"></android.support.v7.widget.Toolbar>
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/scrollview_post"
@@ -28,16 +27,16 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <Button
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/textViewSelectedPostType"
-                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
+                    android:drawableEnd="@drawable/dropdown_gray"
                     android:ellipsize="end"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:maxLines="1"
                     android:padding="16dp"
+                    android:textAllCaps="false"
                     android:textColor="@color/colorGreyDark"/>
 
 
@@ -46,27 +45,26 @@
                     android:layout_height=".5dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:background="@color/itemDivider"></View>
+                    android:background="@color/itemDivider"/>
 
-                <Button
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/textViewSelectedGroup"
-                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
+                    android:drawableEnd="@drawable/dropdown_gray"
                     android:ellipsize="end"
-                    android:gravity="left|center_vertical"
+                    android:gravity="start|center_vertical"
                     android:maxLines="1"
                     android:padding="16dp"
-                    android:textColor="@color/colorGreyDark"
-                    />
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorGreyDark"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height=".5dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:background="@color/itemDivider"></View>
+                    android:background="@color/itemDivider"/>
 
                 <ImageView
                     android:id="@+id/imageView"
@@ -81,8 +79,8 @@
                     android:id="@+id/recyclerViewResource"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@+id/layout_spinners"></android.support.v7.widget.RecyclerView>
+                    android:layout_below="@+id/layout_spinners"
+                    android:layout_alignParentStart="true"></android.support.v7.widget.RecyclerView>
 
                 <include
                     android:id="@+id/includeOgLayout"
@@ -92,11 +90,11 @@
                     android:id="@+id/layout_inputs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_below="@+id/recyclerViewResource"
+                    android:layout_alignParentStart="true"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="4dp">
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="10dp">
 
                     <include
                         android:id="@+id/includeEditText"

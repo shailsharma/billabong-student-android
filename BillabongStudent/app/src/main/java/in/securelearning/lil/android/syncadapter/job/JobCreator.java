@@ -3,7 +3,6 @@ package in.securelearning.lil.android.syncadapter.job;
 import java.util.ArrayList;
 
 import in.securelearning.lil.android.base.dataobjects.AboutCourse;
-import in.securelearning.lil.android.base.dataobjects.AnalysisActivityData;
 import in.securelearning.lil.android.base.dataobjects.AssignedBadges;
 import in.securelearning.lil.android.base.dataobjects.Assignment;
 import in.securelearning.lil.android.base.dataobjects.AssignmentResponse;
@@ -33,7 +32,6 @@ import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.dataobjects.TrackingRoute;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.dataobjects.VideoCourse;
-import in.securelearning.lil.android.syncadapter.dataobject.ActivityData;
 import in.securelearning.lil.android.syncadapter.dataobject.ServerDataPackage;
 import in.securelearning.lil.android.syncadapter.dataobject.TeacherGradeMapping;
 import in.securelearning.lil.android.syncadapter.job.download.BaseDownloadArrayJob;
@@ -59,11 +57,12 @@ import in.securelearning.lil.android.syncadapter.job.download.DownloadCurriculum
 import in.securelearning.lil.android.syncadapter.job.download.DownloadCustomSectionJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadDigitalBookJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadGroupJob;
-import in.securelearning.lil.android.syncadapter.job.download.DownloadGroupPostsNResponseJob;
+import in.securelearning.lil.android.syncadapter.job.download.DownloadGroupPostsAndResponseJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadInteractiveImageJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadInteractiveVideoJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadLearningDataJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadLearningMapListJob;
+import in.securelearning.lil.android.syncadapter.job.download.DownloadNetworkGroupJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadNotificationJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadPackageJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadPerformanceCountDataJsonJob;
@@ -109,7 +108,7 @@ import in.securelearning.lil.android.syncadapter.job.validation.ValidateGroupPos
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateInteractiveImageJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateInteractiveVideoJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateLearningNetworkPostDataJob;
-import in.securelearning.lil.android.syncadapter.job.validation.ValidateLearningNetworkPostReponseJob;
+import in.securelearning.lil.android.syncadapter.job.validation.ValidateLearningNetworkPostResponseJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateNotificationJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidatePopUpsJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateQuizJob;
@@ -206,8 +205,8 @@ public class JobCreator {
      * @param objectId id of postData to download
      * @return
      */
-    public static BaseDownloadJob<PostData> createDownloadPostDataJob(String objectId, String notificationId) {
-        return new DownloadPostDataJsonJob(objectId, notificationId);
+    public static BaseDownloadJob<PostData> createDownloadPostDataJob(String objectId, String notificationId, boolean shouldShowNotification) {
+        return new DownloadPostDataJsonJob(objectId, notificationId, shouldShowNotification);
     }
 
     /**
@@ -238,8 +237,8 @@ public class JobCreator {
      * @param objectId id of PostResponse to download
      * @return
      */
-    public static BaseDownloadJob<PostResponse> createPostResponseDownloadJob(String objectId, String notificationId) {
-        return new DownloadPostResponseJsonJob(objectId, notificationId);
+    public static BaseDownloadJob<PostResponse> createPostResponseDownloadJob(String objectId, String notificationId, boolean shouldShowNotification) {
+        return new DownloadPostResponseJsonJob(objectId, notificationId, shouldShowNotification);
     }
 
     /**
@@ -252,14 +251,26 @@ public class JobCreator {
         return new DownloadGroupJob(objectId);
     }
 
+
+    /**
+     * create group download job
+     *
+     * @param objectId id of group to download
+     * @return
+     */
+    public static BaseDownloadJob<Group> createDownloadGroupJob(String objectId, String groupType) {
+        return new DownloadGroupJob(objectId, groupType);
+    }
+
+
     /**
      * create group post response download job
      *
      * @param objectId id of group  post response to download
      * @return
      */
-    public static BaseDownloadJob<GroupPostsNResponse> createDownloadGroupPostNResponseJob(String objectId) {
-        return new DownloadGroupPostsNResponseJob(objectId);
+    public static BaseDownloadJob<GroupPostsNResponse> createDownloadGroupPostAndResponseJob(String objectId) {
+        return new DownloadGroupPostsAndResponseJob(objectId);
     }
 
     /**
@@ -316,20 +327,20 @@ public class JobCreator {
 
 
     //by rupsi
-    public static DownloadActivityDetailsJsonJob createDownloadActivityJob(String subid,String startdate,String enddate) {
-        return new DownloadActivityDetailsJsonJob(subid,startdate,enddate);
+    public static DownloadActivityDetailsJsonJob createDownloadActivityJob(String subid, String startdate, String enddate) {
+        return new DownloadActivityDetailsJsonJob(subid, startdate, enddate);
     }
 
 
     public static DownloadLearningDataJsonJob createDownloadLearningJob(String subid, String startdate, String enddate) {
-        return new DownloadLearningDataJsonJob(subid,startdate,enddate);
+        return new DownloadLearningDataJsonJob(subid, startdate, enddate);
     }
 
-    public static DownloadRecentlyReadDataJsonJob createDownloadRecentlyReadJob(String subid,int limit, int skip) {
+    public static DownloadRecentlyReadDataJsonJob createDownloadRecentlyReadJob(String subid, int limit, int skip) {
         return new DownloadRecentlyReadDataJsonJob(subid);
     }
 
-    public static DownloadTopicCoveredDataJsonJob createDownloadTopicCoveredJob(String subid,int limit, int skip) {
+    public static DownloadTopicCoveredDataJsonJob createDownloadTopicCoveredJob(String subid, int limit, int skip) {
         return new DownloadTopicCoveredDataJsonJob(subid);
     }
 
@@ -585,8 +596,8 @@ public class JobCreator {
      * @param postData to validate
      * @return
      */
-    public static BaseValidationJob<PostData> createPostDataValidationJob(PostData postData) {
-        return new ValidateLearningNetworkPostDataJob(postData);
+    public static BaseValidationJob<PostData> createPostDataValidationJob(PostData postData, boolean shouldShowNotification) {
+        return new ValidateLearningNetworkPostDataJob(postData, shouldShowNotification);
     }
 
     /**
@@ -605,8 +616,8 @@ public class JobCreator {
      * @param postResponse to validate
      * @return
      */
-    public static BaseValidationJob<PostResponse> createPostResponseValidationJob(PostResponse postResponse) {
-        return new ValidateLearningNetworkPostReponseJob(postResponse);
+    public static BaseValidationJob<PostResponse> createPostResponseValidationJob(PostResponse postResponse, boolean shouldShowNotification) {
+        return new ValidateLearningNetworkPostResponseJob(postResponse, shouldShowNotification);
     }
 
     /**
@@ -704,7 +715,7 @@ public class JobCreator {
     public static ArrayList<BaseValidationJob<PostData>> createPostDataValidationJobList(ArrayList<PostData> postDatas) {
         ArrayList<BaseValidationJob<PostData>> list = new ArrayList<>();
         for (int i = 0; i < postDatas.size(); i++) {
-            list.add(createPostDataValidationJob(postDatas.get(i)));
+            list.add(createPostDataValidationJob(postDatas.get(i), false));
         }
         return list;
     }
@@ -858,8 +869,8 @@ public class JobCreator {
         return new DownloadPeriodicEventsListJob(startTime, endTime);
     }
 
-    public static DownloadPeriodicEventsBulkJob createPeriodNewBulkDownloadJob(String objectId,String startTime, String endTime, boolean updatePreference) {
-        return new DownloadPeriodicEventsBulkJob(objectId,startTime, endTime, updatePreference);
+    public static DownloadPeriodicEventsBulkJob createPeriodNewBulkDownloadJob(String objectId, String startTime, String endTime, boolean updatePreference) {
+        return new DownloadPeriodicEventsBulkJob(objectId, startTime, endTime, updatePreference);
     }
 
     public static BaseDownloadArrayJob<in.securelearning.lil.android.base.utils.ArrayList<TrackingRoute>> createTrackingRouteDownloadJob(String objectId) {
@@ -880,5 +891,9 @@ public class JobCreator {
 
     public static DownloadTrainingJob createTrainingDownloadJob(String objectId, String notificationId) {
         return new DownloadTrainingJob(objectId, notificationId);
+    }
+
+    public static DownloadNetworkGroupJob createNetworkGroupDownloadJob() {
+        return new DownloadNetworkGroupJob();
     }
 }

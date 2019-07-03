@@ -83,14 +83,16 @@
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
-                android:text="Courses"/>
+                android:text="Courses"
+                android:visibility="gone"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:background="#CFD8DC"></View>
+                android:background="#CFD8DC"
+                android:visibility="gone"/>
 
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/notification_learning"
@@ -111,7 +113,8 @@
                 android:layout_height="1dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:background="#CFD8DC"></View>
+                android:background="#CFD8DC"
+                android:visibility="gone"/>
 
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/notification_assignment"
@@ -124,6 +127,7 @@
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
+                android:visibility="gone"
                 android:text="Homework Reminder"/>
 
 
@@ -156,6 +160,7 @@
                 android:padding="16dp"
                 android:text="Data Sync"
                 android:textColor="@color/colorAccentSettings"
+                android:visibility="gone"
                 android:textStyle="bold"/>
 
             <android.support.v7.widget.AppCompatCheckBox
@@ -169,6 +174,7 @@
                 android:paddingTop="16dp"
                 android:paddingRight="32dp"
                 android:paddingBottom="16dp"
+                android:visibility="gone"
                 android:text="Download courses only on WiFi"/>
 
             <View
@@ -176,7 +182,8 @@
                 android:layout_height="1dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:background="#CFD8DC"></View>
+                android:visibility="gone"
+                android:background="#CFD8DC"/>
 
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/sync_media_check"

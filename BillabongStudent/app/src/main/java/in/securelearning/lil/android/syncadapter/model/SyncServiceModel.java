@@ -134,6 +134,18 @@ public class SyncServiceModel extends BaseModel {
 
     }
 
+    /*Fetch all groups from local db*/
+    public ArrayList<Group> fetchAllGroups() {
+
+        return mGroupModel.getAllGroups();
+    }
+
+
+
+    public void updateGroup(Group group) {
+        mGroupModel.saveGroup(group);
+    }
+
     /**
      * fetch list of assignments with Not Sync status
      *

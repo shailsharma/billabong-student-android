@@ -15,6 +15,7 @@ import retrofit2.Call;
  */
 public class DownloadPostResponseJsonJob extends BaseDownloadJob<PostResponse> {
     private final String TAG = this.getClass().getCanonicalName();
+    private boolean mShouldShowNotification;
 
     public DownloadPostResponseJsonJob(String objectId) {
         super(objectId);
@@ -23,8 +24,9 @@ public class DownloadPostResponseJsonJob extends BaseDownloadJob<PostResponse> {
         InjectorSyncAdapter.INSTANCE.getComponent().inject(this);
     }
 
-    public DownloadPostResponseJsonJob(String objectId, String notificationId) {
+    public DownloadPostResponseJsonJob(String objectId, String notificationId, boolean shouldShowNotification) {
         super(objectId, notificationId);
+        mShouldShowNotification = shouldShowNotification;
 
         /*perform injection*/
         InjectorSyncAdapter.INSTANCE.getComponent().inject(this);
@@ -40,7 +42,7 @@ public class DownloadPostResponseJsonJob extends BaseDownloadJob<PostResponse> {
         if (postResponse.getType().equals(PostResponseType.TYPE_TRACKING.toString())) {
             postResponse = setSyncStatus(postResponse, SyncStatus.COMPLETE_SYNC);
         } else {
-          /*set sync status of the object to json sync*/
+            /*set sync status of the object to json sync*/
             postResponse = setSyncStatus(postResponse, SyncStatus.JSON_SYNC);
         }
 
@@ -53,13 +55,13 @@ public class DownloadPostResponseJsonJob extends BaseDownloadJob<PostResponse> {
                 updateNotificationStatus(notificationId, SyncStatus.COMPLETE_SYNC.toString());
             }
         } else {
-        /*save the object into database*/
+            /*save the object into database*/
             postResponse = save(postResponse);
             if (notificationId != null && !notificationId.isEmpty()) {
                 // sendSyncSuccessToServer(Collections.singletonList(notificationId));
                 updateNotificationStatus(notificationId, SyncStatus.COMPLETE_SYNC.toString());
             }
-               /*create validation job for the download object*/
+            /*create validation job for the download object*/
             if (this.isValidationEnabled)
                 createValidationJobs(postResponse);
         }
@@ -75,7 +77,7 @@ public class DownloadPostResponseJsonJob extends BaseDownloadJob<PostResponse> {
     public void createValidationJobs(PostResponse postResponse) {
 //        Log.d(TAG, "Creating Validation Job for postResponse : " + assignment.getUidAssignment());
         /*create job to validate the downloaded postResponse*/
-        JobCreator.createPostResponseValidationJob(postResponse).execute();
+        JobCreator.createPostResponseValidationJob(postResponse, mShouldShowNotification).execute();
     }
 
     /**

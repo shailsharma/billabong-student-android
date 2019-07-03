@@ -11,8 +11,8 @@ import in.securelearning.lil.android.syncadapter.dataobject.RolePermissions;
  */
 
 public class PermissionPrefs {
-    private static SharedPreferences sPreferences;
     private final static String USER_SHARED_PREFRENCE = "permission_settings"; // Shared Preference file name
+    private static SharedPreferences sPreferences;
 
     static SharedPreferences getSharePreference(Context context) {
         if (sPreferences == null) {
@@ -32,21 +32,6 @@ public class PermissionPrefs {
         editor.commit();
     }
 
-    public static boolean setRanBefore(Context context) {
-        SharedPreferences preferences = getSharePreference(context);
-        boolean ranBefore = PermissionPrefsCommon.isRanBefore(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        if (!ranBefore) {
-            // first time
-            editor.putBoolean(PermissionPrefsCommon.IS_RAN_BEFORE, true);
-            editor.apply();
-        }
-        return !ranBefore;
-
-
-
-
-    }
 
     public static void clearPrefs(Context context) {
         SharedPreferences preferences = getSharePreference(context);

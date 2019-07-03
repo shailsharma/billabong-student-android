@@ -30,18 +30,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class ApiModule {
     private Context moContext;
-    //    private static String BASE_URL2 = "http://192.124.120.199:3000/api/";
-//    private static String BASE_URL = "http://192.124.120.199:3000/api/";
-//    private static String BASE_URL2 = "https://learnindialearn.com/api/";
-//    private static String BASE_URL = "https://learnindialearn.com/api/";
-    // made public for use in FitnessNetworkModel
     private String BASE_URL;
-    //            private static String BASE_URL2 = "https://www.securelearning.in/securelearning/";
-//    private static String BASE_URL = "https://www.securelearning.in/securelearning/";
-    //    private static String BASE_URL = "http ://192.168.0.118:3000/api/";
-//    private static String BASE_URL2 = "http://192.168.0.118:3000/api/";
     private static String BASE_URL_FCM = "https://fcm.googleapis.com/fcm/";
-  //  private static final String YOUR_LEGACY_SERVER_KEY_FROM_FIREBASE_CONSOLE = BuildConfig.LEGACY_SERVER_KEY_FROM_FCM;
 
 
     public String getBaseUrl() {

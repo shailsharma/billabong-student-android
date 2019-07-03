@@ -42,6 +42,16 @@ public class StudentProfile extends UserProfile implements Serializable {
     @Expose
     private String motherName;
 
+    private Boolean mIsGood;
+
+    public Boolean getGood() {
+        return mIsGood;
+    }
+
+    public void setGood(Boolean good) {
+        mIsGood = good;
+    }
+
     public String getEnrollmentNumber() {
         return enrollmentNumber;
     }

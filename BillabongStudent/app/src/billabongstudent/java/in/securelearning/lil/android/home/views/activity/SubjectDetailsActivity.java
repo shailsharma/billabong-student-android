@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -29,10 +31,9 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-import in.securelearning.lil.android.analytics.activity.TimeEffortDetailActivity;
+import in.securelearning.lil.android.analytics.views.activity.TimeEffortDetailActivity;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutSubjectDetailsBinding;
-import in.securelearning.lil.android.assignments.views.fragment.AssignmentFragmentStudentClassDetails;
 import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
@@ -42,11 +43,14 @@ import in.securelearning.lil.android.home.events.MindSparkNoUnitEvent;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
 import in.securelearning.lil.android.home.views.fragment.ChaptersFragment;
 import in.securelearning.lil.android.home.views.fragment.SubjectDetailHomeFragment;
+import in.securelearning.lil.android.home.views.fragment.SubjectHomeworkFragment;
 import in.securelearning.lil.android.learningnetwork.views.fragment.PostListFragment;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapter;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanGroupDetails;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubject;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectDetails;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -74,6 +78,7 @@ public class SubjectDetailsActivity extends AppCompatActivity {
     private String mGroupId;
     private String mBannerUrl;
     private Disposable mDisposable;
+    private GradientDrawable mTabsGradientDrawable;
 
     @Inject
     FlavorHomeModel mFlavorHomeModel;
@@ -123,9 +128,7 @@ public class SubjectDetailsActivity extends AppCompatActivity {
                             mBinding.viewPager.setCurrentItem(0, true);
 
                             if (mSubjectName.contains("Math")) {
-                                //fetchThirdPartyMapping(mSubjectId, topicId);
-                                mThirdPartyTopicIds.add("5cb6ee8368d2c3401624903e");
-                                handleViewPagerRefresh();
+                                fetchThirdPartyMapping(mSubjectId, topicId);
                             } else {
                                 handleViewPagerRefresh();
                             }
@@ -192,12 +195,11 @@ public class SubjectDetailsActivity extends AppCompatActivity {
                             setSubjectContent(lessonPlanSubjectDetails.getSubject());
                             setTopicContent(lessonPlanSubjectDetails.getTopic());
                             checkGroupExistence(lessonPlanSubjectDetails.getGroup());
-                            mGradeName = lessonPlanSubjectDetails.getGroup().getGrade().getName();
+                            setGradeDetail(lessonPlanSubjectDetails.getGroup(), subjectId);
+
                             /*TODO hard coded logic for subject check, remove when dynamically done*/
                             if (mSubjectName.contains("Math")) {
-                                mThirdPartyTopicIds.add("5cb6ee8368d2c3401624903e");
-                                handleViewPagerRefresh();
-                                //fetchThirdPartyMapping(lessonPlanSubjectDetails.getSubject().getId(), lessonPlanSubjectDetails.getTopic().getId());
+                                fetchThirdPartyMapping(lessonPlanSubjectDetails.getSubject().getId(), lessonPlanSubjectDetails.getTopic().getId());
                             } else {
                                 handleViewPagerRefresh();
                             }
@@ -320,6 +322,18 @@ public class SubjectDetailsActivity extends AppCompatActivity {
             } else {
                 setUpToolbar("");
             }
+
+            int color;
+            if (!TextUtils.isEmpty(lessonPlanSubject.getColorCode())) {
+                color = Color.parseColor(lessonPlanSubject.getColorCode());
+            } else {
+                color = ContextCompat.getColor(getBaseContext(), R.color.colorStartGradient);
+            }
+            mBinding.collapsingToolbarLayout.setContentScrim(CommonUtils.getInstance().getGradientDrawableFromSingleColor(color));
+            mBinding.collapsingToolbarLayout.setStatusBarScrim(CommonUtils.getInstance().getGradientDrawableFromSingleColor(color));
+            mTabsGradientDrawable = CommonUtils.getInstance().getGradientDrawableFromSingleColor(color);
+            mTabsGradientDrawable.setCornerRadius(ConstantUtil.LRPA_TAB_CORNER_RADIUS);
+            mTabsGradientDrawable.setStroke(ConstantUtil.LRPA_TAB_STROKE_SIZE, Color.WHITE);
         }
 
 
@@ -360,12 +374,25 @@ public class SubjectDetailsActivity extends AppCompatActivity {
         }
     }
 
+
     /*Handle intent and get bundle data*/
     private void handleIntent() {
         if (getIntent() != null) {
             mSubjectId = getIntent().getStringExtra(SUBJECT_ID);
             fetchSubjectDetails(mSubjectId);
 
+        }
+    }
+
+    private void setGradeDetail(LessonPlanGroupDetails group, String lessonPlanId) {
+        if (group != null) {
+            if (group.getGrade() != null && !TextUtils.isEmpty(group.getGrade().getName())) {
+                mGradeName = group.getGrade().getName();
+            } else {
+                retryDialog(getString(R.string.lrpaGradeNull), lessonPlanId);
+            }
+        } else {
+            retryDialog(getString(R.string.lrpaGroupNull), lessonPlanId);
         }
     }
 
@@ -376,8 +403,6 @@ public class SubjectDetailsActivity extends AppCompatActivity {
         mBinding.textViewToolbarTitle.setText(title);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        mBinding.collapsingToolbarLayout.setContentScrimResource(R.drawable.gradient_app);
-        mBinding.collapsingToolbarLayout.setStatusBarScrimResource(R.drawable.gradient_app);
 
     }
 
@@ -487,7 +512,7 @@ public class SubjectDetailsActivity extends AppCompatActivity {
     /*get selected or active tab view*/
     public View getSelectedTabView(int position, ArrayList<String> tabTitles) {
         View view = LayoutInflater.from(getBaseContext()).inflate(R.layout.layout_subject_detail_custom_tab, null);
-        view.setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.chip_blue_white_stroke));
+        view.setBackground(mTabsGradientDrawable);
         TextView tabTextView = view.findViewById(R.id.tabTextView);
         tabTextView.setText(tabTitles.get(position));
         tabTextView.setTextColor(ContextCompat.getColor(getBaseContext(), android.R.color.white));
@@ -518,7 +543,8 @@ public class SubjectDetailsActivity extends AppCompatActivity {
             } else if (mList.get(position).equals(getString(R.string.chapters))) {
                 return ChaptersFragment.newInstance(mSubjectId);
             } else if (mList.get(position).equals(getString(R.string.homework))) {
-                return AssignmentFragmentStudentClassDetails.newInstance(1, mSubjectName, "");
+                // return AssignmentFragmentStudentClassDetails.newInstance(1, mSubjectName, "");
+                return SubjectHomeworkFragment.newInstance(mSubjectId);
             } else if (mList.get(position).equals(getString(R.string.string_post))) {
                 return PostListFragment.newInstance(1, mGroupId, false, R.color.colorPrimary);
             } else {

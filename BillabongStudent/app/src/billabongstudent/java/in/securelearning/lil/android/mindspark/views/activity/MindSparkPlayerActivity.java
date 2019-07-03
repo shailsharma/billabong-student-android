@@ -409,11 +409,14 @@ public class MindSparkPlayerActivity extends AppCompatActivity {
 
         if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_RADIO)) {
             mBinding.textViewQuestion.setText(Html.fromHtml(questionText.trim(), htmlHttpImageGetter, new TextViewMore.UlTagHandler()));
+            mBinding.textViewQuestion.setHtml(questionText, htmlHttpImageGetter);
         } else if (questionType.equalsIgnoreCase(TYPE_BLANK)) {
-            mBinding.textViewQuestion.setText(Html.fromHtml(mMindSparkModel.removeBlankFromQuestion(questionText.trim()), htmlHttpImageGetter, new TextViewMore.UlTagHandler()));
+            mBinding.textViewQuestion.setHtml(mMindSparkModel.removeBlankFromQuestion(questionText.trim()), htmlHttpImageGetter);
         } else if (questionType.equalsIgnoreCase(TYPE_DROPDOWN)) {
-            mBinding.textViewQuestion.setText(Html.fromHtml(mMindSparkModel.removeDropdownFromQuestion(questionText.trim()), htmlHttpImageGetter, new TextViewMore.UlTagHandler()));
+            mBinding.textViewQuestion.setHtml(mMindSparkModel.removeDropdownFromQuestion(questionText.trim()), htmlHttpImageGetter);
         }
+        mBinding.textViewQuestion.setRemoveTrailingWhiteSpace(true);
+
 
     }
 

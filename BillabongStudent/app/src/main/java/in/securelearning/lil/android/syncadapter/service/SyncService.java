@@ -16,7 +16,6 @@ import java.util.HashSet;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.base.constants.SyncStatus;
-import in.securelearning.lil.android.base.dataobjects.AnalysisActivityData;
 import in.securelearning.lil.android.base.dataobjects.AssignedBadges;
 import in.securelearning.lil.android.base.dataobjects.Assignment;
 import in.securelearning.lil.android.base.dataobjects.AssignmentResponse;
@@ -25,7 +24,6 @@ import in.securelearning.lil.android.base.dataobjects.BlogDetails;
 import in.securelearning.lil.android.base.dataobjects.BookAnnotation;
 import in.securelearning.lil.android.base.dataobjects.CalendarEvent;
 import in.securelearning.lil.android.base.dataobjects.ConceptMap;
-import in.securelearning.lil.android.base.dataobjects.CourseAnalytics;
 import in.securelearning.lil.android.base.dataobjects.CourseProgress;
 import in.securelearning.lil.android.base.dataobjects.DigitalBook;
 import in.securelearning.lil.android.base.dataobjects.Group;
@@ -35,11 +33,10 @@ import in.securelearning.lil.android.base.dataobjects.InternalNotification;
 import in.securelearning.lil.android.base.dataobjects.Moderator;
 import in.securelearning.lil.android.base.dataobjects.Notification;
 import in.securelearning.lil.android.base.dataobjects.PopUps;
-import in.securelearning.lil.android.base.dataobjects.PostData;
-import in.securelearning.lil.android.base.dataobjects.PostResponse;
 import in.securelearning.lil.android.base.dataobjects.QuestionResponse;
 import in.securelearning.lil.android.base.dataobjects.Quiz;
 import in.securelearning.lil.android.base.dataobjects.Training;
+import in.securelearning.lil.android.base.dataobjects.UserBrowseHistory;
 import in.securelearning.lil.android.base.dataobjects.UserCourseProgress;
 import in.securelearning.lil.android.base.dataobjects.UserRating;
 import in.securelearning.lil.android.base.dataobjects.VideoCourse;
@@ -61,7 +58,6 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
-import in.securelearning.lil.android.base.dataobjects.UserBrowseHistory;
 
 import static in.securelearning.lil.android.syncadapter.utils.InternalNotificationActionUtils.ACTION_TYPE_NETWORK_DOWNLOAD;
 
@@ -632,13 +628,6 @@ public class SyncService extends BaseService {
 //                } else {
 //                    showPendingUploadsNotification();
 //                }
-                } else if (internalNotification.getDataObjectType() == (InternalNotificationActionUtils.OBJECT_TYPE_POST)) {
-                    PostData postData = mSyncServiceModel.retrieveLearningNetwork(internalNotification.getObjectDocId(), PostData.class);
-                    JobCreator.createPostLearningNetworkPostDataJob(postData).execute();
-                    PostData notificationPurgePostData = mSyncServiceModel.retrieveLearningNetwork(internalNotification.getObjectDocId(), PostData.class);
-                    if (notificationPurgePostData.getSyncStatus().equals(SyncStatus.COMPLETE_SYNC.toString())) {
-                        mSyncServiceModel.purgeInternalNotification(internalNotification.getDocId());
-                    }
                 } else if (internalNotification.getDataObjectType() == (InternalNotificationActionUtils.ACTION_TYPE_QUESTION_RESPONSE_UPLOAD)) {
                     QuestionResponse questionResponse = mSyncServiceModel.retrieveAssignments(internalNotification.getObjectDocId(), QuestionResponse.class);
                     JobCreator.createUploadQuestionResponseJob(questionResponse).execute();
@@ -646,17 +635,6 @@ public class SyncService extends BaseService {
                     if (notificationPurgeQuestionResponse.getSyncStatus().equals(SyncStatus.COMPLETE_SYNC.toString())) {
                         mSyncServiceModel.purgeInternalNotification(internalNotification.getDocId());
                     }
-                } else if (internalNotification.getDataObjectType() == (InternalNotificationActionUtils.OBJECT_TYPE_POST_RESPONSE)) {
-//                if (mSyncServiceModel.isDownloadAllowed()) {
-                    PostResponse postResponse = mSyncServiceModel.retrieveLearningNetwork(internalNotification.getObjectDocId(), PostResponse.class);
-                    JobCreator.createPostResponseJob(postResponse).execute();
-                    PostResponse notificationPurgePostResponse = mSyncServiceModel.retrieveLearningNetwork(internalNotification.getObjectDocId(), PostResponse.class);
-                    if (notificationPurgePostResponse.getSyncStatus().equals(SyncStatus.COMPLETE_SYNC.toString())) {
-                        mSyncServiceModel.purgeInternalNotification(internalNotification.getDocId());
-                    }
-//                } else {
-//                    showPendingUploadsNotification();
-//                }
                 } else if (internalNotification.getDataObjectType() == (InternalNotificationActionUtils.OBJECT_TYPE_CALENDAR_EVENT)) {
 //                if (mSyncServiceModel.isDownloadAllowed()) {
                     CalendarEvent calendarEvent = mSyncServiceModel.retrieveLearningNetwork(internalNotification.getObjectDocId(), CalendarEvent.class);
@@ -872,7 +850,7 @@ public class SyncService extends BaseService {
 
     //by rupsi
     private void handleActionUploadUserBrowseHistory() {
-        startUploadUserBrowseHistoryLog();
+        //startUploadUserBrowseHistoryLog();
 
     }
 

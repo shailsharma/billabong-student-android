@@ -188,7 +188,7 @@
                 android:orientation="vertical"
                 android:padding="@dimen/padding_8dp">
 
-                <in.securelearning.lil.android.base.widget.TextViewCustom
+                <org.sufficientlysecure.htmltextview.HtmlTextView
                     android:id="@+id/textViewQuestion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

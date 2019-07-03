@@ -1,6 +1,7 @@
 package in.securelearning.lil.android.learningnetwork.views.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -68,10 +69,10 @@ import javax.inject.Inject;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutCreatePostBinding;
 import in.securelearning.lil.android.app.databinding.LayoutPickCaptureImageBinding;
+import in.securelearning.lil.android.app.databinding.LayoutProgressBarBinding;
 import in.securelearning.lil.android.base.constants.PostDataType;
 import in.securelearning.lil.android.base.constants.SyncStatus;
 import in.securelearning.lil.android.base.customchrometabutils.CustomChromeTabHelper;
-import in.securelearning.lil.android.base.dataobjects.AppUser;
 import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.dataobjects.Moderator;
 import in.securelearning.lil.android.base.dataobjects.OGMetaDataResponse;
@@ -80,6 +81,7 @@ import in.securelearning.lil.android.base.dataobjects.PostData;
 import in.securelearning.lil.android.base.dataobjects.PostToGroup;
 import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.dataobjects.Result;
+import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.base.model.PostDataModel;
@@ -97,10 +99,14 @@ import in.securelearning.lil.android.learningnetwork.adapter.FullScreenImage;
 import in.securelearning.lil.android.learningnetwork.events.LoadNewPostCreatedEvent;
 import in.securelearning.lil.android.learningnetwork.model.PostDataLearningModel;
 import in.securelearning.lil.android.syncadapter.dataobject.FileChooser;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.OgUtils;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
@@ -237,44 +243,80 @@ public class CreatePostActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressLint("CheckResult")
     private void menuActionCreatePost() {
-        if (!TextUtils.isEmpty(mPostEditText.getText().toString().trim()) &&
-                mPostTypeSpinner.getTag() != null) {
-            PostData postData = new PostData();
-            postData.setObjectId(null);
-            postData.setCreatedTime(DateUtils.getISO8601DateStringFromDate(new Date()));
+        if (!TextUtils.isEmpty(mBinding.layoutDiscussion.editTextWritePost.getText().toString().trim()) &&
+                mBinding.spinnerCategory.getTag() != null) {
 
-            PostByUser fromUser = new PostByUser();
-            fromUser.setName(mAppUserModel.getApplicationUser().getName());
-            fromUser.setId(mAppUserModel.getObjectId());
-            fromUser.setRole(setUserRole());
-            postData.setFrom(fromUser);
+            LayoutProgressBarBinding view = DataBindingUtil.inflate(LayoutInflater.from(getBaseContext()), R.layout.layout_progress_bar, null, false);
+            final Dialog dialog = new Dialog(CreatePostActivity.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(view.getRoot());
+            view.texViewMessage.setText(getString(R.string.messagePleaseWait));
+            dialog.show();
 
-            PostToGroup toGroup = new PostToGroup();
-            toGroup.setName(mGroup.getGroupName());
-            toGroup.setId(mGroup.getObjectId());
-            postData.setTo(toGroup);
-            postData.setAlias(GeneralUtils.generateAlias("LNPostData", "" + mAppUserModel.getObjectId(), System.currentTimeMillis() + ""));
-            postData.setSyncStatus(SyncStatus.NOT_SYNC.toString());
-            postData.setUnread(false);
-            postData.setLastMessageTime(new Date());
-            postData.setoGDataList(mOgUtils.extractUrls(mPostEditText.getText().toString().trim()));
-            postData.setPostResources(FullScreenImage.getResourceArrayList(mAttachPathList));
-            mPostEditText.clearComposingText();
-            postData.setPostText(Html.toHtml(mPostEditText.getText()).toString().trim());
-            postData.setPostType(mPostTypeSpinner.getTag().toString());
-            postData.setLastUpdationTime(new Date());
-            postData.setBadgeAssigningEnabled(isBadgeAssigningEnabled());
-            mPostDataLearningModel.savePost(postData);
-            mRxBus.send(new LoadNewPostCreatedEvent());
-            closeActivity();
+            final String postText = Html.toHtml(mBinding.layoutDiscussion.editTextWritePost.getText()).trim();
+            final String categoryType = mBinding.spinnerCategory.getTag().toString();
+            final ArrayList<String> ogList = mOgUtils.extractUrls(mBinding.layoutDiscussion.editTextWritePost.getText().toString().trim());
+
+            Observable.create(new ObservableOnSubscribe<PostData>() {
+                @Override
+                public void subscribe(ObservableEmitter<PostData> emitter) {
+                    PostData postData = new PostData();
+                    postData.setObjectId(null);
+                    postData.setCreatedTime(DateUtils.getISO8601DateStringFromDate(new Date()));
+
+                    PostByUser fromUser = new PostByUser();
+                    fromUser.setName(mAppUserModel.getApplicationUser().getName());
+                    fromUser.setId(mAppUserModel.getObjectId());
+                    fromUser.setRole(setUserRole());
+                    postData.setFrom(fromUser);
+
+                    PostToGroup toGroup = new PostToGroup();
+                    toGroup.setName(mGroup.getGroupName());
+                    toGroup.setId(mGroup.getObjectId());
+                    postData.setTo(toGroup);
+                    postData.setAlias(GeneralUtils.generateAlias("LNPostData", "" + mAppUserModel.getObjectId(), System.currentTimeMillis() + ""));
+                    postData.setSyncStatus(SyncStatus.NOT_SYNC.toString());
+                    postData.setUnread(false);
+                    postData.setLastMessageTime(new Date());
+                    postData.setoGDataList(ogList);
+                    postData.setPostResources(FullScreenImage.getResourceArrayList(mAttachPathList));
+                    postData.setPostText(postText);
+                    postData.setPostType(categoryType);
+                    postData.setLastUpdationTime(new Date());
+                    postData.setBadgeAssigningEnabled(isBadgeAssigningEnabled());
+                    mPostDataLearningModel.savePost(postData);
+                    emitter.onNext(postData);
+                    emitter.onComplete();
+                }
+            }).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<PostData>() {
+                        @Override
+                        public void accept(PostData postData) throws Exception {
+                            dialog.dismiss();
+                            mBinding.layoutDiscussion.editTextWritePost.clearComposingText();
+                            mRxBus.send(new LoadNewPostCreatedEvent());
+                            closeActivity();
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
+                            dialog.dismiss();
+                            SnackBarUtils.showColoredSnackBar(getBaseContext(), mBinding.toolbar, getString(R.string.error_something_went_wrong), ContextCompat.getColor(getBaseContext(), R.color.colorRed));
+
+                        }
+                    });
+
 
         } else {
-            mPostEditText.requestFocus();
-            mPostEditText.setCursorVisible(true);
-            SnackBarUtils.showColoredSnackBar(getBaseContext(), mToolbar, getString(R.string.label_empty_post), ContextCompat.getColor(getBaseContext(), R.color.colorRed));
+            mBinding.layoutDiscussion.editTextWritePost.requestFocus();
+            mBinding.layoutDiscussion.editTextWritePost.setCursorVisible(true);
+            SnackBarUtils.showColoredSnackBar(getBaseContext(), mBinding.toolbar, getString(R.string.label_empty_post), ContextCompat.getColor(getBaseContext(), R.color.colorRed));
         }
-
     }
 
     private boolean isBadgeAssigningEnabled() {
@@ -476,10 +518,12 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     private String setUserRole() {
-        if (PermissionPrefsCommon.getPostBadgeAssignPermission(this)) {
-            return AppUser.USERTYPE.TEACHER.toString();
+        UserProfile userProfile = mAppUserModel.getApplicationUser();
+        if (userProfile.getRole() != null && !TextUtils.isEmpty(userProfile.getRole().getName())) {
+            return userProfile.getRole().getName();
         } else {
-            return AppUser.USERTYPE.STUDENT.toString();
+            return ConstantUtil.BLANK;
+
         }
     }
 
@@ -1140,14 +1184,12 @@ public class CreatePostActivity extends AppCompatActivity {
                 }
             });
 
-            holder.mResourceImageView.setOnClickListener(new View.OnClickListener()
-
-            {
+            holder.mResourceImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     String mimeType = URLConnection.guessContentTypeFromName(mAttachPathList.get(position));
                     if (mimeType.contains("image")) {
-                        FullScreenImage.setUpFullImageView(CreatePostActivity.this, position, true, true,FullScreenImage.getResourceArrayList(mAttachPathList));
+                        FullScreenImage.setUpFullImageView(CreatePostActivity.this, position, true, true, FullScreenImage.getResourceArrayList(mAttachPathList));
                     } else if (mimeType.contains("video")) {
                         Resource item = new Resource();
                         item.setType("video");

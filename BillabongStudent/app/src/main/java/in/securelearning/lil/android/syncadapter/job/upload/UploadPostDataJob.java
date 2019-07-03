@@ -34,7 +34,7 @@ public class UploadPostDataJob extends BaseUploadJob<PostData> {
      * execute uploading of Post data
      */
     public void execute() {
-         /*post the resource in post*/
+        /*post the resource in post*/
         UploadPostDataResourcesJob job = new UploadPostDataResourcesJob(mDataObject) {
             @Override
             public void onComplete() {
@@ -46,7 +46,7 @@ public class UploadPostDataJob extends BaseUploadJob<PostData> {
                 }
             }
         };
-                /*execute the job*/
+        /*execute the job*/
         job.execute();
 
     }
@@ -150,23 +150,23 @@ public class UploadPostDataJob extends BaseUploadJob<PostData> {
         //Sending UrlMain to server
         mDataObject.setPostResources(mDataObject.getPostResources());
 
-            /*upload data object*/
+        /*upload data object*/
         Response<PostData> response = uploadJsonToServer(mDataObject).execute();
 
-            /*if upload is successful*/
+        /*if upload is successful*/
         if (response.isSuccessful()) {
-                /*retrieve assignment response*/
+            /*retrieve assignment response*/
             PostData postData = response.body();
 
             Log.e(TAG, "Learning Network Post posted : " + postData.getObjectId());
 
-                /*set sync status*/
+            /*set sync status*/
             mDataObject.setSyncStatus(SyncStatus.COMPLETE_SYNC.toString());
 
-                /*set object id*/
+            /*set object id*/
             mDataObject.setObjectId(postData.getObjectId());
 
-                /*save json to database*/
+            /*save json to database*/
             saveJsonToDatabase(mDataObject);
         } else if (response.code() == 422 || response.code() == 500) {
             Response<PostData> response2 = fetchByAlias(mDataObject.getAlias()).execute();
@@ -236,15 +236,15 @@ public class UploadPostDataJob extends BaseUploadJob<PostData> {
     public void saveJsonToDatabase(PostData postData) {
         /*save assignment response*/
         mJobModel.saveLearningNetworkPostData(postData);
-        try {
-            Response<MessageResponse> response = uploadJsonToServerFCM(postData.getTo().getId(), postData.getObjectId(), postData.getCreatedTime()).execute();
-
-            if (response.isSuccessful()) {
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Response<MessageResponse> response = uploadJsonToServerFCM(postData.getTo().getId(), postData.getObjectId(), postData.getCreatedTime()).execute();
+//
+//            if (response.isSuccessful()) {
+//
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
 

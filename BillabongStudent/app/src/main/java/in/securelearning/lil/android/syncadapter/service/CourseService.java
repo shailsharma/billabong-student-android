@@ -18,6 +18,7 @@ import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.model.SyncServiceModel;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.functions.Consumer;
 
 public class CourseService extends IntentService {

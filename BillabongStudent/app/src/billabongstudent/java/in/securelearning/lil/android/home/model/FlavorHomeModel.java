@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.home.model;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +13,9 @@ import android.view.View;
 import android.view.Window;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -28,6 +32,8 @@ import in.securelearning.lil.android.base.dataobjects.VideoCourse;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.home.InjectorHome;
+import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
+import in.securelearning.lil.android.homework.dataobject.Homework;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
 import in.securelearning.lil.android.syncadapter.dataobject.LessonPlanMinimal;
 import in.securelearning.lil.android.syncadapter.dataobjects.AboutCourseMinimal;
@@ -43,10 +49,15 @@ import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.model.FlavorNetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -396,11 +407,11 @@ public class FlavorHomeModel {
     }
 
     public void downloadGroup(String groupId) {
-        JobCreator.createDownloadGroupJob(groupId).execute();
+        JobCreator.createDownloadGroupJob(groupId, ConstantUtil.GROUP_TYPE_NETWORK).execute();
     }
 
     public void downloadGroupPostAndResponse(String groupId) {
-        JobCreator.createDownloadGroupPostNResponseJob(groupId).execute();
+        JobCreator.createDownloadGroupPostAndResponseJob(groupId).execute();
     }
 
     /*To fetch student's achievements*/
@@ -456,4 +467,129 @@ public class FlavorHomeModel {
         alert.show();
 
     }
+
+    public Observable<AssignedHomeworkParent> fetchHomeworkCount(final String subjectId) {
+        return Observable.create(new ObservableOnSubscribe<AssignedHomeworkParent>() {
+            @Override
+            public void subscribe(ObservableEmitter<AssignedHomeworkParent> e) throws Exception {
+
+                Call<AssignedHomeworkParent> call = mFlavorNetworkModel.fetchHomework(subjectId);
+                Response<AssignedHomeworkParent> response = call.execute();
+
+                if (response != null && response.isSuccessful()) {
+                    Log.e("fetchHomework", "Successful");
+                    //AssignedHomeworkParent assignedHomeworkParent = combineNewTodayUpcomingList(response.body());
+                    e.onNext(response.body());
+                } else if (response.code() == 404) {
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                } else if (response.code() == 401 && SyncServiceHelper.refreshToken(mContext)) {
+                    Response<AssignedHomeworkParent> response2 = call.clone().execute();
+                    if (response2 != null && response2.isSuccessful()) {
+                        Log.e("fetchHomeworkCount", "Successful");
+                        e.onNext(response2.body());
+                    } else if (response2.code() == 401) {
+                        mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
+                    } else if (response2.code() == 404) {
+                        throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                    }
+                } else {
+                    Log.e("fetchHomeworkCount", "Failed");
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                }
+
+                e.onComplete();
+            }
+        });
+    }
+
+    private AssignedHomeworkParent combineNewTodayUpcomingList(AssignedHomeworkParent assignedHomeworkParent) {
+        if (assignedHomeworkParent != null) {
+            ArrayList<Homework> pendingAssignmentSet = new ArrayList<>();
+            AssignedHomeworkParent.AssignedHomework newAssignmentList = assignedHomeworkParent.getNewStudentAssignment();
+            if (newAssignmentList != null && newAssignmentList.getCount() > 0) {
+                for (Homework newHomework : newAssignmentList.getAssignmentsList()) {
+                    newHomework.setHomeworkType(ConstantUtil.NEW);
+                }
+                pendingAssignmentSet.addAll(newAssignmentList.getAssignmentsList());
+            }
+
+            AssignedHomeworkParent.AssignedHomework todayAssignmentList = assignedHomeworkParent.getTodayStudentAssignment();
+            if (todayAssignmentList != null && todayAssignmentList.getCount() > 0) {
+                for (Homework todayHomework : todayAssignmentList.getAssignmentsList()) {
+                    todayHomework.setHomeworkType(ConstantUtil.TODAY);
+                }
+                pendingAssignmentSet.addAll(todayAssignmentList.getAssignmentsList());
+            }
+
+            AssignedHomeworkParent.AssignedHomework upComingAssignmentList = assignedHomeworkParent.getUpComingStudentAssignment();
+            if (upComingAssignmentList != null && upComingAssignmentList.getCount() > 0) {
+                for (Homework upcomingHomework : upComingAssignmentList.getAssignmentsList()) {
+                    upcomingHomework.setHomeworkType(ConstantUtil.UPCOMING);
+                }
+                pendingAssignmentSet.addAll(upComingAssignmentList.getAssignmentsList());
+            }
+
+            /*clearing repeated value from list*/
+            List<Homework> pendingAssignmentList = new ArrayList<>(pendingAssignmentSet);
+            Set<Homework> homeworkSet = new HashSet<>(pendingAssignmentList);
+            pendingAssignmentList.clear();
+            pendingAssignmentList.addAll(homeworkSet);
+
+            assignedHomeworkParent.setPendingAssignmentList(pendingAssignmentList);
+            return assignedHomeworkParent;
+
+        }
+        return null;
+    }
+
+    /*Method to send status of application for various user activity*/
+    @SuppressLint("CheckResult")
+    public void checkUserStatus(final String status) {
+        Observable.create(new ObservableOnSubscribe<ResponseBody>() {
+            @Override
+            public void subscribe(ObservableEmitter<ResponseBody> e) throws Exception {
+
+                Call<ResponseBody> call = mFlavorNetworkModel.checkUserStatus(status);
+                Response<ResponseBody> response = call.execute();
+
+                if (response != null && response.isSuccessful()) {
+                    Log.e("checkUserStatus", "Successful");
+                    e.onNext(response.body());
+                } else if (response.code() == 404) {
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                } else if (response.code() == 401 && SyncServiceHelper.refreshToken(mContext)) {
+                    Response<ResponseBody> response2 = call.clone().execute();
+                    if (response2 != null && response2.isSuccessful()) {
+                        Log.e("checkUserStatus", "Successful");
+                        e.onNext(response2.body());
+                    } else if (response2.code() == 401) {
+                        mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
+                    } else if (response2.code() == 404) {
+                        throw new Exception("Failed");
+                    }
+                } else {
+                    Log.e("checkUserStatus", "Failed");
+                    throw new Exception("Failed");
+                }
+
+                e.onComplete();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+
+                        Log.e("userStatusTypeSuccess--", status);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+
+                    }
+                });
+    }
+
+
 }

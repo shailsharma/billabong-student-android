@@ -14,6 +14,7 @@
     <!--test/qa urls-->
     <string name="base_api_url_test">https://billabong-test.learnindialearn.in/api/</string>
     <string name="base_web_url_test">https://billabong-test.learnindialearn.in/</string>
+
     <!--mind spark's strings-->
     <string name="mind_spark_x_api_key">zS72YNPKoA9gK6Z6j9Msj4VO1p2SxUnx21Kwuz4P</string>
     <string name="mind_spark_base_url">https://www.mindspark.in/api/</string>
@@ -24,6 +25,15 @@
 
     <!--Lightsail url-->
     <string name="base_url_lightsail">https://s2m-euro-reader.lightsailed.com/Reader/index.html?jwtToken=</string>
+
+
+    <string name="search_provider_authority">in.securelearning.lil.android.app.billabongstudent.provider.SearchSuggestionProvider</string>
+    <string name="search_provider_authority_debug">in.securelearning.lil.android.app.billabongstudent.debug.provider.SearchSuggestionProvider</string>
+    <string name="search_provider_authority_test">in.securelearning.lil.android.app.billabongstudent.demo.provider.SearchSuggestionProvider</string>
+    <string name="file_provider_authority">in.securelearning.lil.android.app.billabongstudent.provider.FileProvider</string>
+    <string name="file_provider_authority_debug">in.securelearning.lil.android.app.billabongstudent.debug.provider.FileProvider</string>
+    <string name="file_provider_authority_test">in.securelearning.lil.android.app.billabongstudent.demo.provider.FileProvider</string>
+
 
     <string name="title_activity_settings_preference_flavor">Settings</string>
 
@@ -65,13 +75,6 @@
         <item>2</item>
         <item>3</item>
     </string-array>
-
-    <string name="search_provider_authority">in.securelearning.lil.android.app.billabongstudent.provider.SearchSuggestionProvider</string>
-    <string name="search_provider_authority_debug">in.securelearning.lil.android.app.billabongstudent.debug.provider.SearchSuggestionProvider</string>
-    <string name="search_provider_authority_test">in.securelearning.lil.android.app.billabongstudent.demo.provider.SearchSuggestionProvider</string>
-    <string name="file_provider_authority">in.securelearning.lil.android.app.billabongstudent.provider.FileProvider</string>
-    <string name="file_provider_authority_debug">in.securelearning.lil.android.app.billabongstudent.debug.provider.FileProvider</string>
-    <string name="file_provider_authority_test">in.securelearning.lil.android.app.billabongstudent.demo.provider.FileProvider</string>
 
     <integer name="event_title_limit">100</integer>
     <integer name="event_location_limit">40</integer>
@@ -120,7 +123,7 @@
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
 
 
-    <string name="next">NEXT</string>
+    <string name="next">Next</string>
     <string name="skip">SKIP</string> 
     <string name="start">GOT IT</string>   
     <string name="slide_1_title">Hello Food!</string>
@@ -158,7 +161,7 @@
 
     <string name="messageUnableToGetData">Unable to get data</string>
 
-
+    <integer name="benchmark">1</integer>
     <string-array name="training_list_item">
         <item>@string/labelDetails</item>
         <item>@string/labelCourses</item>
@@ -214,11 +217,14 @@
     <string name="fail">fail</string>
     <string name="messageGettingNextQuestion">Getting Next Question</string>
     <string name="messageMSEndTopic">Congratulations your practice on this topic submitted.\nPlease Go Back and try practice for another topic.</string>
-    <string name="messageMSNoMCQ">No more questions available for this topic.\nPlease Go Back and try practice for another topic.</string>
+    <string name="messageNoMoreQuestion">No more questions available for this topic.\nPlease Go Back and try practice for another topic.</string>
+    <string name="messageNoQuestionForTopic">No question available for this topic.\nPlease Go Back and try practice for another topic.</string>
     <string name="total_trophies">Total Trophies</string>
     <string name="total_badges">Total Badges</string>
     <string name="daily_efforts_min">Daily Efforts (min)</string>
     <string name="total_hrs">Total (hrs)</string>
+    <string name="daily_efforts">Daily Efforts</string>
+    <string name="total">Total</string>
     <string name="reading">Reading</string>
     <string name="min">(min)</string>
     <string name="progress">Progress</string>
@@ -276,6 +282,8 @@
     <item name="coverageSubjectName" type="id"/>
     <item name="correctAnswer" type="id"/>
     <item name="isCorrect" type="id"/>
+    <item name="positionX" type="id"/>
+    <item name="positionY" type="id"/>
 
     <string-array name="array_student_profile_tab">
         <item>@string/label_achievement</item>
@@ -287,14 +295,36 @@
     <string name="efforts">Efforts</string>
     <string name="excellence">Excellence</string>
     <string name="you_are_briliant">You are Brilliant!</string>
-    <string name="you_are_catching">You are\n Catching up well</string>
+    <string name="you_are_catching">You are\n Catching up well!</string>
     <string name="you_are_harder">You need to \nWork Harder!</string>
-    <string name="you_are_study">You are\n Studying A Lot</string>
+    <string name="you_are_study">You are\n Studying A Lot!</string>
     <string name="high">High</string>
     <string name="low">Low</string>
     <string name="zero">0</string>
     <string name="chart_configuration">Please provide the chart configuration </string>
     <string name="coverage">Coverage</string>
-    <string name="snakbar_before_dashboard"><![CDATA[<i>Hey</i> <b>%1$s</b>\n "Great to have you back"]]></string>
-    <string name="snakbar_before_dashboard_1"><![CDATA[<i>Hey</i>\n "Great to have you back"]]></string>
+    <string name="gamification_assignment_pending"><![CDATA[<i>Hey</i> <b>%1$s</b>\n "You have %2$s new homework today, so please plan your day"]]></string>
+    <string name="snackbar_login_msg"><![CDATA[<i>Hey</i> <b>%1$s</b>\n "Great to have you back"]]></string>
+    <string name="snackbar_login_msg_without_name"><![CDATA[<i>Hey</i>\n "Great to have you back"]]></string>
+    <string name="lrpaGroupNull">Currently subject teacher not mapped for selected grade and section. Please inform to Administrator.</string>
+    <string name="lrpaGradeNull">Currently grade not mapped for the topic. Please inform to Administrator.</string>
+    <string name="cant_receive_video_from_this_app">Can\'t receive video from this app</string>
+    <string name="cant_receive_image_from_this_app">Can\'t receive image from this app</string>
+    <string name="cant_pick_this_file">Can\'t pick this file</string>
+    <string name="message_unauthorized">"Your session has expired. Please login again to continue using the app."</string>
+    <string name="message_user_archived">"Request has been denied. Please contact to argus administrator!"</string>
+
+    <string name="unable_to_submit_homework">Unable to submit homework</string>
+    <string name="homework_submit_success">Homework submitted successfully</string>
+    <string name="homework_pre_read_submit_success">Pre Read is acknowledged, you are hereby expected to complete the activity.</string>
+
+    <string name="homework_not_submit">Homework Not Submitted</string>
+    <string name="homework_submit">Homework Submitted</string>
+    <string name="congratulations">Congratulation!</string>
+    <string name="practice_end_greeting_message">You have completed the practice.</string>
+    <string name="question_response_wrong">Ohh! just Missed it</string>
+    <string name="practice_repeat_message">You have already done practice on this topic.\nWould you like to repeat practice on this topic ?</string>
+    <string name="freadom">freadom</string>
+    <string name="lightsail">lightsail</string>
+    <string name="mindspark">mindspark</string>
 </resources>

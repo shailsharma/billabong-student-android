@@ -41,41 +41,41 @@ public class FullScreenImage {
 
     public static void setUpImageGridView(Context context, ArrayList<Resource> mAttachResourcesList, String strHeaderText) {
 
-        final Dialog mDialog = new Dialog(context);
-        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mDialog.setContentView(R.layout.layout_image_grid_view);
-        mDialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
-        mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
-        RecyclerView mImageRecyclerView = (RecyclerView) mDialog.findViewById(R.id.recyclerview_gridview);
-        ImageButton mCloseDialogButton = (ImageButton) mDialog.findViewById(R.id.button_close);
-        TextView mHeaderTextView = (TextView) mDialog.findViewById(R.id.textview_grid_dialog_header);
-        mHeaderTextView.setText(strHeaderText);
-        mCloseDialogButton.setOnClickListener(new View.OnClickListener() {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_image_grid_view);
+        dialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
+        RecyclerView recyclerView = (RecyclerView) dialog.findViewById(R.id.recyclerview_gridview);
+        ImageButton closeDialogButton = (ImageButton) dialog.findViewById(R.id.button_close);
+        TextView headerTextView = (TextView) dialog.findViewById(R.id.textview_grid_dialog_header);
+        headerTextView.setText(strHeaderText);
+        closeDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDialog.dismiss();
+                dialog.dismiss();
             }
         });
-        setUpImageGridViewItem(context, mImageRecyclerView, mAttachResourcesList);
+        setUpImageGridViewItem(context, recyclerView, mAttachResourcesList);
 
-        Window window = mDialog.getWindow();
+        Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         window.setAttributes(wlp);
-        mDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        mDialog.show();
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.show();
 
     }
 
     /**
      * set up recycler view item contain post images
      *
-     * @param mImageRecyclerView
+     * @param recyclerView
      * @param mAttachResourcesList
      */
-    private static void setUpImageGridViewItem(Context context, RecyclerView mImageRecyclerView, ArrayList<Resource> mAttachResourcesList) {
+    private static void setUpImageGridViewItem(Context context, RecyclerView recyclerView, ArrayList<Resource> mAttachResourcesList) {
 
-        RecyclerViewImageAdapter mRecyclerViewImageAdapter;
+        RecyclerViewImageAdapter recyclerViewImageAdapter;
         GridLayoutManager layoutManager;
         if (context.getResources().getBoolean(R.bool.isTablet)) {
             layoutManager = new GridLayoutManager(context, 3);
@@ -83,9 +83,9 @@ public class FullScreenImage {
             layoutManager = new GridLayoutManager(context, 2);
         }
 
-        mImageRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerViewImageAdapter = new RecyclerViewImageAdapter(context, mAttachResourcesList);
-        mImageRecyclerView.setAdapter(mRecyclerViewImageAdapter);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerViewImageAdapter = new RecyclerViewImageAdapter(context, mAttachResourcesList);
+        recyclerView.setAdapter(recyclerViewImageAdapter);
 
     }
 
@@ -206,13 +206,13 @@ public class FullScreenImage {
         mImageViewPager.setOffscreenPageLimit(1);
     }
 
-    public static ArrayList<Resource> getResourceArrayList(ArrayList<String> mAttachmentPathList) {
+    public static ArrayList<Resource> getResourceArrayList(ArrayList<String> attachmentPathList) {
         Resource resource;
         ArrayList<Resource> resources = new ArrayList<>();
 
-        for (int i = 0; i < mAttachmentPathList.size(); i++) {
+        for (int i = 0; i < attachmentPathList.size(); i++) {
             resource = new Resource();
-            String mimeType = URLConnection.guessContentTypeFromName(mAttachmentPathList.get(i));
+            String mimeType = URLConnection.guessContentTypeFromName(attachmentPathList.get(i));
             if (mimeType.contains("image")) {
                 resource.setResourceType(Resource.TYPE_RESOURCE_IMAGE);
             } else if (mimeType.contains("video")) {
@@ -222,7 +222,7 @@ public class FullScreenImage {
             } else if (mimeType.contains("application")) {
                 resource.setResourceType(Resource.TYPE_RESOURCE_DOC);
             }
-            resource.setDeviceURL(mAttachmentPathList.get(i));
+            resource.setDeviceURL(attachmentPathList.get(i));
             resources.add(resource);
 
         }
@@ -257,10 +257,10 @@ public class FullScreenImage {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            TouchImageView mImageView;
+            TouchImageView imageView;
             inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View itemView = inflater.inflate(R.layout.layout_image_viewpager_itemview, container, false);
-            mImageView = (TouchImageView) itemView.findViewById(R.id.imageview_viewpager_images);
+            imageView = itemView.findViewById(R.id.imageview_viewpager_images);
 
             if (FileUtils.checkIsFilePath(mAttachmentPathList.get(position).getDeviceURL())) {
                 mImageFile = new File(FileUtils.getPathFromFilePath(mAttachmentPathList.get(position).getDeviceURL()));
@@ -268,7 +268,7 @@ public class FullScreenImage {
                 mImageFile = new File(mBaseFolderPath + mAttachmentPathList.get(position));
             }
 
-            Picasso.with(mContext).load(mImageFile).into(mImageView);
+            Picasso.with(mContext).load(mImageFile).placeholder(R.drawable.background_transparent).into(imageView);
 
 
             ((ViewPager) container).addView(itemView);

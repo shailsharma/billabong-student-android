@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 import in.securelearning.lil.android.base.dataobjects.LocationCourse;
+import in.securelearning.lil.android.base.dataobjects.Thumbnail;
 
 /**
  * Created by Chaitendra on 13-Nov-17.
@@ -20,6 +21,7 @@ public class UserMinimal implements Serializable {
     @SerializedName("firstName")
     @Expose
     private String mFirstName;
+
     @SerializedName("lastName")
     @Expose
     private String mLastName;
@@ -47,6 +49,10 @@ public class UserMinimal implements Serializable {
     @SerializedName("location")
     @Expose
     private LocationCourse mLocationCourse;
+
+    @SerializedName(value = "thumbnail", alternate = "userThumbnail")
+    @Expose
+    private Thumbnail mThumbnail;
 
     public String getId() {
         return mId;
@@ -124,4 +130,7 @@ public class UserMinimal implements Serializable {
         mLocationCourse = locationCourse;
     }
 
+    public Thumbnail getThumbnail() {
+        return mThumbnail;
+    }
 }

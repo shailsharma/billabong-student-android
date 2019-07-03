@@ -53,7 +53,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -70,16 +69,13 @@ import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.ActivityWelcomeBinding;
 import in.securelearning.lil.android.app.databinding.LayoutAppMainLoginBinding;
-import in.securelearning.lil.android.base.dataobjects.Group;
-import in.securelearning.lil.android.base.dataobjects.GroupAbstract;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
-import in.securelearning.lil.android.base.db.query.DatabaseQueryHelper;
 import in.securelearning.lil.android.base.model.AppUserModel;
-import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
+import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.home.utils.PermissionPrefs;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
 import in.securelearning.lil.android.home.utils.PreferenceSettingUtilClass;
@@ -120,6 +116,9 @@ import static in.securelearning.lil.android.home.views.activity.PasswordChangeAc
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     public static final String ACTION_LOGOUT = "in.securelearning.lil.android.action.ACTION_LOGOUT";
+    //    public static final String ACTION_UNAUTHORIZED_LOGOUT = "in.securelearning.lil.android.action.ACTION_UNAUTHORIZED_LOGOUT";
+    public static final String ACTION_USER_ARCHIVED = "in.securelearning.lil.android.action.ACTION_USER_ARCHIVED";
+
     public static final String ACTION_UNAUTHORIZED = "in.securelearning.lil.android.action.ACTION_UNAUTHORIZED";
     public static final String ACTION_LEARNING_NETWORK = "in.securelearning.lil.android.action.ACTION_LEARNING_NETWORK";
     public static final String ACTION_NOTIFICATION = "in.securelearning.lil.android.action.NOTIFICATION";
@@ -137,20 +136,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Inject
     AppUserModel mAppUserModel;
     @Inject
-    GroupModel mGroupModel;
-    @Inject
-    DatabaseQueryHelper mDatabaseQueryHelper;
-    @Inject
     NetworkModel mNetworkModel;
     @Inject
     RxBus mRxBus;
+    @Inject
+    HomeModel mHomeModel;
     private String mAction = "";
     private LayoutAppMainLoginBinding mBinding;
 
     private final static String EMAIL_PHONE_SHARED_PREFERENCE = "email_phone_pref";
     private final static String SET_LOGGED_IN_EMAIL_PHONE = "set_logged_in_email_phone";
     private boolean mIsAlreadyLoggedIn;
-    private Disposable mSubscription;
 
     public static Intent startIntentLoginActivity(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -161,22 +157,44 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     public void onBackPressed() {
 
-//        switch (mAction) {
-//            case Intent.ACTION_MAIN:
-//                finish();
-//                break;
-//            case ACTION_LOGOUT:
-//                finishAndRemoveTask();
-//                break;
-//            case ACTION_UNAUTHORIZED:
-//                finishAffinity();
-//                break;
-//            default:
-//                finish();
-//                break;
+        getAppExitIntent();
+    }
+
+
+    @SuppressLint("CheckResult")
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        if (BuildConfig.BUILD_TYPE.equalsIgnoreCase("release")) {
+//            mHomeModel.checkForNewVersionOnPlayStore()
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new Consumer<String>() {
+//                        @Override
+//                        public void accept(String playStoreVersion) throws Exception {
+//                            if (!BuildConfig.VERSION_NAME.equalsIgnoreCase(playStoreVersion)) {
+//
+//                                new android.app.AlertDialog.Builder(LoginActivity.this)
+//                                        .setTitle(getString(R.string.labelUpdateAvailable))
+//                                        .setMessage(getString(R.string.messageNewUpdateIsAvailable))
+//                                        .setCancelable(false)
+//                                        .setPositiveButton(getString(R.string.labelUpdate), new DialogInterface.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(DialogInterface dialog, int which) {
+//                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse
+//                                                        ("market://details?id=" + BuildConfig.APPLICATION_ID)));
+//                                            }
+//                                        }).show();
+//                            }
+//
+//                        }
+//                    }, new Consumer<Throwable>() {
+//                        @Override
+//                        public void accept(Throwable throwable) throws Exception {
+//                            throwable.printStackTrace();
+//                        }
+//                    });
 //        }
-        finish();
-        finishAffinity();
     }
 
     @Override
@@ -206,16 +224,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             } else {
 
                 mBinding = DataBindingUtil.setContentView(this, R.layout.layout_app_main_login);
-                getWindow().getDecorView().setBackgroundResource(R.drawable.app_splash);
                 setDefaults();
                 if (mAction.equals(ACTION_UNAUTHORIZED)) {
-                    intentActionDialog("Your session has expired. Please login again to continue using the app.");
+                    intentActionDialog(getString(R.string.message_unauthorized));
+                } else if (mAction.equals(ACTION_USER_ARCHIVED)) {
+                    intentActionDialog(getString(R.string.message_user_archived));
                 }
-//                else if (mAction.equals(ACTION_USER_ARCHIVED)) {
-//                    intentActionDialog("Request has been denied. Please contact your system administrator!");
-//                }
                 initializeUiAndClickListeners();
-                handleException();
+                //handleException();
                 requestAndroidPermission();
                 listenRxEvent();
 
@@ -226,8 +242,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void intentActionDialog(String message) {
         new AlertDialog.Builder(this)
                 .setMessage(message)
-                .setTitle("Message")
-                .setPositiveButton("Ok", null)
+                .setPositiveButton(android.R.string.ok, null)
                 .show();
     }
 
@@ -269,7 +284,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     /*Listen or catch the respective events*/
     private void listenRxEvent() {
-        mSubscription = mRxBus.toFlowable()
+        Disposable subscription = mRxBus.toFlowable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Object>() {
                     @SuppressLint("CheckResult")
@@ -293,7 +308,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
-     * Handle exception and send log file to `stered mail ids
+     * Handle exception and send log file to registered mail ids
      */
     private void handleException() {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -309,7 +324,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
                 }
                 if (t != null && t.getId() == Looper.getMainLooper().getThread().getId()) {
-                    restartApp(LoginActivity.this);
+                    //restartApp(LoginActivity.this);
                 }
             }
         });
@@ -404,11 +419,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             unSubscribeFCM();
                             unauthorizedAction();
                             break;
+                        case ACTION_USER_ARCHIVED:
+                            unSubscribeFCM();
+                            unauthorizedAction();
+                            break;
                     }
-//                    else if (mAction.equals(ACTION_USER_ARCHIVED)) {
-//                        unSubscribeFCM();
-//                        unauthorizedAction();
-//                    }
+
                 } else if (AppPrefs.isLoggedIn(LoginActivity.this)) {
                     actionOfflineLogin();
                 }
@@ -428,26 +444,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     }
 
-    private void actionVersionLessThan41() {
-        try {
-            mDatabaseQueryHelper.reIndexViewFromDatabaseNotifications(DatabaseQueryHelper.VIEW_NAME_EVENT_LIST_BY_CREATION_TIME);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     @Override
     protected void onStart() {
         super.onStart();
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
 
     @Override
     protected void onDestroy() {
@@ -476,9 +477,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private void unauthorizedAction() {
         SyncServiceHelper.stopSyncService(this);
-        clearPreferences(LoginActivity.this);
+        //clearPreferences(LoginActivity.this);
         mAppUserModel.changeToGuestUser();
-        // mAppUserModel.setApplicationUser(new UserProfile());
+        //mAppUserModel.setApplicationUser(new UserProfile());
         //clear notifications
         NotificationManagerCompat.from(this).cancelAll();
     }
@@ -791,6 +792,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         final String userId = AppPrefs.getUserId(this);
         mAppUserModel.changeToUserDatabase(userId);
         copyUserProfileFromGuestDB(userId);
+        // refreshDashboardData(false);
+
         if (mAction != null && mAction.equals(ACTION_LEARNING_NETWORK)) {
             startHomeActivityForLearningNetwork();
             Log.e("in", "actionMain startLN");
@@ -943,23 +946,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             });
 
             /*Starting download job to fetch and save user's group.*/
-            try {
-                createDownloadJobForGroups(userProfile);
-            } catch (Exception e) {
-                throw new SocketTimeoutException(getString(R.string.error_loading_groups));
-            }
+            JobCreator.createNetworkGroupDownloadJob().execute();
 
+               /*If login successful, then saving logged in users
+              emails to shared preferences, and showing saved emails
+              when user tries to login next time*/
             Set<String> editTextValues = getEmailOrPhoneFromSharedPref();
             editTextValues.add(mBinding.includeLoginEmail.editTextLoginEmail.getText().toString().trim());
             saveEmailOrPhoneToSharedPref(editTextValues);
 
+            //refreshDashboardData(false);
+
             /*Make mIsAlreadyLoggedIn value false because user already logged in.*/
             mIsAlreadyLoggedIn = false;
 
-
-
             /*checking if user has changed password once,
-             *if not then navigating the user to change password screen.*/
+             *if not then navigating the user to change password screen.
+             *if isResetInitialPassword value is false, then only perform this*/
             if (!userProfile.isResetInitialPassword()) {
                 startChangePasswordActivity();
                 showProgress(false);
@@ -992,6 +995,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         startActivity(PasswordChangeActivity.getStartIntent(getBaseContext(), mAppUserModel.getObjectId(), getString(R.string.messageChangePasswordLogout), getString(R.string.labelChangePassword), FROM_LOGIN));
 
+    }
+
+    /*To refresh dashboard data when boolean value is false*/
+    private void refreshDashboardData(boolean shouldRefresh) {
+        PreferenceSettingUtilClass.setDashboardDataFetch(shouldRefresh, LoginActivity.this);
     }
 
     private boolean fetchAndSetRolePermissions(Context context) throws IOException {
@@ -1045,88 +1053,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     }
 
-    private void createDownloadJobForGroups(ArrayList<String> groupsIdsList) {
-
-        if (groupsIdsList != null && groupsIdsList.size() > 0) {
-            for (final String s : groupsIdsList) {
-                if (!TextUtils.isEmpty(s)) {
-                    JobCreator.createDownloadGroupJob(s).execute();
-//                    JobCreator.createTrackingRouteDownloadJob(s).execute();
-                }
-            }
-            for (final String s : groupsIdsList) {
-                if (!TextUtils.isEmpty(s)) {
-                    FirebaseMessaging.getInstance().subscribeToTopic(BuildConfig.SUBSCRIBE_FCM_PREFIX + s);
-                }
-            }
-        }
-    }
-
-    private void createDownloadJobForGroups(UserProfile userProfile) throws SocketTimeoutException {
-        HashSet<String> groupSet = new HashSet<String>();
-
-        for (GroupAbstract groupAbstract :
-                userProfile.getMemberGroups()) {
-            if (groupAbstract != null && !TextUtils.isEmpty(groupAbstract.getObjectId())) {
-                String groupId = groupAbstract.getObjectId();
-                if (!groupSet.contains(groupId)) {
-
-                    groupSet.add(groupId);
-                    JobCreator.createDownloadGroupJob(groupId).execute();
-                    Group group = mGroupModel.getGroupFromUidSync(groupId);
-                    if (group == null || TextUtils.isEmpty(group.getObjectId())) {
-                        throw new SocketTimeoutException(getString(R.string.error_loading_groups));
-                    }
-                }
-            }
-
-
-        }
-
-        for (GroupAbstract groupAbstract :
-                userProfile.getModeratedGroups()) {
-            if (groupAbstract != null && !TextUtils.isEmpty(groupAbstract.getObjectId())) {
-                String groupId = groupAbstract.getObjectId();
-                if (!groupSet.contains(groupId)) {
-                    groupSet.add(groupId);
-                    JobCreator.createDownloadGroupJob(groupId).execute();
-                    Group group = mGroupModel.getGroupFromUidSync(groupId);
-                    if (group == null || TextUtils.isEmpty(group.getObjectId())) {
-                        throw new SocketTimeoutException("Failed to load groups");
-                    }
-                }
-
-
-            }
-        }
-
-
-        if (groupSet != null && groupSet.size() > 0) {
-            for (final String s : groupSet) {
-                if (!TextUtils.isEmpty(s)) {
-                    FirebaseMessaging.getInstance().subscribeToTopic(BuildConfig.SUBSCRIBE_FCM_PREFIX + s);
-                }
-            }
-        }
-    }
-
-    private ArrayList<String> fetchGroupsIdsList(UserProfile mLoggedInUserProfile) {
-        ArrayList<String> groupsIdsList = new ArrayList<>();
-        if (mLoggedInUserProfile.getModeratedGroups() != null) {
-
-            for (GroupAbstract groupAbstract : mLoggedInUserProfile.getModeratedGroups()) {
-                if (groupAbstract != null) groupsIdsList.add(groupAbstract.getObjectId());
-            }
-        }
-        if (mLoggedInUserProfile.getMemberGroups() != null) {
-            for (GroupAbstract groupAbstract : mLoggedInUserProfile.getMemberGroups()) {
-                if (groupAbstract != null) groupsIdsList.add(groupAbstract.getObjectId());
-            }
-        }
-
-        return groupsIdsList;
-    }
-
     private boolean performLoginSuccessAction(Context context, String email, UserProfile userProfile) {
         try {
 
@@ -1159,6 +1085,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void startHomeActivity() {
 
         Intent intent = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
 
@@ -1204,16 +1131,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     public static Intent getLogoutIntent(Context context) {
         clearPreferences(context);
+        stopServicesAndCancelNotifications(context);
         Intent intent = new Intent(context, LoginActivity.class);
         intent.setAction(ACTION_LOGOUT);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
         return intent;
     }
 
     public static Intent getUnauthorizedIntent(Context context) {
+        clearPreferences(context);
         stopServicesAndCancelNotifications(context);
         Intent intent = new Intent(context, LoginActivity.class);
         intent.setAction(ACTION_UNAUTHORIZED);
+        return intent;
+    }
+
+
+    public static Intent getUserArchivedIntent(Context context) {
+        stopServicesAndCancelNotifications(context);
+        clearPreferences(context);
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.setAction(ACTION_USER_ARCHIVED);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 
@@ -1223,6 +1162,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         PreferenceSettingUtilClass.clearPrefs(context);
         PrefManager.clearPrefs(context);
         PrefManagerStudentSubjectMapping.clearPrefs(context);
+
+    }
+
+    /*Exit from app and back to launcher's home screen*/
+    private void getAppExitIntent() {
+        Intent close = new Intent(Intent.ACTION_MAIN);
+        close.addCategory(Intent.CATEGORY_HOME);
+        close.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(close);
+        finish();
+        System.exit(0);
 
     }
 

@@ -41,13 +41,13 @@ public class ValidateGroupPostNResponseJob extends BaseValidationJob<GroupPostsN
         if (mDataObject != null) {
             if (mDataObject.getPost() != null) {
                 for (PostData postData : mDataObject.getPost()) {
-                    JobCreator.createPostDataValidationJob(postData).execute();
+                    JobCreator.createPostDataValidationJob(postData, false).execute();
                 }
             }
 
             if (mDataObject.getPostResponse() != null) {
                 for (PostResponse postResponse : mDataObject.getPostResponse()) {
-                    JobCreator.createPostResponseValidationJob(postResponse).execute();
+                    JobCreator.createPostResponseValidationJob(postResponse, false).execute();
                 }
             }
             return true;

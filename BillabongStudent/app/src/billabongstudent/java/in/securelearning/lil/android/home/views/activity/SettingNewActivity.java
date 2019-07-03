@@ -185,7 +185,7 @@ public class SettingNewActivity extends AppCompatActivity implements OnClickList
                 PreferenceSettingUtilClass.setAssignment(mBinding.notificationAssignment.isChecked(), this);
 
                 if (mBinding.notificationAssignment.isChecked()) {
-                    FlavorSyncServiceHelper.startReminderIntentService(this);
+                   // FlavorSyncServiceHelper.startReminderIntentService(this);
                 } else {
                     NotificationManager nMgr = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
                     nMgr.cancel(NotificationUtil.REMINDER_ASSIGNMENT_PENDING);

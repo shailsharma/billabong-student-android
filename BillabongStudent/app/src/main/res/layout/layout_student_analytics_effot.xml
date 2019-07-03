@@ -2,6 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         >
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_margin="8dp"
@@ -10,7 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
-
+            android:visibility="visible"
             android:layout_height="match_parent">
 
             <!--effort-->
@@ -29,12 +32,15 @@
                     android:layout_marginTop="@dimen/margin_8dp"
                     android:layout_marginBottom="@dimen/margin_8dp"
                     android:text="@string/efforts"
+                    android:visibility="gone"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/colorBlack"/>
 
                 <FrameLayout
+                    android:id="@+id/frameTime1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_marginStart="@dimen/margin_16dp"
                     android:layout_marginEnd="@dimen/margin_16dp">
 
@@ -62,7 +68,7 @@
                             android:id="@+id/textViewTotalTimeSpentLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/total_hrs"
+                            android:text="@string/total"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/colorAccent"/>
 
@@ -92,7 +98,7 @@
                             android:id="@+id/textViewDailyTimeSpentLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/daily_efforts_min"
+                            android:text="@string/daily_efforts"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/colorAccent"/>
 
@@ -196,9 +202,11 @@
 
 
                 <FrameLayout
+                    android:id="@+id/frameLayout2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_16dp"
+                    android:visibility="gone"
                     android:layout_marginEnd="@dimen/margin_16dp">
 
                     <!--total-->
@@ -225,7 +233,7 @@
                             android:id="@+id/textViewTopicTotalTimeSpentLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/total_hrs"
+                            android:text="@string/total"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/colorAccent"/>
 
@@ -255,7 +263,7 @@
                             android:id="@+id/textViewTopicDailyTimeSpentLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/daily_efforts_min"
+                            android:text="@string/daily_efforts"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/colorAccent"/>
 
@@ -305,6 +313,7 @@
                 android:layout_marginBottom="@dimen/margin_16dp"
                 android:background="@color/colorWhite"
                 android:elevation="@dimen/elevation_2dp"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -333,7 +342,7 @@
                         android:layout_marginStart="@dimen/margin_8dp"
                         android:layout_marginEnd="@dimen/margin_8dp"
                         android:layout_weight=".6"
-                        android:text="@string/min"
+                        android:text="@string/time"
                         android:gravity="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/colorBlack"
@@ -343,7 +352,9 @@
                 </LinearLayout>
 
                 <RelativeLayout
+                    android:id="@+id/layoutListItem"
                     android:layout_width="match_parent"
+                    android:visibility="visible"
                     android:layout_height="wrap_content">
 
                     <android.support.v7.widget.RecyclerView
@@ -366,5 +377,5 @@
 
 
     </android.support.v4.widget.NestedScrollView>
-
+    </android.support.design.widget.CoordinatorLayout>
 </layout>

@@ -6,6 +6,7 @@ import in.securelearning.lil.android.base.dataobjects.Training;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.events.RefreshTrainingListEvent;
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import retrofit2.Call;
 
 /**
@@ -46,7 +47,7 @@ public class DownloadTrainingJob extends BaseDownloadJob<Training> {
 
     @Override
     public Training save(Training training) {
-        JobCreator.createDownloadGroupJob(training.getGroupId()).execute();
+        JobCreator.createDownloadGroupJob(training.getGroupId(), ConstantUtil.GROUP_TYPE_TRAINING).execute();
 
         return mJobModel.saveTrainingAndSession(training);
 //        Training training1=mJobModel.saveTrainingAndSession(training);

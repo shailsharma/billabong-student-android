@@ -28,19 +28,37 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="35"
-                    android:scaleType="centerCrop"
                     tools:srcCompat="@drawable/image_placeholder"/>
 
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/textViewTitle"
+                <RelativeLayout
+                    android:id="@+id/layoutTextContents"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="65"
                     android:background="@android:color/holo_red_light"
-                    android:gravity="center"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold"
-                    tools:text="Work Sheet"/>
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/padding_16dp"
+                    >
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="@dimen/margin_8dp"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold"
+                        tools:text="Water"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="@dimen/margin_8dp"
+                        android:textColor="@android:color/white"
+                        tools:text="Water"/>
+                </RelativeLayout>
 
             </android.support.v7.widget.LinearLayoutCompat>
 

@@ -1,3 +1,4 @@
+
 package in.securelearning.lil.android.home.views.activity;
 
 import android.annotation.SuppressLint;
@@ -6,49 +7,35 @@ import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.SearchRecentSuggestions;
+import android.speech.tts.TextToSpeech;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.CursorAdapter;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,137 +46,79 @@ import com.squareup.picasso.Picasso;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.BuildConfig;
+import in.securelearning.lil.android.app.MyApplication;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutNavigationDrawerBinding;
-import in.securelearning.lil.android.assignments.views.activity.AssignmentCompletedStudentActivity;
-import in.securelearning.lil.android.assignments.views.activity.AssignmentCompletedTeacherActivity;
 import in.securelearning.lil.android.assignments.views.activity.QuizNewActivity;
 import in.securelearning.lil.android.assignments.views.fragment.AssignmentFragmentTeacher;
-import in.securelearning.lil.android.assignments.views.fragment.AssignmentStudentFragment;
-import in.securelearning.lil.android.assignments.views.fragment.AssignmentTeacherFragment;
-import in.securelearning.lil.android.assignments.views.fragment.QuizzesFragment;
-import in.securelearning.lil.android.base.Injector;
 import in.securelearning.lil.android.base.dataobjects.BlogDetails;
-import in.securelearning.lil.android.base.dataobjects.FilterList;
-import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerActivity;
-import in.securelearning.lil.android.base.widget.NavigationDrawerTypeface;
-import in.securelearning.lil.android.blog.views.activity.BlogNewActivity;
 import in.securelearning.lil.android.blog.views.fragment.BlogFragment;
-import in.securelearning.lil.android.courses.views.activity.CourseNewActivity;
-import in.securelearning.lil.android.courses.views.fragment.CourseFavouritesFragment;
-import in.securelearning.lil.android.courses.views.fragment.CourseFragmentNew;
-import in.securelearning.lil.android.courses.views.fragment.DemoCourseFragment;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
-import in.securelearning.lil.android.home.interfaces.Filterable;
+import in.securelearning.lil.android.home.model.FlavorHomeModel;
 import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
-import in.securelearning.lil.android.home.views.fragment.ClassPlannerActivity;
 import in.securelearning.lil.android.home.views.fragment.DashboardFragment;
-import in.securelearning.lil.android.home.views.fragment.FilterFragment;
-import in.securelearning.lil.android.home.views.fragment.ResourceFragment;
-import in.securelearning.lil.android.learningnetwork.views.fragment.BulletinFragment;
+import in.securelearning.lil.android.homework.views.activity.SubmitHomeworkActivity;
+import in.securelearning.lil.android.homework.views.fragment.HomeworkFragment;
 import in.securelearning.lil.android.learningnetwork.views.fragment.LearningNetworkGroupListFragment;
-import in.securelearning.lil.android.learningnetwork.views.fragment.NotificationFragment;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
-import in.securelearning.lil.android.player.microlearning.view.activity.FeaturedCardListActivity;
-import in.securelearning.lil.android.provider.SearchSuggestionProvider;
-import in.securelearning.lil.android.resources.view.activity.FavouriteResourceActivity;
-import in.securelearning.lil.android.resources.view.activity.ResourceListActivity;
-import in.securelearning.lil.android.resources.view.fragment.VideoPlayerFragment;
 import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
-import in.securelearning.lil.android.syncadapter.events.SearchCloseEvent;
-import in.securelearning.lil.android.syncadapter.events.SearchOpenEvent;
-import in.securelearning.lil.android.syncadapter.events.SearchSubmitEvent;
 import in.securelearning.lil.android.syncadapter.events.UserProfileChangeEvent;
 import in.securelearning.lil.android.syncadapter.receiver.ConnectivityChangeReceiver;
-import in.securelearning.lil.android.syncadapter.service.FlavorSyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.NotificationUtil;
-import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 import in.securelearning.lil.android.syncadapter.utils.ShortcutUtil;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
-import in.securelearning.lil.android.tracking.view.activity.TrackingActivityForStudent;
-import in.securelearning.lil.android.tracking.view.activity.TrackingActivityForTeacher;
 import io.reactivex.Completable;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-import static in.securelearning.lil.android.home.views.activity.SearchResultListActivity.ASSIGNMENTS;
-import static in.securelearning.lil.android.home.views.activity.SearchResultListActivity.ASSIGNMENT_RESPONSES;
-import static in.securelearning.lil.android.home.views.activity.SearchResultListActivity.COURSES;
-import static in.securelearning.lil.android.home.views.activity.SearchResultListActivity.GROUP;
-import static in.securelearning.lil.android.home.views.activity.SearchResultListActivity.QUIZ;
-import static in.securelearning.lil.android.home.views.activity.SearchResultListActivity.RESOURCES;
 
+public class NavigationDrawerActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener,
+        BlogFragment.OnListFragmentInteractionListener,
+        DashboardFragment.OnDashboardFragmentInteractionListener,
+        BottomNavigationView.OnNavigationItemSelectedListener {
 
-public class NavigationDrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, FilterFragment.OnFilterFragmentInteractionListener, BlogFragment.OnListFragmentInteractionListener, ResourceFragment.OnResourceFragmentInteractionListener, DemoCourseFragment.OnListFragmentInteractionListener, CourseFavouritesFragment.OnListFragmentInteractionListener, DashboardFragment.OnDashboardFragmentInteractionListener, CourseFragmentNew.OnListFragmentInteractionListener, BottomNavigationView.OnNavigationItemSelectedListener {
-
-    private final int FILTER_TYPE_COURSE = 1;
-    private final int FILTER_TYPE_ASSIGNMENT = 2;
-    private final int FILTER_TYPE_RESOURCE = 3;
-    private final int FILTER_TYPE_QUIZ = 4;
-    private final int FILTER_TYPE_DASHBOARD = 5;
-    private final int FILTER_TYPE_ASSIGNED = 6;
-    private final int FILTER_TYPE_NETWORK = 7;
-    private final int FILTER_TYPE_MAP = 8;
     @Inject
     AppUserModel mAppUserModel;
     private ConnectivityChangeReceiver mReceiver;
-    private AppBarLayout mAppBarLayout;
-    private Toolbar mToolbar;
-    private SearchView mSearchView;
-    private DrawerLayout mDrawerLayout;
-    private NavigationView mNavigationView;
     private int mCurrentFragmentId = -1;
     private FragmentManager mFragmentManager;
     int mColCount;
-    private FilterList mFilterList;
-    private Filterable mFilterable;
     private TextView mNavEmail;
     private TextView mNavUsername;
     private ImageView mNavThumbnail;
-    private MenuItem menuItemSearch, menuItemFilter, menuItemBrowse, menuItemSearchView, menuItemBookmark,
-            menuItemCreateQuiz, menuItemDone;
+    private MenuItem mDoneMenuItem;
     LayoutNavigationDrawerBinding mBinding;
-    private AssignmentStudentFragment mFragmentAssignmentStudent;
-    private AssignmentTeacherFragment mFragmentAssignmentTeacher;
-    private CourseFragmentNew mFragmentCourse;
-    private BlogFragment mFragmentBlog;
+    private HomeworkFragment mHomeworkFragment;
     private LearningNetworkGroupListFragment mFragmentLearningNetwork;
-    private BulletinFragment mFragmentBulletin;
-    private NotificationFragment mNotificationFragment;
     private DashboardFragment mFragmentDashboard;
-    private QuizzesFragment mFragmentQuiz;
-    private VideoPlayerFragment mFragmentVideo;
-    private Fragment mFragment;
     boolean doubleBackToExitPressedOnce = false;
-    private long mLastItemSelectionTime = 0;
     private String mLoggedInUserId = "";
     private UserProfile mLoggedInUser;
-    private String[] mSubjects;
+
 
     @Inject
     HomeModel mHomeModel;
+    @Inject
+    FlavorHomeModel mFlavorHomeModel;
     @Inject
     RxBus mRxBus;
     private Disposable mSubscription;
@@ -201,13 +130,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     @Override
     public void onBackPressed() {
 
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
+        if (mBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mBinding.drawerLayout.closeDrawer(GravityCompat.START);
             return;
         }
         if (!mBinding.appBar.searchView.isIconified()) {
             mBinding.appBar.searchView.setIconified(true);
-            return;
         } else {
             //Checking for fragment count on back stack
             if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
@@ -232,43 +160,30 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.e("open seq", "1");
         super.onCreate(savedInstanceState);
-        Log.e("open seq", "2");
-        mBinding = DataBindingUtil.setContentView(this, R.layout.layout_navigation_drawer);
-        //getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimary));
-        Log.e("open seq", "3");
         InjectorHome.INSTANCE.getComponent().inject(this);
-        Log.e("open seq", "4");
+        mBinding = DataBindingUtil.setContentView(this, R.layout.layout_navigation_drawer);
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         getWindow().setBackgroundDrawableResource(R.drawable.gradient_app);
+        checkTTS();
+
+
     }
+
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-//        initializeBugReport();
         mFragmentManager = getSupportFragmentManager();
         mColCount = getResources().getBoolean(R.bool.isTablet) ? 2 : 1;
-        Log.e("open seq", "5");
         registerConnectivityChangeReceiver();
-        Log.e("open seq", "6");
-        initializeViews();
-        Log.e("open seq", "7");
         initializeToolbar();
-        Log.e("open seq", "8");
-        Log.e("open seq", "9");
-        Log.e("open seq", "10");
-        Log.e("open seq", "11");
         mLoggedInUser = mAppUserModel.getApplicationUser();
-        Log.e("open seq", "12");
         initializeNavigationDrawer();
         setUpAppUserDetail(mLoggedInUser);
-        Log.e("open seq", "13");
         listenRxBusEvents();
-        Log.e("open seq", "14");
 
 
     }
@@ -277,9 +192,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     protected void onResume() {
         super.onResume();
         isNewVersionAvailable();
-        InjectorHome.INSTANCE.getComponent().inject(this);
         SyncServiceHelper.startSyncService(this);
-        FlavorSyncServiceHelper.startReminderIntentService(this);
+        MyApplication.getInstance().clearPicassoCache(getBaseContext());
+
         if (mCurrentFragmentId == R.id.nav_dashboard) {
             onNavigationItemSelected(mBinding.appBar.navContent.bottomNavigation.getMenu().findItem(R.id.nav_dashboard));
             mBinding.appBar.navContent.bottomNavigation.getMenu().findItem(R.id.nav_dashboard).setChecked(true);
@@ -334,6 +249,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                     @Override
                     public void accept(String playStoreVersion) throws Exception {
                         if (!BuildConfig.VERSION_NAME.equalsIgnoreCase(playStoreVersion)) {
+
                             new AlertDialog.Builder(NavigationDrawerActivity.this)
                                     .setTitle(getString(R.string.labelUpdateAvailable))
                                     .setMessage(getString(R.string.messageNewUpdateIsAvailable))
@@ -410,26 +326,17 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 NotificationManager notifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     NotificationChannel channel = new NotificationChannel(NotificationUtil.NOTIFICATION_CHANNEL_ID, NotificationUtil.NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+                    assert notifyMgr != null;
                     notifyMgr.createNotificationChannel(channel);
                 }
+                assert notifyMgr != null;
                 notifyMgr.notify(1, builder.build());
 
-//                if (Looper.getMainLooper().isCurrentThread()) {
-//
-//                    Intent intent = LoginActivity.startIntentLoginActivity(getBaseContext());
-//                    startActivity(intent);
-//                    finishAffinity();
-//                    int pendingIntentId = 123456;
-//                    PendingIntent mPendingIntent = PendingIntent.getActivity(NavigationDrawerActivity.this, pendingIntentId, intent,
-//                            PendingIntent.FLAG_CANCEL_CURRENT);
-//                    AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-//                    System.exit(0);
-//                }
             }
         });
     }
 
+    @SuppressLint("CheckResult")
     private void registerConnectivityChangeReceiver() {
         Completable.complete().observeOn(Schedulers.io())
                 .subscribe(new Action() {
@@ -467,8 +374,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     /**
      * set user details to navigation header
-     *
-     * @param userProfile
      */
     private void setUpAppUserDetail(UserProfile userProfile) {
         mLoggedInUserId = userProfile.getObjectId();
@@ -491,209 +396,29 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        if (!mBinding.appBar.searchView.isIconified()) {
-//            mBinding.appBar.searchView.setIconified(true);
-//        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_home_screen, menu);
-        menuItemSearch = menu.findItem(R.id.actionSearch);
-        menuItemFilter = menu.findItem(R.id.action_filter);
-        menuItemBrowse = menu.findItem(R.id.action_browse);
-        menuItemBookmark = menu.findItem(R.id.action_bookmark);
-        menuItemCreateQuiz = menu.findItem(R.id.action_create_assignment);
-        menuItemDone = menu.findItem(R.id.action_done);
-
-        searchVisibility(false);
-        browseVisibility(false);
-        filterVisibility(false);
-        bookmarkVisibility(false);
-        createQuizVisibility(false);
+        mDoneMenuItem = menu.findItem(R.id.action_done);
         doneVisibility(false);
-
-        final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, SearchSuggestionProvider.AUTHORITY, SearchSuggestionProvider.MODE);
-
-        final SearchView mSearchView = mBinding.appBar.searchView;
-        mSearchView.setMaxWidth(Integer.MAX_VALUE);
-        MenuItemCompat.setActionView(menuItemSearch, mSearchView);
-        mSearchView.setSearchableInfo(((SearchManager) getSystemService(SEARCH_SERVICE)).getSearchableInfo(getComponentName()));
-        mSearchView.setIconifiedByDefault(true);
-        mSearchView.setIconified(true);
-        mSearchView.setSubmitButtonEnabled(false);
-        mSearchView.setQueryRefinementEnabled(true);
-        mSearchView.setQuery("", false);
-        ImageView searchViewIcon =
-                (ImageView) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_mag_icon);
-
-        ViewGroup linearLayoutSearchView =
-                (ViewGroup) searchViewIcon.getParent();
-        linearLayoutSearchView.removeView(searchViewIcon);
-        linearLayoutSearchView.addView(searchViewIcon);
-        mSearchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
-            @Override
-            public boolean onSuggestionSelect(int position) {
-                return false;
-            }
-
-            @Override
-            public boolean onSuggestionClick(int position) {
-                CursorAdapter suggestionsAdapter = mSearchView.getSuggestionsAdapter();
-                Cursor c = suggestionsAdapter.getCursor();
-                if ((c != null) && c.moveToPosition(position)) {
-                    CharSequence newQuery = suggestionsAdapter.convertToString(c);
-                    mSearchView.setQuery(newQuery, true);
-
-                }
-                return true;
-            }
-        });
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                query = query.trim();
-                if (!TextUtils.isEmpty(query)) {
-                    suggestions.saveRecentQuery(query, null);
-                    search(query);
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-        mSearchView.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSearchOpen();
-            }
-        });
-        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                onSearchClose();
-                return false;
-            }
-        });
-        //        if (menuItemSearch != null) {
-//            mBinding.appBar.searchView.setMenuItem(menuItemSearch);
-//        }
-
-//        mBinding.appBar.searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                suggestions.saveRecentQuery(query, null);
-//                search(query);
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                SearchSuggestionProvider provider = new SearchSuggestionProvider();
-//                return false;
-//            }
-//        });
-//        mBinding.appBar.searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-//            @Override
-//            public void onSearchViewShown() {
-//                onSearchOpen();
-//            }
-//
-//            @Override
-//            public void onSearchViewClosed() {
-//                onSearchClose();
-//            }
-//        });
         handleIntentActions();
         return true;
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_browse) {
-            if (mCurrentFragmentId == R.id.nav_courses) {
-                startActivity(SearchResultListFilterActivity.getStartSearchActivityIntent(this, "", COURSES));
-            } else if (mCurrentFragmentId == R.id.nav_assignments) {
-                if (PermissionPrefsCommon.getAssignmentCreatePermission(getBaseContext())) {
-                    startActivity(SearchResultListFilterActivity.getStartSearchActivityIntent(this, "", ASSIGNMENTS));
-                } else if (PermissionPrefsCommon.getAssignmentSubmissionPermission(getBaseContext())) {
-                    startActivity(SearchResultListFilterActivity.getStartSearchActivityIntent(this, "", ASSIGNMENT_RESPONSES));
-                }
-            } else if (mCurrentFragmentId == R.id.nav_resources) {
-                startActivity(SearchResourcesListFilterActivity.getStartSearchActivityIntent(this, "", RESOURCES));
-            }
-//            else if (mCurrentFragmentId == R.id.nav_assigned) {
-//                startActivity(SearchResultListFilterActivity.getStartSearchActivityIntent(this, "", ASSIGNMENTS));
-//            }
-            else if (mCurrentFragmentId == R.id.nav_quizess) {
-                startActivity(SearchResultListFilterActivity.getStartSearchActivityIntent(this, "", QUIZ));
-            } else if (mCurrentFragmentId == R.id.nav_learning_network) {
-                startActivity(SearchResultListFilterActivity.getStartSearchActivityIntent(this, "", GROUP));
-            }
-//            else if (mCurrentFragmentId == R.id.nav_learning_network) {
-//
-//                SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItemSearch);
-//                searchView.setOnQueryTextListener(this);
-//            }
+        if (id == R.id.action_done) {
 
+            if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
+                startActivity(SubmitHomeworkActivity.getStartIntent(getBaseContext()));
 
-        } else if (id == R.id.action_filter) {
-            Observable.create(new ObservableOnSubscribe<FilterList>() {
-                @Override
-                public void subscribe(ObservableEmitter<FilterList> e) throws Exception {
-                    if (mCurrentFragmentId == R.id.nav_courses) {
-                        mFilterList = buildFilter(FILTER_TYPE_COURSE);
-                    } else if (mCurrentFragmentId == R.id.nav_learning_map) {
-                        mFilterList = buildFilter(FILTER_TYPE_MAP);
-                    } else if (mCurrentFragmentId == R.id.nav_assignments) {
-                        if (PermissionPrefsCommon.getAssignmentCreatePermission(getBaseContext())) {
-                            mFilterList = buildFilter(FILTER_TYPE_ASSIGNED);
-                        } else if (PermissionPrefsCommon.getAssignmentSubmissionPermission(getBaseContext())) {
-                            mFilterList = buildFilter(FILTER_TYPE_ASSIGNMENT);
-                        }
-                    } else if (mCurrentFragmentId == R.id.nav_resources) {
-                        mFilterList = buildFilter(FILTER_TYPE_RESOURCE);
-                    }
-//                    else if (mCurrentFragmentId == R.id.nav_assigned) {
-//                        mFilterList = buildFilter(FILTER_TYPE_ASSIGNED);
-//                    }
-                    else if (mCurrentFragmentId == R.id.nav_quizess) {
-                        mFilterList = buildFilter(FILTER_TYPE_QUIZ);
-                    } else if (mCurrentFragmentId == R.id.nav_learning_network) {
-                        mFilterList = buildFilter(FILTER_TYPE_NETWORK);
-                    }
-
-                    if (mFilterList != null) {
-                        e.onNext(mFilterList);
-                    }
-                    e.onComplete();
-                }
-            }).subscribeOn(Schedulers.computation())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<FilterList>() {
-                        @Override
-                        public void accept(FilterList filterList) throws Exception {
-                            FilterFragment fragment = FilterFragment.newInstance(mFilterList, "");
-                            fragment.show(getSupportFragmentManager(), "FilterFragment");
-                        }
-                    });
-
-        } else if (id == R.id.action_bookmark) {
-            Intent intent = new Intent(NavigationDrawerActivity.this, FavouriteResourceActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.action_done) {
-            if (PermissionPrefsCommon.getAssignmentCreatePermission(getBaseContext())) {
-                startActivity(AssignmentCompletedTeacherActivity.getStartIntent(getBaseContext()));
             } else {
-                startActivity(AssignmentCompletedStudentActivity.getStartIntent(getBaseContext()));
+                SnackBarUtils.showNoInternetSnackBar(getBaseContext(), mBinding.getRoot());
             }
+
         }
 
         return true;
@@ -704,11 +429,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         return super.onPrepareOptionsMenu(menu);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mSubjects = PrefManager.getSubjectNames(this);
-    }
 
     @Override
     protected void onDestroy() {
@@ -718,25 +438,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         unregisterConnectivityChangeReceiver();
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        onSearchRequested();
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
-    }
 
     /**
      * Handle navigation view item clicks here.
-     *
-     * @param item
-     * @return
      */
     @Override
-    public boolean onNavigationItemSelected(final MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
 
         if (!mBinding.appBar.searchView.isIconified()) {
             mBinding.appBar.searchView.setIconified(true);
@@ -747,18 +454,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         switch (id) {
             case R.id.nav_dashboard: {
 
-                searchVisibility(false);
-                filterVisibility(false);
-                browseVisibility(false);
-                bookmarkVisibility(false);
-                createQuizVisibility(false);
                 doneVisibility(false);
 
                 mBinding.appBar.toolbar.setVisibility(View.GONE);
-                mFilterList = buildFilter(FILTER_TYPE_DASHBOARD);
                 setTitle(item.getTitle());
 
-                mAppBarLayout.setElevation(10);
+                mBinding.appBar.appBarLayout.setElevation(ConstantUtil.TOOLBAR_ELEVATION);
                 params.setScrollFlags(0);
                 FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
                 fragmentTransaction = hideFragment(fragmentTransaction, mCurrentFragmentId);
@@ -779,82 +480,60 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             }
             break;
 
-            case R.id.nav_resources: {
-
-                startActivity(ResourceListActivity.getIntentForBrowse(this, getString(R.string.title_resources)));
-
-            }
-            break;
-            case R.id.nav_blogs: {
-
-                startActivity(BlogNewActivity.getStartIntent(NavigationDrawerActivity.this));
-            }
-            break;
-            case R.id.nav_courses: {
-
-                startActivity(CourseNewActivity.getStartIntent(NavigationDrawerActivity.this));
-            }
-            break;
-
             case R.id.nav_assignments: {
-                searchVisibility(false);
-                filterVisibility(false);
-                browseVisibility(false);
-                bookmarkVisibility(false);
-                createQuizVisibility(false);
                 doneVisibility(true);
                 mBinding.appBar.toolbar.setVisibility(View.VISIBLE);
-                mFilterList = buildFilter(FILTER_TYPE_ASSIGNMENT);
                 setTitle(item.getTitle());
 
-                mAppBarLayout.setElevation(0);
+                mBinding.appBar.appBarLayout.setElevation(ConstantUtil.NO_TOOLBAR_ELEVATION);
 
                 FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
                 fragmentTransaction = hideFragment(fragmentTransaction, mCurrentFragmentId);
                 if (mCurrentFragmentId != id) {
                     mRxBus.send(new AnimateFragmentEvent(R.id.nav_assignments));
-
                 }
-                if (PermissionPrefsCommon.getAssignmentCreatePermission(getBaseContext())) {
-                    if (mFragmentAssignmentTeacher != null) {
-                        fragmentTransaction.show(mFragmentAssignmentTeacher)
-                                .commit();
 
-                    } else {
-                        mFragmentAssignmentTeacher = AssignmentTeacherFragment.newInstance("");
-                        fragmentTransaction.add(R.id.container_main, mFragmentAssignmentTeacher, "assignmentTeacher");
-                        fragmentTransaction.commit();
-                    }
-                    mCurrentFragmentId = id;
-                    mFilterable = new Filterable() {
-                        @Override
-                        public void filter() {
-                            if (mFragmentAssignmentTeacher != null)
-                                mFragmentAssignmentTeacher.filter(mFilterList);
-                        }
-                    };
+                if (mHomeworkFragment != null) {
+                    fragmentTransaction.show(mHomeworkFragment)
+                            .commit();
+
                 } else {
-                    if (mFragmentAssignmentStudent != null) {
-                        fragmentTransaction.show(mFragmentAssignmentStudent)
-                                .commit();
+                    mHomeworkFragment = HomeworkFragment.newInstance();
+                    fragmentTransaction.add(R.id.container_main, mHomeworkFragment, "assignmentStudent");
+                    fragmentTransaction.commit();
+                }
+                mCurrentFragmentId = id;
 
-                    } else {
-                        mFragmentAssignmentStudent = AssignmentStudentFragment.newInstance("");
-                        fragmentTransaction.add(R.id.container_main, mFragmentAssignmentStudent, "assignmentStudent");
-                        fragmentTransaction.commit();
-                    }
-                    mCurrentFragmentId = id;
-                    mFilterable = new Filterable() {
-                        @Override
-                        public void filter() {
-                            if (mFragmentAssignmentStudent != null)
-                                mFragmentAssignmentStudent.filter(mFilterList);
-                        }
-                    };
+
+            }
+            break;
+            case R.id.nav_learning_network: {
+                doneVisibility(false);
+                setTitle(item.getTitle());
+                mBinding.appBar.toolbar.setVisibility(View.VISIBLE);
+
+                mBinding.appBar.appBarLayout.setElevation(ConstantUtil.TOOLBAR_ELEVATION);
+                params.setScrollFlags(0);
+
+                if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
+                    mFlavorHomeModel.checkUserStatus(ConstantUtil.TYPE_NETWORK);
                 }
 
+                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+                fragmentTransaction = hideFragment(fragmentTransaction, mCurrentFragmentId);
+                if (mCurrentFragmentId != id) {
+                    mRxBus.send(new AnimateFragmentEvent(R.id.nav_learning_network));
+                }
+                if (mFragmentLearningNetwork != null) {
+                    fragmentTransaction.show(mFragmentLearningNetwork).commit();
 
-//                startActivity(AssignmentStudentActivity.getStartIntent(NavigationDrawerActivity.this));
+                } else {
+                    mFragmentLearningNetwork = LearningNetworkGroupListFragment.newInstance(mColCount);
+                    fragmentTransaction.add(R.id.container_main, mFragmentLearningNetwork, "learningNetwork");
+                    fragmentTransaction.commit();
+                }
+                mCurrentFragmentId = id;
+
             }
             break;
 
@@ -879,107 +558,17 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 startActivity(QuizNewActivity.getStartIntent(NavigationDrawerActivity.this));
             }
             break;
-            case R.id.nav_learning_network: {
-                searchVisibility(false);
-                filterVisibility(false);
-                browseVisibility(false);
-                bookmarkVisibility(false);
-                createQuizVisibility(false);
-                doneVisibility(false);
-                setTitle(item.getTitle());
-                mBinding.appBar.toolbar.setVisibility(View.VISIBLE);
 
-                mAppBarLayout.setElevation(10);
-                params.setScrollFlags(0);
-
-                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                fragmentTransaction = hideFragment(fragmentTransaction, mCurrentFragmentId);
-                if (mCurrentFragmentId != id) {
-                    mRxBus.send(new AnimateFragmentEvent(R.id.nav_learning_network));
-                }
-                if (mFragmentLearningNetwork != null) {
-                    fragmentTransaction.show(mFragmentLearningNetwork).commit();
-
-                } else {
-                    mFragmentLearningNetwork = LearningNetworkGroupListFragment.newInstance(mColCount);
-                    fragmentTransaction.add(R.id.container_main, mFragmentLearningNetwork, "learningNetwork");
-                    fragmentTransaction.commit();
-                }
-                mCurrentFragmentId = id;
-
-                //               startActivity(LearningNetworkNewActivity.getStartIntent(NavigationDrawerActivity.this));
-            }
-            break;
-            case R.id.nav_my_trainings: {
-                startActivity(TrainingsActivity.getStartIntent(NavigationDrawerActivity.this));
-            }
-            break;
-            case R.id.nav_featured_card: {
-                startActivity(FeaturedCardListActivity.getStartIntent(NavigationDrawerActivity.this));
-
-            }
-            break;
-            case R.id.nav_class_planner: {
-                startActivity(ClassPlannerActivity.getStartIntent(NavigationDrawerActivity.this));
-            }
-            break;
-            case R.id.navStartPractice: {
-                startActivity(StartPracticeTestActivity.getStartIntent(NavigationDrawerActivity.this, mLoggedInUser.getGrade().getId()));
-            }
-            break;
             case R.id.nav_user_profile: {
                 if (!TextUtils.isEmpty(mLoggedInUserId)) {
                     startActivity(StudentProfileActivity.getStartIntent(mLoggedInUserId, NavigationDrawerActivity.this));
                 }
             }
             break;
-
-            case R.id.nav_tracking: {
-                if (PermissionPrefsCommon.getAssignmentCreatePermission(getBaseContext())) {
-                    Intent mIntent = new Intent(NavigationDrawerActivity.this, TrackingActivityForTeacher.class);
-                    startActivity(mIntent);
-                } else {
-                    Intent mIntent = new Intent(NavigationDrawerActivity.this, TrackingActivityForStudent.class);
-                    startActivity(mIntent);
-                }
-            }
-            break;
-
-//            case R.id.nav_notification: {
-//                searchVisibility(false);
-//                filterVisibility(false);
-//                browseVisibility(false);
-//                bookmarkVisibility(false);
-//                createQuizVisibility(false);
-//                doneVisibility(false);
-//                setTitle(item.getTitle());
-//                mBinding.appBar.toolbar.setVisibility(View.VISIBLE);
-//
-//                getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorCalendarPrimary));
-//                mToolbar.setBackgroundColor(ContextCompat.getColor(NavigationDrawerActivity.this, R.color.colorCalendarPrimary));
-//                mAppBarLayout.setElevation(10);
-//                params.setScrollFlags(0);
-//
-//                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-//                fragmentTransaction = hideFragment(fragmentTransaction, mCurrentFragmentId);
-//                if (mNotificationFragment != null) {
-//                    fragmentTransaction.show(mNotificationFragment)
-//                            .commit();
-//
-//                } else {
-//                    mNotificationFragment = NotificationFragment.newInstance(mColCount);
-//                    fragmentTransaction.add(R.id.container_main, mNotificationFragment, "notification");
-//                    fragmentTransaction.commit();
-//                }
-//                mCurrentFragmentId = id;
-//            startActivity(UserProfileActivity.getStartIntent(mLoggedInUserId, getBaseContext()));
-
-            //           }
-//            break;
         }
 
 
-        mDrawerLayout.closeDrawer(Gravity.START);
+        mBinding.drawerLayout.closeDrawer(Gravity.START);
         return true;
     }
 
@@ -990,7 +579,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         builder.setMessage(context.getString(R.string.logout_message))
                 .setPositiveButton(context.getString(R.string.logout), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        SyncServiceHelper.performUserLogout(context);
+                        SyncServiceHelper.performUserLogout(context, getString(R.string.logging_out));
                     }
                 })
                 .setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -1011,143 +600,21 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         }
     }
 
-    private void search(String query) {
-        if (!TextUtils.isEmpty(query))
-            Injector.INSTANCE.getComponent().rxBus().send(new SearchSubmitEvent(query));
-    }
-
-    private void onSearchOpen() {
-        Injector.INSTANCE.getComponent().rxBus().send(new SearchOpenEvent());
-//        mBottomTabLayout.setVisibility(View.GONE);
-    }
-
-    private void onSearchClose() {
-        Injector.INSTANCE.getComponent().rxBus().send(new SearchCloseEvent());
-//        mBottomTabLayout.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * set search menu visibility according to frgament
-     *
-     * @param b
-     */
-    private void searchVisibility(boolean b) {
-        if (menuItemSearch != null) {
-            menuItemSearch.setVisible(b);
-        }
-    }
-
-    /**
-     * set filter menu visibility according to frgament
-     *
-     * @param b
-     */
-    private void filterVisibility(boolean b) {
-        if (menuItemFilter != null) {
-            menuItemFilter.setVisible(b);
-        }
-    }
-
-    private void bookmarkVisibility(boolean b) {
-        if (menuItemBookmark != null) {
-            menuItemBookmark.setVisible(b);
-        }
-    }
-
-    private void createQuizVisibility(boolean b) {
-        if (menuItemCreateQuiz != null) {
-            menuItemCreateQuiz.setVisible(b);
-        }
-    }
-
-    private void browseVisibility(boolean b) {
-        if (menuItemBrowse != null) {
-            menuItemBrowse.setVisible(b);
-        }
-    }
-
     private void doneVisibility(boolean b) {
-        if (menuItemDone != null) {
-            menuItemDone.setVisible(b);
+        if (mDoneMenuItem != null) {
+            mDoneMenuItem.setVisible(b);
         }
-    }
-
-    /**
-     * find ids of views
-     */
-    private void initializeViews() {
-
-        mToolbar = mBinding.appBar.toolbar;
-//        mToolbarTitleTextView = (TextView) mToolbar.findViewById(R.id.textview_toolbar_title);
-        mDrawerLayout = mBinding.drawerLayout;
-        mNavigationView = mBinding.navView;
-        mAppBarLayout = mBinding.appBar.appBarLayout;
-//        mBottomTabLayout = (LinearLayout) findViewById(R.id.layout_bottom_tab);
-//        mCourseTabLayout = (RelativeLayout) findViewById(R.id.layout_course_tab);
-//        mAssignmentTabLayout = (RelativeLayout) findViewById(R.id.layout_assignment_tab);
-//        mDashboardTabLayout = (RelativeLayout) findViewById(R.id.layout_dashboard_tab);
-//        mNetworkTabLayout = (RelativeLayout) findViewById(R.id.layout_network_tab);
-//        mMapTabLayout = (RelativeLayout) findViewById(R.id.layout_map_tab);
-//        mQuizzesTabLayout = (RelativeLayout) findViewById(R.id.layout_quizzes_tab);
-//        mAssignmentBottomTextView = (TextView) findViewById(R.id.textview_assignment_bottom);
-//        mAssignmentCountTextView = (TextView) findViewById(R.id.textview_assignment_count);
-//        mCourseCountTextView = (TextView) findViewById(R.id.textview_course_count);
-//        mNetworkCountTextView = (TextView) findViewById(R.id.textview_network_count);
-//        mQuizzesCountTextView = (TextView) findViewById(R.id.textview_quizzes_count);
-
-
     }
 
     /**
      * set up toolbar
      */
     private void initializeToolbar() {
-        setSupportActionBar(mToolbar);
-        mAppBarLayout.setElevation(0);
-//        mBinding.viewSyncNow.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-//                    ToastUtils.showToastSuccess(getBaseContext(), getString(R.string.sync_started));
-//                    //  SyncServiceHelper.runFtpTest(NavigationDrawerActivity.this);
-//                    SyncServiceHelper.startSyncService(NavigationDrawerActivity.this);
-//                    if (mDrawerLayout != null)
-//                        mDrawerLayout.closeDrawer(Gravity.LEFT);
-//                } else {
-//                    ToastUtils.showToastAlert(getBaseContext(), getString(R.string.connect_internet));
-//                    if (mDrawerLayout != null)
-//                        mDrawerLayout.closeDrawer(Gravity.LEFT);
-//                }
-//
-//            }
-//        });
-//        mBinding.buttonSyncNow.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ToastUtils.showToastSuccess(getBaseContext(), getString(R.string.sync_started));
-//
-//                SyncServiceHelper.startSyncService(NavigationDrawerActivity.this);
-//                if (mDrawerLayout != null)
-//                    mDrawerLayout.closeDrawer(Gravity.LEFT);
-//            }
-//        });
+        setSupportActionBar(mBinding.appBar.toolbar);
+        mBinding.appBar.appBarLayout.setElevation(0);
 
     }
 
-    public void setActionBarTitle(String title) {
-        getSupportActionBar().setTitle(title);
-    }
-
-    /*To check occurrence of word in a string.*/
-    public static int checkWordOccurrence(String fullString, String occurrenceWord) {
-        int i = 0;
-        Pattern p = Pattern.compile(occurrenceWord);
-        Matcher m = p.matcher(fullString);
-        while (m.find()) {
-            i++;
-        }
-        return i;
-    }
 
     /**
      * set up navigation drawer
@@ -1155,14 +622,14 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     private void initializeNavigationDrawer() {
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawerLayout.addDrawerListener(toggle);
+                this, mBinding.drawerLayout, mBinding.appBar.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mBinding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        mNavigationView.setNavigationItemSelectedListener(this);
-        mNavigationView.setItemIconTintList(null);
+        mBinding.navView.setNavigationItemSelectedListener(this);
+        mBinding.navView.setItemIconTintList(null);
 
-        View headerView = mNavigationView.getHeaderView(0);
+        View headerView = mBinding.navView.getHeaderView(0);
 
         headerView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1170,6 +637,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 if (!TextUtils.isEmpty(mLoggedInUserId)) {
                     startActivity(StudentProfileActivity.getStartIntent(mLoggedInUserId, NavigationDrawerActivity.this));
                 }
+
 
             }
         });
@@ -1180,29 +648,29 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
         if (PermissionPrefsCommon.getAssignmentCreatePermission(getBaseContext())) {
             mBinding.appBar.navContent.bottomNavigation.getMenu().findItem(R.id.nav_assignments).setTitle(R.string.title_assigned);
-            mNavigationView.getMenu().findItem(R.id.nav_teacher_map).setVisible(false);
-            mNavigationView.getMenu().findItem(R.id.nav_quizess).setVisible(false);
-            mNavigationView.getMenu().findItem(R.id.nav_class_planner).setVisible(false);
+            mBinding.navView.getMenu().findItem(R.id.nav_teacher_map).setVisible(false);
+            mBinding.navView.getMenu().findItem(R.id.nav_quizess).setVisible(false);
+            mBinding.navView.getMenu().findItem(R.id.nav_class_planner).setVisible(false);
         } else if (PermissionPrefsCommon.getAssignmentSubmissionPermission(getBaseContext())) {
             mBinding.appBar.navContent.bottomNavigation.getMenu().findItem(R.id.nav_assignments).setTitle(R.string.title_assignments);
-            mNavigationView.getMenu().findItem(R.id.nav_quizess).setVisible(false);
-            mNavigationView.getMenu().findItem(R.id.nav_teacher_map).setVisible(false);
+            mBinding.navView.getMenu().findItem(R.id.nav_quizess).setVisible(false);
+            mBinding.navView.getMenu().findItem(R.id.nav_teacher_map).setVisible(false);
         }
 
         if (PermissionPrefsCommon.getTrainingJoinPermission(getBaseContext())) {
-            mNavigationView.getMenu().findItem(R.id.nav_my_trainings).setVisible(false);
-            mNavigationView.getMenu().findItem(R.id.nav_learning_map).setVisible(false);
+            mBinding.navView.getMenu().findItem(R.id.nav_my_trainings).setVisible(false);
+            mBinding.navView.getMenu().findItem(R.id.nav_learning_map).setVisible(false);
         } else {
-            mNavigationView.getMenu().findItem(R.id.nav_my_trainings).setVisible(false);
-            mNavigationView.getMenu().findItem(R.id.nav_learning_map).setVisible(false);
+            mBinding.navView.getMenu().findItem(R.id.nav_my_trainings).setVisible(false);
+            mBinding.navView.getMenu().findItem(R.id.nav_learning_map).setVisible(false);
         }
 
         if (BuildConfig.IS_BLOGS_ENABLED) {
-            mNavigationView.getMenu().findItem(R.id.nav_blogs).setVisible(true);
+            mBinding.navView.getMenu().findItem(R.id.nav_blogs).setVisible(true);
         }
 
         if (mLoggedInUser.getGrade() != null && !TextUtils.isEmpty(mLoggedInUser.getGrade().getId())) {
-            mNavigationView.getMenu().findItem(R.id.navStartPractice).setVisible(false);
+            mBinding.navView.getMenu().findItem(R.id.navStartPractice).setVisible(false);
         }
 
         mBinding.appBar.navContent.bottomNavigation.enableAnimation(false);
@@ -1213,193 +681,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
     }
 
-    /**
-     * set up navigation drawer menu items for font
-     */
-    private void setNavigationDrawerFont() {
-
-        Menu m = mNavigationView.getMenu();
-        for (int i = 0; i < m.size(); i++) {
-            MenuItem mi = m.getItem(i);
-
-            SubMenu subMenu = mi.getSubMenu();
-            if (subMenu != null && subMenu.size() > 0) {
-                for (int j = 0; j < subMenu.size(); j++) {
-                    MenuItem subMenuItem = subMenu.getItem(j);
-                    applyFontToMenuItem(subMenuItem);
-                }
-            }
-
-            applyFontToMenuItem(mi);
-
-        }
-    }
-
-    /**
-     * apply font to navigation drawer menu items
-     *
-     * @param menuItem
-     */
-    private void applyFontToMenuItem(MenuItem menuItem) {
-        String MY_PREFS_NAME = "LIL_pref";
-        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, 0);
-        String fontStyle = prefs.getString("font", null);
-        if (fontStyle != null) {
-            Typeface font = Typeface.createFromAsset(getAssets(), fontStyle);
-            SpannableString mNewTitle = new SpannableString(menuItem.getTitle());
-            mNewTitle.setSpan(new NavigationDrawerTypeface("", font), 0, mNewTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            menuItem.setTitle(mNewTitle);
-
-        }
-    }
-
-    private FilterList buildFilter(int filterType) {
-        FilterList.FilterBuilder builder = new FilterList.FilterBuilder();
-        String title = "";
-        if (mSubjects == null || mSubjects.length <= 0) {
-            mSubjects = PrefManager.getSubjectNames(this);
-        }
-        if (filterType == FILTER_TYPE_COURSE) {
-            title = getResources().getString(R.string.filter_title_course);
-            return builder.addSection(new FilterList.SectionBuilder()
-                    .addSectionItems(mSubjects)
-                    .sectionType(FilterList.SECTION_SELECTION_TYPE_CHECKBOX)
-                    .sectionTitle(getString(R.string.label_filter_by))
-                    .build())
-//                    .addSection(new FilterList.SectionBuilder()
-//                            .addSectionItems(SORT_BY_LIST1)
-//                            .sectionType(FilterList.SECTION_SELECTION_TYPE_RADIO)
-//                            .sectionTitle("Sort By")
-//                            .build())
-                    .title(title)
-                    .build();
-        } else if (filterType == FILTER_TYPE_ASSIGNMENT) {
-            title = getResources().getString(R.string.filter_homework);
-            return builder.addSection(new FilterList.SectionBuilder()
-                    .addSectionItems(mSubjects)
-                    .sectionType(FilterList.SECTION_SELECTION_TYPE_CHECKBOX)
-                    .sectionTitle(getString(R.string.label_filter_by))
-                    .build())
-//                    .addSection(new FilterList.SectionBuilder()
-//                            .addSectionItems(SORT_BY_LIST1)
-//                            .sectionType(FilterList.SECTION_SELECTION_TYPE_RADIO)
-//                            .sectionTitle("Sort By")
-//                            .build())
-                    .title(title)
-                    .build();
-
-            //return AssignmentFragment.getFilter();
-
-        } else if (filterType == FILTER_TYPE_RESOURCE) {
-            title = getResources().getString(R.string.filter_title_assignment);
-
-            return builder.addSection(new FilterList.SectionBuilder()
-                    .addSectionItems(mSubjects)
-                    .sectionType(FilterList.SECTION_SELECTION_TYPE_RADIO)
-                    .sectionTitle(getString(R.string.label_filter_by))
-                    .build())
-//                    .addSection(new FilterList.SectionBuilder()
-//                            .addSectionItems(SORT_BY_LIST1)
-//                            .sectionType(FilterList.SECTION_SELECTION_TYPE_RADIO)
-//                            .sectionTitle("Sort By")
-//                            .build())
-                    .title(title)
-                    .build();
-        } else if (filterType == FILTER_TYPE_ASSIGNED) {
-            title = getResources().getString(R.string.filter_title_assignment);
-
-            return builder.addSection(new FilterList.SectionBuilder()
-                    .addSectionItems(mSubjects)
-                    .sectionType(FilterList.SECTION_SELECTION_TYPE_RADIO)
-                    .sectionTitle(getString(R.string.label_filter_by))
-                    .build())
-//                    .addSection(new FilterList.SectionBuilder()
-//                            .addSectionItems(SORT_BY_LIST1)
-//                            .sectionType(FilterList.SECTION_SELECTION_TYPE_RADIO)
-//                            .sectionTitle("Sort By")
-//                            .build())
-                    .title(title)
-                    .build();
-        } else if (filterType == FILTER_TYPE_QUIZ) {
-            title = getResources().getString(R.string.filter_title_quiz);
-
-            return builder.addSection(new FilterList.SectionBuilder()
-                    .addSectionItems(mSubjects)
-                    .sectionType(FilterList.SECTION_SELECTION_TYPE_RADIO)
-                    .sectionTitle(getString(R.string.label_filter_by))
-                    .build())
-//                    .addSection(new FilterList.SectionBuilder()
-//                            .addSectionItems(SORT_BY_LIST1)
-//                            .sectionType(FilterList.SECTION_SELECTION_TYPE_RADIO)
-//                            .sectionTitle("Sort By")
-//                            .build())
-                    .title(title)
-                    .build();
-        } else if (filterType == FILTER_TYPE_MAP) {
-            title = getResources().getString(R.string.filter_type_map);
-            return builder.addSection(new FilterList.SectionBuilder()
-                    .addSectionItems(mSubjects)
-                    .sectionType(FilterList.SECTION_SELECTION_TYPE_CHECKBOX)
-                    .sectionTitle(getString(R.string.label_filter_by))
-                    .build())
-                    .title(title)
-                    .build();
-        }
-        return builder.build();
-    }
-
-    private void setFilterOnFragment(FilterList filterList) {
-        this.mFilterList = filterList;
-        if (mFilterable != null) mFilterable.filter();
-        // TODO: 19-11-2016 apply filter results to fragments
-    }
-
-    @Override
-    public void onFilterFragmentInteraction(FilterList filterList) {
-        setFilterOnFragment(filterList);
-    }
-
-    @Override
-    public void onResourceFragmentInteraction(Resource item) {
-//        if (item.getType().toLowerCase().contains("image")) {
-//            startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(getBaseContext(), item.getUrlMain(), item));
-//        } else if (item.getType().toLowerCase().contains("video")) {
-//
-//
-////            File extDir = Environment.getExternalStorageDirectory();
-////            String file = FileUtils.copyFilesExternal(item.getUrlMain(), extDir.getAbsolutePath(), "tempLil", "temp");
-//
-////            Uri intentUri = Uri.parse(file);
-////            Intent intent = new Intent();
-////            intent.setAction(Intent.ACTION_VIEW);
-////            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-////            intent.setDataAndType(intentUri, "video/*");
-////            startActivity(intent);
-//            startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(getBaseContext(), ((Resource) item).getUrlMain(), (Resource) item));
-//        }
-        String networkType = "";
-        if (item.getUrlMain().startsWith("file")) {
-            networkType = PlayVideoFullScreenActivity.NETWORK_TYPE_LOCAL;
-        } else {
-            networkType = PlayVideoFullScreenActivity.NETWORK_TYPE_FTP;
-        }
-        startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(getBaseContext(), networkType, item));
-    }
-
     private FragmentTransaction hideFragment(FragmentTransaction fragmentTransaction, int id) {
         if (id == R.id.nav_dashboard) {
             if (mFragmentDashboard != null) {
                 return fragmentTransaction.hide(mFragmentDashboard);
             }
         } else if (id == R.id.nav_assignments) {
-            if (PermissionPrefsCommon.getAssignmentCreatePermission(getBaseContext())) {
-                if (mFragmentAssignmentTeacher != null) {
-                    return fragmentTransaction.hide(mFragmentAssignmentTeacher);
-                }
-            } else {
-                if (mFragmentAssignmentStudent != null) {
-                    return fragmentTransaction.hide(mFragmentAssignmentStudent);
-                }
+
+            if (mHomeworkFragment != null) {
+                return fragmentTransaction.hide(mHomeworkFragment);
             }
 
         } else if (id == R.id.nav_learning_network) {
@@ -1407,11 +697,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 return fragmentTransaction.hide(mFragmentLearningNetwork);
             }
         }
-//        else if (id == R.id.nav_notification) {
-//            if (mNotificationFragment != null) {
-//                return fragmentTransaction.hide(mNotificationFragment);
-//            }
-//        }
         return fragmentTransaction;
 
     }
@@ -1432,7 +717,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
             mBinding.appBar.navContent.bottomNavigation.getMenu().performIdentifierAction(R.id.nav_learning_network, Menu.FLAG_PERFORM_NO_CLOSE);
             mBinding.appBar.navContent.bottomNavigation.getMenu().findItem(R.id.nav_learning_network).setChecked(true);
 
-        } else if (aClass.equals(AssignmentStudentFragment.class)) {
+        } else if (aClass.equals(HomeworkFragment.class)) {
 
             mBinding.appBar.navContent.bottomNavigation.getMenu().performIdentifierAction(R.id.nav_assignments, Menu.FLAG_PERFORM_NO_CLOSE);
             mBinding.appBar.navContent.bottomNavigation.getMenu().findItem(R.id.nav_assignments).setChecked(true);
@@ -1445,9 +730,35 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 
 
         } else if (aClass.equals(NavigationDrawerActivity.class)) {
-            mDrawerLayout.openDrawer(Gravity.LEFT);
+            mBinding.drawerLayout.openDrawer(Gravity.START);
         }
 
     }
+
+    /*Checking TTS availability on device.*/
+    private void checkTTS() {
+        try {
+            Intent check = new Intent();
+            check.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+            startActivityForResult(check, ConstantUtil.CHECK_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ConstantUtil.CHECK_CODE) {
+            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+
+            } else {
+                Intent install = new Intent();
+                install.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                startActivity(install);
+            }
+        }
+    }
+
 
 }

@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.databinding.LayoutActivityPostResponseBinding;
 import in.securelearning.lil.android.learningnetwork.views.fragment.PostResponseListFragment;
 
 /**
@@ -31,6 +30,7 @@ public class PostResponseListActivity extends AppCompatActivity {
         intent.putExtra(GROUP_ID, groupId);
         intent.putExtra(POST_ID, postId);
         intent.putExtra(POST_ALIAS, postAlias);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 

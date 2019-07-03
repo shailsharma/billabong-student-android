@@ -26,7 +26,7 @@ import in.securelearning.lil.android.syncadapter.dataobject.SearchRecommendedCou
 import in.securelearning.lil.android.syncadapter.dataobject.SearchResourceParams;
 import in.securelearning.lil.android.syncadapter.dataobject.SearchResourcesResults;
 import in.securelearning.lil.android.syncadapter.dataobject.SearchResults;
-import in.securelearning.lil.android.syncadapter.dataobject.SkillMasteryQuestionGetData;
+import in.securelearning.lil.android.syncadapter.dataobject.SkillMasteryQuestionData;
 import in.securelearning.lil.android.syncadapter.dataobject.SkillMasteryQuestionPostData;
 import in.securelearning.lil.android.syncadapter.dataobject.StudentGradeMapping;
 import in.securelearning.lil.android.syncadapter.dataobject.TeacherGradeMapping;
@@ -34,7 +34,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -108,16 +107,16 @@ public interface SearchApiInterface {
     Call<java.util.ArrayList<Question>> getQuestionsFromSkillIdEs(@Path("skillId") String skillId, @Path("limit") int limit);
 
     @POST("search/question/fetchBySkillAndComplexityLevel")
-    Call<SkillMasteryQuestionGetData> getQuestionFromSkillComplexityLevel(@Body SkillMasteryQuestionPostData skillMasteryQuestionResponse);
+    Call<SkillMasteryQuestionData> getQuestionFromSkillComplexityLevel(@Body SkillMasteryQuestionPostData skillMasteryQuestionResponse);
 
     @GET("search/question/fetchBySkill/{objectId}/{skip}/{limit}")
     Call<java.util.ArrayList<Question>> getQuestionFromSkill(@Path("objectId") String objectId, @Path("skip") int skip, @Path("limit") int limit);
 
     @POST("search/question/fetchBySkillTopicAndComplexityLevel")
-    Call<SkillMasteryQuestionGetData> fetchBySkillAndComplexityLevel(@Body MasteryRequestObject masteryRequestObject);
+    Call<SkillMasteryQuestionData> fetchBySkillAndComplexityLevel(@Body MasteryRequestObject masteryRequestObject);
 
     @POST("search/question/fetchBySkillListAndComplexityLevel")
-    Call<java.util.ArrayList<SkillMasteryQuestionGetData>> fetchBySkillListAndComplexityLevel(@Body MasteryRequestObject masteryRequestObject);
+    Call<java.util.ArrayList<SkillMasteryQuestionData>> fetchBySkillListAndComplexityLevel(@Body MasteryRequestObject masteryRequestObject);
 
     @GET("LearningMaps/fetchByUser")
     Call<ArrayList<LearningMap>> getLearningMapList();

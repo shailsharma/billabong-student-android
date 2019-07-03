@@ -38,7 +38,7 @@ import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveAct
 import in.securelearning.lil.android.base.views.activity.WebPlayerLiveActivity;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.views.activity.PlayYouTubeFullScreenActivity;
-import in.securelearning.lil.android.player.microlearning.view.activity.RapidLearningSectionListActivity;
+import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
 import in.securelearning.lil.android.syncadapter.dataobject.AboutCourseExt;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 

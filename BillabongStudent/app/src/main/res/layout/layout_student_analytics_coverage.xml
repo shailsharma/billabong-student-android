@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 <android.support.v4.widget.NestedScrollView
     android:layout_width="match_parent"
     android:background="@color/white"
@@ -20,6 +24,7 @@
             android:layout_marginTop="@dimen/margin_8dp"
             android:layout_marginBottom="@dimen/margin_8dp"
             android:text="@string/coverage"
+            android:visibility="gone"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/colorBlack"/>
 
@@ -52,7 +57,7 @@
             android:background="@drawable/background_circle_solid_white"
             android:elevation="@dimen/margin_8dp"
             android:padding="@dimen/padding_4dp"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
         <!-- on click sub list-->
         <View
             android:id="@+id/view"
@@ -128,6 +133,7 @@
                     android:layout_marginStart="@dimen/margin_8dp"
                     android:layout_marginEnd="@dimen/margin_8dp"
                     android:layout_marginBottom="@dimen/margin_16dp"
+                    android:visibility="gone"
                     android:minHeight="196dp"/>
 
             </android.support.v7.widget.LinearLayoutCompat>
@@ -217,4 +223,5 @@
     </android.support.v7.widget.LinearLayoutCompat>
 
 </android.support.v4.widget.NestedScrollView>
+    </android.support.design.widget.CoordinatorLayout>
 </layout>

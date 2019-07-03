@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.quizpreview.activity;
 
+import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -8,11 +9,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -31,13 +34,13 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.robinhood.ticker.TickerUtils;
 import com.squareup.picasso.Picasso;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import javax.inject.Inject;
 
@@ -71,9 +74,10 @@ import in.securelearning.lil.android.quizpreview.model.QuizPreviewModel;
 import in.securelearning.lil.android.syncadapter.dataobject.MasteryRequestObject;
 import in.securelearning.lil.android.syncadapter.dataobject.MasteryRequestObjectFilter;
 import in.securelearning.lil.android.syncadapter.dataobject.QuizResponse;
-import in.securelearning.lil.android.syncadapter.dataobject.SkillMasteryQuestionGetData;
+import in.securelearning.lil.android.syncadapter.dataobject.SkillMasteryQuestionData;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
+import in.securelearning.lil.android.syncadapter.utils.FlyObjectAnimationUtil;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import in.securelearning.lil.android.syncadapter.utils.SoundUtils;
 import io.reactivex.Completable;
@@ -120,11 +124,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
 
     private int[] mQuestionsCounterArray;
 
-    private ArrayList<String> mId;
     private String mTitle;
-    private String mDifficultyLevel;
-    private String mType;
-    private HomeModel.SkillMap mSkillMap = null;
     private int mQuestionCounter = 0;
     private int mSkillCounter = 0;
     private int mComplexityLevelQuestionLimit = 0;
@@ -137,12 +137,11 @@ public class PracticeTopicActivity extends AppCompatActivity {
 //    private int mMediumQuestionsCounter = -1;
 //    private int mHighQuestionsCounter = -1;
     private ArrayList<QuestionResponse> mQuestionResponses = new ArrayList<>();
-    private ArrayList<SkillMasteryQuestionGetData> mSkillMasteryQuestionGetData = new ArrayList<>();
+    private ArrayList<SkillMasteryQuestionData> mSkillMasteryQuestionData = new ArrayList<>();
     private int mHintCounter = 0;
-    private boolean mIsCorrectResponse = false;
     private Question mQuestion;
-    private MenuItem mDoneMenuItem;
     private QuizResponse mQuizResponse;
+    private int mTotalPoints = 100;
 
     @Override
     public void onBackPressed() {
@@ -158,53 +157,21 @@ public class PracticeTopicActivity extends AppCompatActivity {
         initializeClickListeners();
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
+
+
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_action_done, menu);
-//        mDoneMenuItem = menu.findItem(R.id.actionDone);
-//        return true;
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-
-//            case R.id.actionDone:
-//                submitClickAction();
-//                return true;
-
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void doneMenuItemVisibility(boolean b) {
-        if (mDoneMenuItem != null) {
-            mDoneMenuItem.setVisible(b);
-        }
-        mBinding.buttonDone.setVisibility(b ? View.VISIBLE : View.GONE);
-    }
-
     public static Intent getStartIntent(Context context, ArrayList<String> skillIds, String skillName, String questionLevel, HomeModel.SkillMap skillMap) {
-        Intent intent = new Intent(context, PracticeTopicActivity.class);
-        intent.putStringArrayListExtra(ID, skillIds);
-        intent.putExtra(TITLE, skillName);
-        intent.putExtra(DIFFICULTY_LEVEL, questionLevel);
-        intent.putExtra(SKILL_MAP, skillMap);
-        return intent;
-    }
-
-    public static Intent getStartIntentForSkills(Context context, Collection<HomeModel.SkillMap> skills, String skillName, String questionLevel, HomeModel.SkillMap skillMap) {
-        ArrayList<String> skillIds = new ArrayList<>();
-        for (HomeModel.SkillMap skill :
-                skills) {
-            skillIds.add(skill.getId());
-        }
         Intent intent = new Intent(context, PracticeTopicActivity.class);
         intent.putStringArrayListExtra(ID, skillIds);
         intent.putExtra(TITLE, skillName);
@@ -231,28 +198,28 @@ public class PracticeTopicActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             initializeQuestionCounters();
-            mId = getIntent().getStringArrayListExtra(ID);
+            ArrayList<String> id = getIntent().getStringArrayListExtra(ID);
             mTitle = getIntent().getStringExtra(TITLE);
-            mDifficultyLevel = getIntent().getStringExtra(DIFFICULTY_LEVEL);
+            String difficultyLevel = getIntent().getStringExtra(DIFFICULTY_LEVEL);
 
-            mSkillMap = (HomeModel.SkillMap) getIntent().getSerializableExtra(SKILL_MAP);
+            HomeModel.SkillMap skillMap = (HomeModel.SkillMap) getIntent().getSerializableExtra(SKILL_MAP);
             mQuizResponse = new QuizResponse();
-            if (mSkillMasteryQuestionGetData != null) {
+            if (mSkillMasteryQuestionData != null) {
                 MetaInformation metaInformation = new MetaInformation();
-                metaInformation.setLanguage(mSkillMap.getLanguage());
-                metaInformation.setBoard(mSkillMap.getBoard());
-                metaInformation.setGrade(mSkillMap.getGrade());
-                metaInformation.setTopic(mSkillMap.getTopic());
-                metaInformation.setSubject(mSkillMap.getSubject());
-                metaInformation.setLearningLevel(mSkillMap.getLearningLevel());
+                metaInformation.setLanguage(skillMap.getLanguage());
+                metaInformation.setBoard(skillMap.getBoard());
+                metaInformation.setGrade(skillMap.getGrade());
+                metaInformation.setTopic(skillMap.getTopic());
+                metaInformation.setSubject(skillMap.getSubject());
+                metaInformation.setLearningLevel(skillMap.getLearningLevel());
                 mQuizResponse.setMetaInformation(metaInformation);
             }
             setUpToolbar();
-            if (!TextUtils.isEmpty(mDifficultyLevel)) {
-                setQuestionSize(mDifficultyLevel);
+            if (!TextUtils.isEmpty(difficultyLevel)) {
+                setQuestionSize(difficultyLevel);
             }
 
-            fetchQuestions(mId);
+            fetchQuestions(id);
         } else {
             finish();
         }
@@ -282,55 +249,47 @@ public class PracticeTopicActivity extends AppCompatActivity {
     }
 
     private void setUpToolbar() {
-        setSupportActionBar(mBinding.toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.action_close_w);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        setUiTitle(mTitle);
+        mBinding.back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+
+            }
+        });
+
+        mBinding.textViewToolbarTitle.setText(mTitle);
+        mBinding.textViewPoint.setCharacterLists(TickerUtils.provideNumberList());
+        mBinding.textViewPoint.setText(" " + mTotalPoints + " ");
+        Typeface typeface = ResourcesCompat.getFont(getBaseContext(), R.font.digital);
+        mBinding.textViewPoint.setTypeface(typeface);
     }
 
-    @SuppressLint("CheckResult")
-    private void setUiTitle(final String titleText) {
-        if (!TextUtils.isEmpty(titleText)) {
-            Completable.complete().observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            SpannableString title = new SpannableString(titleText);
-//                            title.setSpan(new TypefaceSpan("sans-serif-condensed"), 0, title.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                            setTitle(title);
-                        }
-                    });
-
-        }
-    }
 
     private void initializeQuestionUi() {
         boolean shouldSkip = false;
-        if (mSkillCounter < mSkillMasteryQuestionGetData.size()) {
+        if (mSkillCounter < mSkillMasteryQuestionData.size()) {
             if (mComplexityLevel <= MAX_QUESTION_COMPLEXITY_LEVEL && mComplexityLevel >= MIN_QUESTION_COMPLEXITY_LEVEL) {
-                if (mQuestionsCounterArray[mComplexityLevel] + 1 >= mSkillMasteryQuestionGetData.get(mSkillCounter).getQuestions()[mComplexityLevel].size()) {
+                if (mQuestionsCounterArray[mComplexityLevel] + 1 >= mSkillMasteryQuestionData.get(mSkillCounter).getQuestions()[mComplexityLevel].size()) {
                     shouldSkip = true;
 
-                    int i = MIN_QUESTION_COMPLEXITY_LEVEL - 1;
-                    if (i < MIN_QUESTION_COMPLEXITY_LEVEL) {
-                        i = mComplexityLevel + 1;
-                        while (i <= MAX_QUESTION_COMPLEXITY_LEVEL) {
-                            if (mQuestionsCounterArray[i] + 1 < mSkillMasteryQuestionGetData.get(mSkillCounter).getQuestions()[i].size()) {
-                                mComplexityLevel = i;
-                                shouldSkip = false;
-                                break;
-                            }
-                            i++;
+                    int i;
+                    i = mComplexityLevel + 1;
+
+                    while (i <= MAX_QUESTION_COMPLEXITY_LEVEL) {
+                        if (mQuestionsCounterArray[i] + 1 < mSkillMasteryQuestionData.get(mSkillCounter).getQuestions()[i].size()) {
+                            mComplexityLevel = i;
+                            shouldSkip = false;
+                            break;
                         }
+                        i++;
                     }
 
 
                 }
-                if (!shouldSkip && mComplexityLevel <= MAX_QUESTION_COMPLEXITY_LEVEL && mComplexityLevel >= MIN_QUESTION_COMPLEXITY_LEVEL) {
-                    //setUiTitle(mTitle + " - Skill " + (mSkillCounter + 1) + "-C-" + mComplexityLevel);
+                if (!shouldSkip && mComplexityLevel <= MAX_QUESTION_COMPLEXITY_LEVEL) {
 
-                    mQuestion = mSkillMasteryQuestionGetData.get(mSkillCounter).getQuestions()[mComplexityLevel].get(++mQuestionsCounterArray[mComplexityLevel]);
+                    mQuestion = mSkillMasteryQuestionData.get(mSkillCounter).getQuestions()[mComplexityLevel].get(++mQuestionsCounterArray[mComplexityLevel]);
 
                     mHintsSize = mQuestion.getQuestionHints().size();
                     mBinding.buttonDone.setText(getString(R.string.submit));
@@ -366,7 +325,6 @@ public class PracticeTopicActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 showNextHint(mHintCounter);
-                //mBinding.scrollView.scrollTo(0,mBinding.scrollView.getBottom());
                 mBinding.scrollView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -387,6 +345,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
                 } else {
                     doneClickAction();
                 }
+
             }
         });
     }
@@ -404,13 +363,12 @@ public class PracticeTopicActivity extends AppCompatActivity {
                 }
             });
 
-            Observable.create(new ObservableOnSubscribe<ArrayList<SkillMasteryQuestionGetData>>() {
+            Observable.create(new ObservableOnSubscribe<ArrayList<SkillMasteryQuestionData>>() {
                 @Override
-                public void subscribe(ObservableEmitter<ArrayList<SkillMasteryQuestionGetData>> subscriber) throws Exception {
+                public void subscribe(ObservableEmitter<ArrayList<SkillMasteryQuestionData>> subscriber) throws Exception {
                     MasteryRequestObject masteryRequestObject = new MasteryRequestObject();
                     MasteryRequestObjectFilter masteryRequestObjectFilter = new MasteryRequestObjectFilter();
                     masteryRequestObjectFilter.setSkillIdList(ids);
-                    //     masteryRequestObjectFilter.setSkillId(ids.get(0));
                     ArrayList<String> arrayList = new ArrayList<String>();
                     arrayList.add(getString(R.string.label_low));
                     arrayList.add(getString(R.string.label_medium));
@@ -420,22 +378,22 @@ public class PracticeTopicActivity extends AppCompatActivity {
                     masteryRequestObject.setLimit(mComplexityLevelQuestionLimit);
                     masteryRequestObject.setSkip(0);
 
-                    final Call<ArrayList<SkillMasteryQuestionGetData>> questionCall = mNetworkModel.fetchBySkillListAndComplexityLevel(masteryRequestObject);
-                    Response<ArrayList<SkillMasteryQuestionGetData>> response = questionCall.execute();
+                    final Call<ArrayList<SkillMasteryQuestionData>> questionCall = mNetworkModel.fetchBySkillListAndComplexityLevel(masteryRequestObject);
+                    Response<ArrayList<SkillMasteryQuestionData>> response = questionCall.execute();
 
                     if (response != null && response.isSuccessful()) {
-                        mSkillMasteryQuestionGetData = response.body();
+                        mSkillMasteryQuestionData = response.body();
                         Log.e("QuestionFetch1--", "Successful");
 
-                        subscriber.onNext(mSkillMasteryQuestionGetData);
+                        subscriber.onNext(mSkillMasteryQuestionData);
 
 
                     } else if ((response.code() == 401) && SyncServiceHelper.refreshToken(getBaseContext())) {
-                        Response<ArrayList<SkillMasteryQuestionGetData>> response2 = questionCall.clone().execute();
+                        Response<ArrayList<SkillMasteryQuestionData>> response2 = questionCall.clone().execute();
                         if (response2 != null && response2.isSuccessful()) {
-                            mSkillMasteryQuestionGetData = response2.body();
+                            mSkillMasteryQuestionData = response2.body();
                             Log.e("QuestionsFetch2--", "Successful");
-                            subscriber.onNext(mSkillMasteryQuestionGetData);
+                            subscriber.onNext(mSkillMasteryQuestionData);
                         } else if ((response2.code() == 401)) {
                             startActivity(LoginActivity.getUnauthorizedIntent(getBaseContext()));
                         } else {
@@ -451,34 +409,36 @@ public class PracticeTopicActivity extends AppCompatActivity {
 
                 }
             }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<ArrayList<SkillMasteryQuestionGetData>>() {
+                    .subscribe(new Consumer<ArrayList<SkillMasteryQuestionData>>() {
                         @Override
-                        public void accept(ArrayList<SkillMasteryQuestionGetData> questionGetDataList) throws Exception {
+                        public void accept(ArrayList<SkillMasteryQuestionData> questionDataArrayList) throws Exception {
                             progressDialog.dismiss();
-                            mSkillMasteryQuestionGetData = questionGetDataList;
-                            int totalQuestions = 0;
-                            for (SkillMasteryQuestionGetData questionGetData : questionGetDataList) {
-                                if (questionGetData != null && questionGetData.getLowLevelQuestion() != null
-                                        && questionGetData.getMediumLevelQuestion() != null
-                                        && questionGetData.getHighLevelQuestion() != null) {
+                            mSkillMasteryQuestionData = questionDataArrayList;
 
-                                    int questionTotalCount = questionGetData.getLowLevelQuestion().getResults().size() +
-                                            questionGetData.getMediumLevelQuestion().getResults().size() +
-                                            questionGetData.getHighLevelQuestion().getResults().size();
+                            int totalQuestions = 0;
+                            for (SkillMasteryQuestionData skillMasteryQuestionData : questionDataArrayList) {
+                                if (skillMasteryQuestionData != null && skillMasteryQuestionData.getLowLevelQuestion() != null
+                                        && skillMasteryQuestionData.getMediumLevelQuestion() != null
+                                        && skillMasteryQuestionData.getHighLevelQuestion() != null) {
+
+                                    int questionTotalCount = skillMasteryQuestionData.getLowLevelQuestion().getResults().size() +
+                                            skillMasteryQuestionData.getMediumLevelQuestion().getResults().size() +
+                                            skillMasteryQuestionData.getHighLevelQuestion().getResults().size();
 
                                     if (questionTotalCount < mComplexityLevelQuestionLimit) {
-                                        questionGetData.setQuestionsSize(questionTotalCount);
+                                        skillMasteryQuestionData.setQuestionsSize(questionTotalCount);
                                     } else {
-                                        questionGetData.setQuestionsSize(mComplexityLevelQuestionLimit);
+                                        skillMasteryQuestionData.setQuestionsSize(mComplexityLevelQuestionLimit);
                                     }
-                                    totalQuestions += questionGetData.getQuestionsSize();
-                                    questionGetData.updateQuestions();
+                                    totalQuestions += skillMasteryQuestionData.getQuestionsSize();
+                                    skillMasteryQuestionData.updateQuestions();
 
 
                                 }
                             }
                             if (totalQuestions <= 0) {
-                                showAlertDialog(getString(R.string.error_no_question_found));
+                                //  showAlertDialog(getString(R.string.error_no_question_found));
+                                mBinding.buttonDone.setVisibility(View.VISIBLE);
                             } else {
                                 mTotalQuestions = totalQuestions;
                                 initializeQuestionUi();
@@ -491,7 +451,6 @@ public class PracticeTopicActivity extends AppCompatActivity {
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
-//                            Toast.makeText(getBaseContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
                             finish();
                             progressDialog.dismiss();
                             throwable.printStackTrace();
@@ -507,6 +466,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
             showAlertDialog(getString(R.string.error_message_no_internet));
         }
     }
+
 
     private void setTimerView(Question question) {
         mBinding.layoutTimer.setVisibility(View.VISIBLE);
@@ -761,10 +721,9 @@ public class PracticeTopicActivity extends AppCompatActivity {
         if (getSubmittedAnswerFromView(false).size() > 0) {
             Attempt attempt = new Attempt();
             attempt.setSubmittedAnswer(getSubmittedAnswerFromView(true));
-            mIsCorrectResponse = mQuestionResponseModelApp.checkCorrectness(mQuestion, attempt);
-            if (mIsCorrectResponse) {
+            boolean isCorrectResponse = mQuestionResponseModelApp.checkCorrectness(mQuestion, attempt);
+            if (isCorrectResponse) {
                 mTotalCorrect++;
-//                Toast.makeText(this, "correct + 1", Toast.LENGTH_SHORT).show();
                 resetTotalInCorrectCounter();
                 attempt.setStatusCode(Attempt.TYPE_STATUS_CODE_CORRECT);
                 setResponseView(true);
@@ -775,7 +734,6 @@ public class PracticeTopicActivity extends AppCompatActivity {
 
             } else {
                 mTotalInCorrect++;
-//                Toast.makeText(this, "incorrect +1", Toast.LENGTH_SHORT).show();
                 resetTotalCorrectCounter();
                 attempt.setStatusCode(Attempt.TYPE_STATUS_CODE_INCORRECT);
                 setResponseView(false);
@@ -789,7 +747,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
             attempt.setSubmissionDateTime(DateUtils.getISO8601DateStringFromSeconds(DateUtils.getCurrentTimeInSeconds()));
             attempt.setHintsAvailed(mHintCounter);
             attempt.setTimeTaken(SystemClock.elapsedRealtime() - mBinding.chronometerQuestionTimer.getBase());
-            QuestionResponse quizResponse = generateQuestionResponse(attempt, Boolean.toString(mIsCorrectResponse), mHintCounter);
+            QuestionResponse quizResponse = generateQuestionResponse(attempt, Boolean.toString(isCorrectResponse), mHintCounter);
 
         } else {
             mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_UP);
@@ -800,10 +758,6 @@ public class PracticeTopicActivity extends AppCompatActivity {
     }
 
     private void nextClickAction() {
-//        if (mBinding.layoutResponse.getVisibility() == View.VISIBLE) {
-//            AnimationUtils.slideOutLeft(getBaseContext(), mBinding.layoutResponse);
-//            mBinding.layoutResponse.setVisibility(View.GONE);
-//        }
         mQuestionCounter++;
         initializeQuestionUi();
         mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_UP);
@@ -816,7 +770,6 @@ public class PracticeTopicActivity extends AppCompatActivity {
         }
         mQuizResponse.setQuestionResponses(mQuestionResponses);
         uploadQuizResponse(mQuizResponse);
-        //doneMenuItemVisibility(false);
     }
 
 
@@ -847,21 +800,11 @@ public class PracticeTopicActivity extends AppCompatActivity {
     }
 
     private void decrementQuestionComplexity() {
-//        if (mComplexityLevel > MIN_QUESTION_COMPLEXITY_LEVEL) {
-//        Toast.makeText(this, "complexity -1", Toast.LENGTH_SHORT).show();
         mComplexityLevel--;
-
-//        }
     }
 
     private void incrementQuestionComplexity() {
-//        if (mComplexityLevel < MAX_QUESTION_COMPLEXITY_LEVEL) {
-//        Toast.makeText(this, "complextity +1", Toast.LENGTH_SHORT).show();
         mComplexityLevel++;
-//            if (mComplexityLevel == 3) {
-//                mComplexityLevel = 2;
-//            }
-//        }
     }
 
     private void resetTotalCorrectCounter() {
@@ -881,16 +824,15 @@ public class PracticeTopicActivity extends AppCompatActivity {
      */
     private void setResponseView(boolean response) {
         if (response) {
-            //doneMenuItemVisibility(false);
             mBinding.layoutResponse.setVisibility(View.VISIBLE);
             mBinding.layoutResponse.setBackgroundResource(R.drawable.background_correct_question_response);
             mBinding.imageViewResponse.setImageResource(R.drawable.action_done_w);
             mBinding.textViewResponse.setText(getString(R.string.response_correct));
             AnimationUtils.slideInLeft(getBaseContext(), mBinding.layoutResponse);
             SoundUtils.playSound(getBaseContext(), SoundUtils.QUIZ_CORRECT_ANSWER);
+            addPoints();
 
         } else {
-            //doneMenuItemVisibility(false);
             mBinding.layoutResponse.setVisibility(View.VISIBLE);
             mBinding.layoutResponse.setBackgroundResource(R.drawable.background_incorrect_question_response);
             mBinding.imageViewResponse.setImageResource(R.drawable.action_close_w);
@@ -938,6 +880,34 @@ public class PracticeTopicActivity extends AppCompatActivity {
 //                }
             }
         }, 1500);
+    }
+
+    private void addPoints() {
+        mBinding.textViewAddedPoint.setVisibility(View.VISIBLE);
+
+        new FlyObjectAnimationUtil().setAnimationListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mTotalPoints = mTotalPoints + 20;
+                mBinding.textViewPoint.setText(" " + mTotalPoints + " ");
+                AnimationUtils.zoomIn(getBaseContext(), mBinding.imageViewCoin);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        }).startAnimation(mBinding.textViewAddedPoint, mBinding.layoutPoint);
     }
 
     public void showResource(String resourcePath) {
@@ -1144,5 +1114,6 @@ public class PracticeTopicActivity extends AppCompatActivity {
     private void showSnackBar(String message) {
         SnackBarUtils.showColoredSnackBar(this, mBinding.scrollView, message, 0x44000000);
     }
+
 
 }

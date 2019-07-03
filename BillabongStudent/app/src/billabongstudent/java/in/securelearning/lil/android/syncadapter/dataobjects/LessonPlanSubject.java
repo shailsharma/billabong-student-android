@@ -16,6 +16,10 @@ public class LessonPlanSubject implements Serializable {
     @Expose
     private String mName;
 
+    @SerializedName("shortName")
+    @Expose
+    private String mShortName;
+
     @SerializedName("status")
     @Expose
     private String mStatus;
@@ -36,6 +40,10 @@ public class LessonPlanSubject implements Serializable {
     @Expose
     private String mBannerUrl;
 
+    @SerializedName("colorCode")
+    @Expose
+    private String mColorCode;
+
     public String getId() {
         return mId;
     }
@@ -50,6 +58,14 @@ public class LessonPlanSubject implements Serializable {
 
     public void setName(String name) {
         mName = name;
+    }
+
+    public String getShortName() {
+        return mShortName;
+    }
+
+    public void setShortName(String shortName) {
+        mShortName = shortName;
     }
 
     public String getStatus() {
@@ -90,5 +106,13 @@ public class LessonPlanSubject implements Serializable {
 
     public void setBannerUrl(String bannerUrl) {
         mBannerUrl = bannerUrl;
+    }
+
+    public String getColorCode() {
+        return mColorCode;
+    }
+
+    public void setColorCode(String colorCode) {
+        mColorCode = colorCode;
     }
 }

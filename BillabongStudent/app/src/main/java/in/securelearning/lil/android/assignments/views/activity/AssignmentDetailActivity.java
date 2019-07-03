@@ -71,7 +71,7 @@ import in.securelearning.lil.android.base.views.activity.WebPlayerLiveActivity;
 import in.securelearning.lil.android.home.dataobjects.TimeUtils;
 import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.learningnetwork.events.LoadRefreshAssignmentStageEvent;
-import in.securelearning.lil.android.player.microlearning.view.activity.RapidLearningSectionListActivity;
+import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
 import in.securelearning.lil.android.quizpreview.events.AssignmentSubmittedEvent;
 import in.securelearning.lil.android.resources.view.activity.VideoPlayActivity;
 import in.securelearning.lil.android.resources.view.activity.VimeoActivity;

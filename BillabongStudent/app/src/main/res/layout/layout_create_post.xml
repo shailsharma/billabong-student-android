@@ -175,7 +175,8 @@
                         android:layout_marginTop="4dp">
 
                         <!--layout if discussion is selected-->
-                        <include layout="@layout/layout_add_discussion_post"></include>
+                        <include android:id="@+id/layoutDiscussion"
+                            layout="@layout/layout_add_discussion_post"></include>
 
                     </RelativeLayout>
 

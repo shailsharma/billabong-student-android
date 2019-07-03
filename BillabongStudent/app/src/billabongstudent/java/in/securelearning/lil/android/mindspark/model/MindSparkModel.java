@@ -563,6 +563,18 @@ public class MindSparkModel {
         return iFrameList;
     }
 
+    /*To get list of iFrame from a string*/
+    public ArrayList<String> getImageUrlListFromString(int iFrameCount, String string) {
+        ArrayList<String> iFrameList = new ArrayList<>();
+        for (int i = 0; i < iFrameCount; i++) {
+            String iFrameSubString = string.substring(string.indexOf("<img src"), string.indexOf(">"));
+            iFrameList.add(iFrameSubString);
+            string = string.replace(iFrameSubString, "");
+        }
+
+        return iFrameList;
+    }
+
     /*To remove [blank_"number"] from blank type question text body.*/
     public String removeBlankFromQuestion(String blankTypeQuestionBody) {
         String finalString = blankTypeQuestionBody.replaceAll("\\[blank_(.*?)]", "");

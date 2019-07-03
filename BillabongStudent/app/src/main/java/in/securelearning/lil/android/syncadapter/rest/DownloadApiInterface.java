@@ -51,12 +51,18 @@ import in.securelearning.lil.android.base.dataobjects.UserRating;
 import in.securelearning.lil.android.base.dataobjects.VideoCourse;
 import in.securelearning.lil.android.base.utils.ArrayList;
 import in.securelearning.lil.android.courses.dataobject.CourseReview;
+import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
+import in.securelearning.lil.android.homework.dataobject.Homework;
+import in.securelearning.lil.android.homework.dataobject.HomeworkSubmitResponse;
+import in.securelearning.lil.android.player.dataobject.PracticeParent;
+import in.securelearning.lil.android.player.dataobject.PracticeQuestionResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.AboutCourseExt;
 import in.securelearning.lil.android.syncadapter.dataobject.ActivityData;
 import in.securelearning.lil.android.syncadapter.dataobject.AppUserAuth0;
 import in.securelearning.lil.android.syncadapter.dataobject.BlogResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.BroadcastNotification;
 import in.securelearning.lil.android.syncadapter.dataobject.EnrollTrainingResponse;
+import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
 import in.securelearning.lil.android.syncadapter.dataobject.LessonPlanMinimal;
 import in.securelearning.lil.android.syncadapter.dataobject.PasswordChange;
 import in.securelearning.lil.android.syncadapter.dataobject.PrerequisiteCoursesPostData;
@@ -166,7 +172,7 @@ public interface DownloadApiInterface {
     Call<ResponseBody> getQuizWeb(@Path("objectId") String objectId);
 
     @GET("LearningNetworkPosts/fetchAllPost/{objectId}")
-    Call<GroupPostsNResponse> fetchAllPostNResponse(@Path("objectId") String objectId);
+    Call<GroupPostsNResponse> fetchGroupPostAndResponse(@Path("objectId") String objectId);
 
     @GET("AssignmentResponses/getAssignmentResponse/{objectId}")
     Call<AssignmentResponse> getAssignmentResponse(@Path("objectId") String objectId);
@@ -185,6 +191,9 @@ public interface DownloadApiInterface {
 
     @GET("popupactivities/getPopupActivity/{objectId}")
     Call<ResponseBody> getActivityChecklistJson(@Path("objectId") String objectId);
+
+    @GET("courseprogresses/fetchDBProgress/{courseId}")
+    Call<ResponseBody> fetchCourseProgress(@Path("courseId") String courseId);
 
     @GET("LILGoogleAPIs/fetchVideoDuration/{objectId}")
     Call<ResponseBody> getYoutubeVideoDuration(@Path("objectId") String objectId);
@@ -495,4 +504,32 @@ public interface DownloadApiInterface {
     /*Api to fetch chart configuration for performance and coverage*/
     @POST("GlobalConfigs/fetchConfig")
     Call<ChartConfigurationParentData> fetchChartConfiguration(@Body ChartConfigurationRequest chartConfigurationRequest);
+    /*Api to fetch chart configuration for performance and coverage*/
+
+    /*Api to fetch assignment for student*/
+    @GET("Assignments/getUserStatusWithCount")
+    Call<AssignedHomeworkParent> fetchHomework(@Query("subjectId") String subjectId);
+
+    /*Api to fetch detail of student homework passing homework id*/
+    @GET("Assignments/homeworkDetail/{id}")
+    Call<Homework> fetchHomeworkDetail(@Path("id") String homeworkId);
+
+    /*Api to fetch detail of student homework passing homework id*/
+    @GET("Assignments/submit/{id}")
+    Call<HomeworkSubmitResponse> submitHomework(@Path("id") String homeworkId);
+
+    /*Api call to send status of application for various user activity*/
+    @GET("userlogs/userStatus/{status}")
+    Call<ResponseBody> checkUserStatus(@Path("status") String status);
+
+    /*Api to fetch questions for practice*/
+//    @POST("http://192.168.0.116:8082/question/getQuestions")
+    @POST("search/question/getQuestions")
+    Call<PracticeQuestionResponse> fetchQuestions(@Body PracticeParent practiceParent);
+
+
+    /*Api to fetch learning network groups*/
+    @GET("Groups/learning-network")
+    Call<java.util.ArrayList<IdNameObject>> fetchNetworkGroup(@Query("skip") int skip, @Query("limit") int limit);
+
 }

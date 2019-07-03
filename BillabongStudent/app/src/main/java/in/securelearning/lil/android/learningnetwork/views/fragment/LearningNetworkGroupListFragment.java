@@ -46,7 +46,7 @@ import in.securelearning.lil.android.learningnetwork.model.PostDataLearningModel
 import in.securelearning.lil.android.learningnetwork.views.activity.PostListActivity;
 import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
-import in.securelearning.lil.android.syncadapter.utils.StudentCommonUtils;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -239,7 +239,7 @@ public class LearningNetworkGroupListFragment extends Fragment {
             }
             holder.mBinding.textViewGroupName.setText(name);
             //Need to set group name according to Two Letter
-            StudentCommonUtils.getInstance().
+            CommonUtils.getInstance().
                     setGroupThumbnail(getContext(), name, group.getThumbnail(), holder.mBinding.imageViewGroupThumbnail) ;
 
             setLatestPost(group, holder.mBinding);

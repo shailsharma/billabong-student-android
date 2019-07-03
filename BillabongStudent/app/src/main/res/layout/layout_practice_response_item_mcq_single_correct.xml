@@ -8,6 +8,7 @@
     android:padding="16dp"
     android:textAppearance="?android:attr/textAppearanceLarge"
     android:textColor="@color/white"
+    android:textColorLink="@color/colorWhite"
     >
 
 </in.securelearning.lil.android.app.Widgets.RadioButtonCustom>

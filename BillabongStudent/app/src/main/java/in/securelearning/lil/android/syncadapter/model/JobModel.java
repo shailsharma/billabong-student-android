@@ -478,20 +478,26 @@ public class JobModel extends BaseModel {
         return mAppUserModel.saveUserProfile(userProfile);
     }
 
-    public GroupPostsNResponse saveGroupPostNPostResponse(GroupPostsNResponse groupPostsNResponse) {
+    public GroupPostsNResponse saveGroupPostAndPostResponse(GroupPostsNResponse groupPostsNResponse) {
 
         if (groupPostsNResponse != null) {
             if (groupPostsNResponse.getPost() != null) {
                 for (PostData postData : groupPostsNResponse.getPost()) {
                     postData.setSyncStatus(SyncStatus.JSON_SYNC.toString());
-                    postData = mPostModel.saveObject(postData);
+                    PostData alreadySavedObject = mPostModel.getObjectById(postData.getObjectId());
+                    if (alreadySavedObject != null && TextUtils.isEmpty(alreadySavedObject.getObjectId())) {
+                        mPostModel.saveObject(postData);
+                    }
                 }
             }
 
             if (groupPostsNResponse.getPostResponse() != null) {
                 for (PostResponse postResponse : groupPostsNResponse.getPostResponse()) {
                     postResponse.setSyncStatus(SyncStatus.JSON_SYNC.toString());
-                    postResponse = mPostResponseModel.saveObject(postResponse);
+                    PostResponse alreadySavedObject = mPostResponseModel.getObjectById(postResponse.getObjectId());
+                    if (alreadySavedObject != null && TextUtils.isEmpty(alreadySavedObject.getObjectId())) {
+                        mPostResponseModel.saveObject(postResponse);
+                    }
                 }
             }
 

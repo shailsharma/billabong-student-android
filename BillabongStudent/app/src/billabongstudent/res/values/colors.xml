@@ -127,4 +127,12 @@
     <color name="color_studying">#F6BE1A</color>
 
     <color name="snackbar_background">#f28231</color>
+
+    <color name="colorEndGradientDark">#188177</color>
+    <color name="colorCenterGradientDark">#1C648A</color>
+    <color name="colorStartGradientDark">#167097</color>
+
+    <color name="colorEndGradientLight">#69F3E6</color>
+    <color name="colorCenterGradientLight">#6ABDF0</color>
+    <color name="colorStartGradientLight">#55B7E6</color>
 </resources>

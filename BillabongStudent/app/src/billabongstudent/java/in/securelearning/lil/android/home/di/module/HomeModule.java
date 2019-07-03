@@ -10,10 +10,13 @@ import in.securelearning.lil.android.base.model.BadgesModel;
 import in.securelearning.lil.android.base.model.CalEventModel;
 import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.courses.models.CoursesModel;
+import in.securelearning.lil.android.gamification.model.GamificationModel;
+import in.securelearning.lil.android.gamification.views.fragment.GamificationDialog;
 import in.securelearning.lil.android.home.model.CalendarEventModel;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
 import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.home.model.SearchModel;
+import in.securelearning.lil.android.homework.model.HomeworkModel;
 import in.securelearning.lil.android.learningnetwork.model.PostDataLearningModel;
 import in.securelearning.lil.android.mindspark.model.MindSparkModel;
 import in.securelearning.lil.android.syncadapter.ftp.FtpFunctions;
@@ -128,5 +131,24 @@ public class HomeModule {
     @ActivityScope
     public MindSparkModel mindSparkModel() {
         return new MindSparkModel();
+    }
+
+    @Provides
+    @ActivityScope
+    public HomeworkModel homeworkModel() {
+        return new HomeworkModel();
+    }
+
+
+    @Provides
+    @ActivityScope
+    public GamificationDialog gamificationDialog() {
+        return new GamificationDialog();
+    }
+
+    @Provides
+    @ActivityScope
+    public GamificationModel gamificationModel() {
+        return new GamificationModel();
     }
 }

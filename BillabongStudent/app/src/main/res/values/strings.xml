@@ -29,7 +29,7 @@
         "Motion provides meaning.\n\n"
 
         "Motion respects and reinforces the user as the prime mover. Primary user actions are "
-        "inflection points that initiate motion, transforming the whole design.\n"
+        "inflection score that initiate motion, transforming the whole design.\n"
         "All action takes place in a single environment. Objects are presented to the user without "
         "breaking the continuity of experience even as they transform and reorganize.\n"
         "Motion is meaningful and appropriate, serving to focus attention and maintain continuity. "
@@ -229,7 +229,8 @@
     <string name="button_events">Events</string>
     <string name="button_favorite">Favorites</string>
     <string name="string_no_results_found">No results found</string>
-    <string name="string_loading">Loading...</string>
+    <string name="string_homework_found">No homework found</string>
+    <string name="string_loading">Loading…</string>
     <string name="string_no_bulletin">No Bulletin</string>
     <string name="string_no_notification">No Notification</string>
     <string name="string_no_fav_post">No Favorite Post</string>
@@ -451,6 +452,7 @@
     <string name="rate_and_review">Rate and Review</string>
     <string name="rate_it">Rate it</string>
     <string name="browse_courses">Browse Courses</string>
+    <string name="browse">Browse</string>
     <string name="bookmark">Bookmark</string>
     <string name="favourite">Favourite</string>
     <string name="watchlater">Watch Later</string>
@@ -500,7 +502,7 @@
     <string name="update_profile_failed">Failed to update profile, please retry.</string>
     <string name="update_profile_thumb_failed">Failed to update profile picture, please retry.</string>
     <string name="update_profile_thumb_successful">Profile picture changed, click on ✓ to save.</string>
-    <string name="success">Success</string>
+    <string name="status">Success</string>
     <string name="sign_up_success_title">Account created</string>
     <string name="sign_up_success_message">Please verify your email !</string>
     <string name="policy_tandc">By creating an account I agree to LIL Open Courses Privacy Policies and Terms of Service.</string>
@@ -524,8 +526,8 @@
     <string name="pathCalendarAnnouncement">CalendarAnnouncement</string>
     <string name="pathCalendarActivity">CalendarActivity</string>
     <string name="pathCalendarPersonalEvent">CalendarPersonalEvent</string>
-    <string name="message_login_groups">Loading Groups...</string>
-    <string name="message_login_curriculum">Loading  Curriculum...</string>
+    <string name="message_login_groups">Loading Groups…</string>
+    <string name="message_login_curriculum">Loading  Curriculum…</string>
     <string name="sort_by">Sort By</string>
     <string name="string_post_response">Post response</string>
     <string name="subject_group">Subject Group</string>
@@ -740,7 +742,7 @@
     <string name="label_capital_minute">MINUTE</string>
     <string name="title_search_results">Search Results</string>
     <string name="learning_map_no_data_message">It seems there is no data for this subject. Swipe to view another subject.</string>
-    <string name="news_loading_message">Getting latest news...</string>
+    <string name="news_loading_message">Getting latest news…</string>
     <string name="prompt_calves_msg">Please enter your body calves</string>
 
     <string name="label_low">low</string>
@@ -749,11 +751,11 @@
     <string name="message_fetching_question">Hold On…\nLoading questions.</string>
     <string name="error_no_question_found">Sorry, no questions found.</string>
     <string name="error_message_no_internet">Internet connection not available, please connect to internet and retry.</string>
-    <string name="error_something_went_wrong">Request not proceed , something went wrong.</string>
+    <string name="error_something_went_wrong">Request not proceed, something went wrong.</string>
     <string name="no_more_hints">No more hints to show.</string>
     <string name="message_mastery_completed">Check your updated results in Learning Map.</string>
     <string name="label_filter_by">Filter By</string>
-    <string name="message_uploading_response">Hold On...\nUploading your response to server, please do not close the app.</string>
+    <string name="message_uploading_response">Hold On…\nUploading your response to server, please do not close the app.</string>
     <string name="messageUploadFailed">Uploading failed.</string>
     <string name="messageQuestionResponsesUploaded">Question responses uploaded successfully.</string>
     <string name="messageQuestionFetchFailed">Unable to fetch questions</string>
@@ -795,14 +797,16 @@
     <string name="labelSessions">Sessions</string>
     <string name="labelGroup">Group</string>
     <string name="labelPerformance">Performance</string>
+    <string name="labelOverall">Overall</string>
     <string name="labelCourses">Courses</string>
     <string name="labelResources">Resources</string>
     <string name="labelSession">Session</string>
     <string name="labelAssignments">Assignments</string>
-    <string name="messagePleaseWait">Please wait...</string>
+    <string name="messagePleaseWait">Please wait…</string>
     <string name="messagePleaseAddReview">Please add review.</string>
     <string name="messageNoTopics">No Topics Found</string>
     <string name="labelPractice">Practice</string>
+    <string name="labelWorksheet">Worksheet</string>
     <string name="labelTopic">Topic</string>
     <string name="labelSkill">Skill</string>
     <string name="messageLessonsNotFound">No Lesson found.</string>
@@ -891,4 +895,6 @@
     <string name="label_efforts">Efforts</string>
     <string name="label_excellence">Excellence</string>
     <string name="label_progress">Progress</string>
+    <string name="due_soon">Due Soon</string>
+    <string name="logging_out">Logging Out…</string>
 </resources>

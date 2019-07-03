@@ -80,7 +80,7 @@ public class AssignmentService extends IntentService {
         }
 
         try {
-            FlavorSyncServiceHelper.startReminderIntentService(getBaseContext());
+            //FlavorSyncServiceHelper.startReminderIntentService(getBaseContext());
         } catch (Exception e) {
             e.printStackTrace();
         }

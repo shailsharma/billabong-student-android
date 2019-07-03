@@ -20,6 +20,7 @@ public class SoundUtils {
     public static final int LEARNING_NETWORK_POST_FAVORITE = R.raw.network_post_favorite;
     public static final int QUIZ_CORRECT_ANSWER = R.raw.quiz_correct_answer;
     public static final int QUIZ_INCORRECT_ANSWER = R.raw.quiz_incorrect_answer;
+    public static final int STREAK = R.raw.streak_bonus;
 
     public static void playSound(Context context, int source) {
         MediaPlayer mediaPlayer = MediaPlayer.create(context, source);
