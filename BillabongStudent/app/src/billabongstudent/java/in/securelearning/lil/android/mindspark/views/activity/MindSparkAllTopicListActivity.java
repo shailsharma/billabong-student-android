@@ -122,6 +122,7 @@ public class MindSparkAllTopicListActivity extends AppCompatActivity {
 
     private void setUpToolbar() {
         setSupportActionBar(mBinding.toolbar);
+        mBinding.imageViewLogo.setImageResource(R.drawable.logo_mind_spark);
         setTitle("Topic Practice");
         Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.gradient_app));
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.chevron_left_white);

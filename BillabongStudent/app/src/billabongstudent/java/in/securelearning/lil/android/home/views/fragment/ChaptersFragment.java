@@ -301,11 +301,11 @@ public class ChaptersFragment extends Fragment {
                 binding.textViewChapterCount.setText(R.string.no_chapter);
                 binding.imageViewStateIndicator.setVisibility(View.GONE);
             } else if (childCount > 1) {
-                String text = String.valueOf(getChildrenCount(groupPosition)) + " " + getString(R.string.chapters);
+                String text = getChildrenCount(groupPosition) + " " + getString(R.string.chapters);
                 binding.textViewChapterCount.setText(text);
                 binding.imageViewStateIndicator.setVisibility(View.VISIBLE);
             } else {
-                String text = String.valueOf(getChildrenCount(groupPosition)) + " " + getString(R.string.chapter);
+                String text = getChildrenCount(groupPosition) + " " + getString(R.string.chapter);
                 binding.textViewChapterCount.setText(text);
                 binding.imageViewStateIndicator.setVisibility(View.VISIBLE);
             }

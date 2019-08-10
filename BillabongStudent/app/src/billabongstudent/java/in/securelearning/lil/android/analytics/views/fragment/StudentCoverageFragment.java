@@ -37,16 +37,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import in.securelearning.lil.android.analytics.views.adapter.StudentCoverageAdapter;
 import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationData;
 import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
+import in.securelearning.lil.android.analytics.helper.ChartXAxisRenderer;
 import in.securelearning.lil.android.analytics.helper.MyPercentFormatter;
 import in.securelearning.lil.android.analytics.model.AnalyticsModel;
+import in.securelearning.lil.android.analytics.views.adapter.StudentCoverageAdapter;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutStudentAnalyticsCoverageBinding;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.analytics.helper.ChartXAxisRenderer;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -58,14 +58,14 @@ public class StudentCoverageFragment extends Fragment {
 
     @Inject
     AnalyticsModel mAnalyticsModel;
-    private Context mContext;
     private LayoutStudentAnalyticsCoverageBinding mBinding;
     private boolean fragmentResume = false;
     private boolean fragmentVisible = false;
     private boolean fragmentOnCreated = false;
     private ArrayList<ChartConfigurationData> mChartConfigurationData = null;
+    private Context mContext;
 
-    public static Fragment newInstance(ArrayList<ChartConfigurationData> coverageConfiguration) {
+    public static Fragment newInstance(ArrayList<ChartConfigurationData> coverageConfiguration, Context baseContext) {
         StudentCoverageFragment fragment = new StudentCoverageFragment();
         Bundle args = new Bundle();
         args.putSerializable(ConstantUtil.COVERAGE, (Serializable) coverageConfiguration);
@@ -223,7 +223,15 @@ public class StudentCoverageFragment extends Fragment {
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return xAxisLabel.get((int) value);
+                if (value >= 0 && !xAxisLabel.isEmpty()) {
+                    if (value <= xAxisLabel.size() - 1) {
+                        return xAxisLabel.get((int) value);
+                    } else
+                        return ConstantUtil.BLANK;
+                } else
+                    return ConstantUtil.BLANK;
+
+
             }
         });
 
@@ -268,9 +276,8 @@ public class StudentCoverageFragment extends Fragment {
                 drawProgress(coverage);
                 fetchCoverageData(ccd.getId());
                 pickColorAccording(coverage);
-                mBinding.llExcellence.setVisibility(View.VISIBLE);
+                mBinding.llCoverage.setVisibility(View.VISIBLE);
                 mBinding.textViewPerformance.setText(ccd.getName());
-                mBinding.textViewPerformanceCount.setText(String.valueOf(coverage + "%"));
             }
 
             @Override
@@ -287,10 +294,8 @@ public class StudentCoverageFragment extends Fragment {
             CoverageChartData data = list.get(0);
             int coverage = Math.round(data.getCoverage());
 
-            mBinding.llExcellence.setVisibility(View.VISIBLE);
+            mBinding.llCoverage.setVisibility(View.VISIBLE);
             mBinding.textViewPerformance.setText(data.getName());
-            mBinding.textViewPerformanceCount.setText(coverage + "%");
-            mBinding.pieChartPerformance.setVisibility(View.VISIBLE);
             drawProgress(coverage);
             fetchCoverageData(data.getId());
         }
@@ -309,13 +314,20 @@ public class StudentCoverageFragment extends Fragment {
     }
 
     private void drawProgress(int performance) {
+        List<Integer> colorList = new ArrayList<>();
         float total = 100;
         float remaining = total - performance;
         ArrayList<PieEntry> fillValues = new ArrayList<>();
         fillValues.add(new PieEntry(performance));
         fillValues.add(new PieEntry(remaining));
         PieDataSet dataSet = new PieDataSet(fillValues, "");
-        dataSet.setColors(pickColorAccording(performance));
+        colorList.add(pickColorAccording(performance));
+        if (getActivity() != null && getActivity().getResources() != null) {
+            colorList.add(getActivity().getResources().getColor(R.color.colorGrey400));
+        } else {
+            colorList.add(Color.GRAY);
+        }
+        dataSet.setColors(colorList);
         dataSet.setValueTextSize(0f);
         PieData data = new PieData(dataSet);
         mBinding.pieChartPerformance.setData(data);
@@ -324,7 +336,7 @@ public class StudentCoverageFragment extends Fragment {
         mBinding.pieChartPerformance.setUsePercentValues(true);
         mBinding.pieChartPerformance.getDescription().setEnabled(false);
         mBinding.pieChartPerformance.setDrawCenterText(true);
-        String centerTextValue =(performance) + "%";
+        String centerTextValue = (performance) + "%";
         if (centerTextValue.contains("NaN")) {
             mBinding.pieChartPerformance.setCenterText("0%");
         } else {
@@ -406,18 +418,14 @@ public class StudentCoverageFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (getActivity() != null) {
-            mContext = getActivity();
-        } else {
-            mContext = context;
-        }
+        mContext = context;
     }
 
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mContext = null;
-
-    }
+//    @Override
+//    public void onDetach() {
+//        super.onDetach();
+//        mContext = null;
+//
+//    }
 }

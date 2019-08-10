@@ -78,14 +78,14 @@ public class BroadcastNotificationService extends IntentService {
         if (GeneralUtils.isNetworkAvailable(BroadcastNotificationService.this)) {
             JobCreator.createDownloadBroadcastNotificationJsonJob(Injector.INSTANCE.getComponent().appUserModel().getObjectId(), AppPrefs.getLastBroadcastNotificationTime(BroadcastNotificationService.this)).execute();
 
-            Completable.complete()
-                    .observeOn(Schedulers.newThread())
-                    .subscribe(new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            MessageService.startActionSyncPosts(getBaseContext());
-                        }
-                    });
+//            Completable.complete()
+//                    .observeOn(Schedulers.newThread())
+//                    .subscribe(new Action() {
+//                        @Override
+//                        public void run() throws Exception {
+//                            MessageService.startActionSyncPosts(getBaseContext());
+//                        }
+//                    });
             Completable.complete()
                     .observeOn(Schedulers.newThread())
                     .subscribe(new Action() {
@@ -95,23 +95,23 @@ public class BroadcastNotificationService extends IntentService {
                         }
                     });
 
-            Completable.complete()
-                    .observeOn(Schedulers.newThread())
-                    .subscribe(new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            // AssignmentService.startActionDownloadBroadcastNotification(getBaseContext());
-                        }
-                    });
+//            Completable.complete()
+//                    .observeOn(Schedulers.newThread())
+//                    .subscribe(new Action() {
+//                        @Override
+//                        public void run() throws Exception {
+//                             AssignmentService.startActionDownloadBroadcastNotification(getBaseContext());
+//                        }
+//                    });
 
-            Completable.complete()
-                    .observeOn(Schedulers.newThread())
-                    .subscribe(new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            CourseService.startActionDownloadBroadcastNotification(getBaseContext());
-                        }
-                    });
+//            Completable.complete()
+//                    .observeOn(Schedulers.newThread())
+//                    .subscribe(new Action() {
+//                        @Override
+//                        public void run() throws Exception {
+//                            CourseService.startActionDownloadBroadcastNotification(getBaseContext());
+//                        }
+//                    });
         }
     }
 

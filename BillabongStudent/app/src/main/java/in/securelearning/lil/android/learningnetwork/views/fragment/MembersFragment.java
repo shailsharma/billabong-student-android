@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.dataobjects.GroupMember;
 import in.securelearning.lil.android.base.dataobjects.Moderator;

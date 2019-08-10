@@ -23,7 +23,7 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.FragmentBlogListItem3Binding;
 import in.securelearning.lil.android.app.databinding.LayoutBlogRecyclerViewBinding;
 import in.securelearning.lil.android.base.constants.SyncStatus;

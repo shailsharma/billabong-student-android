@@ -35,7 +35,6 @@ import in.securelearning.lil.android.base.dataobjects.VideoCourse;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
-import in.securelearning.lil.android.base.views.activity.WebPlayerLiveActivity;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.syncadapter.dataobject.AboutCourseExt;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
@@ -444,15 +443,11 @@ public class LessonPlanFragment extends Fragment {
             holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (GeneralUtils.isNetworkAvailable(getContext())) {
-                        //|| video.getTotalResourceCount().getVideoCourses() > 0 || video.getTotalResourceCount().getVideos() > 0
-                        if (finalObjectClass.equals(VideoCourse.class) || finalObjectClass.equals(InteractiveVideo.class)) {
-                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), video.getObjectId(),video.getMetaInformation().getSubject().getId(),video.getMetaInformation().getTopic().getId(), finalObjectClass, "", false);
-                        } else {
-                            WebPlayerLiveActivity.startWebPlayer(getContext(), video.getObjectId(), video.getMetaInformation().getSubject().getId(),video.getMetaInformation().getTopic().getId(), finalObjectClass, "", false, false);
-                        }
+                    if (GeneralUtils.isNetworkAvailable(mContext)) {
+                        WebPlayerCordovaLiveActivity.startWebPlayer(mContext, video.getObjectId(), video.getMetaInformation().getSubject().getId(), video.getMetaInformation().getTopic().getId(), finalObjectClass, "", false);
+
                     } else {
-                        ToastUtils.showToastAlert(getContext(), getString(R.string.connect_internet));
+                        ToastUtils.showToastAlert(mContext, getString(R.string.connect_internet));
                     }
                 }
             });

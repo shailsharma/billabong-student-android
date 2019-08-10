@@ -37,7 +37,7 @@ public class StudentEffortAdapter extends RecyclerView.Adapter<StudentEffortAdap
     public void onBindViewHolder(@NonNull final StudentEffortAdapter.ViewHolder holder, int position) {
         EffortChartData effortChartData = mList.get(position);
         holder.mBinding.textViewTopicName.setText(effortChartData.getTopic().get(0).getName());
-        holder.mBinding.textViewTopicTime.setText(CommonUtils.getInstance().showSecondAndMinutesAndHours((long) effortChartData.getTotalTimeSpent()));
+        holder.mBinding.textViewTopicTime.setText(CommonUtils.getInstance().convertSecondToHourMinuteSecond((long) effortChartData.getTotalTimeSpent()));
         holder.mBinding.progressBar.setVisibility(View.GONE);
         holder.mBinding.progressBar.setMax((int) effortChartData.getTotalTimeSpent());
         holder.mBinding.progressBar.setProgress((int) effortChartData.getTotalTimeSpent());

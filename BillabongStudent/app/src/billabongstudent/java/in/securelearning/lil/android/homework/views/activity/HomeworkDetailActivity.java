@@ -21,7 +21,6 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
 import in.securelearning.lil.android.app.databinding.LayoutHomeworkDetailBinding;
 import in.securelearning.lil.android.base.constants.AssignmentType;
 import in.securelearning.lil.android.base.dataobjects.AssignedGroup;
@@ -48,10 +47,12 @@ import in.securelearning.lil.android.homework.dataobject.Homework;
 import in.securelearning.lil.android.homework.dataobject.HomeworkSubmitResponse;
 import in.securelearning.lil.android.homework.event.RefreshHomeworkEvent;
 import in.securelearning.lil.android.homework.model.HomeworkModel;
+import in.securelearning.lil.android.player.view.activity.QuizPlayerActivity;
 import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -124,7 +125,7 @@ public class HomeworkDetailActivity extends AppCompatActivity {
                 if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
                     if (isTypeQuiz) {
                         if (!mHomework.isSubmitted()) {
-                            WebPlayerCordovaLiveActivity.startWebPlayer(getBaseContext(), mHomework.getAttachmentId(), ConstantUtil.BLANK, ConstantUtil.BLANK, Quiz.class, ConstantUtil.BLANK, false);
+                            startActivity(QuizPlayerActivity.getStartIntent(getBaseContext(), mHomework.getAttachmentId(), mHomework.getHomeworkId(), getString(R.string.assignment).toLowerCase()));
                         }
 
                     } else if (isTypeCourse) {
@@ -346,7 +347,8 @@ public class HomeworkDetailActivity extends AppCompatActivity {
     private void setAssignmentDuration(Homework assignmentResponse) {
         if (assignmentResponse.getAllowedDuration() > 0) {
             mBinding.layoutAssignmentDuration.setVisibility(View.VISIBLE);
-            setValuesToTextView(mBinding.textviewDuration, DateUtils.getTimeStringFromSeconds(assignmentResponse.getAllowedDuration()));
+            //setValuesToTextView(mBinding.textviewDuration, DateUtils.getTimeStringFromSeconds(assignmentResponse.getAllowedDuration()));
+            setValuesToTextView(mBinding.textviewDuration, assignmentResponse.getAllowedDuration() + " Minutes");
         } else {
             mBinding.layoutAssignmentDuration.setVisibility(View.GONE);
         }

@@ -36,6 +36,10 @@ public class EffortChartData implements Serializable, Comparable<EffortChartData
     @Expose
     private float mTotalTimeSpent;
 
+    @SerializedName("week")
+    @Expose
+    private int weekNo;
+
     @SerializedName("subject")
     @Expose
     private ArrayList<IdNameObject> mSubject;
@@ -100,13 +104,9 @@ public class EffortChartData implements Serializable, Comparable<EffortChartData
         mTopic = topic;
     }
 
-
-//    @Override
-//    public int compare(EffortChartData t1, EffortChartData t2) {
-//        if (t1.getTotalTimeSpent() < t2.getTotalTimeSpent()) return -1;
-//        if (t1.getTotalTimeSpent() > t2.getTotalTimeSpent()) return 1;
-//        return 0;
-//    }
+    public int getWeekNo() {
+        return weekNo;
+    }
 
     @Override
     public int compareTo(@NonNull EffortChartData effortChartData) {

@@ -19,7 +19,6 @@ import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +30,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -42,20 +39,24 @@ import in.securelearning.lil.android.app.databinding.LayoutCourseListItemBinding
 import in.securelearning.lil.android.app.databinding.LayoutMicroCourseListItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutPracticeListItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutSubjectDetailsHomeFragmentBinding;
-import in.securelearning.lil.android.app.databinding.LayoutVideoListItemBinding;
 import in.securelearning.lil.android.base.customchrometabutils.CustomChromeTabHelper;
 import in.securelearning.lil.android.base.dataobjects.MetaInformation;
 import in.securelearning.lil.android.base.dataobjects.MicroLearningCourse;
-import in.securelearning.lil.android.base.dataobjects.Skill;
 import in.securelearning.lil.android.base.dataobjects.Thumbnail;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
+import in.securelearning.lil.android.gamification.dataobject.GamificationEvent;
+import in.securelearning.lil.android.gamification.event.GamificationEventDone;
+import in.securelearning.lil.android.gamification.model.GamificationModel;
+import in.securelearning.lil.android.gamification.utils.GamificationPrefs;
+import in.securelearning.lil.android.gamification.views.fragment.GamificationDialog;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.events.MindSparkNoUnitEvent;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
+import in.securelearning.lil.android.home.views.activity.WikiHowListActivity;
 import in.securelearning.lil.android.mindspark.dataobjects.MindSparkContentDetails;
 import in.securelearning.lil.android.mindspark.dataobjects.MindSparkLoginResponse;
 import in.securelearning.lil.android.mindspark.dataobjects.MindSparkTopicData;
@@ -63,15 +64,21 @@ import in.securelearning.lil.android.mindspark.model.MindSparkModel;
 import in.securelearning.lil.android.mindspark.views.activity.MindSparkAllTopicListActivity;
 import in.securelearning.lil.android.mindspark.views.activity.MindSparkPlayerActivity;
 import in.securelearning.lil.android.player.mindspark.dataobjects.MindSparkUnitData;
-import in.securelearning.lil.android.player.view.activity.PracticeQuestionActivity;
+import in.securelearning.lil.android.player.view.activity.PracticePlayerActivity;
 import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
 import in.securelearning.lil.android.syncadapter.dataobjects.AboutCourseMinimal;
 import in.securelearning.lil.android.syncadapter.dataobjects.LRPARequest;
 import in.securelearning.lil.android.syncadapter.dataobjects.LRPAResult;
+import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
+import in.securelearning.lil.android.syncadapter.dataobjects.WikiHow;
+import in.securelearning.lil.android.syncadapter.dataobjects.WikiHowParent;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 
 /**
@@ -79,40 +86,43 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class SubjectDetailHomeFragment extends Fragment {
 
-    @Inject
-    FlavorHomeModel mFlavorHomeModel;
-
-    @Inject
-    MindSparkModel mMindSparkModel;
-
-    @Inject
-    RxBus mRxBus;
-
-    @Inject
-    AppUserModel mAppUserModel;
-    private Context mContext;
     private static final String TOPIC_ID = "topicId";
+    private static final String SUBJECT_ID = "subjectId";
     private static final String TOPIC_NAME = "topicName";
     private static final String SUBJECT_NAME = "subjectName";
     private static final String GRADE_NAME = "gradeName";
     private static final String THIRD_PARTY_TOPIC_ID_LIST = "thirdPartyTopicIdList";
     private static final String SUBJECT_BANNER_URL = "subjectBannerUrl";
+    @Inject
+    public GamificationDialog mGamificationDialog;
+    @Inject
+    FlavorHomeModel mFlavorHomeModel;
+    @Inject
+    MindSparkModel mMindSparkModel;
+    @Inject
+    RxBus mRxBus;
+    @Inject
+    AppUserModel mAppUserModel;
+    @Inject
+    GamificationModel mGamificationModel;
+    LayoutSubjectDetailsHomeFragmentBinding mBinding;
+    private Context mContext;
     private String mSubjectName;
     private String mGradeName;
     private String mSubjectBannerURL;
     private ArrayList<String> mThirdPartyTopicIds;
-    LayoutSubjectDetailsHomeFragmentBinding mBinding;
-
     private String mTopicName;
+    private String mSubjectId;
 
     public SubjectDetailHomeFragment() {
         // Required empty public constructor
     }
 
 
-    public static SubjectDetailHomeFragment newInstance(String topicId, String topicName, String subjectName, String gradeName, ArrayList<String> thirdPartyTopicIds, String bannerUrl) {
+    public static SubjectDetailHomeFragment newInstance(String subjectId, String topicId, String topicName, String subjectName, String gradeName, ArrayList<String> thirdPartyTopicIds, String bannerUrl) {
         SubjectDetailHomeFragment fragment = new SubjectDetailHomeFragment();
         Bundle args = new Bundle();
+        args.putString(SUBJECT_ID, subjectId);
         args.putString(TOPIC_ID, topicId);
         args.putString(TOPIC_NAME, topicName);
         args.putString(SUBJECT_NAME, subjectName);
@@ -132,6 +142,8 @@ public class SubjectDetailHomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_subject_details_home_fragment, container, false);
+
+        listenRxBusEvents();
         return mBinding.getRoot();
     }
 
@@ -149,16 +161,17 @@ public class SubjectDetailHomeFragment extends Fragment {
 
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
         getBundleData();
-
     }
 
     private void getBundleData() {
         if (getArguments() != null) {
             String topicId = getArguments().getString(TOPIC_ID);
+            mSubjectId = getArguments().getString(SUBJECT_ID);
             mTopicName = getArguments().getString(TOPIC_NAME);
             mSubjectName = getArguments().getString(SUBJECT_NAME);
             mGradeName = getArguments().getString(GRADE_NAME);
@@ -242,156 +255,6 @@ public class SubjectDetailHomeFragment extends Fragment {
                 });
     }
 
-    /*To fetch practice if subject is maths then from mind spark
-     * else from LIL*/
-    /*TODO hard coded logic for subject check, remove when dynamically done*/
-//    private void checkSubject(String topicId) {
-    //fetchPracticeList(topicId);
-
-//        if (mSubjectName.contains("Math")) {
-    // fetchMindSparkData(mThirdPartyTopicIds, topicId);
-    //       }
-//        else if (mSubjectName.contains("Eng")) {
-//            /*TODO hard coded logic, remove when dynamically done*/
-//            if (mGradeName.equals("PG") || mGradeName.equals("EuroJunior") || mGradeName.equals("EuroSenior")
-//                    || mGradeName.equals("Nursery") || mGradeName.equals("I")
-//                    || mGradeName.equals("II") || mGradeName.equals("III")) {
-//                //displayFreadomCard();
-//                fetchPracticeList(topicId);
-//            } else {
-//                displayLightSailCard();
-//            }
-//            fetchApplyList(topicId);
-//        }
-//        else {
-//            fetchPracticeList(topicId);
-//        }
-//    }
-
-    /*Check whether thirdPartyTopicId null or empty*/
-//    private ArrayList<AboutCourseMinimal> fetchMindSparkData(ArrayList<String> thirdPartyTopicIds, String topicId) {
-//        if (thirdPartyTopicIds != null && !thirdPartyTopicIds.isEmpty()) {
-//            return fetchMindSparkPractice(list, thirdPartyTopicIds, topicId);
-//        } else {
-//            return new ArrayList<>();
-//        }
-//        else {
-//            mBinding.progressBarPractice.setVisibility(View.GONE);
-//            mBinding.textViewNoDataPractice.setVisibility(View.VISIBLE);
-//            fetchApplyList(topicId);
-//        }
-//    }
-
-    /*Display Light Sail card if subject is English*/
-    private void displayLightSailCard() {
-        mBinding.progressBarPractice.setVisibility(View.GONE);
-        mBinding.cardViewPractice.setVisibility(View.VISIBLE);
-        Picasso.with(mContext).load(R.drawable.logo_lightsail).placeholder(R.drawable.image_placeholder).into(mBinding.imageViewPractice);
-        mBinding.cardViewPractice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (GeneralUtils.isNetworkAvailable(mContext)) {
-                    String jwt = AppPrefs.getIdToken(mContext);
-                    CustomChromeTabHelper.loadCustomDataUsingColorResource(mContext, mContext.getString(R.string.base_url_lightsail) + jwt, R.color.colorPrimary);
-                    Log.e("LightSail---", mContext.getString(R.string.base_url_lightsail) + jwt);
-                } else {
-                    Toast.makeText(mContext, getString(R.string.connect_internet), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    /*Display Freadom card if subject is English*/
-    private void displayFreadomCard() {
-        mBinding.progressBarPractice.setVisibility(View.GONE);
-        mBinding.cardViewPractice.setVisibility(View.VISIBLE);
-        Picasso.with(mContext).load(R.drawable.logo_freadom).placeholder(R.drawable.image_placeholder).into(mBinding.imageViewPractice);
-        mBinding.imageViewPractice.setColorFilter(R.color.colorPrimary);
-
-        mBinding.cardViewPractice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (GeneralUtils.isNetworkAvailable(mContext)) {
-                    String jwt = AppPrefs.getIdToken(mContext);
-                    String email = mAppUserModel.getApplicationUser().getEmail();
-                    CustomChromeTabHelper.loadCustomDataUsingColorResource(mContext, mContext.getString(R.string.freadom_url) + "?email=" + email + "&token=" + jwt, R.color.colorPrimary);
-                    Log.e("Freadom---", mContext.getString(R.string.freadom_url) + "?email=" + email + "&token=" + jwt);
-                } else {
-                    Toast.makeText(mContext, getString(R.string.connect_internet), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    /*Display MindSpark card if subject is Maths*/
-    private void displayMindSparkCard(MindSparkLoginResponse response) {
-        mBinding.layoutMindSparkPractice.getRoot().setVisibility(View.VISIBLE);
-        mBinding.buttonMorePractice.setVisibility(View.VISIBLE);
-        mBinding.imageViewMindSparkLogo.setVisibility(View.VISIBLE);
-        Picasso.with(mContext).load(R.drawable.background_thumb_mind_spark).placeholder(R.drawable.image_placeholder).into(mBinding.layoutMindSparkPractice.imageViewBackground);
-
-        final MindSparkContentDetails mindSparkContentDetails = response.getMindSparkContentDetails();
-        MindSparkTopicData mindSparkTopicData = response.getMindSparkTopicData();
-        if (mindSparkTopicData.getMindSparkUnitList() != null && mindSparkTopicData.getMindSparkUnitList().size() > 0) {
-            MindSparkUnitData mindSparkUnitData = mindSparkTopicData.getMindSparkUnitList().get(0);
-            mBinding.layoutMindSparkPractice.textViewSubTitle.setText(mindSparkUnitData.getUnitName());
-
-        }
-        String value;
-        if (mindSparkContentDetails.getUnitsCleared() > 1) {
-            value = mindSparkContentDetails.getUnitsCleared() + " out of " + mindSparkContentDetails.getUnitsOverall() + " units covered";
-        } else {
-            value = mindSparkContentDetails.getUnitsCleared() + " out of " + mindSparkContentDetails.getUnitsOverall() + " unit covered";
-        }
-        mBinding.layoutMindSparkPractice.textViewStatus.setText(value);
-        mBinding.layoutMindSparkPractice.textViewTitle.setText(mindSparkContentDetails.getContentName());
-        mBinding.layoutMindSparkPractice.textViewRewardPoints.setVisibility(View.GONE);
-
-        mBinding.layoutMindSparkPractice.getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (GeneralUtils.isNetworkAvailable(mContext)) {
-                    if (mindSparkContentDetails.getUnitsOverall() > 0) {
-                        startActivity(MindSparkPlayerActivity.getStartIntent(mContext, mindSparkContentDetails.getContentId(), mindSparkContentDetails.getContentName()));
-                    } else {
-                        mRxBus.send(new MindSparkNoUnitEvent());
-                    }
-                }
-            }
-        });
-
-        mBinding.buttonMorePractice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(MindSparkAllTopicListActivity.getStartIntent(getContext()));
-
-            }
-        });
-    }
-
-    /*Display Practice card if subject is English*/
-    private void displayPracticeCard(final ArrayList<String> skillIds, final MetaInformation metaInformation) {
-        mBinding.layoutPractice.getRoot().setVisibility(View.VISIBLE);
-        if (!TextUtils.isEmpty(mSubjectBannerURL)) {
-            Picasso.with(mContext).load(mSubjectBannerURL).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(mBinding.layoutPractice.imageViewBackground);
-        } else {
-            Picasso.with(mContext).load(R.drawable.background_thumb_mind_spark).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(mBinding.layoutPractice.imageViewBackground);
-        }
-        mBinding.layoutPractice.textViewTitle.setText(mTopicName);
-        mBinding.layoutPractice.getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (GeneralUtils.isNetworkAvailable(mContext)) {
-
-                    String subjectId = getSubjectId(metaInformation);
-                    String topicId = getTopicId(metaInformation);
-                    startActivity(PracticeQuestionActivity.getStartIntent(mContext, mTopicName, skillIds, subjectId, topicId));
-                } else {
-                    Toast.makeText(getContext(), getString(R.string.connect_internet), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
 
     @SuppressLint("CheckResult")
     private void fetchPracticeList(final String topicId) {
@@ -434,6 +297,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                                 }
 
                                 /*Create a single object of practice and insert into array at 0*/
+
                                 if (isPractice && !isMathOrEnglish) {
 
                                     AboutCourseMinimal aboutCourseMinimal = new AboutCourseMinimal();
@@ -456,6 +320,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                                 } else {
                                     if (mSubjectName.contains("Eng")) {
                                         if (mGradeName.equals("PG") || mGradeName.equals("EuroJunior") || mGradeName.equals("EuroSenior")
+                                                || mGradeName.equals("EJ") || mGradeName.equals("ES")
                                                 || mGradeName.equals("Nursery") || mGradeName.equals("I")
                                                 || mGradeName.equals("II") || mGradeName.equals("III")) {
 
@@ -471,6 +336,9 @@ public class SubjectDetailHomeFragment extends Fragment {
 
                                     } else if (mSubjectName.contains("Math")) {
                                         fetchMindSparkPractice(list, mThirdPartyTopicIds, topicId);
+                                    } else {
+                                        mBinding.listPractice.setVisibility(View.GONE);
+                                        mBinding.textViewNoDataPractice.setVisibility(View.VISIBLE);
                                     }
                                 }
 
@@ -541,7 +409,7 @@ public class SubjectDetailHomeFragment extends Fragment {
     }
 
     @SuppressLint("CheckResult")
-    private void fetchApplyList(String topicId) {
+    private void fetchApplyList(final String topicId) {
         mBinding.listApply.setVisibility(View.GONE);
         mBinding.progressBarApply.setVisibility(View.VISIBLE);
         mBinding.textViewNoDataApply.setVisibility(View.GONE);
@@ -551,14 +419,19 @@ public class SubjectDetailHomeFragment extends Fragment {
                 .subscribe(new Consumer<LRPAResult>() {
                     @Override
                     public void accept(LRPAResult lrpaResult) throws Exception {
-                        mBinding.progressBarApply.setVisibility(View.GONE);
-                        if (lrpaResult != null && lrpaResult.getResults() != null && !lrpaResult.getResults().isEmpty()) {
-                            mBinding.listApply.setVisibility(View.VISIBLE);
-                            mBinding.textViewNoDataApply.setVisibility(View.GONE);
-                            initializeRecyclerViewApply(lrpaResult.getResults());
+                        //mBinding.progressBarApply.setVisibility(View.GONE);
+
+                        if (lrpaResult != null && lrpaResult.getResults() != null
+                                && !lrpaResult.getResults().isEmpty()) {
+
+                            fetchWikiHowMapping(mSubjectId, topicId, lrpaResult.getResults());
+//                            mBinding.listApply.setVisibility(View.VISIBLE);
+//                            mBinding.textViewNoDataApply.setVisibility(View.GONE);
+//                            initializeRecyclerViewApply(lrpaResult.getResults());
                         } else {
-                            mBinding.listApply.setVisibility(View.GONE);
-                            mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
+                            fetchWikiHowMapping(mSubjectId, topicId, new ArrayList<AboutCourseMinimal>());
+//                            mBinding.listApply.setVisibility(View.GONE);
+//                            mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
 
                         }
                     }
@@ -566,10 +439,134 @@ public class SubjectDetailHomeFragment extends Fragment {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         throwable.printStackTrace();
-                        mBinding.listApply.setVisibility(View.GONE);
+                        fetchWikiHowMapping(mSubjectId, topicId, new ArrayList<AboutCourseMinimal>());
+
+//                        mBinding.listApply.setVisibility(View.GONE);
+//                        mBinding.progressBarApply.setVisibility(View.GONE);
+//                        mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
+//                        mBinding.textViewNoDataApply.setText(throwable.getMessage());
+                    }
+                });
+    }
+
+    @SuppressLint("CheckResult")
+    private void fetchWikiHowMapping(String subjectId, String topicId, final ArrayList<AboutCourseMinimal> applyList) {
+        mFlavorHomeModel.fetchThirdPartyMapping(new ThirdPartyMapping(subjectId, topicId, getString(R.string.type_wikihow)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ArrayList<String>>() {
+                    @Override
+                    public void accept(ArrayList<String> strings) throws Exception {
+                        if (strings != null && !strings.isEmpty()) {
+                            fetchWikiHowCardDetail(strings.get(0), strings, applyList);
+                        } else {
+                            mBinding.progressBarApply.setVisibility(View.GONE);
+                            if (applyList != null && !applyList.isEmpty()) {
+                                mBinding.listApply.setVisibility(View.VISIBLE);
+                                mBinding.textViewNoDataApply.setVisibility(View.GONE);
+                                initializeRecyclerViewApply(applyList);
+                            } else {
+                                mBinding.listApply.setVisibility(View.GONE);
+                                mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
                         mBinding.progressBarApply.setVisibility(View.GONE);
-                        mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
-                        mBinding.textViewNoDataApply.setText(throwable.getMessage());
+                        if (applyList != null && !applyList.isEmpty()) {
+                            mBinding.listApply.setVisibility(View.VISIBLE);
+                            mBinding.textViewNoDataApply.setVisibility(View.GONE);
+                            initializeRecyclerViewApply(applyList);
+                        } else {
+                            mBinding.listApply.setVisibility(View.GONE);
+                            mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+    }
+
+    @SuppressLint("CheckResult")
+    private void fetchWikiHowCardDetail(String wikiHowId, final ArrayList<String> wikiHowTopicIds, final ArrayList<AboutCourseMinimal> applyList) {
+        mFlavorHomeModel.fetchWikiHowCardDetail(wikiHowId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<WikiHowParent>() {
+                    @Override
+                    public void accept(WikiHowParent wikiHowParent) throws Exception {
+                        mBinding.progressBarApply.setVisibility(View.GONE);
+
+                        if (wikiHowParent != null && wikiHowParent.getWikiHow() != null) {
+                            WikiHow wikiHow = wikiHowParent.getWikiHow();
+                            AboutCourseMinimal aboutCourseMinimal = new AboutCourseMinimal();
+                            aboutCourseMinimal.setTitle(wikiHow.getTitle());
+                            aboutCourseMinimal.setId(wikiHow.getId());
+                            aboutCourseMinimal.setCourseType(mContext.getString(R.string.label_wikiHow));
+                            if (wikiHow.getThumbnail() != null) {
+                                Thumbnail thumbnail = new Thumbnail();
+                                if (!TextUtils.isEmpty(wikiHow.getThumbnail().getThumb())) {
+                                    thumbnail.setUrl(wikiHow.getThumbnail().getThumb());
+                                }
+                                if (!TextUtils.isEmpty(wikiHow.getThumbnail().getThumbLarge())) {
+                                    thumbnail.setThumb(wikiHow.getThumbnail().getThumbLarge());
+
+                                }
+                                aboutCourseMinimal.setThumbnail(thumbnail);
+
+                            }
+
+                            applyList.add(0, aboutCourseMinimal);
+
+                            if (wikiHowTopicIds.size() > 1) {
+                                mBinding.imageViewWikiHowLogo.setVisibility(View.VISIBLE);
+                                mBinding.buttonMoreApply.setVisibility(View.VISIBLE);
+                            }
+
+                            mBinding.buttonMoreApply.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    if (GeneralUtils.isNetworkAvailable(mContext)) {
+
+                                        startActivity(WikiHowListActivity.getStartIntent(mContext, mTopicName, wikiHowTopicIds));
+                                    } else {
+                                        GeneralUtils.showToastShort(mContext, getString(R.string.connect_internet));
+                                    }
+                                }
+                            });
+
+                            if (!applyList.isEmpty()) {
+                                mBinding.listApply.setVisibility(View.VISIBLE);
+                                mBinding.textViewNoDataApply.setVisibility(View.GONE);
+                                initializeRecyclerViewApply(applyList);
+                            } else {
+                                mBinding.listApply.setVisibility(View.GONE);
+                                mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            if (!applyList.isEmpty()) {
+                                mBinding.listApply.setVisibility(View.VISIBLE);
+                                mBinding.textViewNoDataApply.setVisibility(View.GONE);
+                                initializeRecyclerViewApply(applyList);
+                            } else {
+                                mBinding.listApply.setVisibility(View.GONE);
+                                mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                        if (!applyList.isEmpty()) {
+                            mBinding.listApply.setVisibility(View.VISIBLE);
+                            mBinding.textViewNoDataApply.setVisibility(View.GONE);
+                            initializeRecyclerViewApply(applyList);
+                        } else {
+                            mBinding.listApply.setVisibility(View.GONE);
+                            mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
+                        }
                     }
                 });
     }
@@ -656,6 +653,9 @@ public class SubjectDetailHomeFragment extends Fragment {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
+                            mBinding.progressBarPractice.setVisibility(View.GONE);
+                            mBinding.listPractice.setVisibility(View.GONE);
+                            mBinding.textViewNoDataPractice.setVisibility(View.VISIBLE);
                         }
                     });
         } else {
@@ -707,24 +707,6 @@ public class SubjectDetailHomeFragment extends Fragment {
 
     }
 
-    private ArrayList<String> getSkillIds(List<Skill> skillIdList) {
-        if (skillIdList != null) {
-            ArrayList<String> skillIds = new ArrayList<>();
-            if (!skillIdList.isEmpty()) {
-                for (int i = 0; i < skillIdList.size(); i++) {
-                    skillIds.add(skillIdList.get(i).getId());
-                }
-                return skillIds;
-            } else {
-                return null;
-            }
-
-        } else {
-            return null;
-
-        }
-    }
-
     /*get subjectId from course metaInformation*/
     private String getSubjectId(MetaInformation metaInformation) {
 
@@ -745,6 +727,107 @@ public class SubjectDetailHomeFragment extends Fragment {
             return null;
         }
 
+    }
+
+    private void setCoverage(float coverage, String colorCode, ProgressBar progressBar) {
+        if (coverage > 0) {
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setProgress((int) coverage);
+            progressBar.setProgressTintList(ColorStateList.valueOf((Color.parseColor(colorCode))));
+        } else {
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void setRewardPoint(int totalMarks, float coverage, String colorCode, LinearLayoutCompat layoutReward, AppCompatTextView textViewRewardPoints, AppCompatTextView viewCourseStatus) {
+        if (totalMarks > 0) {
+            layoutReward.setVisibility(View.VISIBLE);
+            textViewRewardPoints.setText(String.valueOf(totalMarks));
+            viewCourseStatus.setVisibility(View.VISIBLE);
+
+            if (coverage > 0) {
+                Drawable unwrappedDrawable = AppCompatResources.getDrawable(mContext, R.drawable.circle_solid_primary);
+                assert unwrappedDrawable != null;
+                Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
+                DrawableCompat.setTint(wrappedDrawable, Color.parseColor(colorCode));
+
+                viewCourseStatus.setBackgroundDrawable(unwrappedDrawable);
+            } else {
+                viewCourseStatus.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.circle_solid_primary_outlined));
+
+            }
+        } else {
+            layoutReward.setVisibility(View.GONE);
+        }
+    }
+
+    private void openPracticeActivity(AboutCourseMinimal course) {
+        if (course != null && !TextUtils.isEmpty(course.getCourseType()) && mContext != null) {
+
+            if (course.getCourseType().equals(mContext.getString(R.string.freadom))) {
+                String jwt = AppPrefs.getIdToken(mContext);
+                String email = mAppUserModel.getApplicationUser().getEmail();
+
+                try {
+                    CustomChromeTabHelper.loadCustomDataUsingColorResource(mContext, mContext.getString(R.string.freadom_url) + "?email=" + email + "&token=" + jwt, R.color.colorPrimary);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    GeneralUtils.showToastLong(mContext, getString(R.string.chrome_warning_message));
+                }
+
+            } else if (course.getCourseType().equals(mContext.getString(R.string.lightsail))) {
+
+                String jwt = AppPrefs.getIdToken(mContext);
+
+                try {
+                    CustomChromeTabHelper.loadCustomDataUsingColorResource(mContext, mContext.getString(R.string.base_url_lightsail) + jwt, R.color.colorPrimary);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    GeneralUtils.showToastLong(mContext, getString(R.string.chrome_warning_message));
+                }
+
+            } else if (course.getCourseType().equals(mContext.getString(R.string.mindspark))) {
+                if (course.getTotalMarks() > 0) {
+                    startActivity(MindSparkPlayerActivity.getStartIntent(mContext, course.getId(), course.getTitle()));
+                } else {
+                    mRxBus.send(new MindSparkNoUnitEvent());
+                }
+            } else if (course.getCourseType().equals(mContext.getString(R.string.labelPractice).toLowerCase())) {
+                String subjectId = getSubjectId(course.getMetaInformation());
+                String topicId = getTopicId(course.getMetaInformation());
+
+                startActivity(PracticePlayerActivity.getStartIntent(mContext, course.getTitle(), subjectId, topicId));
+            } else {
+                final Class finalObjectClass = mFlavorHomeModel.getCourseClass(course);
+                WebPlayerCordovaLiveActivity.startWebPlayer(mContext, course.getId(), ConstantUtil.BLANK, ConstantUtil.BLANK, finalObjectClass, ConstantUtil.BLANK, false);
+            }
+        }
+
+    }
+
+
+    private void listenRxBusEvents() {
+        Disposable subscription = mRxBus.toFlowable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Object>() {
+            @Override
+            public void accept(Object event) {
+                if (event instanceof GamificationEventDone) {
+                    GamificationEventDone gamificationEventDone = (GamificationEventDone) event;
+                    if (gamificationEventDone.getEventActivity().
+                            equalsIgnoreCase("LRPA") &&
+                            gamificationEventDone.getSubActivity().equalsIgnoreCase("practise")
+                            && gamificationEventDone.isDone()) {
+                        if (GamificationPrefs.getPractiseObject(mContext) != null) {
+                            AboutCourseMinimal courseMinimal = GamificationPrefs.getPractiseObject(mContext);
+                            openPracticeActivity(courseMinimal);
+                        }
+                        if (mContext != null) {
+                            GamificationPrefs.clearPractiseObject(mContext);
+                        }
+
+                    }
+                }
+            }
+        });
     }
 
     /*Adapter*/
@@ -793,15 +876,22 @@ public class SubjectDetailHomeFragment extends Fragment {
 
         private void setThumbnail(Thumbnail thumbnail, ImageView imageView) {
             if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getLocalUrl())) {
-                Picasso.with(mContext).load(thumbnail.getLocalUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+
+                Picasso.with(mContext)
+                        .load(thumbnail.getLocalUrl())
+                        .placeholder(R.drawable.image_placeholder)
+                        .transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL))
+                        .fit().centerCrop()
+                        .into(imageView);
+
             } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
-                Picasso.with(mContext).load(thumbnail.getUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(thumbnail.getUrl()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumb())) {
-                Picasso.with(mContext).load(thumbnail.getThumb()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(thumbnail.getThumb()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumbXL())) {
-                Picasso.with(mContext).load(thumbnail.getThumbXL()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(thumbnail.getThumbXL()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             } else {
-                Picasso.with(mContext).load(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             }
 
         }
@@ -833,7 +923,7 @@ public class SubjectDetailHomeFragment extends Fragment {
         @NonNull
         @Override
         public ReinforceAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutVideoListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_video_list_item, parent, false);
+            LayoutCourseListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_course_list_item, parent, false);
             return new ReinforceAdapter.ViewHolder(binding);
         }
 
@@ -868,15 +958,15 @@ public class SubjectDetailHomeFragment extends Fragment {
 
         private void setThumbnail(Thumbnail thumbnail, ImageView imageView) {
             if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getLocalUrl())) {
-                Picasso.with(mContext).load(thumbnail.getLocalUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(thumbnail.getLocalUrl()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
-                Picasso.with(mContext).load(thumbnail.getUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(thumbnail.getUrl()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumb())) {
-                Picasso.with(mContext).load(thumbnail.getThumb()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(thumbnail.getThumb()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumbXL())) {
-                Picasso.with(mContext).load(thumbnail.getThumbXL()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(thumbnail.getThumbXL()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             } else {
-                Picasso.with(mContext).load(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             }
 
         }
@@ -888,44 +978,12 @@ public class SubjectDetailHomeFragment extends Fragment {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            LayoutVideoListItemBinding mBinding;
+            LayoutCourseListItemBinding mBinding;
 
-            public ViewHolder(LayoutVideoListItemBinding binding) {
+            public ViewHolder(LayoutCourseListItemBinding binding) {
                 super(binding.getRoot());
                 mBinding = binding;
             }
-        }
-    }
-
-    private void setCoverage(float coverage, String colorCode, ProgressBar progressBar) {
-        if (coverage > 0) {
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.setProgress((int) coverage);
-            progressBar.setProgressTintList(ColorStateList.valueOf((Color.parseColor(colorCode))));
-        } else {
-            progressBar.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void setRewardPoint(int totalMarks, float coverage, String colorCode, LinearLayoutCompat layoutReward, AppCompatTextView textViewRewardPoints, AppCompatTextView viewCourseStatus) {
-        if (totalMarks > 0) {
-            layoutReward.setVisibility(View.VISIBLE);
-            textViewRewardPoints.setText(String.valueOf(totalMarks));
-            viewCourseStatus.setVisibility(View.VISIBLE);
-
-            if (coverage > 0) {
-                Drawable unwrappedDrawable = AppCompatResources.getDrawable(mContext, R.drawable.circle_solid_primary);
-                assert unwrappedDrawable != null;
-                Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
-                DrawableCompat.setTint(wrappedDrawable, Color.parseColor(colorCode));
-
-                viewCourseStatus.setBackgroundDrawable(unwrappedDrawable);
-            } else {
-                viewCourseStatus.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.circle_solid_primary_outlined));
-
-            }
-        } else {
-            layoutReward.setVisibility(View.GONE);
         }
     }
 
@@ -948,6 +1006,7 @@ public class SubjectDetailHomeFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull final PracticeAdapter.ViewHolder holder, int position) {
             final AboutCourseMinimal course = mList.get(position);
+
             holder.mBinding.textViewTitle.setText(course.getTitle());
 
             setThumbnail(course.getCourseType(), course.getThumbnail(), holder.mBinding.imageViewBackground);
@@ -957,36 +1016,43 @@ public class SubjectDetailHomeFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     if (GeneralUtils.isNetworkAvailable(mContext)) {
-                        if (course.getCourseType().equals(mContext.getString(R.string.freadom))) {
-                            String jwt = AppPrefs.getIdToken(mContext);
-                            String email = mAppUserModel.getApplicationUser().getEmail();
-                            CustomChromeTabHelper.loadCustomDataUsingColorResource(mContext, mContext.getString(R.string.freadom_url) + "?email=" + email + "&token=" + jwt, R.color.colorPrimary);
-                            Log.e("Freadom---", mContext.getString(R.string.freadom_url) + "?email=" + email + "&token=" + jwt);
-                        } else if (course.getCourseType().equals(mContext.getString(R.string.lightsail))) {
-                            String jwt = AppPrefs.getIdToken(mContext);
-                            CustomChromeTabHelper.loadCustomDataUsingColorResource(mContext, mContext.getString(R.string.base_url_lightsail) + jwt, R.color.colorPrimary);
-                            Log.e("LightSail---", mContext.getString(R.string.base_url_lightsail) + jwt);
-                        } else if (course.getCourseType().equals(mContext.getString(R.string.mindspark))) {
-                            if (course.getTotalMarks() > 0) {
-                                startActivity(MindSparkPlayerActivity.getStartIntent(mContext, course.getId(), course.getTitle()));
+                        try {
+                            if (!TextUtils.isEmpty(mSubjectName)
+                                    && !mSubjectName.contains("Eng")
+                                    && !TextUtils.isEmpty(course.getCourseType())
+                                    && !course.getCourseType().equals(mContext.getString(R.string.labelWorksheet).toLowerCase())) {
+                                ArrayList<GamificationEvent> eventList = mGamificationModel.getGamificationEvent();
+                                if (eventList != null && !eventList.isEmpty()) {
+                                    if (eventList.size() > 4) {
+                                        GamificationEvent mGamificationPracticeEvent = eventList.get(4);
+                                        if (mGamificationPracticeEvent != null
+                                                && mGamificationPracticeEvent.getActivity().equalsIgnoreCase("LRPA")
+                                                && mGamificationPracticeEvent.getSubActivity().equalsIgnoreCase("practise")) {
+                                            if (mGamificationPracticeEvent.getEventOccurrenceDate() == null && !mGamificationPracticeEvent.isGamingEventDone()) {
+                                                GamificationPrefs.savePractiseObject(mContext, course);
+                                                mGamificationDialog.display(getFragmentManager(), mContext, mGamificationPracticeEvent.getMessage(), mGamificationPracticeEvent);
+                                            } else if (CommonUtils.getInstance().checkEventOccurrence(mGamificationPracticeEvent.getFrequency(), mGamificationPracticeEvent.getFrequencyUnit(), mGamificationPracticeEvent.getEventOccurrenceDate())) {
+                                                GamificationPrefs.savePractiseObject(mContext, course);
+                                                mGamificationDialog.display(getFragmentManager(), mContext, mGamificationPracticeEvent.getMessage(), mGamificationPracticeEvent);
+                                            } else {
+                                                openPracticeActivity(course);
+                                            }
+                                        } else {
+                                            openPracticeActivity(course);
+                                        }
+                                    } else {
+                                        openPracticeActivity(course);
+                                    }
+                                } else {
+                                    openPracticeActivity(course);
+                                }
                             } else {
-                                mRxBus.send(new MindSparkNoUnitEvent());
+                                openPracticeActivity(course);
                             }
-                        } else if (course.getCourseType().equals(mContext.getString(R.string.labelPractice).toLowerCase())) {
-                            String subjectId = getSubjectId(course.getMetaInformation());
-                            String topicId = getTopicId(course.getMetaInformation());
-                            ArrayList<String> skillIds = getSkillIds(course.getMetaInformation().getSkills());
-
-                            /*removing duplicate entries if any*/
-                            HashSet<String> hashSet = new HashSet<String>(skillIds);
-                            skillIds.clear();
-                            skillIds.addAll(hashSet);
-
-                            startActivity(PracticeQuestionActivity.getStartIntent(mContext, course.getTitle(), skillIds, subjectId, topicId));
-                        } else {
-                            final Class finalObjectClass = mFlavorHomeModel.getCourseClass(course);
-                            WebPlayerCordovaLiveActivity.startWebPlayer(mContext, course.getId(), ConstantUtil.BLANK, ConstantUtil.BLANK, finalObjectClass, ConstantUtil.BLANK, false);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+
                     } else {
                         GeneralUtils.showToastShort(mContext, getString(R.string.connect_internet));
                     }
@@ -996,20 +1062,14 @@ public class SubjectDetailHomeFragment extends Fragment {
         }
 
         private void setCourseType(String courseType, String mindSparkUnitValue, RelativeLayout layoutTextContents, AppCompatTextView textView) {
-            if (courseType.equals(mContext.getString(R.string.freadom)) || courseType.equals(mContext.getString(R.string.lightsail))) {
-                layoutTextContents.setVisibility(View.GONE);
-            } else if (courseType.equals(mContext.getString(R.string.labelPractice).toLowerCase())) {
+            if (courseType.equals(mContext.getString(R.string.labelPractice).toLowerCase())) {
                 textView.setText(mContext.getString(R.string.labelPractice));
-                layoutTextContents.setVisibility(View.VISIBLE);
             } else if (courseType.equals(mContext.getString(R.string.labelWorksheet).toLowerCase())) {
                 textView.setText(mContext.getString(R.string.labelWorksheet));
-                layoutTextContents.setVisibility(View.VISIBLE);
             } else if (courseType.equals(mContext.getString(R.string.mindspark))) {
                 textView.setText(mindSparkUnitValue);
-                layoutTextContents.setVisibility(View.VISIBLE);
             } else {
-                layoutTextContents.setVisibility(View.GONE);
-
+                textView.setText(ConstantUtil.BLANK);
             }
 
         }
@@ -1017,21 +1077,30 @@ public class SubjectDetailHomeFragment extends Fragment {
         private void setThumbnail(String courseType, Thumbnail thumbnail, ImageView imageView) {
             if (courseType.equals(mContext.getString(R.string.freadom))) {
                 imageView.setColorFilter(R.color.colorPrimary);
-                Picasso.with(mContext).load(R.drawable.logo_freadom).placeholder(R.drawable.image_placeholder).into(imageView);
+                Picasso.with(mContext).load(R.drawable.logo_freadom).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(18, 8, RoundedCornersTransformation.CornerType.ALL)).into(imageView);
             } else if (courseType.equals(mContext.getString(R.string.lightsail))) {
-                Picasso.with(mContext).load(R.drawable.logo_lightsail).placeholder(R.drawable.image_placeholder).into(imageView);
+                Picasso.with(mContext).load(R.drawable.logo_lightsail).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(18, 8, RoundedCornersTransformation.CornerType.ALL)).into(imageView);
             } else if (courseType.equals(mContext.getString(R.string.mindspark))) {
-                Picasso.with(mContext).load(R.drawable.background_thumb_mind_spark).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getLocalUrl())) {
-                Picasso.with(mContext).load(thumbnail.getLocalUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
-                Picasso.with(mContext).load(thumbnail.getUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(R.drawable.background_thumb_mind_spark).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
+            } else if (courseType.equals(mContext.getString(R.string.labelWorksheet).toLowerCase())) {
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumbXL())) {
+                    Picasso.with(mContext).load(thumbnail.getThumbXL()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).into(imageView);
+                } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumb())) {
+                    Picasso.with(mContext).load(thumbnail.getThumb()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).into(imageView);
+                } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
+                    Picasso.with(mContext).load(thumbnail.getUrl()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).into(imageView);
+                } else {
+                    Picasso.with(mContext).load(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
+                }
             } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumb())) {
-                Picasso.with(mContext).load(thumbnail.getThumb()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(thumbnail.getThumb()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumbXL())) {
-                Picasso.with(mContext).load(thumbnail.getThumbXL()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(thumbnail.getThumbXL()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
+            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
+                Picasso.with(mContext).load(thumbnail.getUrl()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             } else {
-                Picasso.with(mContext).load(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             }
 
         }
@@ -1139,7 +1208,7 @@ public class SubjectDetailHomeFragment extends Fragment {
         @NonNull
         @Override
         public ApplyAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutVideoListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_video_list_item, parent, false);
+            LayoutCourseListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_course_list_item, parent, false);
             return new ApplyAdapter.ViewHolder(binding);
         }
 
@@ -1150,9 +1219,8 @@ public class SubjectDetailHomeFragment extends Fragment {
             setThumbnail(course.getThumbnail(), holder.mBinding.imageViewBackground);
             setRewardPoint(course.getTotalMarks(), course.getCoverage(), course.getColorCode(), holder.mBinding.layoutReward, holder.mBinding.textViewRewardPoints, holder.mBinding.viewCourseStatus);
 
-            //setCoverage(course.getCoverage(), course.getColorCode(), holder.mBinding.progressBar);
             holder.mBinding.textViewTitle.setText(course.getTitle());
-            holder.mBinding.textViewType.setText(mFlavorHomeModel.getCourseType(course));
+            setCourseType(holder.mBinding.textViewType, course);
 
             final Class finalObjectClass = mFlavorHomeModel.getCourseClass(course);
             holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
@@ -1161,8 +1229,10 @@ public class SubjectDetailHomeFragment extends Fragment {
                     if (!TextUtils.isEmpty(course.getId())) {
                         if (finalObjectClass.equals(MicroLearningCourse.class)) {
                             mContext.startActivity(RapidLearningSectionListActivity.getStartIntent(mContext, course.getId()));
+                        } else if (!TextUtils.isEmpty(course.getCourseType()) && course.getCourseType().equals(mContext.getString(R.string.label_wikiHow))) {
+                            WebPlayerCordovaLiveActivity.startWebPlayerForWikiHow(mContext, course.getId());
                         } else {
-                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
+                            WebPlayerCordovaLiveActivity.startWebPlayer(mContext, course.getId(), "", "", finalObjectClass, "", false);
 
                         }
                     } else {
@@ -1173,18 +1243,26 @@ public class SubjectDetailHomeFragment extends Fragment {
             });
         }
 
+        private void setCourseType(AppCompatTextView textView, AboutCourseMinimal course) {
+            if (!TextUtils.isEmpty(course.getCourseType()) && course.getCourseType().equals(mContext.getString(R.string.label_wikiHow))) {
+                textView.setText(course.getCourseType());
+            } else {
+                textView.setText(mFlavorHomeModel.getCourseType(course));
+            }
+        }
+
 
         private void setThumbnail(Thumbnail thumbnail, ImageView imageView) {
             if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getLocalUrl())) {
-                Picasso.with(mContext).load(thumbnail.getLocalUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(thumbnail.getLocalUrl()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
-                Picasso.with(mContext).load(thumbnail.getUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(thumbnail.getUrl()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumb())) {
-                Picasso.with(mContext).load(thumbnail.getThumb()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(thumbnail.getThumb()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumbXL())) {
-                Picasso.with(mContext).load(thumbnail.getThumbXL()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(thumbnail.getThumbXL()).placeholder(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             } else {
-                Picasso.with(mContext).load(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
+                Picasso.with(mContext).load(R.drawable.image_placeholder).transform(new RoundedCornersTransformation(36, 8, RoundedCornersTransformation.CornerType.ALL)).fit().centerCrop().into(imageView);
             }
 
         }
@@ -1195,13 +1273,20 @@ public class SubjectDetailHomeFragment extends Fragment {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            LayoutVideoListItemBinding mBinding;
+            LayoutCourseListItemBinding mBinding;
 
-            ViewHolder(LayoutVideoListItemBinding binding) {
+            ViewHolder(LayoutCourseListItemBinding binding) {
                 super(binding.getRoot());
                 mBinding = binding;
             }
         }
     }
 
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        if (mSubscription != null)
+//            mSubscription.dispose();
+//    }
 }
+

@@ -3,13 +3,10 @@ package in.securelearning.lil.android.syncadapter.rest;
 
 import java.util.List;
 
-import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationParentData;
-import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationRequest;
 import in.securelearning.lil.android.analytics.dataobjects.ChartDataRequest;
 import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataRequest;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
 import in.securelearning.lil.android.analytics.dataobjects.EffortvsPerformanceData;
 import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.base.dataobjects.AboutCourse;
@@ -51,21 +48,32 @@ import in.securelearning.lil.android.base.dataobjects.UserRating;
 import in.securelearning.lil.android.base.dataobjects.VideoCourse;
 import in.securelearning.lil.android.base.utils.ArrayList;
 import in.securelearning.lil.android.courses.dataobject.CourseReview;
+import in.securelearning.lil.android.gamification.dataobject.GamificationBonus;
+import in.securelearning.lil.android.gamification.dataobject.GamificationSurvey;
 import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
 import in.securelearning.lil.android.homework.dataobject.Homework;
 import in.securelearning.lil.android.homework.dataobject.HomeworkSubmitResponse;
 import in.securelearning.lil.android.player.dataobject.PracticeParent;
 import in.securelearning.lil.android.player.dataobject.PracticeQuestionResponse;
+import in.securelearning.lil.android.player.dataobject.QuizConfigurationRequest;
+import in.securelearning.lil.android.player.dataobject.QuizConfigurationResponse;
+import in.securelearning.lil.android.player.dataobject.QuizQuestionResponse;
+import in.securelearning.lil.android.player.dataobject.QuizResponsePost;
+import in.securelearning.lil.android.player.dataobject.TotalPointPost;
+import in.securelearning.lil.android.player.dataobject.TotalPointResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.AboutCourseExt;
 import in.securelearning.lil.android.syncadapter.dataobject.ActivityData;
 import in.securelearning.lil.android.syncadapter.dataobject.AppUserAuth0;
 import in.securelearning.lil.android.syncadapter.dataobject.BlogResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.BroadcastNotification;
 import in.securelearning.lil.android.syncadapter.dataobject.EnrollTrainingResponse;
+import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
+import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationRequest;
 import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
 import in.securelearning.lil.android.syncadapter.dataobject.LessonPlanMinimal;
 import in.securelearning.lil.android.syncadapter.dataobject.PasswordChange;
 import in.securelearning.lil.android.syncadapter.dataobject.PrerequisiteCoursesPostData;
+import in.securelearning.lil.android.syncadapter.dataobject.QuizResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.RecommendedApiObject;
 import in.securelearning.lil.android.syncadapter.dataobject.RolePermissions;
 import in.securelearning.lil.android.syncadapter.dataobject.SearchPeriodicEventsParams;
@@ -494,8 +502,8 @@ public interface DownloadApiInterface {
     Call<EffortChartDataParent> fetchSubjectWiseEffortData(@Body EffortChartDataRequest effortChartDataRequest);
 
     /*Api to fetch effort (time spent) weekly data for individual subject*/
-    @POST("userlogs/getUserDailyTimeSpentWeekly")
-    Call<java.util.ArrayList<EffortChartDataWeekly>> fetchWeeklyEffortData(@Body EffortChartDataRequest effortChartDataRequest);
+    @POST("userlogs/getUserSubjectsTimeSpentWeekWise")
+    Call<EffortChartDataParent> fetchWeeklyEffortData(@Body EffortChartDataRequest effortChartDataRequest);
 
     /*Api to fetch student's achievements*/
     @GET("UserScores/detail")
@@ -503,8 +511,7 @@ public interface DownloadApiInterface {
 
     /*Api to fetch chart configuration for performance and coverage*/
     @POST("GlobalConfigs/fetchConfig")
-    Call<ChartConfigurationParentData> fetchChartConfiguration(@Body ChartConfigurationRequest chartConfigurationRequest);
-    /*Api to fetch chart configuration for performance and coverage*/
+    Call<GlobalConfigurationParent> fetchGlobalConfiguration(@Body GlobalConfigurationRequest chartConfigurationRequest);
 
     /*Api to fetch assignment for student*/
     @GET("Assignments/getUserStatusWithCount")
@@ -514,7 +521,7 @@ public interface DownloadApiInterface {
     @GET("Assignments/homeworkDetail/{id}")
     Call<Homework> fetchHomeworkDetail(@Path("id") String homeworkId);
 
-    /*Api to fetch detail of student homework passing homework id*/
+    /*Api to submit student homework passing homework id*/
     @GET("Assignments/submit/{id}")
     Call<HomeworkSubmitResponse> submitHomework(@Path("id") String homeworkId);
 
@@ -523,13 +530,38 @@ public interface DownloadApiInterface {
     Call<ResponseBody> checkUserStatus(@Path("status") String status);
 
     /*Api to fetch questions for practice*/
-//    @POST("http://192.168.0.116:8082/question/getQuestions")
-    @POST("search/question/getQuestions")
+    @POST("search/lessonPlanConfiguration/getPracticeQuestions")
     Call<PracticeQuestionResponse> fetchQuestions(@Body PracticeParent practiceParent);
-
 
     /*Api to fetch learning network groups*/
     @GET("Groups/learning-network")
     Call<java.util.ArrayList<IdNameObject>> fetchNetworkGroup(@Query("skip") int skip, @Query("limit") int limit);
+
+    /*Api to fetch questions for the quiz*/
+    @GET("Quizzes/{quizId}/fetchAllDetails")
+    Call<QuizQuestionResponse> fetchQuestionsForQuiz(@Path("quizId") String quizId);
+
+    /*Api to submit question responses*/
+    @POST("QuizResponses")
+    Call<QuizResponse> submitResponseOfQuiz(@Body QuizResponsePost prepareQuizResponsePostData);
+
+    @POST("UserBonus/createBonus")
+    Call<GamificationBonus> saveBonus(@Body GamificationBonus bonus);
+
+    @GET("UserBonus/{bonusId}/detail")
+    Call<GamificationBonus> getBonus(@Path("bonusId") String bonusId);
+
+
+    @POST("UserSurveys")
+    Call<ResponseBody> saveGamificationSurvey(@Body GamificationSurvey survey);
+
+    /*Api to send practice/quiz points to server*/
+    @POST("UserBonus/createBonusTransitionIfAvailable")
+    Call<TotalPointResponse> sendPointsToServer(@Body TotalPointPost totalPointPost);
+
+    /*Api to fetch configuration of quiz*/
+    @POST("Utilities/getAflAolCourseConfig")
+    Call<QuizConfigurationResponse> fetchQuizConfiguration(@Body QuizConfigurationRequest quizConfigurationRequest);
+
 
 }

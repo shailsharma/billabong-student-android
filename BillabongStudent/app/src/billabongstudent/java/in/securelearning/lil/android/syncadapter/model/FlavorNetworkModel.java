@@ -9,8 +9,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationParentData;
-import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationRequest;
 import in.securelearning.lil.android.analytics.dataobjects.ChartDataRequest;
 import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
@@ -54,6 +52,8 @@ import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.ArrayList;
 import in.securelearning.lil.android.courses.dataobject.CourseReview;
+import in.securelearning.lil.android.gamification.dataobject.GamificationBonus;
+import in.securelearning.lil.android.gamification.dataobject.GamificationSurvey;
 import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
 import in.securelearning.lil.android.homework.dataobject.Homework;
@@ -70,6 +70,8 @@ import in.securelearning.lil.android.syncadapter.dataobject.AuthToken;
 import in.securelearning.lil.android.syncadapter.dataobject.BlogResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.BroadcastNotification;
 import in.securelearning.lil.android.syncadapter.dataobject.CloudinaryFileInner;
+import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
+import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationRequest;
 import in.securelearning.lil.android.syncadapter.dataobject.LearningMapAggregatesParams;
 import in.securelearning.lil.android.syncadapter.dataobject.LessonPlanMinimal;
 import in.securelearning.lil.android.syncadapter.dataobject.RecommendedApiObject;
@@ -101,6 +103,7 @@ import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectRe
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfile;
 import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
+import in.securelearning.lil.android.syncadapter.dataobjects.WikiHowParent;
 import in.securelearning.lil.android.syncadapter.fcmservices.Message;
 import in.securelearning.lil.android.syncadapter.fcmservices.MessageData;
 import in.securelearning.lil.android.syncadapter.fcmservices.MessageDataPayload;
@@ -117,6 +120,7 @@ import in.securelearning.lil.android.syncadapter.rest.SearchApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.SyncSuccessApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.UploadApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.UploadFilesApiInterface;
+import in.securelearning.lil.android.syncadapter.rest.WikiHowApiInterface;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -184,6 +188,10 @@ public class FlavorNetworkModel extends BaseModel {
     /*for mind spark user login*/
     @Inject
     MindSparkApiInterface mMindSparkApiInterface;
+
+    @Inject
+    WikiHowApiInterface mWikiHowApiInterface;
+
 
     public FlavorNetworkModel() {
         /*perform injection*/
@@ -1202,7 +1210,7 @@ public class FlavorNetworkModel extends BaseModel {
     }
 
     /*To fetch effort (time spent) weekly data for individual subject*/
-    public Call<java.util.ArrayList<EffortChartDataWeekly>> fetchWeeklyEffortData(EffortChartDataRequest effortChartDataRequest) {
+    public Call<EffortChartDataParent> fetchWeeklyEffortData(EffortChartDataRequest effortChartDataRequest) {
         return mDownloadApiInterface.fetchWeeklyEffortData(effortChartDataRequest);
 
     }
@@ -1214,8 +1222,8 @@ public class FlavorNetworkModel extends BaseModel {
     }
 
     /*To fetch chart configuration for performance and coverage*/
-    public Call<ChartConfigurationParentData> fetchChartConfiguration(ChartConfigurationRequest chartConfigurationRequest) {
-        return mDownloadApiInterface.fetchChartConfiguration(chartConfigurationRequest);
+    public Call<GlobalConfigurationParent> fetchGlobalConfiguration(GlobalConfigurationRequest chartConfigurationRequest) {
+        return mDownloadApiInterface.fetchGlobalConfiguration(chartConfigurationRequest);
 
     }
 
@@ -1239,5 +1247,22 @@ public class FlavorNetworkModel extends BaseModel {
     /*To send status of application for various user activity*/
     public Call<ResponseBody> checkUserStatus(String status) {
         return mDownloadApiInterface.checkUserStatus(status);
+    }
+
+    public Call<GamificationBonus> saveBonus(GamificationBonus bonus) {
+        return mDownloadApiInterface.saveBonus(bonus);
+    }
+
+    public Call<GamificationBonus> getBonus(String bonusId) {
+        return mDownloadApiInterface.getBonus(bonusId);
+    }
+
+    public Call<ResponseBody> saveGamificationSurvey(GamificationSurvey survey) {
+        return mDownloadApiInterface.saveGamificationSurvey(survey);
+    }
+
+    /*To fetch detail of wikiHow card*/
+    public Call<WikiHowParent> fetchWikiHowCardDetail(String wikiHowId) {
+        return mWikiHowApiInterface.fetchWikiHowCardDetail("app", "article", wikiHowId, "json");
     }
 }

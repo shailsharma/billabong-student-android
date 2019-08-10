@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <FrameLayout
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_16dp"
@@ -18,10 +18,13 @@
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textViewTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                tools:text="@string/total_hrs"
+                android:layout_weight="1"
+                android:maxLines="3"
+                android:ellipsize="end"
+                tools:text="dddddddddddddddddddddddddddddddddd"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/colorBlack"/>
 
@@ -36,7 +39,7 @@
                 android:textStyle="bold"
                 tools:text="58:89"/>
 
-        </FrameLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
 
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"

@@ -105,13 +105,9 @@ public class GeneratePasswordActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-
-
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -302,7 +298,7 @@ public class GeneratePasswordActivity extends AppCompatActivity {
     private void verifyOTP(final String mobileNumber, String verificationCode) {
         if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
 
-            showResendProgressLayout(getString(R.string.verifying_code));
+            showResendProgressLayout(getString(R.string.verifying_otp));
 
             mHomeModel.verifyOTP(mobileNumber, verificationCode)
                     .subscribeOn(Schedulers.io())
@@ -313,7 +309,7 @@ public class GeneratePasswordActivity extends AppCompatActivity {
 
                             if (!TextUtils.isEmpty(authToken.getToken()) && !TextUtils.isEmpty(authToken.getUserId())) {
                                 AppPrefs.setIdToken(authToken.getToken(), getBaseContext());
-                                Toast.makeText(getBaseContext(), getString(R.string.code_verified_successfully), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getBaseContext(), getString(R.string.otp_verified_successfully), Toast.LENGTH_SHORT).show();
                                 startActivity(PasswordChangeActivity.getStartIntent(getBaseContext(), authToken.getUserId(), getString(R.string.messagePasswordGenerateSuccess), getString(R.string.generate_password), FROM_OTHER));
                                 finish();
                             } else {
@@ -338,12 +334,12 @@ public class GeneratePasswordActivity extends AppCompatActivity {
 
     private boolean validateOTP() {
         if (getOTPFromEditText().isEmpty()) {
-            String message = getString(R.string.please_enter_the_verification_code_sent_to)
+            String message = getString(R.string.please_enter_otp_sent_to)
                     + " " + mBinding.textViewOTPMobileNumber.getText().toString().trim();
             SnackBarUtils.showAlertSnackBar(getBaseContext(), mBinding.getRoot(), message);
             return false;
         } else if (getOTPFromEditText().length() < 4) {
-            SnackBarUtils.showAlertSnackBar(getBaseContext(), mBinding.getRoot(), getString(R.string.verification_code_should_be_4_digit_long));
+            SnackBarUtils.showAlertSnackBar(getBaseContext(), mBinding.getRoot(), getString(R.string.otp_should_be_4_digit_long));
             return false;
         } else {
             return true;

@@ -24,11 +24,7 @@ import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 public class HomeworkPendingFragment extends Fragment {
     LayoutHomeworkRecyclerViewBinding mBinding;
     RecyclerView mRecyclerView;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private String mName;
     private List<Homework> mAssignmentPendingList;
-    private LinearLayoutManager mLinearLayoutManager;
 
 
     public HomeworkPendingFragment() {
@@ -57,7 +53,9 @@ public class HomeworkPendingFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mName = getArguments().getString(ConstantUtil.TITLE);
+            // TODO: Rename parameter arguments, choose names that match
+            // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+            String name = getArguments().getString(ConstantUtil.TITLE);
             mAssignmentPendingList = (List<Homework>) getArguments().getSerializable(ConstantUtil.PENDING);
         }
     }
@@ -78,13 +76,13 @@ public class HomeworkPendingFragment extends Fragment {
 
         if (mAssignmentPendingList != null && !mAssignmentPendingList.isEmpty()) {
             ArrayList<Integer> selectedPosition = new ArrayList<>();
-            selectedPosition=getTypePosition(selectedPosition);
+            selectedPosition = getTypePosition(selectedPosition);
 
             mBinding.layoutNoResult.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
-            mLinearLayoutManager = new LinearLayoutManager(getActivity());
-            mRecyclerView.setLayoutManager(mLinearLayoutManager);
-            HomeworkAssignedAdapter adapter = new HomeworkAssignedAdapter(mAssignmentPendingList,selectedPosition);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+            mRecyclerView.setLayoutManager(linearLayoutManager);
+            HomeworkAssignedAdapter adapter = new HomeworkAssignedAdapter(mAssignmentPendingList, selectedPosition);
             mRecyclerView.setAdapter(adapter);
 
         } else {
@@ -114,7 +112,7 @@ public class HomeworkPendingFragment extends Fragment {
             }
         }
 
-       return selectedPosition;
+        return selectedPosition;
 
     }
 

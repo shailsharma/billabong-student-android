@@ -39,6 +39,7 @@ import in.securelearning.lil.android.mindspark.dataobjects.MindSparkTopicListReq
 import in.securelearning.lil.android.mindspark.dataobjects.MindSparkTopicResult;
 import in.securelearning.lil.android.syncadapter.model.FlavorNetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -67,6 +68,56 @@ public class MindSparkModel {
 
     public MindSparkModel() {
         InjectorHome.INSTANCE.getComponent().inject(this);
+    }
+
+
+    /*To check occurrence of word in a string.*/
+    public int checkWordOccurrence(String fullString, String occurrenceWord) {
+        int i = 0;
+        Pattern p = Pattern.compile(occurrenceWord);
+        Matcher m = p.matcher(fullString);
+        while (m.find()) {
+            i++;
+        }
+        return i;
+    }
+
+    /*To get list of iFrame from a string*/
+    public ArrayList<String> getIFrameListFromString(int iFrameCount, String string) {
+        ArrayList<String> iFrameList = new ArrayList<>();
+        for (int i = 0; i < iFrameCount; i++) {
+            String iFrameSubString = string.substring(string.indexOf("<iframe"), string.indexOf("</iframe>") + 9);
+            iFrameList.add(iFrameSubString);
+            string = string.replace(iFrameSubString, "");
+        }
+
+        return iFrameList;
+    }
+
+    /*To get list of iFrame from a string*/
+    public ArrayList<String> getImageUrlListFromString(int iFrameCount, String string) {
+        ArrayList<String> iFrameList = new ArrayList<>();
+        for (int i = 0; i < iFrameCount; i++) {
+            String iFrameSubString = string.substring(string.indexOf("<img src"), string.indexOf(">"));
+            iFrameList.add(iFrameSubString);
+            string = string.replace(iFrameSubString, "");
+        }
+
+        return iFrameList;
+    }
+
+    /*To remove [blank_"number"] from blank type question text body.*/
+    public String removeBlankFromQuestion(String blankTypeQuestionBody) {
+        String finalString = blankTypeQuestionBody.replaceAll("\\[blank_(.*?)]", "");
+        Log.e("Remove--Blank", finalString);
+        return finalString;
+    }
+
+    /*To remove [dropdown_"number"] from dropdown type question text body.*/
+    public String removeDropdownFromQuestion(String blankTypeQuestionBody) {
+        String finalString = blankTypeQuestionBody.replaceAll("\\[dropdown_(.*?)]", "");
+        Log.e("Remove--Dropdown", finalString);
+        return finalString;
     }
 
     /*Contains logic to login user to Mind Spark environment and
@@ -539,55 +590,5 @@ public class MindSparkModel {
 
         return questionChoices;
     }
-
-    /*To check occurrence of word in a string.*/
-    public int checkWordOccurrence(String fullString, String occurrenceWord) {
-        int i = 0;
-        Pattern p = Pattern.compile(occurrenceWord);
-        Matcher m = p.matcher(fullString);
-        while (m.find()) {
-            i++;
-        }
-        return i;
-    }
-
-    /*To get list of iFrame from a string*/
-    public ArrayList<String> getIFrameListFromString(int iFrameCount, String string) {
-        ArrayList<String> iFrameList = new ArrayList<>();
-        for (int i = 0; i < iFrameCount; i++) {
-            String iFrameSubString = string.substring(string.indexOf("<iframe"), string.indexOf("</iframe>") + 9);
-            iFrameList.add(iFrameSubString);
-            string = string.replace(iFrameSubString, "");
-        }
-
-        return iFrameList;
-    }
-
-    /*To get list of iFrame from a string*/
-    public ArrayList<String> getImageUrlListFromString(int iFrameCount, String string) {
-        ArrayList<String> iFrameList = new ArrayList<>();
-        for (int i = 0; i < iFrameCount; i++) {
-            String iFrameSubString = string.substring(string.indexOf("<img src"), string.indexOf(">"));
-            iFrameList.add(iFrameSubString);
-            string = string.replace(iFrameSubString, "");
-        }
-
-        return iFrameList;
-    }
-
-    /*To remove [blank_"number"] from blank type question text body.*/
-    public String removeBlankFromQuestion(String blankTypeQuestionBody) {
-        String finalString = blankTypeQuestionBody.replaceAll("\\[blank_(.*?)]", "");
-        Log.e("Remove--Blank", finalString);
-        return finalString;
-    }
-
-    /*To remove [dropdown_"number"] from dropdown type question text body.*/
-    public String removeDropdownFromQuestion(String blankTypeQuestionBody) {
-        String finalString = blankTypeQuestionBody.replaceAll("\\[dropdown_(.*?)]", "");
-        Log.e("Remove--Dropdown", finalString);
-        return finalString;
-    }
-
 
 }

@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 import com.yuyakaido.android.cardstackview.CardStackView;
 import com.yuyakaido.android.cardstackview.SwipeDirection;
@@ -40,11 +43,9 @@ import in.securelearning.lil.android.base.dataobjects.CourseCardMedia;
 import in.securelearning.lil.android.base.dataobjects.CourseProgress;
 import in.securelearning.lil.android.base.dataobjects.CourseSectionCard;
 import in.securelearning.lil.android.base.dataobjects.DigitalBook;
-import in.securelearning.lil.android.base.dataobjects.FavouriteResource;
 import in.securelearning.lil.android.base.dataobjects.InteractiveImage;
 import in.securelearning.lil.android.base.dataobjects.InteractiveVideo;
 import in.securelearning.lil.android.base.dataobjects.PopUps;
-import in.securelearning.lil.android.base.dataobjects.Quiz;
 import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.dataobjects.SectionItems;
 import in.securelearning.lil.android.base.dataobjects.SectionProgress;
@@ -56,11 +57,8 @@ import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
-import in.securelearning.lil.android.base.views.activity.WebPlayerLiveActivity;
 import in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity;
 import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.PlayVimeoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.PlayYouTubeFullScreenActivity;
 import in.securelearning.lil.android.player.InjectorPlayer;
 import in.securelearning.lil.android.player.model.PlayerModel;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
@@ -68,15 +66,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
+import static in.securelearning.lil.android.player.view.activity.QuizPlayerActivity.TYPE_ASSESSMENT_OF_LEARNING;
+
 public class RapidLearningCardsActivity extends AppCompatActivity {
 
-    @Inject
-    PlayerModel mPlayerModel;
-    @Inject
-    AppUserModel mAppUserModel;
-    @Inject
-    RxBus mRxBus;
-    LayoutSectionViewBinding mBinding;
     public static final String COURSE_ID = "id";
     public static final String SECTION_TITLE = "sectionTitle";
     public static final String SECTION_ID = "sectionId";
@@ -84,6 +77,13 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
     public static final String CARDS = "cards";
     public static final String PROGRESS = "progress";
     public static final String COURSE_TYPE = "courseType";
+    @Inject
+    PlayerModel mPlayerModel;
+    @Inject
+    AppUserModel mAppUserModel;
+    @Inject
+    RxBus mRxBus;
+    LayoutSectionViewBinding mBinding;
     private String mCourseId, mSectionId;
     private int mProgress, mTotal = -1;
     private ArrayList<String> mCompletedItems = new ArrayList<>();
@@ -91,6 +91,18 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
     private Disposable mDisposable;
     private String mStartTime;
     private String mCourseType;
+
+    public static Intent getStartIntent(Context context, String id, String title, String sectionId, String color, ArrayList<CourseSectionCard> cards, String courseType, int progress) {
+        Intent intent = new Intent(context, RapidLearningCardsActivity.class);
+        intent.putExtra(COURSE_ID, id);
+        intent.putExtra(SECTION_TITLE, title);
+        intent.putExtra(SECTION_ID, sectionId);
+        intent.putExtra(COLOR, color);
+        intent.putExtra(CARDS, cards);
+        intent.putExtra(COURSE_TYPE, courseType);
+        intent.putExtra(PROGRESS, progress);
+        return intent;
+    }
 
     @Override
     public void onBackPressed() {
@@ -129,18 +141,6 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public static Intent getStartIntent(Context context, String id, String title, String sectionId, String color, ArrayList<CourseSectionCard> cards, String courseType, int progress) {
-        Intent intent = new Intent(context, RapidLearningCardsActivity.class);
-        intent.putExtra(COURSE_ID, id);
-        intent.putExtra(SECTION_TITLE, title);
-        intent.putExtra(SECTION_ID, sectionId);
-        intent.putExtra(COLOR, color);
-        intent.putExtra(CARDS, cards);
-        intent.putExtra(COURSE_TYPE, courseType);
-        intent.putExtra(PROGRESS, progress);
-        return intent;
     }
 
     private void handleIntent() {
@@ -187,54 +187,55 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
         });
     }
 
-    private void saveProgress(boolean createNotification) {
+    /*
+        private void saveProgress(boolean createNotification) {
 
-        CourseProgress updateProgress = mPlayerModel.getCourseProgress(mCourseId);
-        if (updateProgress != null && !TextUtils.isEmpty(updateProgress.getObjectId())) {
-            ArrayList<SectionProgress> list = updateProgress.getSectionProgresses();
-            SectionProgress sectionProgress = new SectionProgress();
-            sectionProgress.setProgress(mBinding.cardStackView.getTopIndex());
-            sectionProgress.setObjectId(mSectionId);
-            sectionProgress.setCompletedItems(mCompletedItems);
-            sectionProgress.setTotalCards(mTotal);
-            sectionProgress.setAlias(null);
-            int index = list.indexOf(sectionProgress);
-            if (index > -1) {
-                list.set(index, sectionProgress);
+            CourseProgress updateProgress = mPlayerModel.getCourseProgress(mCourseId);
+            if (updateProgress != null && !TextUtils.isEmpty(updateProgress.getObjectId())) {
+                ArrayList<SectionProgress> list = updateProgress.getSectionProgresses();
+                SectionProgress sectionProgress = new SectionProgress();
+                sectionProgress.setProgress(mBinding.cardStackView.getTopIndex());
+                sectionProgress.setObjectId(mSectionId);
+                sectionProgress.setCompletedItems(mCompletedItems);
+                sectionProgress.setTotalCards(mTotal);
+                sectionProgress.setAlias(null);
+                int index = list.indexOf(sectionProgress);
+                if (index > -1) {
+                    list.set(index, sectionProgress);
+                } else {
+                    sectionProgress.setSectionItems(getSectionItems(mCourseSectionCards));
+                    list.add(sectionProgress);
+                }
+                updateProgress.setSectionProgresses(list);
+                updateProgress.setType(getString(R.string.typeCourse));
+                updateProgress.setTypeName(getString(R.string.typeNameFeatureCourse));
+                updateProgress.setComplete(getIsComplete());
+                updateProgress.setUserId(mAppUserModel.getObjectId());
+                updateProgress.setAlias(null);
+                mPlayerModel.saveCourseProgress(updateProgress, createNotification);
             } else {
+                CourseProgress courseProgress = new CourseProgress();
+                courseProgress.setObjectId(mCourseId);
+                ArrayList<SectionProgress> list = new ArrayList<>();
+                SectionProgress sectionProgress = new SectionProgress();
+                sectionProgress.setProgress(mBinding.cardStackView.getTopIndex());
+                sectionProgress.setObjectId(mSectionId);
+                sectionProgress.setCompletedItems(mCompletedItems);
+                sectionProgress.setTotalCards(mTotal);
+                sectionProgress.setAlias(null);
                 sectionProgress.setSectionItems(getSectionItems(mCourseSectionCards));
                 list.add(sectionProgress);
+                courseProgress.setSectionProgresses(list);
+                courseProgress.setType(getString(R.string.typeCourse));
+                courseProgress.setTypeName(getString(R.string.typeNameFeatureCourse));
+                courseProgress.setComplete(getIsComplete());
+                courseProgress.setUserId(mAppUserModel.getObjectId());
+                courseProgress.setAlias(null);
+                mPlayerModel.saveCourseProgress(courseProgress, createNotification);
             }
-            updateProgress.setSectionProgresses(list);
-            updateProgress.setType(getString(R.string.typeCourse));
-            updateProgress.setTypeName(getString(R.string.typeNameFeatureCourse));
-            updateProgress.setComplete(getIsComplete());
-            updateProgress.setUserId(mAppUserModel.getObjectId());
-            updateProgress.setAlias(null);
-            mPlayerModel.saveCourseProgress(updateProgress, createNotification);
-        } else {
-            CourseProgress courseProgress = new CourseProgress();
-            courseProgress.setObjectId(mCourseId);
-            ArrayList<SectionProgress> list = new ArrayList<>();
-            SectionProgress sectionProgress = new SectionProgress();
-            sectionProgress.setProgress(mBinding.cardStackView.getTopIndex());
-            sectionProgress.setObjectId(mSectionId);
-            sectionProgress.setCompletedItems(mCompletedItems);
-            sectionProgress.setTotalCards(mTotal);
-            sectionProgress.setAlias(null);
-            sectionProgress.setSectionItems(getSectionItems(mCourseSectionCards));
-            list.add(sectionProgress);
-            courseProgress.setSectionProgresses(list);
-            courseProgress.setType(getString(R.string.typeCourse));
-            courseProgress.setTypeName(getString(R.string.typeNameFeatureCourse));
-            courseProgress.setComplete(getIsComplete());
-            courseProgress.setUserId(mAppUserModel.getObjectId());
-            courseProgress.setAlias(null);
-            mPlayerModel.saveCourseProgress(courseProgress, createNotification);
+
         }
-
-    }
-
+    */
     private void getPreviouslyCompletedItems(String courseId) {
         CourseProgress courseProgress = mPlayerModel.getCourseProgress(courseId);
         if (courseProgress != null && !TextUtils.isEmpty(courseProgress.getObjectId())) {
@@ -284,7 +285,6 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
         } else {
             mBinding.cardStackView.reverse();
         }
-        //  mBinding.progressBar.setProgress(index);
     }
 
     private void setUpToolbar(String color, String title) {
@@ -399,8 +399,9 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
             mList = list;
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View contentView, ViewGroup parent) {
+        public View getView(int position, View contentView, @NonNull ViewGroup parent) {
             ViewHolder holder;
 
             if (contentView == null) {
@@ -572,7 +573,13 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
         private void setCaption(String caption, AppCompatTextView textView) {
             if (!TextUtils.isEmpty(caption)) {
                 textView.setVisibility(View.VISIBLE);
-                textView.setText(Html.fromHtml(caption));
+                if (caption.contains("<li>")) {
+                    String temp = caption
+                            .replaceAll("<li>", "&#9679;\n")
+                            .replaceAll("</li>\n", "<br/><br/>");
+                    textView.setText(Html.fromHtml(temp));
+                } else
+                    textView.setText(Html.fromHtml(caption));
             } else {
                 textView.setVisibility(View.GONE);
             }
@@ -582,8 +589,8 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
             if (!TextUtils.isEmpty(title)) {
                 if (title.length() > 50) {
                     mCaptionSizeExtra--;
-                } else if (title.length() > 80) {
-                    mCaptionSizeExtra -= 2;
+                } else {
+                    title.length();
                 }
                 textView.setText(Html.fromHtml(title));
             } else {
@@ -780,11 +787,11 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
 
         private void playQuiz(CourseCardMedia media, String cardId) {
             String type = media.getMicroCourseType().toLowerCase();
-            if (type.equalsIgnoreCase("quiz")) {
-                //  startActivity(QuestionPlayerActivity.getStartIntentForQuizOnline(RapidLearningCardsActivity.this, media.getObjectId()));
+            if (type.equalsIgnoreCase(getString(R.string.quiz).toLowerCase())) {
 
                 if (GeneralUtils.isNetworkAvailable(getContext())) {
-                    WebPlayerLiveActivity.startWebPlayerFromRapidLearning(getContext(), media.getObjectId(), Quiz.class, "", mCourseId, mSectionId, cardId, false, false);
+                    startActivity(QuizPlayerActivity.getStartIntentFromRapidLearning(getBaseContext(), media.getObjectId(),
+                            mCourseId, mCourseType, cardId, mSectionId));
                 } else {
                     ToastUtils.showToastAlert(getContext(), getString(R.string.connect_internet));
                 }
@@ -793,13 +800,20 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
             }
         }
 
+
         private void playVimeoVideo(CourseCardMedia media) {
             if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
+                Gson gson = new GsonBuilder().create();
+
+                /*Adding sourceURL to url to play vimeo video in web player.*/
                 if (!TextUtils.isEmpty(media.getSourceURL())) {
-                    startActivity(PlayVimeoFullScreenActivity.getStartIntent(getContext(), media.getSourceURL()));
+                    media.setUrl(media.getSourceURL());
                 } else {
-                    startActivity(PlayVimeoFullScreenActivity.getStartIntent(getContext(), media.getReference()));
+                    media.setUrl(media.getUrlMain());
                 }
+
+                String json = gson.toJson(media);
+                WebPlayerCordovaLiveActivity.startWebPlayerForResourcePreview(getBaseContext(), mAppUserModel.getObjectId(), json);
                 setCompletedItems(media.getObjectId());
                 mBinding.cardStackView.getTopView().setDraggable(true);
             } else {
@@ -809,10 +823,15 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
 
         private void playYouTubeVideo(CourseCardMedia media) {
             if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-                FavouriteResource favouriteResource = new FavouriteResource();
-                favouriteResource.setName(media.getName());
-                favouriteResource.setUrlThumbnail(media.getUrlThumbnail());
-                startActivity(PlayYouTubeFullScreenActivity.getStartIntent(getContext(), favouriteResource, false));
+                Gson gson = new GsonBuilder().create();
+
+                /*Adding videoId to objectId for web player*/
+                if (!TextUtils.isEmpty(media.getUrlMain())) {
+                    media.setObjectId(media.getUrlMain());
+                }
+
+                String json = gson.toJson(media);
+                WebPlayerCordovaLiveActivity.startWebPlayerForResourcePreview(getBaseContext(), mAppUserModel.getObjectId(), json);
                 setCompletedItems(media.getObjectId());
                 mBinding.cardStackView.getTopView().setDraggable(true);
             } else {

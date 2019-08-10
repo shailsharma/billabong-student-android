@@ -56,7 +56,7 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.base.comparators.SortPostResponseByDate;
 import in.securelearning.lil.android.base.constants.PostDataType;
 import in.securelearning.lil.android.base.constants.PostResponseType;
@@ -98,7 +98,6 @@ import in.securelearning.lil.android.learningnetwork.views.activity.PostLikeActi
 import in.securelearning.lil.android.learningnetwork.views.fragment.BaseLNFragment;
 import in.securelearning.lil.android.learningnetwork.views.fragment.FavoritePostFragment;
 import in.securelearning.lil.android.learningnetwork.views.fragment.PostFragment;
-import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.OgUtils;
 import in.securelearning.lil.android.syncadapter.utils.SoundUtils;
 import io.reactivex.Completable;

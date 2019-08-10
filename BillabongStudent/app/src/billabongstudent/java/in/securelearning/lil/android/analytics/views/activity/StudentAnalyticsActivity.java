@@ -37,7 +37,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationData;
-import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationParentData;
 import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartData;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
@@ -49,6 +48,8 @@ import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsStudentBinding;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
+import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -99,9 +100,9 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
         if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
             mAnalyticsModel.fetchChartConfiguration().subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<ChartConfigurationParentData>() {
+                    .subscribe(new Consumer<GlobalConfigurationParent>() {
                         @Override
-                        public void accept(ChartConfigurationParentData chartConfigurationParentData) throws Exception {
+                        public void accept(GlobalConfigurationParent chartConfigurationParentData) throws Exception {
 
                             fetchPerformanceData(chartConfigurationParentData.getPerformanceConfiguration());
 
@@ -276,7 +277,7 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
         mBinding.layoutTotalTimeSpent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAnalyticsModel.showDetailedTotalTimeSpent(StudentAnalyticsActivity.this, finalTotalTimeSpent, finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime);
+                mAnalyticsModel.showDetailedTotalTimeSpent(StudentAnalyticsActivity.this, finalTotalTimeSpent, finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime, ConstantUtil.BLANK);
             }
         });
 

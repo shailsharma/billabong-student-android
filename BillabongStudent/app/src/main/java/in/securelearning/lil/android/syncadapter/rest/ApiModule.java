@@ -302,6 +302,45 @@ public class ApiModule {
                 .build();
     }
 
+    private Retrofit getWikiHowClient(String baseUrl) {
+
+        OkHttpClient okClient = new OkHttpClient.Builder()
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request original = chain.request();
+                        HttpUrl originalHttpUrl = original.url();
+
+                        HttpUrl url = originalHttpUrl.newBuilder()
+                                .build();
+
+                        Request.Builder requestBuilder = original.newBuilder()
+                                //.header("x-api-key", moContext.getString(R.string.mind_spark_x_api_key))
+                                .url(url);
+
+                        Request request = requestBuilder.build();
+
+                        final Buffer buffer = new Buffer();
+                        if (request != null && request.body() != null)
+                            request.body().writeTo(buffer);
+
+                        Log.e("log request", String.format("\nrequest:\n%s\nheaders:\n%s\nurl:\n%s", buffer.readUtf8(), request.headers(), request.url().toString()));
+                        Log.e("log url", url.toString());
+                        return chain.proceed(request);
+                    }
+                })
+                .connectTimeout(25, TimeUnit.SECONDS)
+                .readTimeout(25, TimeUnit.SECONDS)
+                .build();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setLenient().create();
+
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .client(okClient)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+    }
+
     @Provides
     @ActivityScope
     public BaseApiInterface getBaseClient() {
@@ -489,6 +528,13 @@ public class ApiModule {
     @ActivityScope
     public MindSparkApiInterface getMindSparkLoginClient() {
         return getMindSparkClient(moContext.getString(R.string.mind_spark_base_url)).create(MindSparkApiInterface.class);
+
+    }
+
+    @Provides
+    @ActivityScope
+    public WikiHowApiInterface getWikiHowApiInterface() {
+        return getWikiHowClient(moContext.getString(R.string.wikiHow_base_url)).create(WikiHowApiInterface.class);
 
     }
 

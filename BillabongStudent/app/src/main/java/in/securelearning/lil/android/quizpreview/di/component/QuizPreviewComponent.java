@@ -6,7 +6,6 @@ import in.securelearning.lil.android.base.model.AssignmentResponseModel;
 import in.securelearning.lil.android.base.model.QuizModel;
 import in.securelearning.lil.android.quizpreview.activity.PracticeTopicActivity;
 import in.securelearning.lil.android.quizpreview.activity.QuestionPlayerActivity;
-import in.securelearning.lil.android.quizpreview.activity.QuizPreviewActivity;
 import in.securelearning.lil.android.quizpreview.model.QuestionResponseModelApp;
 import in.securelearning.lil.android.quizpreview.model.QuizPreviewModel;
 
@@ -23,8 +22,6 @@ public interface QuizPreviewComponent extends BaseComponent {
     AssignmentModel assignmentModel();
 
     AssignmentResponseModel quizResponseModel();
-
-    void inject(QuizPreviewActivity quizPreviewActivity);
 
     void inject(QuizPreviewModel quizPreviewModel);
 

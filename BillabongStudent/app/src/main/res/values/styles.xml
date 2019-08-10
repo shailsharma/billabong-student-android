@@ -110,6 +110,13 @@
 
     </style>
 
+    <style name="EditTextThemeWhite">
+        <item name="colorControlNormal">@color/colorWhite66</item>
+        <item name="colorControlActivated">@color/colorWhite</item>
+        <item name="colorControlHighlight">@color/colorWhite</item>
+
+    </style>
+
     <style name="SpinnerTheme">
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="colorControlNormal">#88000000</item>

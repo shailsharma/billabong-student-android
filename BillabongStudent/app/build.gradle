@@ -102,8 +102,8 @@ android {
             minSdkVersion 21
             applicationIdSuffix ".billabongstudent"
             targetSdkVersion 27
-            versionCode 11
-            versionName "02"
+            versionCode 12
+            versionName "03"
             versionNameSuffix '.001'
             signingConfig signingConfigs.billabongstudentrelease
             buildConfigField "String", "ASSOCIATION_ID", '"5900dad38c04da1a00996c16"'
@@ -144,6 +144,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
 
     implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'jp.wasabeef:picasso-transformations:2.2.1'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'

@@ -53,7 +53,6 @@ public class HomeworkFragment extends Fragment {
     private List<Homework> mOverdueList = new ArrayList<>();
     private Context mContext;
     private String mStudentId;
-    private Disposable mSubscription;
 
     public HomeworkFragment() {
 
@@ -81,9 +80,16 @@ public class HomeworkFragment extends Fragment {
         return mBinding.getRoot();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mDisposable != null) {
+            mDisposable.dispose();
+        }
+    }
 
     private void listenRxEvent() {
-        mSubscription = mRxBus.toFlowable().observeOn(AndroidSchedulers.mainThread())
+        mDisposable = mRxBus.toFlowable().observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Object>() {
                     @SuppressLint("CheckResult")
                     @Override
@@ -205,8 +211,8 @@ public class HomeworkFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mSubscription != null) {
-            mSubscription.dispose();
+        if (mDisposable != null) {
+            mDisposable.dispose();
         }
     }
 

@@ -438,10 +438,9 @@ public class RecapFragment extends Fragment {
                     if (GeneralUtils.isNetworkAvailable(getContext())) {
                         if (finalObjectClass.equals(MicroLearningCourse.class)) {
                             startActivity(RapidLearningSectionListActivity.getStartIntent(mContext, video.getObjectId()));
-                        } else if (finalObjectClass.equals(VideoCourse.class) || finalObjectClass.equals(InteractiveVideo.class)) {
-                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), video.getObjectId(), video.getMetaInformation().getSubject().getId(), video.getMetaInformation().getTopic().getId(), finalObjectClass, "", false);
                         } else {
-                            WebPlayerLiveActivity.startWebPlayer(getContext(), video.getObjectId(), video.getMetaInformation().getSubject().getId(), video.getMetaInformation().getTopic().getId(), finalObjectClass, "", false, true);
+                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), video.getObjectId(), video.getMetaInformation().getSubject().getId(), video.getMetaInformation().getTopic().getId(), finalObjectClass, "", false);
+
                         }
                     } else {
                         ToastUtils.showToastAlert(getContext(), getString(R.string.connect_internet));

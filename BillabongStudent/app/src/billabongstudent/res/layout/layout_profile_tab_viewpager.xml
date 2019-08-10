@@ -1,146 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:custom="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/image_dashboard_background"
+        android:orientation="vertical">
 
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_gravity="top|center_vertical"
+            android:background="@drawable/gradient_app"
+            android:elevation="@dimen/elevation_4dp"
+            android:paddingTop="20dp"
+            android:visibility="gone"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextColor="@android:color/white">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginEnd="10dp"
+                android:tint="@color/white"
+                app:srcCompat="@drawable/chevron_left_white" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/textViewToolbarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/label_profile"
+                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:textColor="@color/white" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/imageViewEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="10dp"
+                android:tint="@color/white"
+                android:visibility="gone"
+                app:srcCompat="@drawable/edit_grey" />
+
+        </android.support.v7.widget.Toolbar>
+
+
+        <!--Profile pic, Name, Grade Section, Address-->
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/image_dashboard_background"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/padding_8dp"
+            android:paddingTop="@dimen/padding_12dp"
+            android:paddingEnd="@dimen/padding_8dp"
+            android:paddingBottom="@dimen/padding_12dp">
 
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_gravity="top|center_vertical"
-                android:background="@drawable/gradient_app"
-                android:elevation="@dimen/elevation_4dp"
-                android:paddingTop="20dp"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:titleTextColor="@android:color/white">
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/imageViewBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_8dp"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginEnd="10dp"
+                android:tint="@color/white"
+                app:srcCompat="@drawable/chevron_left_white"
+                app:tint="@android:color/black" />
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/imageViewBack"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_marginEnd="10dp"
-                    android:tint="@color/white"
-                    app:srcCompat="@drawable/chevron_left_white"/>
+            <!--Profile picture-->
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/imageViewProfile"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginEnd="@dimen/margin_16dp"
+                tools:srcCompat="@drawable/image_placeholder" />
 
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/textViewToolbarTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/label_profile"
-                    android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
-                    android:textColor="@color/white"/>
-
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/imageViewEdit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center_vertical"
-                    android:layout_marginEnd="10dp"
-                    android:tint="@color/white"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/edit_grey"/>
-
-            </android.support.v7.widget.Toolbar>
-
-
-            <!--Profile pic, Name, Grade Section, Address-->
             <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="@dimen/padding_16dp">
+                android:orientation="vertical">
 
-                <!--Profile picture-->
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/imageViewProfile"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:layout_margin="@dimen/margin_16dp"
-                    tools:srcCompat="@drawable/image_placeholder"/>
-
-                <android.support.v7.widget.LinearLayoutCompat
+                <!--Name-->
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/textViewName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical">
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    tools:text="Bhuvan Sharma" />
 
-                    <!--Name-->
-                    <android.support.v7.widget.AppCompatTextView
-                        android:id="@+id/textViewName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@android:color/black"
-                        android:textStyle="bold"
-                        tools:text="Bhuvan Sharma"/>
+                <!--Grade>>Section-->
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/textViewGradeSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_4dp"
+                    android:textColor="@android:color/black"
+                    tools:text="Grade V>>Sec C" />
 
-                    <!--Grade>>Section-->
-                    <android.support.v7.widget.AppCompatTextView
-                        android:id="@+id/textViewGradeSection"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_4dp"
-                        android:textColor="@android:color/black"
-                        tools:text="Grade V>>Sec C"/>
+                <!--Address-->
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/textViewAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_4dp"
+                    android:textColor="@android:color/black"
+                    tools:text="Euro Thane, Mumbai" />
 
-                    <!--Address-->
-                    <android.support.v7.widget.AppCompatTextView
-                        android:id="@+id/textViewAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_4dp"
-                        android:textColor="@android:color/black"
-                        tools:text="Euro Thane, Mumbai"/>
-
-
-                </android.support.v7.widget.LinearLayoutCompat>
 
             </android.support.v7.widget.LinearLayoutCompat>
 
-            <!--Tab layout-->
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:minHeight="?actionBarSize"
-                app:tabIndicatorHeight="0dp"
-                app:tabMode="scrollable"
-                app:tabPaddingEnd="@dimen/padding_8dp"
-                app:tabPaddingStart="@dimen/padding_8dp"
-                app:tabSelectedTextColor="@android:color/white"
-                app:tabTextColor="@android:color/white"/>
-
-            <!--View pager-->
-            <android.support.v4.view.ViewPager
-                android:id="@+id/viewpager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
         </android.support.v7.widget.LinearLayoutCompat>
 
+        <!--Tab layout-->
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:minHeight="?actionBarSize"
+            app:tabGravity="fill"
+            app:tabIndicatorHeight="0dp"
+            app:tabMode="scrollable"
+            app:tabPaddingEnd="@dimen/padding_8dp"
+            app:tabPaddingStart="@dimen/padding_8dp"
+            app:tabSelectedTextColor="@android:color/white"
+            app:tabTextColor="@android:color/white" />
 
+        <!--View pager-->
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-
-    </FrameLayout>
+    </android.support.v7.widget.LinearLayoutCompat>
 
 
 </layout>

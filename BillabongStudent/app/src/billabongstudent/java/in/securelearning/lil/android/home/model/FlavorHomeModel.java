@@ -19,6 +19,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.analytics.dataobjects.EffortvsPerformanceData;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutProgressBinding;
 import in.securelearning.lil.android.base.dataobjects.ConceptMap;
@@ -46,6 +47,7 @@ import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectPo
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectResult;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
 import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
+import in.securelearning.lil.android.syncadapter.dataobjects.WikiHowParent;
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.model.FlavorNetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
@@ -116,7 +118,7 @@ public class FlavorHomeModel {
                     Response<ArrayList<LessonPlanMinimal>> response2 = call.clone().execute();
                     if (response2 != null && response2.isSuccessful()) {
                         Log.e("LessonPlanMinimal", "Successful");
-                        e.onNext(response.body());
+                        e.onNext(response2.body());
                     } else if (response2.code() == 401) {
                         mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
                     } else if (response2.code() == 404) {
@@ -189,7 +191,7 @@ public class FlavorHomeModel {
                     Response<LessonPlanSubjectResult> response2 = call.clone().execute();
                     if (response2 != null && response2.isSuccessful()) {
                         Log.e("LessonPlanSubject", "Successful");
-                        e.onNext(response.body());
+                        e.onNext(response2.body());
                     } else if (response2.code() == 401) {
                         mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
                     } else if (response2.code() == 404) {
@@ -280,12 +282,12 @@ public class FlavorHomeModel {
     }
 
     /*To fetch third party meta information*/
-    public Observable<ArrayList<String>> fetchThirdPartyMapping(final String subjectId, final String topicId) {
+    public Observable<ArrayList<String>> fetchThirdPartyMapping(final ThirdPartyMapping thirdPartyMapping) {
         return Observable.create(new ObservableOnSubscribe<ArrayList<String>>() {
             @Override
             public void subscribe(ObservableEmitter<ArrayList<String>> e) throws Exception {
 
-                Call<ArrayList<String>> call = mFlavorNetworkModel.fetchThirdPartyMapping(new ThirdPartyMapping(subjectId, topicId));
+                Call<ArrayList<String>> call = mFlavorNetworkModel.fetchThirdPartyMapping(thirdPartyMapping);
                 Response<ArrayList<String>> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -591,5 +593,87 @@ public class FlavorHomeModel {
                 });
     }
 
+    /*To fetch effort (time spent) data for all subjects*/
+    public Observable<ArrayList<EffortvsPerformanceData>> fetchEffortvsPerformanceData() {
+        return Observable.create(new ObservableOnSubscribe<ArrayList<EffortvsPerformanceData>>() {
+            @Override
+            public void subscribe(ObservableEmitter<ArrayList<EffortvsPerformanceData>> e) throws Exception {
+                Call<ArrayList<EffortvsPerformanceData>> call = mFlavorNetworkModel.fetchEffortvsPerformanceData();
+                Response<ArrayList<EffortvsPerformanceData>> response = call.execute();
 
+                if (response != null && response.isSuccessful()) {
+                    Log.e("EffortChartData", "Successful");
+                    e.onNext(response.body());
+                } else if (response.code() == 404) {
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                } else if (response.code() == 401 && SyncServiceHelper.refreshToken(mContext)) {
+                    Response<ArrayList<EffortvsPerformanceData>> response2 = call.clone().execute();
+                    if (response2 != null && response2.isSuccessful()) {
+                        Log.e("EffortChartData", "Successful");
+                        e.onNext(response2.body());
+                    } else if (response2.code() == 401) {
+                        mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
+                    } else if (response2.code() == 404) {
+                        throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                    }
+                } else {
+                    Log.e("EffortChartData", "Failed");
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                }
+                e.onComplete();
+
+            }
+        });
+    }
+
+    /*To fetch detail of wikiHow card*/
+    public Observable<WikiHowParent> fetchWikiHowCardDetail(final String wikiHowId) {
+        return Observable.create(new ObservableOnSubscribe<WikiHowParent>() {
+            @Override
+            public void subscribe(ObservableEmitter<WikiHowParent> e) throws Exception {
+                Call<WikiHowParent> call = mFlavorNetworkModel.fetchWikiHowCardDetail(wikiHowId);
+                Response<WikiHowParent> response = call.execute();
+
+                if (response != null && response.isSuccessful()) {
+                    Log.e("WikiHowData", "Successful");
+                    e.onNext(response.body());
+                } else {
+                    Log.e("WikiHowData", "Failed");
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                }
+                e.onComplete();
+            }
+        });
+
+    }
+
+    /*To get list of wikiHow cards by topicIds*/
+    public Observable<ArrayList<WikiHowParent>> getWikiHowData(final ArrayList<String> topicIds) {
+        return Observable.create(new ObservableOnSubscribe<ArrayList<WikiHowParent>>() {
+            @Override
+            public void subscribe(ObservableEmitter<ArrayList<WikiHowParent>> e) throws Exception {
+                ArrayList<WikiHowParent> list = new ArrayList<>();
+
+                for (int i = 0; i < topicIds.size(); i++) {
+                    Call<WikiHowParent> call = mFlavorNetworkModel.fetchWikiHowCardDetail(topicIds.get(i));
+                    Response<WikiHowParent> response = call.execute();
+                    if (response != null && response.isSuccessful()) {
+                        Log.e("WikiHowData", "Successful");
+                        list.add(response.body());
+                    } else {
+                        Log.e("WikiHowData", "Failed");
+                        throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                    }
+                }
+                if (!list.isEmpty()) {
+                    e.onNext(list);
+
+                } else {
+                    e.onError(new Throwable(mContext.getString(R.string.messageNoDataFound)));
+                }
+
+                e.onComplete();
+            }
+        });
+    }
 }

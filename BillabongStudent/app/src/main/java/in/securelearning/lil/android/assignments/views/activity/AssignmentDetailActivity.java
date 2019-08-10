@@ -35,7 +35,7 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.assignments.model.AssignmentResponseStudentModel;
 import in.securelearning.lil.android.assignments.views.fragment.InjectorAssignment;
 import in.securelearning.lil.android.base.constants.AssignmentStage;
@@ -55,7 +55,6 @@ import in.securelearning.lil.android.base.dataobjects.MetaInformation;
 import in.securelearning.lil.android.base.dataobjects.MicroLearningCourse;
 import in.securelearning.lil.android.base.dataobjects.PopUps;
 import in.securelearning.lil.android.base.dataobjects.QuestionResponse;
-import in.securelearning.lil.android.base.dataobjects.Quiz;
 import in.securelearning.lil.android.base.dataobjects.VideoCourse;
 import in.securelearning.lil.android.base.events.GenerateSubmissionEvent;
 import in.securelearning.lil.android.base.events.QuizCompletedEvent;
@@ -67,7 +66,6 @@ import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
-import in.securelearning.lil.android.base.views.activity.WebPlayerLiveActivity;
 import in.securelearning.lil.android.home.dataobjects.TimeUtils;
 import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.learningnetwork.events.LoadRefreshAssignmentStageEvent;
@@ -164,7 +162,6 @@ public class AssignmentDetailActivity extends AppCompatActivity {
                         if (mAssignmentResponse.getStage().equals(AssignmentStage.STAGE_SUBMITTED.getAssignmentStage()) || mAssignmentResponse.getStage().equals(AssignmentStage.STAGE_GRADED.getAssignmentStage())) {
                             isAttempt = false;
                         }
-                        WebPlayerLiveActivity.startWebPlayer(getBaseContext(), mAssignment.getUidQuiz(), "", "", Quiz.class, "", false, false);
                     } else if (isTypeCourse) {
                         if (mObjectClass.equals(MicroLearningCourse.class)) {
                             startActivity(RapidLearningSectionListActivity.getStartIntent(getBaseContext(), mAssignment.getUidCourse()));

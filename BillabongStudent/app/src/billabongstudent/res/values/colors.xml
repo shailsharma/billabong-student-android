@@ -15,6 +15,10 @@
     <color name="colorAccentSettings">#03A9F4</color>
     <color name="colorAssignActivity">#3F51B5</color>
     <color name="colorDialogBackground">#88000000</color>
+    <color name="colorWhite33">#33ffffff</color>
+    <color name="colorWhite11">#11ffffff</color>
+    <color name="colorOrange">#fb8c00</color>
+
     <!--Quizzes colors-->
     <color name="colorQuizPrimary">#363F46</color>
     <color name="colorQuizPrimaryDark">#30383f</color>
@@ -31,6 +35,7 @@
     <color name="colorLearningNetworkPrimary">#e73827</color>
     <color name="colorLearningNetworkPrimaryDark">#e73827</color>
     <color name="colorLearningNetworkAccent">#e73827</color>
+
     <!--Quiz Preview colors-->
     <color name="colorBackgroundHint">#ff921e</color>
     <color name="colorGrey400">#bdbdbd</color>
@@ -38,6 +43,12 @@
     <color name="colorYellowAmber200">#ffe082</color>
     <color name="colorGreenTransparent">#aa3bb670</color>
     <color name="colorLightGreen">#cae7c9</color>
+
+    <!--Performance color-->
+    <color name="colorPerformanceLow">#EB0606</color>
+    <color name="colorPerformanceAverage">#fb8c00</color>
+    <color name="colorPerformanceVeryGood">#259B23</color>
+
 
     <color name="colorBackgroundCorrectResponse">#259B23</color>
     <color name="colorBackgroundIncorrectResponse">#F44336</color>
@@ -62,7 +73,6 @@
     <color name="dot_dark_screen11">#FD5177</color>
      
         <!-- dots inactive colors -->
-        
     <color name="dot_light_screen1">#ffd2d3</color>    
     <color name="dot_light_screen2">#d5e0fd</color>    
     <color name="dot_light_screen3">#ffeacc</color>
@@ -101,6 +111,21 @@
             
     </array>
 
+    <array name="array_color_match_the_following">
+                
+        <item>@color/dot_dark_screen1</item>
+        <item>@color/dot_dark_screen2</item>
+        <item>@color/dot_dark_screen4</item>
+        <item>@color/dot_dark_screen3</item>
+        <item>@color/dot_dark_screen5</item>
+        <item>@color/dot_dark_screen7</item>
+        <item>@color/color1_foreground</item>
+        <item>@color/colorPopUpHeader</item>
+        <item>@color/colorCenterGradient</item>
+        <item>@color/colorLNRed</item>
+            
+    </array>
+
 
     <color name="colorRyanBlack">#424242</color>
     <color name="colorRyanGreyDescription">#9e9e9e</color>
@@ -135,4 +160,12 @@
     <color name="colorEndGradientLight">#69F3E6</color>
     <color name="colorCenterGradientLight">#6ABDF0</color>
     <color name="colorStartGradientLight">#55B7E6</color>
+
+    <color name="colorLearning">#65B6F6</color>
+    <color name="colorReinforce">#82C785</color>
+    <color name="colorPractice">#FF8B66</color>
+    <color name="colorApplication">#BB69C8</color>
+    <color name="colorLRPACustomTab">#0399A8</color>
+
+
 </resources>

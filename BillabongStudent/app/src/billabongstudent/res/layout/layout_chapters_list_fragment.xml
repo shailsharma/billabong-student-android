@@ -3,11 +3,13 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:requiresFadingEdge="vertical">
 
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_16dp"
             android:orientation="vertical">
 
             <in.securelearning.lil.android.syncadapter.utils.NonScrollExpandableListView
@@ -17,7 +19,7 @@
                 android:childDivider="@color/colorTransparent"
                 android:divider="@color/colorTransparent"
                 android:dividerHeight="@dimen/margin_12dp"
-                android:groupIndicator="@null"/>
+                android:groupIndicator="@null" />
 
         </android.support.v7.widget.LinearLayoutCompat>
 

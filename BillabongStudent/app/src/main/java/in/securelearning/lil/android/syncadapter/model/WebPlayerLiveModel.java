@@ -8,28 +8,25 @@ import android.text.TextUtils;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.base.dataobjects.BlogComment;
 import in.securelearning.lil.android.base.dataobjects.BlogDetails;
-import in.securelearning.lil.android.base.dataobjects.BookAnnotation;
-import in.securelearning.lil.android.base.dataobjects.FavouriteResource;
 import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.dataobjects.UserRating;
 import in.securelearning.lil.android.base.dataobjects.WebQuizResponse;
 import in.securelearning.lil.android.base.interfaces.WebPlayerLiveModelInterface;
+import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.model.BlogCommentModel;
 import in.securelearning.lil.android.base.model.BlogModel;
 import in.securelearning.lil.android.base.model.WebQuizResponseModel;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
+import in.securelearning.lil.android.base.views.activity.WebPlayerLiveActivity;
 import in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity;
 import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.PlayVimeoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.PlayYouTubeFullScreenActivity;
+import in.securelearning.lil.android.player.view.activity.QuizPlayerActivity;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.service.SyncService;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
@@ -39,6 +36,9 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import static in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity.COURSE_TYPE_BOOK;
+import static in.securelearning.lil.android.player.view.activity.QuizPlayerActivity.TYPE_ASSESSMENT_FOR_LEARNING;
+import static in.securelearning.lil.android.player.view.activity.QuizPlayerActivity.TYPE_ASSESSMENT_OF_LEARNING;
 import static in.securelearning.lil.android.syncadapter.utils.InternalNotificationActionUtils.ACTION_TYPE_NETWORK_DOWNLOAD;
 
 /**
@@ -58,6 +58,8 @@ public class WebPlayerLiveModel implements WebPlayerLiveModelInterface {
     WebQuizResponseModel mWebQuizResponseModel;
     @Inject
     SyncServiceModel mSyncServiceModel;
+    @Inject
+    AppUserModel mAppUserModel;
 
     public WebPlayerLiveModel() {
         InjectorSyncAdapter.INSTANCE.getComponent().inject(this);
@@ -166,11 +168,6 @@ public class WebPlayerLiveModel implements WebPlayerLiveModelInterface {
     }
 
     @Override
-    public Response<ResponseBody> saveBookAnnotation(BookAnnotation bookAnnotation) {
-        return null;
-    }
-
-    @Override
     public Response<ResponseBody> saveBookmark(JSONObject jsonObject) {
         RequestBody body = GeneralUtils.jsonToRequestBody(jsonObject.toString());
         return webCallExecutor(mNetworkModel.saveBookmark(body));
@@ -224,30 +221,32 @@ public class WebPlayerLiveModel implements WebPlayerLiveModelInterface {
             item.setType(mContext.getString(R.string.typeVideo));
             item.setUrlMain(url);
             mContext.startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(mContext, PlayVideoFullScreenActivity.NETWORK_TYPE_ONLINE, (Resource) item));
-        } else if (type.equalsIgnoreCase(mContext.getString(R.string.typeYouTubeVideo))) {
-            if (!url.contains("http:") || url.contains("https:")) {
-                FavouriteResource favouriteResource = new FavouriteResource();
-                favouriteResource.setName(url);
-                favouriteResource.setUrlThumbnail("");
-                mContext.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(mContext, favouriteResource, false));
-            } else {
-                String pattern = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
+        } else if (type.contains("you") || type.contains("vimeo")) {
+//            if (!url.contains("http:") || !url.contains("https:")) {
+//                FavouriteResource favouriteResource = new FavouriteResource();
+//                favouriteResource.setName(url);
+//                favouriteResource.setUrlThumbnail("");
+//                mContext.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(mContext, favouriteResource, false));
+//            } else {
+//                String pattern = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
+//
+//                Pattern compiledPattern = Pattern.compile(pattern);
+//                Matcher matcher = compiledPattern.matcher(url); //url is youtube url for which you want to extract the id.
+//                if (matcher.find()) {
+//                    String videoId = matcher.group();
+//                    FavouriteResource favouriteResource = new FavouriteResource();
+//                    favouriteResource.setName(videoId);
+//                    favouriteResource.setUrlThumbnail("");
+//                    mContext.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(mContext, favouriteResource, false));
+//                }
+//            }
+            WebPlayerLiveActivity.startWebPlayerForResourcePreview(mContext, mAppUserModel.getObjectId(), url);
 
-                Pattern compiledPattern = Pattern.compile(pattern);
-                Matcher matcher = compiledPattern.matcher(url); //url is youtube url for which you want to extract the id.
-                if (matcher.find()) {
-                    String videoId = matcher.group();
-                    FavouriteResource favouriteResource = new FavouriteResource();
-                    favouriteResource.setName(videoId);
-                    favouriteResource.setUrlThumbnail("");
-                    mContext.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(mContext, favouriteResource, false));
-                }
-            }
 
-
-        } else if (type.equalsIgnoreCase(mContext.getString(R.string.typeVimeoVideo))) {
-            mContext.startActivity(PlayVimeoFullScreenActivity.getStartIntent(mContext, url));
         }
+//        else if (type.equalsIgnoreCase(mContext.getString(R.string.typeVimeoVideo))) {
+//            mContext.startActivity(PlayVimeoFullScreenActivity.getStartIntent(mContext, url));
+//        }
     }
 
     @Override
@@ -263,10 +262,23 @@ public class WebPlayerLiveModel implements WebPlayerLiveModelInterface {
     }
 
     @Override
+    public void previewQuizPlayer(String courseId, String courseType, String quizId) {
+        mContext.startActivity(QuizPlayerActivity.getStartIntent(mContext, quizId, courseId, courseType));
+
+    }
+
+    @Override
     public Response<ResponseBody> getReportByQuizId(JSONObject jsonObject) {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonObject.toString());
         return webCallExecutor(mNetworkModel.getReportByQuizId(body));
     }
+
+    @Override
+    public Response<ResponseBody> dictionariesSearch(String response) {
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), response);
+        return webCallExecutor(mNetworkModel.dictionariesSearch(body));
+    }
+
 
     @Override
     public Response<ResponseBody> fetchAssessmentConfiguration(String s) {

@@ -21,17 +21,17 @@ import android.widget.TextView;
 
 import javax.inject.Inject;
 
-import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationParentData;
+import in.securelearning.lil.android.analytics.model.AnalyticsModel;
 import in.securelearning.lil.android.analytics.views.fragment.StudentCoverageFragment;
 import in.securelearning.lil.android.analytics.views.fragment.StudentEffortFragment;
 import in.securelearning.lil.android.analytics.views.fragment.StudentExcellenceFragment;
 import in.securelearning.lil.android.analytics.views.fragment.StudentPerformanceFragment;
-import in.securelearning.lil.android.analytics.model.AnalyticsModel;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsStudentTabwiseBinding;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
+import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -45,7 +45,7 @@ public class StudentAnalyticsTabActivity extends AppCompatActivity {
     @Inject
     AppUserModel mAppUserModel;
 
-    ChartConfigurationParentData mChartConfigurationParentData;
+    GlobalConfigurationParent mChartConfigurationParentData;
 
     public static Intent getStartIntent(Context context) {
         return new Intent(context, StudentAnalyticsTabActivity.class);
@@ -100,9 +100,9 @@ public class StudentAnalyticsTabActivity extends AppCompatActivity {
             mBinding.layoutProgressBar.setVisibility(View.GONE);
             mAnalyticsModel.fetchChartConfiguration().subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<ChartConfigurationParentData>() {
+                    .subscribe(new Consumer<GlobalConfigurationParent>() {
                         @Override
-                        public void accept(ChartConfigurationParentData chartConfigurationParentData) throws Exception {
+                        public void accept(GlobalConfigurationParent chartConfigurationParentData) throws Exception {
 
                             mChartConfigurationParentData = chartConfigurationParentData;
                             if (mChartConfigurationParentData != null) {
@@ -120,6 +120,7 @@ public class StudentAnalyticsTabActivity extends AppCompatActivity {
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
                             mBinding.layoutProgressBar.setVisibility(View.GONE);
+                            mBinding.textViewNoData.setVisibility(View.VISIBLE);
                         }
                     });
         } else {
@@ -204,7 +205,7 @@ public class StudentAnalyticsTabActivity extends AppCompatActivity {
                 getString(R.string.label_excellence), getString(R.string.label_progress)
         };
 
-        public ViewPagerAdapter(FragmentManager fragmentManager) {
+        ViewPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
@@ -218,11 +219,11 @@ public class StudentAnalyticsTabActivity extends AppCompatActivity {
             if (position == 0) {
                 return StudentPerformanceFragment.newInstance(mChartConfigurationParentData.getBenchMarkPerformance());
             } else if (position == 1) {
-                return StudentEffortFragment.newInstance();
+                return StudentEffortFragment.newInstance(mChartConfigurationParentData.getPerformanceConfiguration());
             } else if (position == 2) {
                 return StudentExcellenceFragment.newInstance(mChartConfigurationParentData.getPerformanceConfiguration());
             } else if (position == 3) {
-                return StudentCoverageFragment.newInstance(mChartConfigurationParentData.getCoverageConfiguration());
+                return StudentCoverageFragment.newInstance(mChartConfigurationParentData.getCoverageConfiguration(), getBaseContext());
             } else {
                 return null;
             }

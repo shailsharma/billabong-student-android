@@ -36,7 +36,7 @@ import in.securelearning.lil.android.home.views.activity.SearchResourcesListFilt
 import in.securelearning.lil.android.home.views.activity.SearchResultListActivity;
 import in.securelearning.lil.android.home.views.activity.SearchResultListFilterActivity;
 import in.securelearning.lil.android.home.views.activity.SessionDetailActivity;
-import in.securelearning.lil.android.home.views.activity.SettingNewActivity;
+import in.securelearning.lil.android.home.views.activity.SettingActivity;
 import in.securelearning.lil.android.home.views.activity.StudentProfileActivity;
 import in.securelearning.lil.android.home.views.activity.SubjectDetailSearchCourseActivity;
 import in.securelearning.lil.android.home.views.activity.SubjectDetailSearchResourceActivity;
@@ -44,6 +44,7 @@ import in.securelearning.lil.android.home.views.activity.SubjectDetailsActivity;
 import in.securelearning.lil.android.home.views.activity.TopicListActivity;
 import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.home.views.activity.UserProfileEditActivity;
+import in.securelearning.lil.android.home.views.activity.WikiHowListActivity;
 import in.securelearning.lil.android.home.views.fragment.AvailableTrainingsFragment;
 import in.securelearning.lil.android.home.views.fragment.ChaptersFragment;
 import in.securelearning.lil.android.home.views.fragment.ClassDetailsFragments;
@@ -119,7 +120,7 @@ public interface HomeBaseComponent extends BaseComponent {
 
     void inject(PeriodicFragmentForClassDetails periodicFragmentForClassDetails);
 
-    void inject(SettingNewActivity settingNewActivity);
+    void inject(SettingActivity settingActivity);
 
     void inject(NewSearchCourseFilterActivity newSearchCourseFilterActivity);
 
@@ -218,4 +219,6 @@ public interface HomeBaseComponent extends BaseComponent {
     void inject(GamificationDialog gamificationDialog);
 
     void inject(GamificationModel gamificationModel);
+
+    void inject(WikiHowListActivity wikiHowListActivity);
 }

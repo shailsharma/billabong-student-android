@@ -47,9 +47,9 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.LayoutBottomSheetDialogBinding;
-import in.securelearning.lil.android.app.databinding.LayoutPracticePlayerBinding;
+import in.securelearning.lil.android.app.databinding.LayoutMindSparkPracticePlayerBinding;
 import in.securelearning.lil.android.base.dataobjects.Attempt;
 import in.securelearning.lil.android.base.dataobjects.Question;
 import in.securelearning.lil.android.base.dataobjects.QuestionChoice;
@@ -93,7 +93,7 @@ import static in.securelearning.lil.android.mindspark.MindSparkConstants.TYPE_MC
 
 public class MindSparkPlayerActivity extends AppCompatActivity {
 
-    LayoutPracticePlayerBinding mBinding;
+    LayoutMindSparkPracticePlayerBinding mBinding;
     private final static String TOPIC_ID = "topicId";
     private final static String TOPIC_NAME = "topicName";
     @Inject
@@ -114,7 +114,7 @@ public class MindSparkPlayerActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InjectorHome.INSTANCE.getComponent().inject(this);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.layout_practice_player);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.layout_mind_spark_practice_player);
         handleIntent();
         mFlavorHomeModel.setImmersiveStatusBar(getWindow());
     }

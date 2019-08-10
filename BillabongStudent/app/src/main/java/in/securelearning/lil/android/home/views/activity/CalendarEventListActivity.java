@@ -30,7 +30,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.LayoutCalendarAnnouncementItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutCalendarCategoryListBinding;
 import in.securelearning.lil.android.base.constants.EventType;

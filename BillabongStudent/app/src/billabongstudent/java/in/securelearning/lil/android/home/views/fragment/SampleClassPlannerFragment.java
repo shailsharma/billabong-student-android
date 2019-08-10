@@ -35,7 +35,6 @@ import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
-import in.securelearning.lil.android.base.views.activity.WebPlayerLiveActivity;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.views.activity.PlayYouTubeFullScreenActivity;
 import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
@@ -353,10 +352,8 @@ public class SampleClassPlannerFragment extends Fragment {
                     if (GeneralUtils.isNetworkAvailable(getContext())) {
                         if (finalObjectClass.equals(MicroLearningCourse.class)) {
                             startActivity(RapidLearningSectionListActivity.getStartIntent(getContext(), object.getObjectId()));
-                        } else if (finalObjectClass.equals(VideoCourse.class) || finalObjectClass.equals(InteractiveVideo.class) || object.getTotalResourceCount().getVideoCourses() > 0 || object.getTotalResourceCount().getVideos() > 0) {
-                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), object.getObjectId(), object.getMetaInformation().getSubject().getId(), object.getMetaInformation().getTopic().getId(), finalObjectClass, "", false);
                         } else {
-                            WebPlayerLiveActivity.startWebPlayer(getContext(), object.getObjectId(), object.getMetaInformation().getSubject().getId(), object.getMetaInformation().getTopic().getId(), finalObjectClass, "", false, true);
+                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), object.getObjectId(), object.getMetaInformation().getSubject().getId(), object.getMetaInformation().getTopic().getId(), finalObjectClass, "", false);
                         }
                     } else {
                         ToastUtils.showToastAlert(getContext(), getString(R.string.connect_internet));
@@ -448,11 +445,8 @@ public class SampleClassPlannerFragment extends Fragment {
                             favouriteResource.setTitle(object.getTitle());
                             getContext().startActivity(PlayYouTubeFullScreenActivity.getStartIntent(getContext(), favouriteResource, false));
                         } else {
-                            if (finalObjectClass.equals(VideoCourse.class) || finalObjectClass.equals(InteractiveVideo.class)) {
-                                WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), object.getId(), "", "", finalObjectClass, "", false);
-                            } else {
-                                WebPlayerLiveActivity.startWebPlayer(getContext(), object.getId(), "", "", finalObjectClass, "", false, true);
-                            }
+                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), object.getId(), "", "", finalObjectClass, "", false);
+
                         }
 
                     } else {
@@ -502,7 +496,7 @@ public class SampleClassPlannerFragment extends Fragment {
                 public void onClick(View view) {
                     if (GeneralUtils.isNetworkAvailable(getContext())) {
 
-                        WebPlayerLiveActivity.startWebPlayer(getContext(), object.getId(), "", "", finalObjectClass, "", false, true);
+                        WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), object.getId(), "", "", finalObjectClass, "", false);
 
                     } else {
                         ToastUtils.showToastAlert(getContext(), getString(R.string.connect_internet));

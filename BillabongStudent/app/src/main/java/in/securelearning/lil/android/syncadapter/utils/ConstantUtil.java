@@ -33,7 +33,8 @@ public class ConstantUtil {
     public static final int NINTY_PERCENTAGE = 90;
     public static final int SEVENTY_PERCENTAGE = 70;
     public static final float BENCHMARK_PERCENTAGE = 50;
-    public static final String ZERO = "0";
+    public static final String STRING_ZERO = "0";
+    public static final int INT_ZERO = 0;
     public static final String BENCHMARK_PERFORMANCE = "benchmark_performance";
     public static final String EXCELLENCE = "excellence";
     public static final String COVERAGE = "coverage";
@@ -54,6 +55,7 @@ public class ConstantUtil {
     public final static int CHECK_CODE = 1;
 
     public static final String GAMIFICATION_OBJECT = "gamification_object";
+    public static final String GAMIFICATION_EVENT_POSITION = "gamification_event_position";
 
     /*userStatus call type*/
     public static final String TYPE_LESSON_PLAN = "lessonPlan";
@@ -67,4 +69,10 @@ public class ConstantUtil {
     public static final String GROUP_TYPE_NETWORK = "learningNetwork";
     public static final String GROUP_TYPE_TRAINING = "training";
     public static final String GROUP_TYPE_LRPA = "lrpa";
+    public static final float BONUS_PERCENTAGE = 20;
+    public static final float BONUS_TIME = 5;
+    public static final String GAMIFICATION_PRACTISE = "gamification_practise";
+    public static final String GAMIFICATION_SELECTED_ID = "id";
+    public static final String TTS_AVAILABLE= "gamification_survey";
+    public static final String EFFORT = "effort";
 }

@@ -29,7 +29,6 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -43,7 +42,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.StudentImageListRowBinding;
 import in.securelearning.lil.android.assignments.events.LoadAssignmentResponseListTeacher;
 import in.securelearning.lil.android.assignments.model.AssignmentTeacherModel;
@@ -79,7 +78,6 @@ import in.securelearning.lil.android.courses.views.activity.CourseDetailActivity
 import in.securelearning.lil.android.home.dataobjects.TimeUtils;
 import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.learningnetwork.views.activity.GroupDetailActivity;
-import in.securelearning.lil.android.quizpreview.activity.QuizPreviewActivity;
 import in.securelearning.lil.android.resources.view.activity.VideoPlayActivity;
 import in.securelearning.lil.android.resources.view.activity.VimeoActivity;
 import in.securelearning.lil.android.resources.view.activity.YoutubePlayActivity;
@@ -988,7 +986,7 @@ public class StudentSummaryActivity extends AppCompatActivity {
             holder.mBinding.student.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    QuizPreviewActivity.startQuizPreview(StudentSummaryActivity.this, docId.get(position), "", false);
+                    //    QuizPreviewActivity.startQuizPreview(StudentSummaryActivity.this, docId.get(position), "", false);
                 }
             });
         }
@@ -1089,7 +1087,7 @@ public class StudentSummaryActivity extends AppCompatActivity {
                     if (assignmentResponses.get(position).getStage().equals(AssignmentStage.STAGE_SUBMITTED.getAssignmentStage()) || assignmentResponses.get(position).getStage().equals(AssignmentStage.STAGE_GRADED.getAssignmentStage())) {
                         isAttempt = false;
                     }
-                    QuizPreviewActivity.startQuizPreview(mContext, assignmentResponses.get(position).getDocId(), "", isAttempt);
+                    //QuizPreviewActivity.startQuizPreview(mContext, assignmentResponses.get(position).getDocId(), "", isAttempt);
                 }
             });
         }

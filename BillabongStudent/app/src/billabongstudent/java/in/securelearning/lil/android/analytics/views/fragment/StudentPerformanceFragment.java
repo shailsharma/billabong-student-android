@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,15 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import in.securelearning.lil.android.analytics.views.adapter.StudentPerformanceAdapter;
-import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationParentData;
+import in.securelearning.lil.android.analytics.dataobjects.BenchMarkPerformance;
 import in.securelearning.lil.android.analytics.dataobjects.EffortvsPerformanceData;
 import in.securelearning.lil.android.analytics.model.AnalyticsModel;
+import in.securelearning.lil.android.analytics.views.adapter.StudentPerformanceAdapter;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutStudentAnalyticsPerformanceBinding;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
@@ -38,16 +38,16 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
     AnalyticsModel mAnalyticsModel;
     ArrayList<EffortvsPerformanceData> mBrilliantSubjectList = null,
             mCatchingSubjectList = null, mWorkHarderList = null, mStudyingLot = null;
-    ChartConfigurationParentData.BenchMarkPerformance mBenchMarkPerformance;
-    private Context mContext;
+    BenchMarkPerformance mBenchMarkPerformance;
     private boolean fragmentResume = false;
     private boolean fragmentVisible = false;
     private boolean fragmentOnCreated = false;
+    private Context mContext;
 
-    public static Fragment newInstance(ChartConfigurationParentData.BenchMarkPerformance benchMarkPerformance) {
+    public static Fragment newInstance(BenchMarkPerformance benchMarkPerformance) {
         StudentPerformanceFragment fragment = new StudentPerformanceFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ConstantUtil.BENCHMARK_PERFORMANCE, (Serializable) benchMarkPerformance);
+        args.putSerializable(ConstantUtil.BENCHMARK_PERFORMANCE, benchMarkPerformance);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,7 +57,7 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
 
-            mBenchMarkPerformance = (ChartConfigurationParentData.BenchMarkPerformance) getArguments().getSerializable(ConstantUtil.BENCHMARK_PERFORMANCE);
+            mBenchMarkPerformance = (BenchMarkPerformance) getArguments().getSerializable(ConstantUtil.BENCHMARK_PERFORMANCE);
         }
     }
 
@@ -90,18 +90,7 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (getActivity() != null) {
-            mContext = getActivity();
-        } else {
-            mContext = context;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mContext = null;
-
+        mContext = context;
     }
 
     @Override
@@ -208,9 +197,6 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
 //
 
 
-            } else {
-//
-                showNoData();
             }
         }
         if (mBrilliantSubjectList != null && !mBrilliantSubjectList.isEmpty()) {
@@ -241,7 +227,6 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
 
         } else {
             mBinding.llPerformance.setVisibility(View.GONE);
-            mBinding.view1.setVisibility(View.GONE);
             mBinding.textViewBrilliant.setText(R.string.zero);
             mBinding.textViewCatching.setText(R.string.zero);
             mBinding.textViewWorkHarder.setText(R.string.zero);
@@ -253,7 +238,6 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
 
     private void setEffortDaily(int studentType, ArrayList<EffortvsPerformanceData> subjectList, int drawable) {
         mBinding.llPerformance.setVisibility(View.VISIBLE);
-        mBinding.view1.setVisibility(View.VISIBLE);
         mBinding.textViewPerformance.setText(studentType);
         mBinding.textViewCount.setText(String.valueOf(subjectList.size()));
         mBinding.textViewCount.setBackgroundResource(drawable);
@@ -274,16 +258,24 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
 
     private void highlightSelectedStudent(TextView highLightTextView, TextView textView_1, TextView textView_2, TextView textView_3) {
 
+        highLightTextView.setTypeface(highLightTextView.getTypeface(), Typeface.BOLD);
 
-        highLightTextView.setTypeface(null, Typeface.BOLD);
-        highLightTextView.setTextAppearance(mContext, android.R.style.TextAppearance_Large);
+        textView_1.setTypeface(textView_1.getTypeface(), Typeface.NORMAL);
+        textView_2.setTypeface(textView_2.getTypeface(), Typeface.NORMAL);
+        textView_3.setTypeface(textView_3.getTypeface(), Typeface.NORMAL);
 
-        textView_1.setTypeface(null, Typeface.NORMAL);
-        textView_2.setTypeface(null, Typeface.NORMAL);
-        textView_3.setTypeface(null, Typeface.NORMAL);
-        textView_1.setTextAppearance(mContext, android.R.style.TextAppearance_Small);
-        textView_2.setTextAppearance(mContext, android.R.style.TextAppearance_Small);
-        textView_3.setTextAppearance(mContext, android.R.style.TextAppearance_Small);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            highLightTextView.setTextAppearance(android.R.style.TextAppearance_Large);
+            textView_1.setTextAppearance(android.R.style.TextAppearance_Small);
+            textView_2.setTextAppearance(android.R.style.TextAppearance_Small);
+            textView_3.setTextAppearance(android.R.style.TextAppearance_Small);
+        } else {
+            highLightTextView.setTextSize(22);
+            textView_1.setTextSize(14);
+            textView_2.setTextSize(14);
+            textView_3.setTextSize(14);
+        }
+
 
     }
 
@@ -327,7 +319,6 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
                 break;
             default:
                 mBinding.llPerformance.setVisibility(View.GONE);
-                mBinding.view1.setVisibility(View.GONE);
                 break;
 
         }

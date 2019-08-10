@@ -33,7 +33,7 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.ActivityCourseDetailBinding;
 import in.securelearning.lil.android.app.databinding.RateAndReviewBinding;
 import in.securelearning.lil.android.assignments.views.activity.AssignActivity;
@@ -56,7 +56,6 @@ import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerActivity;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaActivity;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
-import in.securelearning.lil.android.base.views.activity.WebPlayerLiveActivity;
 import in.securelearning.lil.android.courses.InjectorCourses;
 import in.securelearning.lil.android.courses.models.CoursesModel;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
@@ -397,11 +396,7 @@ public class CourseDetailActivity extends AppCompatActivity implements View.OnCl
             }
         } else {
             if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-                if (isVideoCourse || mClass.equals(VideoCourse.class) || mClass.equals(InteractiveVideo.class) || course.getTotalResourceCount().getVideoCourses() > 0 || course.getTotalResourceCount().getVideos() > 0) {
-                    WebPlayerCordovaLiveActivity.startWebPlayer(this, mId, mAboutCourse.getMetaInformation().getSubject().getId(), mAboutCourse.getMetaInformation().getTopic().getId(), mClass, mAssignmentResponseId, false);
-                } else {
-                    WebPlayerLiveActivity.startWebPlayer(this, mId, mAboutCourse.getMetaInformation().getSubject().getId(), mAboutCourse.getMetaInformation().getTopic().getId(), mClass, mAssignmentResponseId, false, false);
-                }
+                WebPlayerCordovaLiveActivity.startWebPlayer(this, mId, mAboutCourse.getMetaInformation().getSubject().getId(), mAboutCourse.getMetaInformation().getTopic().getId(), mClass, mAssignmentResponseId, false);
             } else {
                 ToastUtils.showToastAlert(getBaseContext(), getString(R.string.connect_internet));
             }
@@ -884,9 +879,7 @@ public class CourseDetailActivity extends AppCompatActivity implements View.OnCl
 
     private void setCuratorThumbnail(AboutCourse item) {
 
-        try
-
-        {
+        try {
             String curatorImageFilePath = "";
             if (item.getCurator().getUserThumbnail() != null) {
                 curatorImageFilePath = item.getCurator().getUserThumbnail().getUrl();

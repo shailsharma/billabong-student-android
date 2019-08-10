@@ -36,7 +36,17 @@ public class GamificationEvent {
     private String eventOccurrenceDate;
     private String eventCreateDate;
     private float gifXPosition;
+
+    public String getBonusCalculateDate() {
+        return bonusCalculateDate;
+    }
+
+    public void setBonusCalculateDate(String bonusCalculateDate) {
+        this.bonusCalculateDate = bonusCalculateDate;
+    }
+
     private float gifYPosition;
+    private String bonusCalculateDate;
 
     // it is *2 it specify action to be taken associated  with bonus object
     private GamificationBonus bonusObject;

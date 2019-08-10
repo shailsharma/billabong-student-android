@@ -19,9 +19,19 @@ public class ThirdPartyMapping implements Serializable {
     @Expose
     private String mMindSparkTopicId;
 
+    @SerializedName("type")
+    @Expose
+    private String mType;
+
     public ThirdPartyMapping(String subjectId, String topicId) {
         mSubjectId = subjectId;
         mTopicId = topicId;
+    }
+
+    public ThirdPartyMapping(String subjectId, String topicId, String type) {
+        mSubjectId = subjectId;
+        mTopicId = topicId;
+        mType = type;
     }
 
     public String getSubjectId() {

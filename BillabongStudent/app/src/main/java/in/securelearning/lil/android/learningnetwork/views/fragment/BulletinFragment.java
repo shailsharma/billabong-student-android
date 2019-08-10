@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.ActivityEventItemBinding;
 import in.securelearning.lil.android.app.databinding.AnnouncementEventItemBinding;
 import in.securelearning.lil.android.app.databinding.FragmentBulletinBinding;

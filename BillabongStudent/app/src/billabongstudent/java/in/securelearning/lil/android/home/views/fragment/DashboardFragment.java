@@ -5,8 +5,10 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
@@ -34,26 +36,29 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.analytics.dataobjects.EffortvsPerformanceData;
 import in.securelearning.lil.android.analytics.views.activity.StudentAnalyticsTabActivity;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutDashboardFragmentBinding;
 import in.securelearning.lil.android.app.databinding.LayoutDashboardStudentSubjectItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutLessonPlanCardItemBinding;
-import in.securelearning.lil.android.assignments.model.AssignmentResponseStudentModel;
-import in.securelearning.lil.android.assignments.model.AssignmentTeacherModel;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AnimationUtils;
+import in.securelearning.lil.android.base.utils.AppPrefs;
+import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
+import in.securelearning.lil.android.gamification.dataobject.GamificationBonus;
 import in.securelearning.lil.android.gamification.dataobject.GamificationEvent;
+import in.securelearning.lil.android.gamification.event.GamificationEventDone;
 import in.securelearning.lil.android.gamification.model.GamificationModel;
+import in.securelearning.lil.android.gamification.utils.GamificationPrefs;
 import in.securelearning.lil.android.gamification.views.fragment.GamificationDialog;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
 import in.securelearning.lil.android.home.events.HomeworkTabOpeningEvent;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
-import in.securelearning.lil.android.home.utils.RecyclerViewPagerIndicator;
 import in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity;
 import in.securelearning.lil.android.home.views.activity.SubjectDetailsActivity;
 import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
@@ -61,11 +66,11 @@ import in.securelearning.lil.android.homework.event.RefreshHomeworkEvent;
 import in.securelearning.lil.android.homework.views.fragment.HomeworkFragment;
 import in.securelearning.lil.android.learningnetwork.views.activity.NotificationActivity;
 import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
+import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
 import in.securelearning.lil.android.syncadapter.dataobject.LessonPlanMinimal;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubject;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectResult;
 import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
-import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
@@ -75,24 +80,21 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 public class DashboardFragment extends Fragment {
 
     private static final int DASHBOARD_SUBJECT_SPAN_COUNT = 4;
+
     @Inject
     public RxBus mRxBus;
     @Inject
     public AppUserModel mAppUserModel;
     @Inject
-    public AssignmentTeacherModel mTeacherModel;
-    @Inject
     public GamificationDialog mGamificationDialog;
-    @Inject
-    AssignmentResponseStudentModel mAssignmentResponseStudentModel;
     @Inject
     FlavorHomeModel mFlavorHomeModel;
     LayoutDashboardFragmentBinding mBinding;
-    ArrayList<String> mSnackBarMsg = new ArrayList<>();
     @Inject
     GamificationModel mGamificationModel;
     private OnDashboardFragmentInteractionListener mListener;
@@ -100,6 +102,7 @@ public class DashboardFragment extends Fragment {
     private Context mContext;
     private Timer mGreetingTimer;
     private String mStudentId;
+    private boolean isSurveyDone = false;
     private int mOverDueCount = 0, mNewCount = 0, mDueSoonCount = 0;
 
     public DashboardFragment() {
@@ -123,8 +126,7 @@ public class DashboardFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.layout_dashboard_fragment, container, false);
         listenRxBusEvents();
@@ -136,35 +138,72 @@ public class DashboardFragment extends Fragment {
 
     }
 
+    private void checkHomeWorkMsg() {
+        final ArrayList<GamificationEvent> eventList = mGamificationModel.getGamificationEvent();
+        String userName = "";
+        if (mAppUserModel != null && mAppUserModel.getApplicationUser() != null) {
+            userName = mAppUserModel.getApplicationUser().getFirstName();
+        }
+        if (eventList != null && !eventList.isEmpty() && eventList.size() > 1) {
+            GamificationEvent homeworkEvent = eventList.get(1);
+            if (homeworkEvent != null && homeworkEvent.getActivity().equalsIgnoreCase("dashboard") && homeworkEvent.getOnActionCriteria().equalsIgnoreCase("new_assignment_count") && mNewCount != 0) {
+                if (homeworkEvent.getEventOccurrenceDate() == null && !homeworkEvent.isGamingEventDone()) {
+                    String msg = String.format(homeworkEvent.getMessage(), userName, mNewCount);
+                    mGamificationDialog.display(getFragmentManager(), mContext, msg, homeworkEvent);
+
+                } else if (CommonUtils.getInstance().checkEventOccurrence(homeworkEvent.getFrequency(), homeworkEvent.getFrequencyUnit(), homeworkEvent.getEventOccurrenceDate())) {
+                    String msg = String.format(homeworkEvent.getMessage(), userName, mNewCount);
+                    mGamificationDialog.display(getFragmentManager(), mContext, msg, homeworkEvent);
+                }
+            }
+        }
+    }
+
+    private void checkWelcomeMsg() {
+        final ArrayList<GamificationEvent> eventList = mGamificationModel.getGamificationEvent();
+        String userName = "";
+        if (mAppUserModel != null && mAppUserModel.getApplicationUser() != null) {
+            userName = mAppUserModel.getApplicationUser().getFirstName();
+        }
+        if (eventList != null && !eventList.isEmpty()) {
+            GamificationEvent loginEvent = eventList.get(0);
+            if (loginEvent != null && loginEvent.getActivity().equalsIgnoreCase("dashboard") && loginEvent.getEventType().equalsIgnoreCase("welcome_message")) {
+                if (loginEvent.getEventOccurrenceDate() == null && !loginEvent.isGamingEventDone()) {
+                    String msg = String.format(loginEvent.getMessage(), userName);
+                    mGamificationDialog.display(getFragmentManager(), mContext, msg, loginEvent);
+
+                } else if (CommonUtils.getInstance().checkEventOccurrence(loginEvent.getFrequency(), loginEvent.getFrequencyUnit(), loginEvent.getEventOccurrenceDate())) {
+                    String msg = String.format(loginEvent.getMessage(), userName);
+                    mGamificationDialog.display(getFragmentManager(), mContext, msg, loginEvent);
+                }
+            }
+
+        }
+    }
+
 
     @Override
     public void onResume() {
         super.onResume();
 
-        handleGreetingTimer();
-        checkGamificationEvent();
-//        if (PermissionPrefs.setRanBefore(mContext)) {
-//            //showDynamicSnackBar();
-//
-//            //showGamificationDialog();
-//            // checkGamificationEvent();
-//
-//        }
-
-
-    }
-
-    private void showGamificationDialog() {
-        String msg;
-
-        if (mAppUserModel != null && mAppUserModel.getApplicationUser() != null) {
-            UserProfile userProfile = mAppUserModel.getApplicationUser();
-            msg = String.format(getString(R.string.snackbar_login_msg), userProfile.getFirstName());
-        } else {
-            msg = getString(R.string.snackbar_login_msg_without_name);
+//        handleGreetingTimer();
+        try {
+            if (CommonUtils.getInstance().getHoursOfDay() < 15) {
+                checkWelcomeMsg();
+                checkGamificationEventForBonus();
+            } else if (!isSurveyDone && CommonUtils.getInstance().getHoursOfDay() > 15) {
+                checkGamificationEventForSurvey();
+            } else {
+                checkHomeWorkMsg();
+                checkGamificationEventForBonus();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        mGamificationDialog.display(getFragmentManager(), mContext, msg, null);
+
+
     }
+
 
     @Override
     public void onStop() {
@@ -284,7 +323,7 @@ public class DashboardFragment extends Fragment {
             }
         });
 
-        mBinding.assignmentView.textViewAssignmentCount1.setOnClickListener(new View.OnClickListener() {
+        mBinding.assignmentView.layoutAssignmentCount1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mListener.onDashboardFragmentInteraction(HomeworkFragment.class);
@@ -300,7 +339,7 @@ public class DashboardFragment extends Fragment {
             }
         });
 
-        mBinding.assignmentView.textViewAssignmentCount2.setOnClickListener(new View.OnClickListener() {
+        mBinding.assignmentView.layoutAssignmentCount2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mListener.onDashboardFragmentInteraction(HomeworkFragment.class);
@@ -316,7 +355,7 @@ public class DashboardFragment extends Fragment {
             }
         });
 
-        mBinding.assignmentView.textViewAssignmentCount3.setOnClickListener(new View.OnClickListener() {
+        mBinding.assignmentView.layoutAssignmentCount3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mListener.onDashboardFragmentInteraction(HomeworkFragment.class);
@@ -341,15 +380,15 @@ public class DashboardFragment extends Fragment {
         UserProfile userProfile = mAppUserModel.getApplicationUser();
         mBinding.textViewUserName.setText(userProfile.getFirstName());
         if (userProfile.getThumbnail() != null && !TextUtils.isEmpty(userProfile.getThumbnail().getLocalUrl())) {
-            Picasso.with(getContext()).load(userProfile.getThumbnail().getLocalUrl()).placeholder(R.drawable.icon_profile_large).transform(new CircleTransform()).resize(256, 256).centerCrop().into(mBinding.imageViewUser);
+            Picasso.with(getContext()).load(userProfile.getThumbnail().getLocalUrl()).placeholder(R.drawable.icon_profile_large).transform(new CropCircleTransformation()).centerCrop().fit().into(mBinding.imageViewUser);
         } else if (userProfile.getThumbnail() != null && !TextUtils.isEmpty(userProfile.getThumbnail().getUrl())) {
-            Picasso.with(getContext()).load(userProfile.getThumbnail().getUrl()).placeholder(R.drawable.icon_profile_large).transform(new CircleTransform()).resize(256, 256).centerCrop().into(mBinding.imageViewUser);
+            Picasso.with(getContext()).load(userProfile.getThumbnail().getUrl()).placeholder(R.drawable.icon_profile_large).transform(new CropCircleTransformation()).centerCrop().fit().into(mBinding.imageViewUser);
         } else if (userProfile.getThumbnail() != null && !TextUtils.isEmpty(userProfile.getThumbnail().getThumb())) {
-            Picasso.with(getContext()).load(userProfile.getThumbnail().getThumb()).placeholder(R.drawable.icon_profile_large).transform(new CircleTransform()).resize(256, 256).centerCrop().into(mBinding.imageViewUser);
+            Picasso.with(getContext()).load(userProfile.getThumbnail().getThumb()).placeholder(R.drawable.icon_profile_large).transform(new CropCircleTransformation()).centerCrop().fit().into(mBinding.imageViewUser);
         } else {
             if (!TextUtils.isEmpty(userProfile.getFirstName())) {
                 String firstWord = userProfile.getFirstName().substring(0, 1).toUpperCase();
-                TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimary);
+                TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, ContextCompat.getColor(mContext, R.color.colorPrimary));
                 mBinding.imageViewUser.setImageDrawable(textDrawable);
             }
         }
@@ -373,17 +412,21 @@ public class DashboardFragment extends Fragment {
 
                                 if (assignedHomeworkParent.getNewStudentAssignment() != null) {
                                     mNewCount = assignedHomeworkParent.getNewStudentAssignment().getCount();
-                                    makeCountBold(String.valueOf(mNewCount), mContext.getString(R.string.string_new), mBinding.assignmentView.textViewAssignmentCount1);
+                                    mBinding.assignmentView.textViewAssignmentCount1.setText(String.valueOf(mNewCount));
+//                                    makeCountBold(String.valueOf(mNewCount), mContext.getString(R.string.string_new), mBinding.assignmentView.textViewAssignmentCount1);
 
                                 } else {
-                                    makeCountBold(String.valueOf(mNewCount), mContext.getString(R.string.string_new), mBinding.assignmentView.textViewAssignmentCount1);
+                                    mBinding.assignmentView.textViewAssignmentCount1.setText(String.valueOf(mNewCount));
+//                                    makeCountBold(String.valueOf(mNewCount), mContext.getString(R.string.string_new), mBinding.assignmentView.textViewAssignmentCount1);
                                 }
                                 if (assignedHomeworkParent.getOverDueStudentAssignment() != null) {
                                     mOverDueCount = assignedHomeworkParent.getOverDueStudentAssignment().getCount();
-                                    makeCountBold(String.valueOf(mOverDueCount), mContext.getString(R.string.string_over_due), mBinding.assignmentView.textViewAssignmentCount3);
+                                    mBinding.assignmentView.textViewAssignmentCount3.setText(String.valueOf(mOverDueCount));
+//                                    makeCountBold(String.valueOf(mOverDueCount), mContext.getString(R.string.string_over_due), mBinding.assignmentView.textViewAssignmentCount3);
 
                                 } else {
-                                    makeCountBold(String.valueOf(mOverDueCount), mContext.getString(R.string.string_over_due), mBinding.assignmentView.textViewAssignmentCount3);
+                                    mBinding.assignmentView.textViewAssignmentCount3.setText(String.valueOf(mOverDueCount));
+//                                    makeCountBold(String.valueOf(mOverDueCount), mContext.getString(R.string.string_over_due), mBinding.assignmentView.textViewAssignmentCount3);
                                 }
                                 if (assignedHomeworkParent.getTodayStudentAssignment() != null) {
                                     mDueSoonCount = assignedHomeworkParent.getTodayStudentAssignment().getCount();
@@ -391,7 +434,9 @@ public class DashboardFragment extends Fragment {
                                 if (assignedHomeworkParent.getUpComingStudentAssignment() != null) {
                                     mDueSoonCount = mDueSoonCount + assignedHomeworkParent.getUpComingStudentAssignment().getCount();
                                 }
-                                makeCountBold(String.valueOf(mDueSoonCount), mContext.getString(R.string.due_soon), mBinding.assignmentView.textViewAssignmentCount2);
+//                                makeCountBold(String.valueOf(mDueSoonCount), mContext.getString(R.string.due_soon), mBinding.assignmentView.textViewAssignmentCount2);
+
+                                mBinding.assignmentView.textViewAssignmentCount2.setText(String.valueOf(mDueSoonCount));
 
 
                             }
@@ -444,63 +489,51 @@ public class DashboardFragment extends Fragment {
 
     }
 
-    private void checkGamificationEvent() {
+    private void checkGamificationEventForSurvey() {
         ArrayList<GamificationEvent> eventList = mGamificationModel.getGamificationEvent();
-        String msg = null;
-        String userName = "";
-        if (mAppUserModel != null && mAppUserModel.getApplicationUser() != null) {
-            userName = mAppUserModel.getApplicationUser().getFirstName();
-        }
         if (eventList != null && !eventList.isEmpty()) {
             for (GamificationEvent event : eventList) {
                 if (event != null) {
-                    if (event.getActivity().equalsIgnoreCase("dashboard") && event.getEventType().equalsIgnoreCase("message")) {
+                    // School survey
+                    if (event.getActivity().equalsIgnoreCase("dashboard") && event.getOnActionCriteria().equalsIgnoreCase("3pm")) {
                         if (event.getEventOccurrenceDate() == null && !event.isGamingEventDone()) {
-                            msg = String.format(event.getMessage(), userName);
-                            mGamificationDialog.display(getFragmentManager(), mContext, msg, event);
+                            mGamificationDialog.display(getFragmentManager(), mContext, event.getMessage(), event);
                             break;
-                        } else if (CommonUtils.getInstance().getDateDiff(event.getEventOccurrenceDate())) {
-                            msg = String.format(event.getMessage(), userName);
-                            mGamificationDialog.display(getFragmentManager(), mContext, msg, event);
-                            break;
-
-                        }
-                    }
-
-                    if (event.getActivity().equalsIgnoreCase("dashboard") && event.getOnActionCriteria().equalsIgnoreCase("new_assignment_count") && mNewCount != 0) {
-                        if (event.getEventOccurrenceDate() == null && !event.isGamingEventDone()) {
-                            msg = String.format(event.getMessage(), userName, mNewCount);
-                            mGamificationDialog.display(getFragmentManager(), mContext, msg, event);
-                            break;
-                        } else if (CommonUtils.getInstance().getDateDiff(event.getEventOccurrenceDate())) {
-                            msg = String.format(event.getMessage(), userName, mNewCount);
-                            mGamificationDialog.display(getFragmentManager(), mContext, msg, event);
+                        } else if (CommonUtils.getInstance().compareTwoDatesForSurvey(event.getEventOccurrenceDate())) {
+                            mGamificationDialog.display(getFragmentManager(), mContext, event.getMessage(), event);
                             break;
                         }
                     }
                 }
             }
         }
+
     }
 
-    private void showDynamicSnackBar() {
-        String msg = getString(R.string.snackbar_login_msg);
-        if (mAppUserModel != null && mAppUserModel.getName() != null && !mAppUserModel.getName().trim().equalsIgnoreCase("")) {
-            msg = String.format(msg, mAppUserModel.getName());
-            mSnackBarMsg.add(0, mAppUserModel.getName());
-            SnackBarUtils.getInstance().getSnackBarWithImage(
-                    getActivity(), mBinding.getRoot(), R.drawable.m_lil_red_main, "left",
-                    mSnackBarMsg, 0, R.color.white, msg);
+    private void checkGamificationEventForBonus() {
+        ArrayList<GamificationEvent> eventList = mGamificationModel.getGamificationEvent();
 
-        } else {
-            msg = getString(R.string.snackbar_login_msg_without_name);
-            SnackBarUtils.getInstance().getSnackBarWithImage(
-                    getActivity(), mBinding.getRoot(), R.drawable.m_lil_red_main, "left",
-                    mSnackBarMsg, 0, R.color.white, msg);
+        if (eventList != null && !eventList.isEmpty()) {
+            for (GamificationEvent event : eventList) {
+                if (event != null) {
 
+                    if (event.getActivity().equalsIgnoreCase("dashboard") && event.isBonusAvailable()) {
+                        if (event.getBonusObject() == null && TextUtils.isEmpty(event.getBonusCalculateDate())) {
+                            fetchSubjectPerformanceData(event);
+                            break;
+                        } else if (event.getBonusObject() != null && !TextUtils.isEmpty(event.getBonusCalculateDate()) && CommonUtils.getInstance().checkEventOccurrenceForBonus(event.getFrequency(), event.getFrequencyUnit(), event.getBonusCalculateDate())) {
+                            fetchSubjectPerformanceData(event);
+                            break;
+                        }
+                    }
+
+
+                }
+            }
         }
 
     }
+
 
     @SuppressLint("CheckResult")
     private void getTodayRecaps() {
@@ -650,6 +683,30 @@ public class DashboardFragment extends Fragment {
                         }
                     });
                 }
+                if (event instanceof GamificationEventDone) {
+                    GamificationEventDone gamificationEventDone = (GamificationEventDone) event;
+                    if (gamificationEventDone.getEventActivity() != null
+                            && gamificationEventDone.getEventActivity().equalsIgnoreCase("dashboard")
+                            && gamificationEventDone.getSubActivity() != null
+                            && gamificationEventDone.getSubActivity().equalsIgnoreCase("subject")
+                            && !TextUtils.isEmpty(GamificationPrefs.getSelectedId(mContext)) && gamificationEventDone.isDone()) {
+                        String subjectId = GamificationPrefs.getSelectedId(mContext);
+                        startActivity(SubjectDetailsActivity.getStartIntent(getContext(), subjectId));
+                        // GamificationPrefs.clearSelectedId(mContext);
+                    } else if (gamificationEventDone.isDone() &&
+                            gamificationEventDone.getEventActivity() != null &&
+                            gamificationEventDone.getEventActivity().
+                                    equalsIgnoreCase("dashboard") && gamificationEventDone.getSubActivity() != null &&
+                            gamificationEventDone.getSubActivity().equalsIgnoreCase("survey")) {
+                        isSurveyDone = true;
+                    } else if (gamificationEventDone.isDone() &&
+                            gamificationEventDone.getEventActivity() != null &&
+                            gamificationEventDone.getEventActivity().
+                                    equalsIgnoreCase("dashboard") && gamificationEventDone.getSubActivity() != null &&
+                            gamificationEventDone.getSubActivity().equalsIgnoreCase("welcome")) {
+                        checkHomeWorkMsg();
+                    }
+                }
 
             }
         });
@@ -694,76 +751,204 @@ public class DashboardFragment extends Fragment {
         mBinding.recapView.recycleViewRecap.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mBinding.recapView.recycleViewRecap.setHasFixedSize(true);
         mBinding.recapView.recycleViewRecap.setAdapter(new RecapPagerAdapter(lessonPlanMinimals));
-        mBinding.recapView.recycleViewRecap.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//        mBinding.recapView.recycleViewRecap.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//
+//
+//            }
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                int childCount = mBinding.recapView.recycleViewRecap.getChildCount();
+//                int width = mBinding.recapView.recycleViewRecap.getChildAt(0).getWidth();
+//                int padding = (mBinding.recapView.recycleViewRecap.getWidth() - width) / 2;
+//
+//                for (int j = 0; j < childCount; j++) {
+//                    View v = recyclerView.getChildAt(j);
+//                    float rate = 0;
+//                    if (v.getLeft() <= padding) {
+//                        if (v.getLeft() >= padding - v.getWidth()) {
+//                            rate = (padding - v.getLeft()) * 1f / v.getWidth();
+//                        } else {
+//                            rate = 1;
+//                        }
+//                        v.setScaleY(1 - rate * 0.1f);
+//                        v.setScaleX(1 - rate * 0.1f);
+//
+//                    } else {
+//                        if (v.getLeft() <= recyclerView.getWidth() - padding) {
+//                            rate = (recyclerView.getWidth() - padding - v.getLeft()) * 1f / v.getWidth();
+//                        }
+//                        v.setScaleY(0.9f + rate * 0.1f);
+//                        v.setScaleX(0.9f + rate * 0.1f);
+//                    }
+//                }
+//            }
+//        });
+//        if (mBinding.recapView.recycleViewRecap.getItemDecorationCount() == 0) {
+//            mBinding.recapView.recycleViewRecap.addItemDecoration(new RecyclerViewPagerIndicator());
+//
+//        }
 
+//        mBinding.recapView.recycleViewRecap.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+//            @Override
+//            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+//                if (mBinding.recapView.recycleViewRecap.getChildCount() < 3) {
+//                    if (mBinding.recapView.recycleViewRecap.getChildAt(1) != null) {
+//                        if (mBinding.recapView.recycleViewRecap.getCurrentPosition() == 0) {
+//                            View v1 = mBinding.recapView.recycleViewRecap.getChildAt(1);
+//                            v1.setScaleY(0.9f);
+//                            v1.setScaleX(0.9f);
+//                        } else {
+//                            View v1 = mBinding.recapView.recycleViewRecap.getChildAt(0);
+//                            v1.setScaleY(0.9f);
+//                            v1.setScaleX(0.9f);
+//                        }
+//                    }
+//                } else {
+//                    if (mBinding.recapView.recycleViewRecap.getChildAt(0) != null) {
+//                        View v0 = mBinding.recapView.recycleViewRecap.getChildAt(0);
+//                        v0.setScaleY(0.9f);
+//                        v0.setScaleX(0.9f);
+//                    }
+//                    if (mBinding.recapView.recycleViewRecap.getChildAt(2) != null) {
+//                        View v2 = mBinding.recapView.recycleViewRecap.getChildAt(2);
+//                        v2.setScaleY(0.9f);
+//                        v2.setScaleX(0.9f);
+//                    }
+//                }
+//
+//            }
+//        });
+    }
 
-            }
+    @SuppressLint("CheckResult")
+    private void fetchSubjectPerformanceData(final GamificationEvent event) {
+        if (GeneralUtils.isNetworkAvailable(mContext)) {
+            mFlavorHomeModel.fetchEffortvsPerformanceData()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<ArrayList<EffortvsPerformanceData>>() {
+                        @Override
+                        public void accept(ArrayList<EffortvsPerformanceData> responses) throws Exception {
+                            float avgDaily = 0f;
+                            boolean noSubjectFound = false;
+                            if (responses != null && !responses.isEmpty()) {
+                                for (EffortvsPerformanceData subjectResponse : responses) {
+                                    if (subjectResponse != null) {
+                                        float percentage = subjectResponse.getPercentage();
 
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int childCount = mBinding.recapView.recycleViewRecap.getChildCount();
-                int width = mBinding.recapView.recycleViewRecap.getChildAt(0).getWidth();
-                int padding = (mBinding.recapView.recycleViewRecap.getWidth() - width) / 2;
+                                        EffortvsPerformanceData.TimeResponse timeResponse = subjectResponse.getTimeResponseList();
+                                        if (timeResponse != null) {
+                                            avgDaily = timeResponse.getAvgDaily();
+                                        }
+                                        if ((percentage <= ConstantUtil.BONUS_PERCENTAGE) && (avgDaily <= ConstantUtil.BONUS_TIME)) {
+                                            String gradeId = mAppUserModel.getApplicationUser().getGrade().getId();
+                                            String sectionId = mAppUserModel.getApplicationUser().getSection().getId();
+                                            String userId = AppPrefs.getUserId(mContext);
+                                            //From config getting bonusValue
+                                            fetchBonusValueFromConfig(subjectResponse);
+                                            noSubjectFound = true;
 
-                for (int j = 0; j < childCount; j++) {
-                    View v = recyclerView.getChildAt(j);
-                    float rate = 0;
-                    if (v.getLeft() <= padding) {
-                        if (v.getLeft() >= padding - v.getWidth()) {
-                            rate = (padding - v.getLeft()) * 1f / v.getWidth();
-                        } else {
-                            rate = 1;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (!noSubjectFound) {
+
+                                    mGamificationModel.setBonusCalculateDateGamificationEvent(DateUtils.getCurrentISO8601DateString());
+                                }
+
+                            } else {
+                                mGamificationModel.setBonusCalculateDateGamificationEvent(DateUtils.getCurrentISO8601DateString());
+                            }
                         }
-                        v.setScaleY(1 - rate * 0.1f);
-                        v.setScaleX(1 - rate * 0.1f);
 
-                    } else {
-                        if (v.getLeft() <= recyclerView.getWidth() - padding) {
-                            rate = (recyclerView.getWidth() - padding - v.getLeft()) * 1f / v.getWidth();
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
                         }
-                        v.setScaleY(0.9f + rate * 0.1f);
-                        v.setScaleX(0.9f + rate * 0.1f);
-                    }
-                }
-            }
-        });
-        if (mBinding.recapView.recycleViewRecap.getItemDecorationCount() == 0) {
-            mBinding.recapView.recycleViewRecap.addItemDecoration(new RecyclerViewPagerIndicator());
+                    });
 
         }
+    }
 
-        mBinding.recapView.recycleViewRecap.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (mBinding.recapView.recycleViewRecap.getChildCount() < 3) {
-                    if (mBinding.recapView.recycleViewRecap.getChildAt(1) != null) {
-                        if (mBinding.recapView.recycleViewRecap.getCurrentPosition() == 0) {
-                            View v1 = mBinding.recapView.recycleViewRecap.getChildAt(1);
-                            v1.setScaleY(0.9f);
-                            v1.setScaleX(0.9f);
-                        } else {
-                            View v1 = mBinding.recapView.recycleViewRecap.getChildAt(0);
-                            v1.setScaleY(0.9f);
-                            v1.setScaleX(0.9f);
+    /* Added bonus from config after
+    getting the flash bonus create gamification bonus object */
+    @SuppressLint("CheckResult")
+    private void fetchBonusValueFromConfig(final EffortvsPerformanceData subjectResponse) {
+        if (GeneralUtils.isNetworkAvailable(mContext)) {
+            mGamificationModel.fetchBonusConfiguration().subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<GlobalConfigurationParent>() {
+                        @Override
+                        public void accept(GlobalConfigurationParent globalConfigurationParent) throws Exception {
+                            if (globalConfigurationParent != null && globalConfigurationParent.getBonus() != null && globalConfigurationParent.getBonus().getFlashBonus() != 0) {
+                                GamificationBonus bonus = mGamificationModel.createGamificationBonusForServer(3, 1, "dashboard", "subjects",
+                                        AppPrefs.getUserId(mContext), subjectResponse.getId(), null, CommonUtils.getInstance().getNextDayISODate(1, 0), "FlashBonus", globalConfigurationParent.getBonus().getFlashBonus(), null, null, subjectResponse.getName());
+                                // Need to save it to event
+                                //saveBonusToServer(bonus);
+                                mGamificationModel.createGamificationBonusObject(bonus, true);
+                            } else {
+                                GamificationBonus bonus = mGamificationModel.createGamificationBonusForServer(3, 1, "dashboard", "subjects",
+                                        AppPrefs.getUserId(mContext), subjectResponse.getId(), null, CommonUtils.getInstance().getNextDayISODate(1, 0), "FlashBonus", 100, null, null, subjectResponse.getName());
+                                mGamificationModel.createGamificationBonusObject(bonus, true);
+                            }
+
+
                         }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            GamificationBonus bonus = mGamificationModel.createGamificationBonusForServer(3, 1, "dashboard", "subjects",
+                                    AppPrefs.getUserId(mContext), subjectResponse.getId(), null, CommonUtils.getInstance().getNextDayISODate(1, 0), "FlashBonus", 100, null, null, subjectResponse.getName());
+                            mGamificationModel.createGamificationBonusObject(bonus, true);
+                            throwable.printStackTrace();
+
+                        }
+                    });
+        }
+
+
+    }
+
+
+    // Checking bonus for this student is there and not expiry
+    @SuppressLint("CheckResult")
+    private void checkBonusAvailableForSubjectId(final String lrpaSubjectId) {
+        ArrayList<GamificationEvent> eventList = mGamificationModel.getGamificationEvent();
+        GamificationBonus bonusObject = null;
+        if (eventList != null && !eventList.isEmpty()) {
+            if (eventList.size() > 4) {
+                GamificationEvent event = eventList.get(2);
+                if (event != null && event.getActivity().equalsIgnoreCase("dashboard") && event.isBonusAvailable()) {
+                    bonusObject = event.getBonusObject();
+                    if (bonusObject != null && bonusObject.getBonusAvail()
+                            && !TextUtils.isEmpty(bonusObject.getUserId())
+                            && !TextUtils.isEmpty(AppPrefs.getUserId(mContext))
+                            && bonusObject.getUserId().
+                            equalsIgnoreCase(AppPrefs.getUserId(mContext))
+                            && CommonUtils.getInstance().checkDateRange(bonusObject.getStartDate(), bonusObject.getEndDate())
+                            && !TextUtils.isEmpty(bonusObject.getSubjectName())) {
+                        String msg = "Congratulations! We have unlocked an exclusive Flash Bonus for " + bonusObject.getSubjectName() + "." + " You will secure Extra Euros. Should you \n" + "either Learn or Reinforce " + bonusObject.getSubjectName() + " topics Today?";
+                        // String msg = String.format(event.getMessage(), bonusObject.getSubjectName());
+                        mGamificationDialog.display(getFragmentManager(), mContext, msg, event);
+                    } else {
+                        startActivity(SubjectDetailsActivity.getStartIntent(getContext(), lrpaSubjectId));
                     }
                 } else {
-                    if (mBinding.recapView.recycleViewRecap.getChildAt(0) != null) {
-                        View v0 = mBinding.recapView.recycleViewRecap.getChildAt(0);
-                        v0.setScaleY(0.9f);
-                        v0.setScaleX(0.9f);
-                    }
-                    if (mBinding.recapView.recycleViewRecap.getChildAt(2) != null) {
-                        View v2 = mBinding.recapView.recycleViewRecap.getChildAt(2);
-                        v2.setScaleY(0.9f);
-                        v2.setScaleX(0.9f);
-                    }
+                    startActivity(SubjectDetailsActivity.getStartIntent(getContext(), lrpaSubjectId));
                 }
-
+            } else {
+                startActivity(SubjectDetailsActivity.getStartIntent(getContext(), lrpaSubjectId));
             }
-        });
+
+        } else {
+            startActivity(SubjectDetailsActivity.getStartIntent(getContext(), lrpaSubjectId));
+        }
+        //get The bonus for the user
     }
 
 
@@ -790,18 +975,19 @@ public class DashboardFragment extends Fragment {
             mList = list;
         }
 
+        @NonNull
         @Override
-        public RecapPagerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutLessonPlanCardItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_lesson_plan_card_item, parent, false);
-            return new RecapPagerAdapter.ViewHolder(binding);
+            return new ViewHolder(binding);
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             final LessonPlanMinimal lessonPlan = mList.get(position);
             setTitle(holder.mBinding.textViewTitle, lessonPlan.getTitle());
-            setDescription(holder.mBinding.textViewDescription, lessonPlan.getDescription());
-            setGrade(holder.mBinding.textViewGrade, lessonPlan.getGrade(), lessonPlan.getSection());
+//            setDescription(holder.mBinding.textViewDescription, lessonPlan.getDescription());
+//            setGrade(holder.mBinding.textViewGrade, lessonPlan.getGrade(), lessonPlan.getSection());
             setSubject(holder.mBinding.textViewSubject, lessonPlan.getSubject());
             holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -886,9 +1072,9 @@ public class DashboardFragment extends Fragment {
         }
 
         @Override
-        public SubjectAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutDashboardStudentSubjectItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_dashboard_student_subject_item, parent, false);
-            return new SubjectAdapter.ViewHolder(binding);
+            return new ViewHolder(binding);
         }
 
         @Override
@@ -901,7 +1087,9 @@ public class DashboardFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     if (GeneralUtils.isNetworkAvailable(getContext())) {
-                        startActivity(SubjectDetailsActivity.getStartIntent(getContext(), lessonPlanSubject.getId()));
+                        //Need to check is bonus available for this student
+                        GamificationPrefs.saveSelectedId(mContext, lessonPlanSubject.getId());
+                        checkBonusAvailableForSubjectId(lessonPlanSubject.getId());
                     } else {
                         Toast.makeText(getContext(), getString(R.string.connect_internet), Toast.LENGTH_SHORT).show();
                     }
@@ -942,6 +1130,4 @@ public class DashboardFragment extends Fragment {
         }
 
     }
-
-
 }

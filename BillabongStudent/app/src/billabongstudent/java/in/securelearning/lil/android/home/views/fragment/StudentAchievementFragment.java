@@ -1,12 +1,13 @@
 package in.securelearning.lil.android.home.views.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -19,18 +20,25 @@ import android.widget.LinearLayout;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutDialogSubjectItemBinding;
-import in.securelearning.lil.android.app.databinding.LayoutMyAchievementItemBinding;
+import in.securelearning.lil.android.app.databinding.LayoutMyAchievementBadgesItemBinding;
+import in.securelearning.lil.android.app.databinding.LayoutMyAchievementEurosItemBinding;
+import in.securelearning.lil.android.app.databinding.LayoutMyAchievementTrophiesItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutMyAchievementsBinding;
 import in.securelearning.lil.android.home.views.adapter.SubjectTopicsRewardAdapter;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentSubjectReward;
+import in.securelearning.lil.android.syncadapter.dataobjects.StudentTopicReward;
 
 public class StudentAchievementFragment extends Fragment {
 
     public static final String STUDENT_ACHIEVEMENT = "studentAchievement";
+    private static final int EUROS_SPAN_COUNT = 4;
+    private static final int TROPHIES_SPAN_COUNT = 4;
+    private static final int BADGES_SPAN_COUNT = 4;
     LayoutMyAchievementsBinding mBinding;
 
     public static StudentAchievementFragment newInstance(StudentAchievement studentAchievement) {
@@ -48,8 +56,7 @@ public class StudentAchievementFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.layout_my_achievements, container, false);
         setAchievements();
         return mBinding.getRoot();
@@ -73,6 +80,7 @@ public class StudentAchievementFragment extends Fragment {
         }
     }
 
+    /*Rewards are now Euros*/
     private void setRewards(final ArrayList<StudentSubjectReward> rewardsList, int totalRewards) {
 
         mBinding.textViewTotalRewards.setText(String.valueOf(totalRewards));
@@ -80,105 +88,82 @@ public class StudentAchievementFragment extends Fragment {
         mBinding.recyclerViewRewards.setNestedScrollingEnabled(false);
         mBinding.recyclerViewRewards.setAdapter(new RewardsRecyclerViewAdapter(rewardsList));
 
+        mBinding.bottomLineEuros.setVisibility(View.VISIBLE);
+        setEurosVisibility(rewardsList);
+
         mBinding.layoutRewardHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mBinding.layoutRewardsChild.isCollapsed()) {
-                    if (!rewardsList.isEmpty()) {
-                        mBinding.layoutRewardsChild.expand(true);
-                        mBinding.imageViewRewardsIndicator.setImageResource(R.drawable.chevron_down_white);
-                        mBinding.imageViewRewardsIndicator.setColorFilter(ContextCompat.getColor(getContext(), android.R.color.holo_blue_dark));
 
-                        mBinding.layoutTrophiesChild.collapse(true);
-                        mBinding.imageViewTrophiesIndicator.setImageResource(R.drawable.chevron_right_white);
-                        mBinding.imageViewTrophiesIndicator.setColorFilter(ContextCompat.getColor(getContext(), android.R.color.holo_blue_dark));
+                mBinding.bottomLineEuros.setVisibility(View.VISIBLE);
+                mBinding.bottomLineTrophies.setVisibility(View.GONE);
+                mBinding.bottomLineBadges.setVisibility(View.GONE);
 
-                        mBinding.layoutBadgesChild.collapse(true);
-                        mBinding.imageViewBadgesIndicator.setImageResource(R.drawable.chevron_right_white);
-                        mBinding.imageViewBadgesIndicator.setColorFilter(ContextCompat.getColor(getContext(), android.R.color.holo_blue_dark));
 
-                    }
-                } else {
-                    mBinding.layoutRewardsChild.collapse(true);
-                    mBinding.imageViewRewardsIndicator.setImageResource(R.drawable.chevron_right_white);
-                    mBinding.imageViewRewardsIndicator.setColorFilter(ContextCompat.getColor(getContext(), android.R.color.holo_blue_dark));
-                }
+                setEurosVisibility(rewardsList);
+
             }
         });
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!rewardsList.isEmpty()) {
-                    mBinding.layoutRewardsChild.expand(true);
-                    mBinding.imageViewRewardsIndicator.setImageResource(R.drawable.chevron_down_white);
-                    mBinding.imageViewRewardsIndicator.setColorFilter(ContextCompat.getColor(getContext(), android.R.color.holo_blue_dark));
-                }
-            }
-        }, 200);
     }
 
-    private void setBadges(final ArrayList<String> badgesList, int totalBadges) {
+    /*To set visibility of euros tab for first time and other times*/
+    private void setEurosVisibility(ArrayList<StudentSubjectReward> rewardsList) {
+        mBinding.recyclerViewTrophies.setVisibility(View.GONE);
+        mBinding.recyclerViewBadges.setVisibility(View.GONE);
 
-        mBinding.textViewTotalBadges.setText(String.valueOf(totalBadges));
-        mBinding.recyclerViewBadges.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        mBinding.recyclerViewBadges.setNestedScrollingEnabled(false);
-        mBinding.recyclerViewBadges.setAdapter(new BadgesRecyclerViewAdapter(badgesList));
-        mBinding.layoutBadgesHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mBinding.layoutBadgesChild.isCollapsed()) {
-                    if (!badgesList.isEmpty()) {
-                        mBinding.layoutBadgesChild.expand(true);
-                        mBinding.imageViewBadgesIndicator.setImageResource(R.drawable.chevron_down_white);
-                        mBinding.imageViewBadgesIndicator.setColorFilter(ContextCompat.getColor(getContext(), android.R.color.holo_blue_dark));
-
-                        mBinding.layoutRewardsChild.collapse(true);
-                        mBinding.imageViewRewardsIndicator.setImageResource(R.drawable.chevron_right_white);
-                        mBinding.imageViewRewardsIndicator.setColorFilter(ContextCompat.getColor(getContext(), android.R.color.holo_blue_dark));
-
-                        mBinding.layoutTrophiesChild.collapse(true);
-                        mBinding.imageViewTrophiesIndicator.setImageResource(R.drawable.chevron_right_white);
-                        mBinding.imageViewTrophiesIndicator.setColorFilter(ContextCompat.getColor(getContext(), android.R.color.holo_blue_dark));
-                    }
-                } else {
-                    mBinding.layoutBadgesChild.collapse(true);
-                    mBinding.imageViewBadgesIndicator.setImageResource(R.drawable.chevron_right_white);
-                    mBinding.imageViewBadgesIndicator.setColorFilter(ContextCompat.getColor(getContext(), android.R.color.holo_blue_dark));
-                }
-            }
-        });
+        if (!rewardsList.isEmpty()) {
+            mBinding.recyclerViewRewards.setVisibility(View.VISIBLE);
+            mBinding.layoutEurosError.setVisibility(View.GONE);
+        } else {
+            mBinding.recyclerViewRewards.setVisibility(View.GONE);
+            mBinding.layoutEurosError.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setTrophies(final ArrayList<String> trophiesList, int totalTrophies) {
 
         mBinding.textViewTotalTrophies.setText(String.valueOf(totalTrophies));
-        mBinding.recyclerViewTrophies.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        mBinding.recyclerViewTrophies.setLayoutManager(new GridLayoutManager(getContext(), TROPHIES_SPAN_COUNT, GridLayoutManager.VERTICAL, false));
         mBinding.recyclerViewTrophies.setNestedScrollingEnabled(false);
         mBinding.recyclerViewTrophies.setAdapter(new TrophiesRecyclerViewAdapter(trophiesList));
+
         mBinding.layoutTrophiesHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mBinding.layoutTrophiesChild.isCollapsed()) {
-                    if (!trophiesList.isEmpty()) {
-                        mBinding.layoutTrophiesChild.expand(true);
-                        mBinding.imageViewTrophiesIndicator.setImageResource(R.drawable.chevron_down_white);
-                        mBinding.imageViewTrophiesIndicator.setColorFilter(ContextCompat.getColor(getContext(), android.R.color.holo_blue_dark));
 
-                        mBinding.layoutRewardsChild.collapse(true);
-                        mBinding.imageViewRewardsIndicator.setImageResource(R.drawable.chevron_right_white);
-                        mBinding.imageViewRewardsIndicator.setColorFilter(ContextCompat.getColor(getContext(), android.R.color.holo_blue_dark));
+                mBinding.bottomLineEuros.setVisibility(View.GONE);
+                mBinding.bottomLineTrophies.setVisibility(View.VISIBLE);
+                mBinding.bottomLineBadges.setVisibility(View.GONE);
 
-                        mBinding.layoutBadgesChild.collapse(true);
-                        mBinding.imageViewBadgesIndicator.setImageResource(R.drawable.chevron_right_white);
-                        mBinding.imageViewBadgesIndicator.setColorFilter(ContextCompat.getColor(getContext(), android.R.color.holo_blue_dark));
-                    }
-                } else {
-                    mBinding.layoutTrophiesChild.collapse(true);
-                    mBinding.imageViewTrophiesIndicator.setImageResource(R.drawable.chevron_right_white);
-                    mBinding.imageViewTrophiesIndicator.setColorFilter(ContextCompat.getColor(getContext(), android.R.color.holo_blue_dark));
-                }
+                mBinding.layoutEurosError.setVisibility(View.GONE);
+                mBinding.recyclerViewRewards.setVisibility(View.GONE);
+                mBinding.recyclerViewTrophies.setVisibility(View.VISIBLE);
+                mBinding.recyclerViewBadges.setVisibility(View.GONE);
+
+            }
+        });
+    }
+
+    private void setBadges(final ArrayList<String> badgesList, int totalBadges) {
+
+        mBinding.textViewTotalBadges.setText(String.valueOf(totalBadges));
+        mBinding.recyclerViewBadges.setLayoutManager(new GridLayoutManager(getContext(), BADGES_SPAN_COUNT, GridLayoutManager.VERTICAL, false));
+        mBinding.recyclerViewBadges.setNestedScrollingEnabled(false);
+        mBinding.recyclerViewBadges.setAdapter(new BadgesRecyclerViewAdapter(badgesList));
+        mBinding.layoutBadgesHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                mBinding.bottomLineEuros.setVisibility(View.GONE);
+                mBinding.bottomLineTrophies.setVisibility(View.GONE);
+                mBinding.bottomLineBadges.setVisibility(View.VISIBLE);
+
+                mBinding.layoutEurosError.setVisibility(View.GONE);
+                mBinding.recyclerViewRewards.setVisibility(View.GONE);
+                mBinding.recyclerViewTrophies.setVisibility(View.GONE);
+                mBinding.recyclerViewBadges.setVisibility(View.VISIBLE);
+
             }
         });
     }
@@ -209,10 +194,11 @@ public class StudentAchievementFragment extends Fragment {
         }
     }
 
-    private void setSubjectTopicsRewards(String subjectName, String score, String thumbnailUrl, ArrayList<StudentSubjectReward> topicList) {
+    private void setSubjectTopicsRewards(String subjectName, String score, String thumbnailUrl, ArrayList<StudentTopicReward> topicList) {
         if (topicList != null && !topicList.isEmpty()) {
-            final Dialog dialog = new Dialog(getContext());
+            final Dialog dialog = new Dialog(Objects.requireNonNull(getContext()));
 
+            /*Dialog box when user click on subject in total rewards/euros */
             LayoutDialogSubjectItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.layout_dialog_subject_item, null, false);
             dialog.setCancelable(true);
             dialog.setContentView(binding.getRoot());
@@ -225,15 +211,16 @@ public class StudentAchievementFragment extends Fragment {
             }
             binding.recyclerViewTopic.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
             binding.recyclerViewTopic.setNestedScrollingEnabled(false);
-            binding.recyclerViewTopic.setAdapter(new SubjectTopicsRewardAdapter(topicList));
+            binding.recyclerViewTopic.setAdapter(new SubjectTopicsRewardAdapter(getActivity(), topicList));
 
             DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
             int width = metrics.widthPixels;
-            dialog.getWindow().setLayout((6 * width) / 7, LinearLayout.LayoutParams.WRAP_CONTENT);
+            Objects.requireNonNull(dialog.getWindow()).setLayout((6 * width) / 7, LinearLayout.LayoutParams.WRAP_CONTENT);
             dialog.show();
         }
     }
 
+    /*Adapter*/
     private class RewardsRecyclerViewAdapter extends RecyclerView.Adapter<RewardsRecyclerViewAdapter.ViewHolder> {
         private ArrayList<StudentSubjectReward> mList;
 
@@ -244,33 +231,31 @@ public class StudentAchievementFragment extends Fragment {
         @NonNull
         @Override
         public RewardsRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutMyAchievementItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_my_achievement_item, parent, false);
+            LayoutMyAchievementEurosItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_my_achievement_euros_item, parent, false);
             return new RewardsRecyclerViewAdapter.ViewHolder(binding);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final RewardsRecyclerViewAdapter.ViewHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull final RewardsRecyclerViewAdapter.ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
             final StudentSubjectReward studentSubjectReward = mList.get(position);
             final String subjectName = studentSubjectReward.getSubjectName();
             final String thumbnailUrl = studentSubjectReward.getThumbnailUrl();
+
             hideDividerForLastIndex(mList.size() - 1, position, holder.mBinding.viewDivider);
             holder.mBinding.textViewName.setText(studentSubjectReward.getSubjectName());
-            final String rewards = "+" + String.valueOf(studentSubjectReward.getPointsRewarded());
+            final String rewards = String.valueOf(studentSubjectReward.getPointsRewarded());
             holder.mBinding.textViewScore.setText(rewards);
-            // holder.mBinding.imageViewIcon.setImageResource(R.drawable.icon_rewards);
-            // holder.mBinding.imageViewIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimary));
             if (!TextUtils.isEmpty(thumbnailUrl)) {
                 Picasso.with(getContext()).load(thumbnailUrl).placeholder(R.drawable.icon_book).fit().centerCrop().into(holder.mBinding.imageViewIcon);
             } else {
                 Picasso.with(getContext()).load(R.drawable.icon_book).placeholder(R.drawable.icon_book).fit().centerCrop().into(holder.mBinding.imageViewIcon);
             }
-            // trello.com/c/0VRYno15/267-as-a-student-i-want-reward-points-to-be-show-topic-wise start
-            //need to pass topic list related to subjects ,
+
             holder.mBinding.getRoot().
                     setOnClickListener(new View.OnClickListener() {
                                            @Override
                                            public void onClick(View view) {
-                                               ArrayList<StudentSubjectReward> topicRewardList = mList.get(position).getTopicRewardList();
+                                               ArrayList<StudentTopicReward> topicRewardList = mList.get(position).getTopicRewardList();
 
                                                setSubjectTopicsRewards(subjectName, rewards, thumbnailUrl, topicRewardList);
 
@@ -287,10 +272,10 @@ public class StudentAchievementFragment extends Fragment {
             return mList.size();
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            LayoutMyAchievementItemBinding mBinding;
+        class ViewHolder extends RecyclerView.ViewHolder {
+            LayoutMyAchievementEurosItemBinding mBinding;
 
-            public ViewHolder(LayoutMyAchievementItemBinding binding) {
+            public ViewHolder(LayoutMyAchievementEurosItemBinding binding) {
                 super(binding.getRoot());
                 mBinding = binding;
             }
@@ -308,18 +293,16 @@ public class StudentAchievementFragment extends Fragment {
         @NonNull
         @Override
         public TrophiesRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutMyAchievementItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_my_achievement_item, parent, false);
+            LayoutMyAchievementTrophiesItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_my_achievement_trophies_item, parent, false);
             return new TrophiesRecyclerViewAdapter.ViewHolder(binding);
         }
 
         @Override
         public void onBindViewHolder(@NonNull final TrophiesRecyclerViewAdapter.ViewHolder holder, int position) {
             String trophy = mList.get(position);
-            hideDividerForLastIndex(mList.size() - 1, position, holder.mBinding.viewDivider);
             holder.mBinding.textViewName.setText(trophy);
-            holder.mBinding.textViewScore.setVisibility(View.INVISIBLE);
             holder.mBinding.imageViewIcon.setImageResource(R.drawable.icon_trophies);
-            holder.mBinding.imageViewIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+            holder.mBinding.imageViewIcon.setColorFilter(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimary));
         }
 
         @Override
@@ -327,10 +310,10 @@ public class StudentAchievementFragment extends Fragment {
             return mList.size();
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            LayoutMyAchievementItemBinding mBinding;
+        class ViewHolder extends RecyclerView.ViewHolder {
+            LayoutMyAchievementTrophiesItemBinding mBinding;
 
-            public ViewHolder(LayoutMyAchievementItemBinding binding) {
+            ViewHolder(LayoutMyAchievementTrophiesItemBinding binding) {
                 super(binding.getRoot());
                 mBinding = binding;
             }
@@ -348,18 +331,16 @@ public class StudentAchievementFragment extends Fragment {
         @NonNull
         @Override
         public BadgesRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutMyAchievementItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_my_achievement_item, parent, false);
+            LayoutMyAchievementBadgesItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_my_achievement_badges_item, parent, false);
             return new BadgesRecyclerViewAdapter.ViewHolder(binding);
         }
 
         @Override
         public void onBindViewHolder(@NonNull final BadgesRecyclerViewAdapter.ViewHolder holder, int position) {
             String badge = mList.get(position);
-            hideDividerForLastIndex(mList.size() - 1, position, holder.mBinding.viewDivider);
             holder.mBinding.textViewName.setText(badge);
-            holder.mBinding.textViewScore.setVisibility(View.INVISIBLE);
             holder.mBinding.imageViewIcon.setImageResource(R.drawable.icon_badges);
-            holder.mBinding.imageViewIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+            holder.mBinding.imageViewIcon.setColorFilter(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimary));
         }
 
         @Override
@@ -367,10 +348,10 @@ public class StudentAchievementFragment extends Fragment {
             return mList.size();
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            LayoutMyAchievementItemBinding mBinding;
+        class ViewHolder extends RecyclerView.ViewHolder {
+            LayoutMyAchievementBadgesItemBinding mBinding;
 
-            public ViewHolder(LayoutMyAchievementItemBinding binding) {
+            ViewHolder(LayoutMyAchievementBadgesItemBinding binding) {
                 super(binding.getRoot());
                 mBinding = binding;
             }
@@ -380,4 +361,3 @@ public class StudentAchievementFragment extends Fragment {
 
 
 }
-

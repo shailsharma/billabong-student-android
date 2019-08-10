@@ -1,4 +1,3 @@
-
 package in.securelearning.lil.android.home.views.activity;
 
 import android.annotation.SuppressLint;
@@ -63,6 +62,7 @@ import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerActivity;
 import in.securelearning.lil.android.blog.views.fragment.BlogFragment;
+import in.securelearning.lil.android.gamification.utils.GamificationPrefs;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
@@ -78,6 +78,7 @@ import in.securelearning.lil.android.syncadapter.events.UserProfileChangeEvent;
 import in.securelearning.lil.android.syncadapter.receiver.ConnectivityChangeReceiver;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.NotificationUtil;
 import in.securelearning.lil.android.syncadapter.utils.ShortcutUtil;
@@ -98,29 +99,27 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
     @Inject
     AppUserModel mAppUserModel;
-    private ConnectivityChangeReceiver mReceiver;
-    private int mCurrentFragmentId = -1;
-    private FragmentManager mFragmentManager;
     int mColCount;
-    private TextView mNavEmail;
-    private TextView mNavUsername;
-    private ImageView mNavThumbnail;
-    private MenuItem mDoneMenuItem;
     LayoutNavigationDrawerBinding mBinding;
-    private HomeworkFragment mHomeworkFragment;
-    private LearningNetworkGroupListFragment mFragmentLearningNetwork;
-    private DashboardFragment mFragmentDashboard;
     boolean doubleBackToExitPressedOnce = false;
-    private String mLoggedInUserId = "";
-    private UserProfile mLoggedInUser;
-
-
     @Inject
     HomeModel mHomeModel;
     @Inject
     FlavorHomeModel mFlavorHomeModel;
     @Inject
     RxBus mRxBus;
+    private ConnectivityChangeReceiver mReceiver;
+    private int mCurrentFragmentId = -1;
+    private FragmentManager mFragmentManager;
+    private TextView mNavEmail;
+    private TextView mNavUsername;
+    private ImageView mNavThumbnail;
+    private MenuItem mDoneMenuItem;
+    private HomeworkFragment mHomeworkFragment;
+    private LearningNetworkGroupListFragment mFragmentLearningNetwork;
+    private DashboardFragment mFragmentDashboard;
+    private String mLoggedInUserId = "";
+    private UserProfile mLoggedInUser;
     private Disposable mSubscription;
 
     private void initializeFCM() {
@@ -165,8 +164,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_navigation_drawer);
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
-        getWindow().setBackgroundDrawableResource(R.drawable.gradient_app);
+
         checkTTS();
 
 
@@ -289,9 +287,9 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 String stackTraceString = stackTrace.toString();
                 int width = getResources().getDisplayMetrics().widthPixels;
                 int height = getResources().getDisplayMetrics().heightPixels;
-                final String msg = "Device Detail:\nManufacturer: " + android.os.Build.MANUFACTURER + "\nModel: " +
-                        android.os.Build.MODEL +
-                        "\nAndroid Version: " + android.os.Build.VERSION.RELEASE +
+                final String msg = "Device Detail:\nManufacturer: " + Build.MANUFACTURER + "\nModel: " +
+                        Build.MODEL +
+                        "\nAndroid Version: " + Build.VERSION.RELEASE +
                         "\nAndroid Flavor: " + BuildConfig.FLAVOR +
                         "\nUser ID: " + AppPrefs.getUserId(getBaseContext()) +
                         "\nUser Name: " + AppPrefs.getUserName(getBaseContext()) +
@@ -452,6 +450,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         final AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mBinding.appBar.toolbarContainer.getLayoutParams();
 
         switch (id) {
+
             case R.id.nav_dashboard: {
 
                 doneVisibility(false);
@@ -459,7 +458,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 mBinding.appBar.toolbar.setVisibility(View.GONE);
                 setTitle(item.getTitle());
 
-                mBinding.appBar.appBarLayout.setElevation(ConstantUtil.TOOLBAR_ELEVATION);
+                getWindow().setBackgroundDrawableResource(android.R.drawable.screen_background_light);
+                CommonUtils.getInstance().setStatusBarIconsDark(NavigationDrawerActivity.this);
+
+                mBinding.appBar.appBarLayout.setElevation(0f);
                 params.setScrollFlags(0);
                 FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
                 fragmentTransaction = hideFragment(fragmentTransaction, mCurrentFragmentId);
@@ -485,6 +487,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 mBinding.appBar.toolbar.setVisibility(View.VISIBLE);
                 setTitle(item.getTitle());
 
+                getWindow().setStatusBarColor(Color.TRANSPARENT);
+                getWindow().setBackgroundDrawableResource(R.drawable.gradient_app);
+                CommonUtils.getInstance().setStatusBarIconsLight(NavigationDrawerActivity.this);
+
                 mBinding.appBar.appBarLayout.setElevation(ConstantUtil.NO_TOOLBAR_ELEVATION);
 
                 FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
@@ -507,10 +513,15 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
             }
             break;
+
             case R.id.nav_learning_network: {
                 doneVisibility(false);
                 setTitle(item.getTitle());
                 mBinding.appBar.toolbar.setVisibility(View.VISIBLE);
+
+                getWindow().setStatusBarColor(Color.TRANSPARENT);
+                getWindow().setBackgroundDrawableResource(R.drawable.gradient_app);
+                CommonUtils.getInstance().setStatusBarIconsLight(NavigationDrawerActivity.this);
 
                 mBinding.appBar.appBarLayout.setElevation(ConstantUtil.TOOLBAR_ELEVATION);
                 params.setScrollFlags(0);
@@ -538,7 +549,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
             break;
 
             case R.id.nav_setting: {
-                startActivity(SettingNewActivity.getStartIntent(NavigationDrawerActivity.this));
+                startActivity(SettingActivity.getStartIntent(NavigationDrawerActivity.this));
 
 
             }
@@ -553,6 +564,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
             }
             break;
+
             case R.id.nav_quizess: {
 
                 startActivity(QuizNewActivity.getStartIntent(NavigationDrawerActivity.this));
@@ -575,7 +587,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     /*Showing logout dialog to logout.*/
     /*Only activity context is allowed here.*/
     private void logoutFromApp(final Activity context) {
-        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(context.getString(R.string.logout_message))
                 .setPositiveButton(context.getString(R.string.logout), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -589,7 +601,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                     }
                 })
                 .setCancelable(false);
-        final android.app.AlertDialog alert = builder.create();
+        final AlertDialog alert = builder.create();
         alert.show();
     }
 
@@ -738,9 +750,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     /*Checking TTS availability on device.*/
     private void checkTTS() {
         try {
-            Intent check = new Intent();
-            check.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-            startActivityForResult(check, ConstantUtil.CHECK_CODE);
+            Intent intent = new Intent();
+            intent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+            //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            //this.startActivity(intent);
+            startActivityForResult(intent, ConstantUtil.CHECK_CODE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -749,14 +763,22 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ConstantUtil.CHECK_CODE) {
-            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+        try {
 
-            } else {
-                Intent install = new Intent();
-                install.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-                startActivity(install);
+
+            if (requestCode == ConstantUtil.CHECK_CODE) {
+                if (resultCode != TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+                    Intent installIntent = new Intent();
+                    installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                    startActivity(installIntent);
+                }
+                GamificationPrefs.isTTSAvailable(this, true);
+
             }
+        } catch (Exception e) {
+            GeneralUtils.showToastLong(getBaseContext(), "Oops! Text To Speech not available in your device.");
+            GamificationPrefs.isTTSAvailable(this, false);
+            e.printStackTrace();
         }
     }
 

@@ -55,7 +55,7 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.LayoutLearningNetworkSearchedPostDetailBinding;
 import in.securelearning.lil.android.base.comparators.SortPostResponseByDate;
 import in.securelearning.lil.android.base.constants.PostDataType;
@@ -95,7 +95,6 @@ import in.securelearning.lil.android.learningnetwork.adapter.ViewPagerImageAdapt
 import in.securelearning.lil.android.learningnetwork.model.PostDataLearningModel;
 import in.securelearning.lil.android.learningnetwork.views.fragment.BaseLNFragment;
 import in.securelearning.lil.android.syncadapter.rest.ApiModule;
-import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;

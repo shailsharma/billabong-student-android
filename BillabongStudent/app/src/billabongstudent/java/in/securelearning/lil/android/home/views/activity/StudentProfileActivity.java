@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,6 +57,7 @@ import in.securelearning.lil.android.syncadapter.rest.ApiModule;
 import in.securelearning.lil.android.syncadapter.rest.DownloadApiInterface;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -90,6 +94,14 @@ public class StudentProfileActivity extends AppCompatActivity {
         //listenRxEvent();
         /*Setting status bar style immersive*/
         mFlavorHomeModel.setImmersiveStatusBar(getWindow());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            View decor = getWindow().getDecorView();
+            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
+        } else {
+            getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorGrey55));
+        }
 
 
     }
@@ -130,7 +142,7 @@ public class StudentProfileActivity extends AppCompatActivity {
 
         if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
 
-            mProgressDialog = ProgressDialog.show(StudentProfileActivity.this, "", getString(R.string.message_fetching_user_profile), false);
+            mProgressDialog = ProgressDialog.show(StudentProfileActivity.this, ConstantUtil.BLANK, getString(R.string.message_fetching_your_profile), false);
             mProgressDialog.setCancelable(true);
             mProgressDialog.setCanceledOnTouchOutside(false);
             mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -445,7 +457,7 @@ public class StudentProfileActivity extends AppCompatActivity {
     public View getSelectedTabView(int position, ArrayList<String> tabTitles) {
         View view = LayoutInflater.from(getBaseContext()).inflate(R.layout.layout_subject_detail_custom_tab, null);
         view.setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.chip_blue_white_stroke));
-        TextView tabTextView = view.findViewById(R.id.tabTextView);
+        AppCompatTextView tabTextView = view.findViewById(R.id.tabTextView);
         tabTextView.setText(tabTitles.get(position));
         tabTextView.setTextColor(ContextCompat.getColor(getBaseContext(), android.R.color.white));
         TextView tabImageViewBadge = view.findViewById(R.id.tabTextView2);

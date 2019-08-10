@@ -3,7 +3,8 @@ package in.securelearning.lil.android.player.di.component;
 
 import in.securelearning.lil.android.base.di.component.BaseComponent;
 import in.securelearning.lil.android.player.model.PlayerModel;
-import in.securelearning.lil.android.player.view.activity.PracticeQuestionActivity;
+import in.securelearning.lil.android.player.view.activity.PracticePlayerActivity;
+import in.securelearning.lil.android.player.view.activity.QuizPlayerActivity;
 import in.securelearning.lil.android.player.view.activity.RapidLearningCardsActivity;
 import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
 import in.securelearning.lil.android.player.view.fragment.FeaturedCardListFragment;
@@ -31,5 +32,7 @@ public interface PlayerBaseComponent extends BaseComponent {
 
     void inject(TextToSpeechUtils textToSpeechUtils);
 
-    void inject(PracticeQuestionActivity practiceQuestionActivity);
+    void inject(PracticePlayerActivity practicePlayerActivity);
+
+    void inject(QuizPlayerActivity quizPlayerActivity);
 }

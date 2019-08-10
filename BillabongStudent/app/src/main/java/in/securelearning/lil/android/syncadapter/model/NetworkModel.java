@@ -58,6 +58,12 @@ import in.securelearning.lil.android.courses.dataobject.CourseReview;
 import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.player.dataobject.PracticeParent;
 import in.securelearning.lil.android.player.dataobject.PracticeQuestionResponse;
+import in.securelearning.lil.android.player.dataobject.QuizConfigurationRequest;
+import in.securelearning.lil.android.player.dataobject.QuizConfigurationResponse;
+import in.securelearning.lil.android.player.dataobject.QuizQuestionResponse;
+import in.securelearning.lil.android.player.dataobject.QuizResponsePost;
+import in.securelearning.lil.android.player.dataobject.TotalPointPost;
+import in.securelearning.lil.android.player.dataobject.TotalPointResponse;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.dataobject.AboutCourseExt;
 import in.securelearning.lil.android.syncadapter.dataobject.ActivityData;
@@ -66,6 +72,8 @@ import in.securelearning.lil.android.syncadapter.dataobject.BlogResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.BroadcastNotification;
 import in.securelearning.lil.android.syncadapter.dataobject.CloudinaryFileInner;
 import in.securelearning.lil.android.syncadapter.dataobject.EnrollTrainingResponse;
+import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
+import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationRequest;
 import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
 import in.securelearning.lil.android.syncadapter.dataobject.LearningMapAggregatesParams;
 import in.securelearning.lil.android.syncadapter.dataobject.MasteryRequestObject;
@@ -1230,6 +1238,10 @@ public class NetworkModel extends BaseModel {
         return mDirectUploadApiInterface.getReportByQuizId(requestBody);
     }
 
+    public Call<ResponseBody> dictionariesSearch(RequestBody requestBody) {
+        return mDirectUploadApiInterface.dictionariesSearch(requestBody);
+    }
+
     public Call<ResponseBody> deleteAnnotation(String id) {
         return mUploadApiInterface.deleteAnnotation(id);
     }
@@ -1282,4 +1294,32 @@ public class NetworkModel extends BaseModel {
         return mDownloadApiInterface.fetchNetworkGroup(skip, limit);
     }
 
+    /*To fetch questions for the quiz*/
+    public Call<QuizQuestionResponse> fetchQuestionsForQuiz(String quizId) {
+        return mDownloadApiInterface.fetchQuestionsForQuiz(quizId);
+
+    }
+
+    /*To submit question responses*/
+    public Call<QuizResponse> submitResponseOfQuiz(QuizResponsePost prepareQuizResponsePostData) {
+        return mDownloadApiInterface.submitResponseOfQuiz(prepareQuizResponsePostData);
+    }
+
+    /*To send practice/quiz points to server*/
+    public Call<TotalPointResponse> sendPointsToServer(TotalPointPost totalPointPost) {
+        return mDownloadApiInterface.sendPointsToServer(totalPointPost);
+    }
+
+
+    /*To fetch chart configuration for performance and coverage*/
+    public Call<GlobalConfigurationParent> fetchGlobalConfiguration(GlobalConfigurationRequest chartConfigurationRequest) {
+        return mDownloadApiInterface.fetchGlobalConfiguration(chartConfigurationRequest);
+
+    }
+
+    /*To fetch configuration of quiz */
+    public Call<QuizConfigurationResponse> fetchQuizConfiguration(QuizConfigurationRequest quizConfigurationRequest) {
+        return mDownloadApiInterface.fetchQuizConfiguration(quizConfigurationRequest);
+
+    }
 }

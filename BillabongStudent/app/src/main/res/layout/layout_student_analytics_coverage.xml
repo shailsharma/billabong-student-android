@@ -1,227 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-<android.support.v4.widget.NestedScrollView
-    android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
-    <android.support.v7.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
 
-        android:elevation="@dimen/elevation_2dp"
-        android:orientation="vertical">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/textViewCoverageTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin_8dp"
-            android:layout_marginBottom="@dimen/margin_8dp"
-            android:text="@string/coverage"
-            android:visibility="gone"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/colorBlack"/>
-
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/chartCoverage"
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/margin_8dp"
-            android:minHeight="248dp"
-            android:visibility="gone"/>
-
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/textViewNoCoverageData"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_16dp"
-            android:gravity="center"
-            android:minHeight="248dp"
-            android:text="@string/messageNoDataFound"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:visibility="gone"/>
-
-        <ProgressBar
-            android:id="@+id/progressBarCoverage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_margin="80dp"
-            android:background="@drawable/background_circle_solid_white"
-            android:elevation="@dimen/margin_8dp"
-            android:padding="@dimen/padding_4dp"
-            android:visibility="gone"/>
-        <!-- on click sub list-->
-        <View
-            android:id="@+id/view"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginEnd="@dimen/margin_16dp"
-            android:background="@color/itemDivider"
-            android:visibility="visible"/>
-        <android.support.v7.widget.LinearLayoutCompat
-            android:id="@+id/llExcellence"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_8dp"
-            android:layout_marginBottom="@dimen/margin_8dp"
-            android:orientation="horizontal"
-            android:padding="@dimen/margin_8dp"
-            android:visibility="gone">
-
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/textViewPerformance"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center"
-                android:layout_marginStart="@dimen/margin_16dp"
-                android:layout_weight="1.5"
-                android:gravity="start|center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorBlack"
-                tools:text="Superstar"/>
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/textViewPerformanceCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_horizontal|center_vertical"
-                android:layout_marginStart="@dimen/margin_4dp"
-                android:layout_marginEnd="@dimen/margin_16dp"
-                android:background="@drawable/background_circle_effort"
-                android:gravity="center"
-                android:textColor="@color/white"
-                tools:text="4"/>
-
-        </android.support.v7.widget.LinearLayoutCompat>
-        <View
-            android:id="@+id/view_1"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginEnd="@dimen/margin_16dp"
-            android:background="@color/itemDivider"
-            android:visibility="visible"/>
-
-        <android.support.v7.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@color/white">
 
             <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorWhite"
+
                 android:elevation="@dimen/elevation_2dp"
                 android:orientation="vertical">
 
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/textViewCoverageTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_8dp"
+                    android:layout_marginBottom="@dimen/margin_8dp"
+                    android:text="@string/coverage"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/colorBlack"
+                    android:visibility="gone" />
 
-
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/pieChartPerformance"
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/chartCoverage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/margin_8dp"
-                    android:layout_marginEnd="@dimen/margin_8dp"
-                    android:layout_marginBottom="@dimen/margin_16dp"
-                    android:visibility="gone"
-                    android:minHeight="196dp"/>
-
-            </android.support.v7.widget.LinearLayoutCompat>
+                    android:layout_margin="@dimen/margin_8dp"
+                    android:minHeight="248dp"
+                    android:visibility="gone" />
 
 
-            <android.support.v7.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_16dp"
-                android:layout_marginBottom="@dimen/margin_16dp"
-                android:elevation="@dimen/elevation_2dp"
-                android:orientation="vertical"
-                android:background="@color/colorWhite">
-
-                <LinearLayout
-                    android:id="@+id/layoutRecyclerView"
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/textViewNoCoverageData"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:layout_margin="@dimen/margin_16dp"
+                    android:gravity="center"
+                    android:minHeight="248dp"
+                    android:text="@string/messageNoDataFound"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:visibility="gone" />
+
+                <ProgressBar
+                    android:id="@+id/progressBarCoverage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_margin="80dp"
+                    android:background="@drawable/background_circle_solid_white"
+                    android:elevation="@dimen/margin_8dp"
+                    android:padding="@dimen/padding_4dp"
+                    android:visibility="gone" />
+                <!-- on click sub list-->
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:id="@+id/llCoverage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_8dp"
+                    android:layout_marginBottom="@dimen/margin_8dp"
+                    android:orientation="horizontal"
+                    android:background="@color/colorGrey11"
                     android:visibility="gone">
 
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewPerformance"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center"
+                        android:layout_marginStart="@dimen/margin_16dp"
+                        android:layout_weight="1.5"
+                        android:gravity="start|center"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/colorBlack"
+                        tools:text="Superstar" />
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChartPerformance"
+                        android:layout_width="78dp"
+                        android:layout_height="78dp"
+                        android:layout_gravity="end|center_horizontal|center_vertical"
+                        android:layout_marginStart="@dimen/margin_4dp"
+                        android:layout_marginEnd="@dimen/margin_16dp"
+                        android:minHeight="78dp"
+                        android:visibility="visible" />
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:background="@color/colorWhite"
+                    android:orientation="vertical">
+
                     <LinearLayout
+                        android:id="@+id/layoutRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_16dp"
-                        android:layout_marginEnd="@dimen/margin_16dp"
-                        android:layout_marginTop="@dimen/margin_16dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:visibility="visible"
-                        android:weightSum="3">
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
-                        <android.support.v7.widget.AppCompatTextView
-                            android:layout_width="0dp"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1.7"
-                            android:text="@string/labelTopic"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                            android:textColor="@color/colorBlack"
-                            android:textStyle="bold"/>
+                            android:layout_marginStart="@dimen/margin_16dp"
+                            android:layout_marginTop="@dimen/margin_16dp"
+                            android:layout_marginEnd="@dimen/margin_16dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:visibility="visible"
+                            android:weightSum="3">
 
-                        <android.support.v7.widget.AppCompatTextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/margin_8dp"
-                            android:layout_marginEnd="@dimen/margin_8dp"
-                            android:layout_weight="1.3"
-                            android:text="@string/labelPerformance"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                            android:textColor="@color/colorBlack"
-                            android:textStyle="bold"/>
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.7"
+                                android:text="@string/labelTopic"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:textColor="@color/colorBlack"
+                                android:textStyle="bold" />
 
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".8"
-                            android:visibility="gone"/>
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/margin_8dp"
+                                android:layout_marginEnd="@dimen/margin_8dp"
+                                android:layout_weight="1.3"
+                                android:text="@string/coverage"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:textColor="@color/colorBlack"
+                                android:textStyle="bold" />
 
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight=".8"
+                                android:visibility="gone" />
+
+
+                        </LinearLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/recyclerView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/margin_16dp"
+                                android:background="@color/colorWhite"
+                                tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                                tools:listitem="@layout/layout_analytics_effort_topic_item"
+                                tools:orientation="vertical" />
+
+                        </RelativeLayout>
 
                     </LinearLayout>
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
 
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/recyclerView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_16dp"
-                            android:background="@color/colorWhite"
-                            tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
-                            tools:listitem="@layout/layout_analytics_effort_topic_item"
-                            tools:orientation="vertical"
-                            />
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-
+                </android.support.v7.widget.LinearLayoutCompat>
 
             </android.support.v7.widget.LinearLayoutCompat>
 
-        </android.support.v7.widget.LinearLayoutCompat>
 
-    </android.support.v7.widget.LinearLayoutCompat>
-
-</android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.NestedScrollView>
     </android.support.design.widget.CoordinatorLayout>
 </layout>

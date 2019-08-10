@@ -22,13 +22,9 @@ public class PracticeResponse implements Serializable {
     @Expose
     private ArrayList<QuestionResponse> mQuestionResponseList;
 
-    @SerializedName("streakSize")
+    @SerializedName("threshold")
     @Expose
-    private ArrayList<Integer> mStreakList;
-
-    @SerializedName("currentStreak")
-    @Expose
-    private int mCurrentStreak;
+    private int mThreshold;
 
     public String getSkillId() {
         return mSkillId;
@@ -54,19 +50,11 @@ public class PracticeResponse implements Serializable {
         mQuestionResponseList = questionResponseList;
     }
 
-    public ArrayList<Integer> getStreakList() {
-        return mStreakList;
+    public int getThreshold() {
+        return mThreshold;
     }
 
-    public void setStreakList(ArrayList<Integer> streakList) {
-        mStreakList = streakList;
-    }
-
-    public int getCurrentStreak() {
-        return mCurrentStreak;
-    }
-
-    public void setCurrentStreak(int currentStreak) {
-        mCurrentStreak = currentStreak;
+    public void setThreshold(int threshold) {
+        mThreshold = threshold;
     }
 }

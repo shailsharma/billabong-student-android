@@ -25,7 +25,7 @@ import java.util.Calendar;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.LayoutFragmentPostResponseBinding;
 import in.securelearning.lil.android.app.databinding.LayoutItemPostResponseBinding;
 import in.securelearning.lil.android.base.constants.PostResponseType;

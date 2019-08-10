@@ -37,16 +37,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import in.securelearning.lil.android.analytics.views.adapter.StudentExcellenceAdapter;
 import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationData;
 import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
+import in.securelearning.lil.android.analytics.helper.ChartXAxisRenderer;
 import in.securelearning.lil.android.analytics.helper.MyPercentFormatter;
 import in.securelearning.lil.android.analytics.model.AnalyticsModel;
+import in.securelearning.lil.android.analytics.views.adapter.StudentExcellenceAdapter;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutStudentAnalyticsExcellenceBinding;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.analytics.helper.ChartXAxisRenderer;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -58,12 +58,12 @@ public class StudentExcellenceFragment extends Fragment {
 
     @Inject
     AnalyticsModel mAnalyticsModel;
-    private Context mContext;
     private boolean fragmentResume = false;
     private boolean fragmentVisible = false;
     private boolean fragmentOnCreated = false;
     private LayoutStudentAnalyticsExcellenceBinding mBinding;
     private ArrayList<ChartConfigurationData> mChartConfigurationData = null;
+    private Context mContext;
 
     public static Fragment newInstance(ArrayList<ChartConfigurationData> performanceConfiguration) {
         StudentExcellenceFragment fragment = new StudentExcellenceFragment();
@@ -229,8 +229,16 @@ public class StudentExcellenceFragment extends Fragment {
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return xAxisLabel.get((int) value);
+                if (value >= 0 && !xAxisLabel.isEmpty()) {
+                    if (value <= xAxisLabel.size() - 1) {
+                        return xAxisLabel.get((int) value);
+                    } else
+                        return ConstantUtil.BLANK;
+                } else
+                    return ConstantUtil.BLANK;
+
             }
+
         });
 
         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
@@ -278,7 +286,6 @@ public class StudentExcellenceFragment extends Fragment {
                 fetchPerformanceData(ccd.getId());
                 mBinding.llExcellence.setVisibility(View.VISIBLE);
                 mBinding.textViewPerformance.setText(ccd.getName());
-                mBinding.textViewPerformanceCount.setText(String.format("%d %%", performance));
                 //  startActivity(PerformanceDetailActivity.getStartIntent(mContext, ccd.getId(), ccd.getName(), performance));
 
             }
@@ -312,19 +319,25 @@ public class StudentExcellenceFragment extends Fragment {
             fetchPerformanceData(data.getId());
             mBinding.llExcellence.setVisibility(View.VISIBLE);
             mBinding.textViewPerformance.setText(data.getName());
-            mBinding.textViewPerformanceCount.setText(String.valueOf(Math.round(data.getPerformance()) + "%"));
         }
     }
 
     /*draw and set values for time spent pie chart*/
     private void drawProgress(int performance) {
+        List<Integer> colorList = new ArrayList<>();
         float total = 100;
         float remaining = total - performance;
         ArrayList<PieEntry> fillValues = new ArrayList<>();
         fillValues.add(new PieEntry(performance));
         fillValues.add(new PieEntry(remaining));
         PieDataSet dataSet = new PieDataSet(fillValues, "");
-        dataSet.setColors(pickColorAccording(performance));
+        colorList.add(pickColorAccording(performance));
+        if (getActivity() != null && getActivity().getResources() != null) {
+            colorList.add(getActivity().getResources().getColor(R.color.colorGrey400));
+        } else {
+            colorList.add(Color.GRAY);
+        }
+        dataSet.setColors(colorList);
         dataSet.setValueTextSize(0f);
         PieData data = new PieData(dataSet);
         mBinding.pieChartPerformance.setData(data);
@@ -396,6 +409,7 @@ public class StudentExcellenceFragment extends Fragment {
                 .show();
 
     }
+
     private void showInternetSnackBar(final String subjectId) {
 
         Snackbar.make(mBinding.getRoot(), getString(R.string.error_message_no_internet), Snackbar.LENGTH_INDEFINITE)
@@ -413,18 +427,14 @@ public class StudentExcellenceFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (getActivity() != null) {
-            mContext = getActivity();
-        } else {
-            mContext = context;
-        }
+        mContext = context;
     }
 
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mContext = null;
-
-    }
+//    @Override
+//    public void onDetach() {
+//        super.onDetach();
+//        mContext = null;
+//
+//    }
 }

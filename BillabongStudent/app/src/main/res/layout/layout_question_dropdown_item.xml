@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/editTextDropdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:cursorVisible="false"
+            android:drawableEnd="@drawable/dropdown_white"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:minWidth="72dp"
+            android:paddingStart="@dimen/padding_8dp"
+            android:paddingEnd="@dimen/padding_4dp"
+            android:textColor="@color/colorWhite"
+            android:theme="@style/EditTextThemeWhite"
+            tools:text="Ahmedabad" />
+
+        <org.sufficientlysecure.htmltextview.HtmlTextView
+            android:id="@+id/textViewText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_4dp"
+            android:layout_marginEnd="@dimen/margin_4dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorWhite"
+            tools:text="is largest city of Gujrat." />
+
+    </LinearLayout>
+</layout>

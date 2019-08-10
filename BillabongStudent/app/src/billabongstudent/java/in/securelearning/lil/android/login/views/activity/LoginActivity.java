@@ -161,42 +161,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
-    @SuppressLint("CheckResult")
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        if (BuildConfig.BUILD_TYPE.equalsIgnoreCase("release")) {
-//            mHomeModel.checkForNewVersionOnPlayStore()
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(new Consumer<String>() {
-//                        @Override
-//                        public void accept(String playStoreVersion) throws Exception {
-//                            if (!BuildConfig.VERSION_NAME.equalsIgnoreCase(playStoreVersion)) {
-//
-//                                new android.app.AlertDialog.Builder(LoginActivity.this)
-//                                        .setTitle(getString(R.string.labelUpdateAvailable))
-//                                        .setMessage(getString(R.string.messageNewUpdateIsAvailable))
-//                                        .setCancelable(false)
-//                                        .setPositiveButton(getString(R.string.labelUpdate), new DialogInterface.OnClickListener() {
-//                                            @Override
-//                                            public void onClick(DialogInterface dialog, int which) {
-//                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse
-//                                                        ("market://details?id=" + BuildConfig.APPLICATION_ID)));
-//                                            }
-//                                        }).show();
-//                            }
-//
-//                        }
-//                    }, new Consumer<Throwable>() {
-//                        @Override
-//                        public void accept(Throwable throwable) throws Exception {
-//                            throwable.printStackTrace();
-//                        }
-//                    });
-//        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -862,9 +826,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             });
 
-            Observable.create(new ObservableOnSubscribe<Object>() {
+            Observable.create(new ObservableOnSubscribe<UserProfile>() {
                 @Override
-                public void subscribe(ObservableEmitter<Object> subscriber) {
+                public void subscribe(ObservableEmitter<UserProfile> subscriber) {
                     try {
                         if (isAlreadyLoggedIn) {
                             setUserNameAndPasswordInPref(email, password);
@@ -963,7 +927,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             /*checking if user has changed password once,
              *if not then navigating the user to change password screen.
              *if isResetInitialPassword value is false, then only perform this*/
-            if (!userProfile.isResetInitialPassword()) {
+            if (userProfile.isResetInitialPassword() == null || !userProfile.isResetInitialPassword()) {
                 startChangePasswordActivity();
                 showProgress(false);
             }

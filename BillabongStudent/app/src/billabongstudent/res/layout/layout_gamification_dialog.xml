@@ -1,69 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:tools="http://schemas.android.com/tools">
-    <RelativeLayout
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/layout_main"
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:visibility="gone"
-        android:background="#30000000">
+        android:background="#0Dffffff"
+        android:visibility="visible">
+
         <ImageView
             android:id="@+id/closeButton"
-            android:layout_alignParentTop="true"
             android:layout_width="50dp"
-            android:src="@drawable/close_white"
-            android:scaleType="center"
-            android:visibility="gone"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
             android:layout_margin="@dimen/margin_8dp"
             android:background="@drawable/gradient_circle"
-            android:layout_height="50dp"/>
+            android:scaleType="center"
+            android:src="@drawable/close_white"
+            android:visibility="gone" />
 
 
         <pl.droidsonroids.gif.GifImageView
             android:id="@+id/gifImage"
             android:layout_width="350dp"
             android:layout_height="350dp"
-            android:layout_centerInParent="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="-40dp"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
             android:src="@drawable/mascot_lil_gif"
-            android:visibility="gone"/>
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/image_arrow"
+            android:layout_width="wrap_content"
+            android:background="@drawable/image_game_arrow"
+            android:layout_above="@+id/gifImage"
+            android:layout_marginBottom="-30dp"
+            android:layout_marginTop="-50dp"
+            android:layout_centerInParent="true"
+            android:layout_height="100dp" />
 
 
-
+        <RelativeLayout
+            android:id="@+id/layoutContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="100dp"
+            android:minWidth="150dp"
+            android:layout_above="@+id/image_arrow"
+            android:layout_marginStart="@dimen/margin_40dp"
+            android:layout_marginEnd="@dimen/margin_40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_cloud_no_arrow"
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/text"
-                android:layout_width="248dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/gifImage"
-                android:layout_marginStart="-115dp"
-                android:layout_marginTop="-185dp"
-                android:layout_toEndOf="@+id/gifImage"
-                android:background="@drawable/image_cloud_grident"
                 android:fadeScrollbars="false"
-                android:gravity="center"
-                android:lineSpacingMultiplier="1.2"
-                android:lines="3"
-                android:maxLines="10"
-                android:minLines="2"
-                android:padding="@dimen/padding_8dp"
-                android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:scrollbarThumbVertical="@drawable/scrollbar_color"
-                android:scrollbars="vertical"
+                android:gravity="center|center_horizontal|center_vertical"
+                 android:padding="8dp"
                 android:singleLine="false"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:layout_margin="@dimen/margin_8dp"
                 android:textColor="@android:color/white"
-                android:textStyle="bold|italic"
-                tools:text="Yes. I know it's hard to believe this simple solution works since we have so many weird solutions here."
-                android:visibility="gone"/>
+                android:textSize="16sp"
+                tools:text="How was the school " />
+
+            <include
+                android:id="@+id/layout_survey"
+                layout="@layout/layout_gamification_survey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text"
+                android:layout_margin="@dimen/margin_8dp"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/layout_bonus"
+                layout="@layout/layout_gamification_bonus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text"
+                android:layout_margin="@dimen/margin_8dp"
+                android:visibility="gone" />
+
 
         </RelativeLayout>
 
 
-
-
+    </RelativeLayout>
 
 
 </layout>

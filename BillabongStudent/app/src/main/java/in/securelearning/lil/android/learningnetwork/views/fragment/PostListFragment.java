@@ -48,7 +48,7 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.LayoutBadgeImageviewBinding;
 import in.securelearning.lil.android.app.databinding.LayoutFragmentGroupPostListBinding;
 import in.securelearning.lil.android.app.databinding.LayoutItemPostBinding;
