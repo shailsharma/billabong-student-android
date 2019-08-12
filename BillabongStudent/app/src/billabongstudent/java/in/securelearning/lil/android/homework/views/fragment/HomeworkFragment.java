@@ -205,7 +205,7 @@ public class HomeworkFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        this.mContext = null;
+        //this.mContext = null;
     }
 
     @Override

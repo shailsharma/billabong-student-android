@@ -33,7 +33,7 @@
                     android:fontFamily="@font/poppins_regular"
                     android:paddingStart="@dimen/padding_16dp"
                     android:paddingEnd="@dimen/padding_16dp"
-                    android:text="@string/labelLearn"
+                    android:text="An Essential Reading"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@android:color/black" />
 
@@ -97,7 +97,7 @@
                     android:fontFamily="@font/poppins_regular"
                     android:paddingStart="@dimen/padding_16dp"
                     android:paddingEnd="@dimen/padding_16dp"
-                    android:text="@string/labelReinforce"
+                    android:text="Lets Quickly Recap"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@android:color/black" />
 
@@ -166,7 +166,7 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/poppins_regular"
                         android:paddingStart="@dimen/padding_16dp"
-                        android:text="@string/labelPractice"
+                        android:text="Time To Practice"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@android:color/black" />
 
@@ -290,7 +290,7 @@
                         android:fontFamily="@font/poppins_regular"
                         android:paddingStart="@dimen/padding_16dp"
                         android:paddingEnd="@dimen/padding_16dp"
-                        android:text="@string/labelApply"
+                        android:text="And The Application"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@android:color/black" />
 

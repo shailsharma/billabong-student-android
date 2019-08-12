@@ -10,6 +10,7 @@
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="24dp"
+        app:cardElevation="@dimen/elevation_4dp"
         app:cardUseCompatPadding="true">
 
         <android.support.v7.widget.LinearLayoutCompat

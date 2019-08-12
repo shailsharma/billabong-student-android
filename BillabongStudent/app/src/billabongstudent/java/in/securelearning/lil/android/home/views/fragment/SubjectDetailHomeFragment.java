@@ -155,14 +155,6 @@ public class SubjectDetailHomeFragment extends Fragment {
 
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mContext = null;
-
-    }
-
-
-    @Override
     public void onResume() {
         super.onResume();
         getBundleData();
@@ -451,7 +443,7 @@ public class SubjectDetailHomeFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void fetchWikiHowMapping(String subjectId, String topicId, final ArrayList<AboutCourseMinimal> applyList) {
-        mFlavorHomeModel.fetchThirdPartyMapping(new ThirdPartyMapping(subjectId, topicId, getString(R.string.type_wikihow)))
+        mFlavorHomeModel.fetchThirdPartyMapping(new ThirdPartyMapping(subjectId, topicId, mContext.getString(R.string.type_wikihow)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ArrayList<String>>() {

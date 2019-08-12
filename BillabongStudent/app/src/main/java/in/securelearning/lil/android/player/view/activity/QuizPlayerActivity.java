@@ -234,8 +234,14 @@ public class QuizPlayerActivity extends AppCompatActivity {
                 mSectionId = getIntent().getStringExtra(SECTION_ID);
             }
 
-
-            fetchQuizConfiguration();
+            if (mCourseType.equalsIgnoreCase(getString(R.string.assignment).toLowerCase())) {
+                // TODO: 12/8/19 hardcoded points and assessment type for homework/assignment
+                mPointsPerQuestion = 20;
+                mTypeOfLearning = TYPE_ASSESSMENT_OF_LEARNING;
+                fetchQuestions();
+            } else {
+                fetchQuizConfiguration();
+            }
 
         } else {
             GeneralUtils.showToastShort(getBaseContext(), getString(R.string.error_something_went_wrong));
@@ -540,7 +546,17 @@ public class QuizPlayerActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void fetchQuestions() {
         if (GeneralUtils.isNetworkAvailable(this)) {
-
+            if (mProgressDialog == null) {
+                mProgressDialog = ProgressDialog.show(this, ConstantUtil.BLANK, getString(R.string.messagePleaseWait), false);
+                mProgressDialog.setCancelable(true);
+                mProgressDialog.setCanceledOnTouchOutside(false);
+                mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        onBackPressed();
+                    }
+                });
+            }
             mPlayerModel.fetchQuestionsForQuiz(mQuizId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -1614,7 +1630,14 @@ public class QuizPlayerActivity extends AppCompatActivity {
                         if (callingFrom.equalsIgnoreCase("submitQuizResponse")) {
                             submitQuizResponse();
                         } else {
-                            fetchQuizConfiguration();
+                            if (mCourseType.equalsIgnoreCase(getString(R.string.assignment).toLowerCase())) {
+                                // TODO: 12/8/19 hardcoded points and assessment type for homework/assignment
+                                mPointsPerQuestion = 20;
+                                mTypeOfLearning = TYPE_ASSESSMENT_OF_LEARNING;
+                                fetchQuestions();
+                            } else {
+                                fetchQuizConfiguration();
+                            }
                         }
                     }
                 })
