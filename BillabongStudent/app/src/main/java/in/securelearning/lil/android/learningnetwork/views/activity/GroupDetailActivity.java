@@ -37,9 +37,10 @@ import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
-import in.securelearning.lil.android.home.views.activity.StudentProfileActivity;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
+import in.securelearning.lil.android.profile.views.activity.StudentProfileActivity;
 import in.securelearning.lil.android.learningnetwork.InjectorLearningNetwork;
+import in.securelearning.lil.android.profile.views.activity.StudentPublicProfileActivity;
+import in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
@@ -277,11 +278,23 @@ public class GroupDetailActivity extends AppCompatActivity {
                 public void onClick(View view) {
 
                     if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
+
                         if (groupMember.getObjectId().equals(mAppUserModel.getObjectId())) {
+                            // private profile of student
                             startActivity(StudentProfileActivity.getStartIntent(mAppUserModel.getObjectId(), getBaseContext()));
+
                         } else {
-                            startActivity(UserProfileActivity.getStartIntent(groupMember.getObjectId(), getBaseContext()));
+
+                            if (groupMember.getRole().getName().equalsIgnoreCase("Student")) {
+                                // public profile of student
+//                                startActivity(StudentPublicProfileActivity.getStartIntent(groupMember.getObjectId(), getBaseContext()));
+                            } else {
+                                // public profile of non-student
+                                startActivity(UserPublicProfileActivity.getStartIntent(getBaseContext(), groupMember.getObjectId()));
+                            }
+
                         }
+
                     } else {
                         SnackBarUtils.showNoInternetSnackBar(getBaseContext(), view);
                     }
@@ -346,11 +359,24 @@ public class GroupDetailActivity extends AppCompatActivity {
                 public void onClick(View view) {
 
                     if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
+
+
                         if (moderator.getId().equals(mAppUserModel.getObjectId())) {
+                            // private profile of student
                             startActivity(StudentProfileActivity.getStartIntent(mAppUserModel.getObjectId(), getBaseContext()));
+
                         } else {
-                            startActivity(UserProfileActivity.getStartIntent(moderator.getId(), getBaseContext()));
+
+                            if (moderator.getRole().getName().equalsIgnoreCase("Student")) {
+                                // public profile of student
+//                                startActivity(StudentPublicProfileActivity.getStartIntent(moderator.getId(), getBaseContext()));
+                            } else {
+                                // public profile of non-student
+                                startActivity(UserPublicProfileActivity.getStartIntent(getBaseContext(), moderator.getId()));
+                            }
+
                         }
+
                     } else {
                         ToastUtils.showToastAlert(getBaseContext(), getString(R.string.connect_internet));
                     }

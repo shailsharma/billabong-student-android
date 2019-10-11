@@ -1033,7 +1033,7 @@ public class CreatePostActivity extends AppCompatActivity {
 
                 }
             } else {
-                ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit));
+                ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit_10MB));
             }
         }
 
@@ -1058,7 +1058,7 @@ public class CreatePostActivity extends AppCompatActivity {
                     .start(this);
 
         } else {
-            ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit));
+            ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit_10MB));
         }
     }
 
@@ -1189,7 +1189,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     String mimeType = URLConnection.guessContentTypeFromName(mAttachPathList.get(position));
                     if (mimeType.contains("image")) {
-                        FullScreenImage.setUpFullImageView(CreatePostActivity.this, position, true, true, FullScreenImage.getResourceArrayList(mAttachPathList));
+                        FullScreenImage.setUpFullImageView(CreatePostActivity.this, position, true, true, false, FullScreenImage.getResourceArrayList(mAttachPathList));
                     } else if (mimeType.contains("video")) {
                         Resource item = new Resource();
                         item.setType("video");

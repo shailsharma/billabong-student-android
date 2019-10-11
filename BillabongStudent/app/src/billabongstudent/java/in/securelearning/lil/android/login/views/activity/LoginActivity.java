@@ -26,18 +26,14 @@ import android.os.Looper;
 import android.os.Vibrator;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,7 +46,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -67,7 +62,6 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.databinding.ActivityWelcomeBinding;
 import in.securelearning.lil.android.app.databinding.LayoutAppMainLoginBinding;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.model.AppUserModel;
@@ -75,6 +69,7 @@ import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
+import in.securelearning.lil.android.gamification.utils.GamificationPrefs;
 import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.home.utils.PermissionPrefs;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
@@ -85,11 +80,11 @@ import in.securelearning.lil.android.learningnetwork.views.activity.CreatePostSh
 import in.securelearning.lil.android.login.InjectorLogin;
 import in.securelearning.lil.android.login.events.AlreadyLoggedInEvent;
 import in.securelearning.lil.android.login.events.PasswordChangeEvent;
-import in.securelearning.lil.android.login.views.activity.startup.MyViewPagerAdapter;
 import in.securelearning.lil.android.syncadapter.dataobject.RolePermissions;
 import in.securelearning.lil.android.syncadapter.fcmservices.FCMToken;
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
+import in.securelearning.lil.android.syncadapter.service.MessageService;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.NotificationUtil;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
@@ -176,6 +171,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorGrey55));
         }
         handleUpgrade();
+        setMoscoatValues();
 
         final Intent intent = getIntent();
         if (intent != null && !TextUtils.isEmpty(intent.getAction())) {
@@ -201,6 +197,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             }
         }
+    }
+
+    private void setMoscoatValues() {
+        GamificationPrefs.setFirstTimeApplicationLoaded(mContext, false);
+        GamificationPrefs.setSubjectCallDone(mContext, false);
     }
 
     private void intentActionDialog(String message) {
@@ -324,7 +325,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_EMAIL, new String[]{"chaitendra.singh@securelearning.in,prabodh.dhabaria@securelearning.in,tikam.tailor@securelearning.in"});
+        i.putExtra(Intent.EXTRA_EMAIL, new String[]{"chaitendra.singh@securelearning.in,prabodh.dhabaria@securelearning.in"});
         i.putExtra(Intent.EXTRA_SUBJECT, "Crash report ");
         i.putExtra(Intent.EXTRA_TEXT, msg);
         Intent finalIntent = Intent.createChooser(i, "Send Crash Report");
@@ -881,6 +882,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /*Fetch details of logged in user.*/
+    @SuppressLint("CheckResult")
     private void getCurrentUserProfile() throws Exception {
         if (SyncServiceHelper.setCurrentUserProfile(LoginActivity.this)) {
             String userId = AppPrefs.getUserId(LoginActivity.this);
@@ -901,16 +903,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             /*To update UserProfile object stored  locally.*/
             SyncServiceHelper.updateProfile();
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mBinding.includeLoginProgress.textViewLoadingMessage.setText(getString(R.string.message_loading_groups));
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    mBinding.includeLoginProgress.textViewLoadingMessage.setText(getString(R.string.message_loading_groups));
+//
+//                }
+//            });
+//
+//            /*Starting download job to fetch and save user's group.*/
+//            JobCreator.createNetworkGroupDownloadJob().execute();
 
-                }
-            });
+            if (BuildConfig.IS_LEARNING_NETWORK_ENABLED) {
 
-            /*Starting download job to fetch and save user's group.*/
-            JobCreator.createNetworkGroupDownloadJob().execute();
+                Completable.complete().observeOn(Schedulers.newThread())
+                        .subscribe(new Action() {
+                            @Override
+                            public void run() {
+                                MessageService.startActionDownloadPostAndResponseBulk(getBaseContext());
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                throwable.printStackTrace();
+                            }
+                        });
+
+
+            }
 
                /*If login successful, then saving logged in users
               emails to shared preferences, and showing saved emails
@@ -1204,131 +1224,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
     }
-
-    public static final class WelcomeFragment extends Fragment {
-        private MyViewPagerAdapter myViewPagerAdapter;
-        private TextView[] dots;
-        private int[] layouts;
-        private ActivityWelcomeBinding binding;
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-        }
-
-        @Nullable
-        @Override
-        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.activity_welcome, container, false);
-
-            // Making notification bar transparent
-            if (Build.VERSION.SDK_INT >= 21) {
-                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-            }
-
-            // layouts of all welcome sliders
-            // add few more layouts if you want
-            layouts = new int[]{
-                    R.layout.layout_intro_course,
-                    R.layout.layout_intro_network,
-                    R.layout.layout_intro_learning_map,
-                    R.layout.layout_intro_assignment};
-
-            // adding bottom dots
-            addBottomDots(0);
-
-            // making notification bar transparent
-            changeStatusBarColor();
-
-            myViewPagerAdapter = new MyViewPagerAdapter(getActivity(), layouts);
-            binding.wowoViewpager.setAdapter(myViewPagerAdapter);
-            binding.wowoViewpager.addOnPageChangeListener(viewPagerPageChangeListener);
-
-            binding.btnSkip.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    mBinding.includeIntro.layoutAppIntro.setVisibility(View.GONE);
-//                    mBinding.includeLoginEmail.layoutLogin.setVisibility(View.VISIBLE);
-                }
-            });
-
-            binding.btnNext.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int current = getItem(+1);
-                    if (current < layouts.length) {
-                        binding.wowoViewpager.setCurrentItem(current);
-                    } else {
-//                        mBinding.includeIntro.layoutAppIntro.setVisibility(View.GONE);
-//                        mBinding.includeLoginEmail.layoutLogin.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-            return binding.getRoot();
-        }
-
-
-        private void addBottomDots(int currentPage) {
-            dots = new TextView[layouts.length];
-
-            int[] colorsActive = getResources().getIntArray(R.array.array_dot_active);
-            int[] colorsInactive = getResources().getIntArray(R.array.array_dot_inactive);
-
-            binding.layoutDots.removeAllViews();
-            for (int i = 0; i < dots.length; i++) {
-                dots[i] = new TextView(getActivity());
-                dots[i].setText(Html.fromHtml("&#8226;"));
-                dots[i].setTextSize(35);
-                dots[i].setTextColor(colorsInactive[currentPage]);
-                binding.layoutDots.addView(dots[i]);
-            }
-
-            if (dots.length > 0) {
-                dots[currentPage].setTextColor(colorsActive[currentPage]);
-                binding.btnNext.setTextColor(colorsActive[currentPage]);
-            }
-        }
-
-        private int getItem(int i) {
-            return binding.wowoViewpager.getCurrentItem() + i;
-        }
-
-        //  viewpager change listener
-        ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
-
-            @Override
-            public void onPageSelected(int position) {
-                addBottomDots(position);
-                // changing the next button text 'NEXT' / 'GOT IT'
-                if (position == layouts.length - 1) {
-                    // last page. make button text to GOT IT
-                    binding.btnNext.setText(getString(R.string.start));
-                    binding.btnSkip.setVisibility(View.GONE);
-                } else {
-                    // still pages are left
-                    binding.btnNext.setText(getString(R.string.next));
-                    binding.btnSkip.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) {
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int arg0) {
-            }
-        };
-
-        private void changeStatusBarColor() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Window window = getActivity().getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(Color.TRANSPARENT);
-            }
-        }
-    }
-
 
 }
 

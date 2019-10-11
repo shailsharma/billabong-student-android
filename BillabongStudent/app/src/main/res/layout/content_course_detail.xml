@@ -226,49 +226,6 @@
                         android:clickable="false"
                         android:numStars="5" />
 
-                    <!--<android.support.v7.widget.AppCompatTextView-->
-                        <!--android:id="@+id/rating_count"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="24dp"-->
-                        <!--android:layout_marginRight="8dp"-->
-                        <!--android:text="4/5"-->
-                        <!--android:textColor="@color/colorGreyDark" />-->
-
-                    <!--<android.support.v7.widget.AppCompatCheckBox-->
-                        <!--android:id="@+id/rating1"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:button="@null"-->
-                        <!--android:drawableLeft="@drawable/rating_star_drawable" />-->
-
-                    <!--<android.support.v7.widget.AppCompatCheckBox-->
-                        <!--android:id="@+id/rating2"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:button="@null"-->
-                        <!--android:drawableLeft="@drawable/rating_star_drawable" />-->
-
-                    <!--<android.support.v7.widget.AppCompatCheckBox-->
-                        <!--android:id="@+id/rating3"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:button="@null"-->
-                        <!--android:drawableLeft="@drawable/rating_star_drawable" />-->
-
-                    <!--<android.support.v7.widget.AppCompatCheckBox-->
-                        <!--android:id="@+id/rating4"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:button="@null"-->
-                        <!--android:drawableLeft="@drawable/rating_star_drawable" />-->
-
-                    <!--<android.support.v7.widget.AppCompatCheckBox-->
-                        <!--android:id="@+id/rating5"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_marginRight="16dp"-->
-                        <!--android:button="@null"-->
-                        <!--android:drawableLeft="@drawable/rating_star_drawable" />-->
 
                 </LinearLayout>
 

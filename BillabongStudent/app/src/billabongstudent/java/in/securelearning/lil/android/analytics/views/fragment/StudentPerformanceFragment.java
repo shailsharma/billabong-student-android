@@ -6,6 +6,8 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -33,9 +35,11 @@ import io.reactivex.schedulers.Schedulers;
 
 public class StudentPerformanceFragment extends Fragment implements View.OnClickListener {
 
-    LayoutStudentAnalyticsPerformanceBinding mBinding;
     @Inject
     AnalyticsModel mAnalyticsModel;
+
+    LayoutStudentAnalyticsPerformanceBinding mBinding;
+
     ArrayList<EffortvsPerformanceData> mBrilliantSubjectList = null,
             mCatchingSubjectList = null, mWorkHarderList = null, mStudyingLot = null;
     BenchMarkPerformance mBenchMarkPerformance;
@@ -56,25 +60,20 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
             mBenchMarkPerformance = (BenchMarkPerformance) getArguments().getSerializable(ConstantUtil.BENCHMARK_PERFORMANCE);
         }
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.layout_student_analytics_performance, container, false);
 
-        if (!fragmentResume && fragmentVisible) {   //only when first time fragment is created
+        if (!fragmentResume && fragmentVisible) {   //only when first time activity is created
             if (mBenchMarkPerformance != null) {
-                mBinding.progressBarPerformance.setVisibility(View.VISIBLE);
                 fetchSubjectPerformanceData();
             } else {
-                mBinding.progressBarPerformance.setVisibility(View.GONE);
                 showNoData();
             }
         }
@@ -82,6 +81,7 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
         mBinding.llCatching.setOnClickListener(this);
         mBinding.llStudying.setOnClickListener(this);
         mBinding.llWorkHarder.setOnClickListener(this);
+
         return mBinding.getRoot();
     }
 
@@ -96,20 +96,22 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
     @Override
     public void setUserVisibleHint(boolean visible) {
         super.setUserVisibleHint(visible);
-        if (visible && isResumed()) {   // only at fragment screen is resumed
+        if (visible && isResumed()) {   // only at activity screen is resumed
             fragmentResume = true;
             fragmentVisible = false;
             fragmentOnCreated = true;
+
             if (mBenchMarkPerformance != null) {
                 fetchSubjectPerformanceData();
             } else {
                 showNoData();
             }
-        } else if (visible) {        // only at fragment onCreated
+
+        } else if (visible) {        // only at activity onCreated
             fragmentResume = false;
             fragmentVisible = true;
             fragmentOnCreated = true;
-        } else if (!visible && fragmentOnCreated) {// only when you go out of fragment screen
+        } else if (!visible && fragmentOnCreated) {// only when you go out of activity screen
             fragmentVisible = false;
             fragmentResume = false;
         }
@@ -117,20 +119,26 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
 
     @SuppressLint("CheckResult")
     private void fetchSubjectPerformanceData() {
+
         if (GeneralUtils.isNetworkAvailable(mContext)) {
+
+            mBinding.progressBarPerformance.setVisibility(View.VISIBLE);
+
             mAnalyticsModel.fetchEffortvsPerformanceData()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<ArrayList<EffortvsPerformanceData>>() {
                         @Override
                         public void accept(ArrayList<EffortvsPerformanceData> responses) throws Exception {
-                            mBinding.progressBarPerformance.setVisibility(View.GONE);
-                            if (responses != null && !responses.isEmpty()) {
 
+                            mBinding.progressBarPerformance.setVisibility(View.GONE);
+
+                            if (responses != null && !responses.isEmpty()) {
                                 showEffortChart(responses);
                             } else {
                                 showNoData();
                             }
+
                         }
                     }, new Consumer<Throwable>() {
                         @Override
@@ -142,12 +150,26 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
                         @Override
                         public void run() throws Exception {
                             mBinding.progressBarPerformance.setVisibility(View.GONE);
-
                         }
                     });
 
-        } else
+        } else {
             showNoData();
+            showInternetSnackBar();
+        }
+    }
+
+    private void showInternetSnackBar() {
+
+        Snackbar.make(mBinding.getRoot(), getString(R.string.error_message_no_internet), Snackbar.LENGTH_INDEFINITE)
+                .setAction((R.string.labelRetry), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        fetchSubjectPerformanceData();
+                    }
+                })
+                .show();
+
     }
 
     private void showNoData() {
@@ -156,6 +178,9 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
         mBinding.textViewCatching.setText(R.string.zero);
         mBinding.textViewStudying.setText(R.string.zero);
         mBinding.textViewWorkHarder.setText(R.string.zero);
+
+        mBinding.progressBarPerformance.setVisibility(View.GONE);
+        mBinding.llPerformance.setVisibility(View.GONE);
 
     }
 
@@ -173,7 +198,7 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
 
         float avgDaily = 0f;
 
-        EffortvsPerformanceData.TimeResponse timeResponse = null;
+        EffortvsPerformanceData.TimeResponse timeResponse;
 
         for (EffortvsPerformanceData subjectResponse : responses) {
             if (subjectResponse != null) {
@@ -183,7 +208,6 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
                     avgDaily = timeResponse.getAvgDaily();
                 }
 
-//                if (avgDaily != 0f) {
                 if ((percentage >= mBenchMarkPerformance.getBenchMarkPercentage()) && (avgDaily < mBenchMarkPerformance.getBenchMarkTime())) {
                     mBrilliantSubjectList.add(subjectResponse);
                 } else if (percentage >= mBenchMarkPerformance.getBenchMarkPercentage() && (avgDaily >= mBenchMarkPerformance.getBenchMarkTime())) {
@@ -193,9 +217,6 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
                 } else if (percentage < mBenchMarkPerformance.getBenchMarkPercentage() && (avgDaily < mBenchMarkPerformance.getBenchMarkTime())) {
                     mWorkHarderList.add(subjectResponse);
                 }
-
-//
-
 
             }
         }
@@ -237,10 +258,10 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
     }
 
     private void setEffortDaily(int studentType, ArrayList<EffortvsPerformanceData> subjectList, int drawable) {
-        mBinding.llPerformance.setVisibility(View.VISIBLE);
         mBinding.textViewPerformance.setText(studentType);
         mBinding.textViewCount.setText(String.valueOf(subjectList.size()));
         mBinding.textViewCount.setBackgroundResource(drawable);
+        mBinding.llPerformance.setVisibility(View.VISIBLE);
         showStudentList(subjectList);
     }
 

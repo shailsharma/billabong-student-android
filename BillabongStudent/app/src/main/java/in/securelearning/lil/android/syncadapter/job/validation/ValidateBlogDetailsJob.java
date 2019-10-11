@@ -2,15 +2,9 @@ package in.securelearning.lil.android.syncadapter.job.validation;
 
 import android.app.PendingIntent;
 
-import javax.inject.Inject;
-
-import in.securelearning.lil.android.base.constants.SyncStatus;
+import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.base.dataobjects.BlogDetails;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
-import in.securelearning.lil.android.syncadapter.job.JobCreator;
-import in.securelearning.lil.android.syncadapter.job.download.DownloadBlogCommentsJob;
-import in.securelearning.lil.android.syncadapter.job.resource.ResourceNetworkOperation;
-import in.securelearning.lil.android.syncadapter.utils.InternalNotificationActionUtils;
 import in.securelearning.lil.android.syncadapter.utils.NotificationUtil;
 
 /**
@@ -95,7 +89,7 @@ public class ValidateBlogDetailsJob extends BaseValidationJobWeb<BlogDetails> {
 
     @Override
     protected int getProgressCountMax() {
-        return mResourcesToDownload.length+mResourcesDownloaded.length;
+        return mResourcesToDownload.length + mResourcesDownloaded.length;
     }
 
     @Override
@@ -110,6 +104,6 @@ public class ValidateBlogDetailsJob extends BaseValidationJobWeb<BlogDetails> {
 
     @Override
     public int getNotificationResourceId() {
-        return in.securelearning.lil.android.base.R.drawable.blog;
+        return R.drawable.logo_news_g;
     }
 }

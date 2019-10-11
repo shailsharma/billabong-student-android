@@ -135,7 +135,14 @@ public class GeneratePasswordActivity extends AppCompatActivity {
             public void onClick(View view) {
                 clearOTPEditTexts();
                 hideSoftKeyboard();
-                requestOTP(mBinding.editTextLoginPhone.getText().toString().trim(), true);
+                if (mBinding.editTextLoginPhone.getText() != null
+                        && !TextUtils.isEmpty(mBinding.editTextLoginPhone.getText().toString().trim())) {
+
+                    requestOTP(mBinding.editTextLoginPhone.getText().toString().trim(), true);
+
+                } else {
+                    SnackBarUtils.showAlertSnackBar(getBaseContext(), mBinding.getRoot(), getString(R.string.error_something_went_wrong));
+                }
             }
         });
 
@@ -144,7 +151,13 @@ public class GeneratePasswordActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (validateOTP()) {
                     hideSoftKeyboard();
-                    verifyOTP(mBinding.textViewOTPMobileNumber.getTag().toString().trim(), getOTPFromEditText());
+                    if (mBinding.editTextLoginPhone.getText() != null
+                            && !TextUtils.isEmpty(mBinding.editTextLoginPhone.getText().toString().trim())) {
+                        verifyOTP(mBinding.editTextLoginPhone.getText().toString().trim(), getOTPFromEditText());
+
+                    } else {
+                        SnackBarUtils.showAlertSnackBar(getBaseContext(), mBinding.getRoot(), getString(R.string.error_something_went_wrong));
+                    }
                 }
             }
         });

@@ -108,7 +108,7 @@ public class TraineeLearningObjectiveFragment extends Fragment {
     private void noResultFound() {
         mBinding.list.setVisibility(View.GONE);
         mBinding.layoutNoResult.setVisibility(View.VISIBLE);
-        mBinding.imageViewNoResult.setImageResource(R.drawable.profile_g);
+        mBinding.imageViewNoResult.setImageResource(R.drawable.logo_profile_g);
         mBinding.textViewNoResult.setText(getContext().getString(R.string.messageNoLearningObjectivesFound));
     }
 

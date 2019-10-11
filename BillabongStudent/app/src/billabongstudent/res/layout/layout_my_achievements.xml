@@ -3,356 +3,334 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.LinearLayoutCompat
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/layoutContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="visible">
 
-        <ScrollView
-            android:id="@+id/layoutContent"
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <!--Divider-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:visibility="gone"
+                android:background="@color/itemDivider" />
 
             <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:minHeight="?actionBarSize"
+                android:orientation="horizontal">
 
 
-                <!--Divider-->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginTop="@dimen/margin_8dp"
-                    android:background="@color/itemDivider" />
-
+                <!--rewards/euros-->
                 <android.support.v7.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:minHeight="?actionBarSize"
-                    android:orientation="horizontal">
+                    android:layout_weight="1"
+                    android:background="@color/colorWhite"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
 
 
-                    <!--rewards/euros-->
                     <android.support.v7.widget.LinearLayoutCompat
-                        android:layout_width="0dp"
+                        android:id="@+id/layoutRewardHeader"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@color/colorWhite"
+                        android:background="?android:attr/selectableItemBackground"
                         android:gravity="center_vertical"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/value_8dp"
+                        android:paddingTop="@dimen/value_4dp"
+                        android:paddingEnd="@dimen/value_8dp"
+                        android:paddingBottom="@dimen/value_4dp">
 
+                        <!--Icon big-->
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="44dp"
+                            android:layout_height="48dp"
+                            android:layout_marginEnd="@dimen/value_8dp"
+                            app:srcCompat="@drawable/icon_coin_gold_48_vector" />
 
+                        <!--Total rewards/euros-->
                         <android.support.v7.widget.LinearLayoutCompat
-                            android:id="@+id/layoutRewardHeader"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="?android:attr/selectableItemBackground"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:paddingStart="@dimen/padding_8dp"
-                            android:paddingTop="@dimen/padding_4dp"
-                            android:paddingEnd="@dimen/padding_8dp"
-                            android:paddingBottom="@dimen/padding_4dp">
+                            android:orientation="vertical">
 
-                            <!--Icon big-->
-                            <android.support.v7.widget.AppCompatImageView
-                                android:layout_width="42dp"
-                                android:layout_height="48dp"
-                                android:layout_marginEnd="@dimen/margin_8dp"
-                                app:srcCompat="@drawable/euro_flower" />
-
-                            <!--Total rewards/euros-->
-                            <android.support.v7.widget.LinearLayoutCompat
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewTotalRewards"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:orientation="vertical">
+                                android:ellipsize="end"
+                                android:lines="1"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                android:textColor="@android:color/black"
+                                android:textStyle="bold"
+                                tools:text="33350" />
 
-                                <android.support.v7.widget.AppCompatTextView
-                                    android:id="@+id/textViewTotalRewards"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                    android:textColor="@android:color/black"
-                                    android:textStyle="bold"
-                                    tools:text="33350" />
-
-                                <android.support.v7.widget.AppCompatTextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/euros"
-                                    android:textColor="@android:color/black" />
-
-                            </android.support.v7.widget.LinearLayoutCompat>
-
-                            <!--down arrow with tint-->
-                            <android.support.v7.widget.AppCompatImageView
-                                android:id="@+id/imageViewRewardsIndicator"
-                                android:layout_width="wrap_content"
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:padding="@dimen/padding_4dp"
-                                android:tint="@color/colorPrimary"
-                                android:visibility="gone"
-                                app:srcCompat="@drawable/chevron_right_white" />
+                                android:text="@string/euros"
+                                android:textColor="@android:color/black" />
 
                         </android.support.v7.widget.LinearLayoutCompat>
 
-
-                        <!--Bottom line euros-->
-                        <View
-                            android:id="@+id/bottomLineEuros"
-                            android:layout_width="match_parent"
-                            android:layout_height="4dp"
-                            android:background="@color/colorPrimary"
-                            android:visibility="gone" />
-
+                        <!--down arrow with tint-->
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/imageViewRewardsIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/value_4dp"
+                            android:tint="@color/colorPrimary"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/chevron_right_white" />
 
                     </android.support.v7.widget.LinearLayoutCompat>
 
-                    <!--Divider-->
+
+                    <!--Bottom line euros-->
                     <View
-                        android:layout_width="0.5dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/itemDivider" />
-
-                    <!--trophies-->
-                    <android.support.v7.widget.LinearLayoutCompat
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@color/colorWhite"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical">
-
-
-                        <android.support.v7.widget.LinearLayoutCompat
-                            android:id="@+id/layoutTrophiesHeader"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:paddingStart="@dimen/padding_8dp"
-                            android:paddingTop="@dimen/padding_4dp"
-                            android:paddingEnd="@dimen/padding_8dp"
-                            android:paddingBottom="@dimen/padding_4dp">
-
-                            <!--Icon big-->
-                            <android.support.v7.widget.AppCompatImageView
-                                android:layout_width="40dp"
-                                android:layout_height="48dp"
-                                android:layout_marginEnd="@dimen/margin_8dp"
-                                app:srcCompat="@drawable/icon_trophies" />
-
-                            <!--Total rewards-->
-                            <android.support.v7.widget.LinearLayoutCompat
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:orientation="vertical">
-
-
-                                <android.support.v7.widget.AppCompatTextView
-                                    android:id="@+id/textViewTotalTrophies"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                    android:textColor="@android:color/black"
-                                    android:textStyle="bold"
-                                    tools:text="4" />
-
-                                <android.support.v7.widget.AppCompatTextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/trophies"
-                                    android:textColor="@android:color/black" />
-
-                            </android.support.v7.widget.LinearLayoutCompat>
-
-                            <!--down arrow with tint-->
-                            <android.support.v7.widget.AppCompatImageView
-                                android:id="@+id/imageViewTrophiesIndicator"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="@dimen/padding_4dp"
-                                android:tint="@color/colorPrimary"
-                                android:visibility="gone"
-                                app:srcCompat="@drawable/chevron_right_white" />
-
-                        </android.support.v7.widget.LinearLayoutCompat>
-
-
-                        <!--Bottom line trophies-->
-                        <View
-                            android:id="@+id/bottomLineTrophies"
-                            android:layout_width="match_parent"
-                            android:layout_height="4dp"
-                            android:background="@color/colorPrimary"
-                            android:visibility="gone" />
-
-                    </android.support.v7.widget.LinearLayoutCompat>
-
-                    <!--Divider-->
-                    <View
-                        android:layout_width="0.5dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/itemDivider" />
-
-                    <!--badges-->
-                    <android.support.v7.widget.LinearLayoutCompat
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@color/colorWhite"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical">
-
-
-                        <android.support.v7.widget.LinearLayoutCompat
-                            android:id="@+id/layoutBadgesHeader"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:paddingStart="@dimen/padding_8dp"
-                            android:paddingTop="@dimen/padding_4dp"
-                            android:paddingEnd="@dimen/padding_8dp"
-                            android:paddingBottom="@dimen/padding_4dp">
-
-                            <!--Icon big-->
-                            <android.support.v7.widget.AppCompatImageView
-                                android:layout_width="40dp"
-                                android:layout_height="48dp"
-                                android:layout_marginEnd="@dimen/margin_8dp"
-                                app:srcCompat="@drawable/icon_badges" />
-
-
-                            <!--Total rewards-->
-                            <android.support.v7.widget.LinearLayoutCompat
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:orientation="vertical">
-
-
-                                <android.support.v7.widget.AppCompatTextView
-                                    android:id="@+id/textViewTotalBadges"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                    android:textColor="@android:color/black"
-                                    android:textStyle="bold"
-                                    tools:text="4" />
-
-                                <android.support.v7.widget.AppCompatTextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/badges"
-                                    android:textColor="@android:color/black" />
-
-                            </android.support.v7.widget.LinearLayoutCompat>
-
-                            <!--down arrow with tint-->
-                            <android.support.v7.widget.AppCompatImageView
-                                android:id="@+id/imageViewBadgesIndicator"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="@dimen/padding_4dp"
-                                android:tint="@android:color/holo_blue_dark"
-                                android:visibility="gone"
-                                app:srcCompat="@drawable/chevron_right_white" />
-
-                        </android.support.v7.widget.LinearLayoutCompat>
-
-                        <!--Bottom line badges-->
-                        <View
-                            android:id="@+id/bottomLineBadges"
-                            android:layout_width="match_parent"
-                            android:layout_height="4dp"
-                            android:background="@color/colorPrimary"
-                            android:visibility="gone" />
-
-                    </android.support.v7.widget.LinearLayoutCompat>
+                        android:id="@+id/bottomLineEuros"
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:background="@color/colorPrimary"
+                        android:visibility="gone" />
 
 
                 </android.support.v7.widget.LinearLayoutCompat>
 
                 <!--Divider-->
                 <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
                     android:background="@color/itemDivider" />
 
-                <!--rewards/euros-->
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerViewRewards"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:overScrollMode="never"
-                    android:visibility="visible"
-                    tools:listitem="@layout/layout_my_achievement_euros_item"
-                    tools:spanCount="4" />
-
                 <!--trophies-->
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerViewTrophies"
-                    android:layout_width="match_parent"
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:overScrollMode="never"
-                    android:visibility="gone"
-                    tools:listitem="@layout/layout_my_achievement_trophies_item" />
+                    android:layout_weight="1"
+                    android:background="@color/colorWhite"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:id="@+id/layoutTrophiesHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/value_8dp"
+                        android:paddingTop="@dimen/value_4dp"
+                        android:paddingEnd="@dimen/value_8dp"
+                        android:paddingBottom="@dimen/value_4dp">
+
+                        <!--Icon big-->
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="36dp"
+                            android:layout_height="48dp"
+                            android:layout_marginEnd="@dimen/value_8dp"
+                            app:srcCompat="@drawable/icon_trophies" />
+
+                        <!--Total rewards-->
+                        <android.support.v7.widget.LinearLayoutCompat
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewTotalTrophies"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                android:textColor="@android:color/black"
+                                android:textStyle="bold"
+                                tools:text="4" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/trophies"
+                                android:textColor="@android:color/black" />
+
+                        </android.support.v7.widget.LinearLayoutCompat>
+
+                        <!--down arrow with tint-->
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/imageViewTrophiesIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/value_4dp"
+                            android:tint="@color/colorPrimary"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/chevron_right_white" />
+
+                    </android.support.v7.widget.LinearLayoutCompat>
+
+
+                    <!--Bottom line trophies-->
+                    <View
+                        android:id="@+id/bottomLineTrophies"
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:background="@color/colorPrimary"
+                        android:visibility="gone" />
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <!--Divider-->
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/itemDivider" />
 
                 <!--badges-->
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerViewBadges"
-                    android:layout_width="match_parent"
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:overScrollMode="never"
-                    android:visibility="gone"
-                    tools:listitem="@layout/layout_my_achievement_badges_item" />
+                    android:layout_weight="1"
+                    android:background="@color/colorWhite"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
 
-                <FrameLayout
-                    android:id="@+id/layoutEurosError"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="56dp"
-                    android:visibility="gone">
 
-                    <android.support.v7.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:id="@+id/layoutBadgesHeader"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="@dimen/margin_16dp"
-                        android:gravity="center"
-                        android:text="No euros found"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                        android:background="?android:attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/value_8dp"
+                        android:paddingTop="@dimen/value_4dp"
+                        android:paddingEnd="@dimen/value_8dp"
+                        android:paddingBottom="@dimen/value_4dp">
 
-                </FrameLayout>
+                        <!--Icon big-->
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="36dp"
+                            android:layout_height="48dp"
+                            android:layout_marginEnd="@dimen/value_8dp"
+                            app:srcCompat="@drawable/icon_badges" />
+
+
+                        <!--Total rewards-->
+                        <android.support.v7.widget.LinearLayoutCompat
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewTotalBadges"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                android:textColor="@android:color/black"
+                                android:textStyle="bold"
+                                tools:text="4" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/badges"
+                                android:textColor="@android:color/black" />
+
+                        </android.support.v7.widget.LinearLayoutCompat>
+
+                        <!--down arrow with tint-->
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/imageViewBadgesIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/value_4dp"
+                            android:tint="@android:color/holo_blue_dark"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/chevron_right_white" />
+
+                    </android.support.v7.widget.LinearLayoutCompat>
+
+                    <!--Bottom line badges-->
+                    <View
+                        android:id="@+id/bottomLineBadges"
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:background="@color/colorPrimary"
+                        android:visibility="gone" />
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
 
             </android.support.v7.widget.LinearLayoutCompat>
 
-        </ScrollView>
+            <!--Divider-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/itemDivider" />
 
-        <!--Error-->
-        <android.support.v7.widget.LinearLayoutCompat
-            android:id="@+id/layoutError"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:visibility="gone">
+            <!--rewards/euros-->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewRewards"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                android:visibility="visible"
+                tools:listitem="@layout/layout_my_achievement_euros_item"
+                tools:spanCount="4" />
 
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="wrap_content"
+            <!--trophies-->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewTrophies"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_16dp"
-                android:gravity="center_horizontal"
-                android:text="@string/error_something_went_wrong"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:overScrollMode="never"
+                android:visibility="gone"
+                tools:listitem="@layout/layout_my_achievement_trophies_item" />
+
+            <!--badges-->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewBadges"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:visibility="gone"
+                tools:listitem="@layout/layout_my_achievement_badges_item" />
+
+            <FrameLayout
+                android:id="@+id/layoutEurosError"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="56dp"
+                android:visibility="gone">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/value_16dp"
+                    android:gravity="center"
+                    android:text="No euros found"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            </FrameLayout>
 
         </android.support.v7.widget.LinearLayoutCompat>
 
-    </android.support.v7.widget.LinearLayoutCompat>
+    </android.support.v4.widget.NestedScrollView>
 
 </layout>

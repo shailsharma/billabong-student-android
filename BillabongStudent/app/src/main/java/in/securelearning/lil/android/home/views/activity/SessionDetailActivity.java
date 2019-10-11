@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.LayoutItemGroupMembersBinding;
 import in.securelearning.lil.android.app.databinding.LayoutRecyclerviewSimpleItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutSessionDetailBinding;
@@ -46,8 +45,10 @@ import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.courses.views.activity.CourseDetailActivity;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.model.HomeModel;
+import in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -60,10 +61,13 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class SessionDetailActivity extends AppCompatActivity {
+
     @Inject
     HomeModel mHomeModel;
+
     public static final String SESSION_ID = "objectId";
     public static final String SESSION_NUMBER = "sessionNumber";
+
     private String mSessionId, mSessionNumber;
     LayoutSessionDetailBinding mBinding;
 
@@ -108,7 +112,7 @@ public class SessionDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(getString(R.string.lableSessionDetail));
     }
-    
+
     public static Intent getStartIntent(Context context, String sessionNumber, String objectId) {
         Intent intent = new Intent(context, SessionDetailActivity.class);
         intent.putExtra(SESSION_NUMBER, sessionNumber);
@@ -381,8 +385,7 @@ public class SessionDetailActivity extends AppCompatActivity {
                 public void onClick(View view) {
 
                     if (GeneralUtils.isNetworkAvailable(mContext)) {
-                        Intent mIntent = UserProfileActivity.getStartIntent(moderator.getId(), mContext);
-                        startActivity(mIntent);
+                        startActivity(UserPublicProfileActivity.getStartIntent(mContext, moderator.getId()));
                     } else {
                         SnackBarUtils.showNoInternetSnackBar(mContext, view);
                     }

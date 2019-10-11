@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.syncadapter.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -98,7 +99,12 @@ import in.securelearning.lil.android.base.model.TrainingSessionModel;
 import in.securelearning.lil.android.base.model.VideoCourseModel;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.dataobject.ServerDataPackage;
+import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
+import io.reactivex.Completable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Model for database access.
@@ -1210,5 +1216,30 @@ public class JobModel extends BaseModel {
 
     public Training getTraining(String objectId) {
         return mTrainingModel.getObjectById(objectId);
+    }
+
+
+    /**
+     * start downloading learning network post and response data.
+     *
+     * @param objectId group objectId
+     */
+    @SuppressLint("CheckResult")
+    public static void startLearningNetworkSyncForGroup(final String objectId) {
+        Completable.complete()
+                .subscribeOn(Schedulers.computation())
+                .subscribe(new Action() {
+                    @Override
+                    public void run() {
+                        JobCreator.createDownloadGroupPostAndResponseJob(objectId).execute();
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
+                });
+
     }
 }

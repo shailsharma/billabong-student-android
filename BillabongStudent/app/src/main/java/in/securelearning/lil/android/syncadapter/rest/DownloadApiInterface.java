@@ -53,6 +53,8 @@ import in.securelearning.lil.android.gamification.dataobject.GamificationSurvey;
 import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
 import in.securelearning.lil.android.homework.dataobject.Homework;
 import in.securelearning.lil.android.homework.dataobject.HomeworkSubmitResponse;
+import in.securelearning.lil.android.player.dataobject.KhanAcademyVideo;
+import in.securelearning.lil.android.player.dataobject.PlayerFilterParent;
 import in.securelearning.lil.android.player.dataobject.PracticeParent;
 import in.securelearning.lil.android.player.dataobject.PracticeQuestionResponse;
 import in.securelearning.lil.android.player.dataobject.QuizConfigurationRequest;
@@ -61,6 +63,9 @@ import in.securelearning.lil.android.player.dataobject.QuizQuestionResponse;
 import in.securelearning.lil.android.player.dataobject.QuizResponsePost;
 import in.securelearning.lil.android.player.dataobject.TotalPointPost;
 import in.securelearning.lil.android.player.dataobject.TotalPointResponse;
+import in.securelearning.lil.android.profile.dataobject.TeacherProfile;
+import in.securelearning.lil.android.profile.dataobject.UserInterest;
+import in.securelearning.lil.android.profile.dataobject.UserInterestPost;
 import in.securelearning.lil.android.syncadapter.dataobject.AboutCourseExt;
 import in.securelearning.lil.android.syncadapter.dataobject.ActivityData;
 import in.securelearning.lil.android.syncadapter.dataobject.AppUserAuth0;
@@ -86,9 +91,16 @@ import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterRe
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectDetails;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectResult;
+import in.securelearning.lil.android.syncadapter.dataobjects.LogiQidsChallengeParent;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfile;
+import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfilePicturePost;
 import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
+import in.securelearning.lil.android.syncadapter.dataobjects.UserChallengePost;
+import in.securelearning.lil.android.syncadapter.dataobjects.VideoForDayParent;
+import in.securelearning.lil.android.syncadapter.dataobjects.VocationalSubject;
+import in.securelearning.lil.android.syncadapter.dataobjects.VocationalTopic;
+import in.securelearning.lil.android.syncadapter.dataobjects.VocationalTopicRequest;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -450,7 +462,7 @@ public interface DownloadApiInterface {
     @POST("lessonPlanConfigurations/userSubjectTopic")
     Call<java.util.ArrayList<LessonPlanChapterResult>> getChaptersResult();
 
-    /*Api path to get my subjects*/
+    /*Api path to get my subjects on dashboard*/
     @POST("lessonPlanConfigurations/userSubjectTopic")
     Call<LessonPlanSubjectResult> getMySubjects(@Body LessonPlanSubjectPost lessonPlanSubjectPost);
 
@@ -467,7 +479,7 @@ public interface DownloadApiInterface {
     Call<LRPAResult> fetchLRPA(@Body LRPARequest lrpaRequest);
 
     @GET("users/profile")
-    Call<StudentProfile> getStudentProfile();
+    Call<StudentProfile> getStudentProfile(@Query("userId") String userId);
 
     /*Api to fetch third party meta information*/
     @POST("TPCurriculumMappings/fetchTPCurriculumMapping")
@@ -495,7 +507,7 @@ public interface DownloadApiInterface {
 
     /*Api to fetch effort (time spent) data for all subjects*/
     @GET("users/getSubjectLevelPerformance")
-    Call<java.util.ArrayList<EffortvsPerformanceData>> fetchEffortvsPerformanceData();
+    Call<java.util.ArrayList<EffortvsPerformanceData>> fetchEffortVsPerformanceData();
 
     /*Api to fetch effort (time spent) data for individual subject*/
     @POST("userlogs/getUserTopicTimeSpent")
@@ -507,7 +519,7 @@ public interface DownloadApiInterface {
 
     /*Api to fetch student's achievements*/
     @GET("UserScores/detail")
-    Call<StudentAchievement> fetchStudentAchievements();
+    Call<StudentAchievement> fetchStudentAchievements(@Query("userId") String userId);
 
     /*Api to fetch chart configuration for performance and coverage*/
     @POST("GlobalConfigs/fetchConfig")
@@ -530,6 +542,7 @@ public interface DownloadApiInterface {
     Call<ResponseBody> checkUserStatus(@Path("status") String status);
 
     /*Api to fetch questions for practice*/
+//    @POST("http://192.168.0.126:8082/lessonPlanConfiguration/getPracticeQuestions")
     @POST("search/lessonPlanConfiguration/getPracticeQuestions")
     Call<PracticeQuestionResponse> fetchQuestions(@Body PracticeParent practiceParent);
 
@@ -563,5 +576,50 @@ public interface DownloadApiInterface {
     @POST("Utilities/getAflAolCourseConfig")
     Call<QuizConfigurationResponse> fetchQuizConfiguration(@Body QuizConfigurationRequest quizConfigurationRequest);
 
+    /*Api to fetch khan academy explanation videos*/
+    @POST("search/khan-academy/getVideoDetail")
+    Call<java.util.ArrayList<KhanAcademyVideo>> fetchExplanationVideos(@Body PlayerFilterParent playerFilterParent);
 
+    /*GOAL AND INTEREST*/
+
+    /*Api to fetch Student interest Data list according to interest type*/
+    @GET("UserInterests/grade/{gradeId}/type/{interestType}")
+    Call<java.util.ArrayList<UserInterest>> fetchStudentInterestData(@Path("gradeId") String gradeId, @Path("interestType") int interestType);
+
+    /*Api to send selected goal/user interest first time to server*/
+    @POST("UserInterests")
+    Call<ResponseBody> sendUserInterestInitially(@Body UserInterestPost post);
+
+    /*Api to send selected goal/user interest after first time to server*/
+    @PUT("UserInterests")
+    Call<ResponseBody> sendUserInterest(@Body UserInterestPost post);
+
+    /*Api to fetch challenge for the day on Dashboard*/
+    @GET("UserChallanges/{type}/challangeofday")
+    Call<LogiQidsChallengeParent> fetchChallengeForTheDay(@Path("type") String typeChallengeLogiqids);
+
+    /*Api to fetch video for the day on dashboard*/
+    @GET("UserChallanges/{type}/challangeofday")
+    Call<VideoForDayParent> fetchVideoForTheDay(@Path("type") String typeVideoPerDay);
+
+    /*Api to upload data for Take a Challenge Or Video for day of student when join/complete*/
+    @POST("UserChallanges/{status}")
+    Call<ResponseBody> uploadTakeChallengeOrVideo(@Body UserChallengePost post, @Path("status") int status);
+
+    /*Api to fetch non-student users' profile*/
+    @GET("users/profile")
+    Call<TeacherProfile> fetchNonStudentUserProfileByUserId(@Query("userId") String userId);
+
+    /*Api to update profile of student with profile picture*/
+    @PUT("users/{userId}")
+    Call<ResponseBody> updateStudentProfileWithImage(@Body StudentProfilePicturePost profilePicturePost, @Path("userId") String userId);
+
+    /*Api to fetch vocational subject on dashboard(for now, name = life skill)
+     * To fetch this post object should be empty*/
+    @POST("TPCurriculumMappings/getTPCurriculumMapping")
+    Call<java.util.ArrayList<VocationalSubject>> fetchVocationalSubject(@Body VocationalTopicRequest vocationalTopicRequest);
+
+    /*To fetch vocational topic (for now logiqids)*/
+    @POST("TPCurriculumMappings/getTPCurriculumMapping")
+    Call<java.util.ArrayList<VocationalTopic>> fetchVocationalTopics(@Body VocationalTopicRequest topicRequest);
 }

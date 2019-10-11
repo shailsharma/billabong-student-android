@@ -10,7 +10,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_8dp"
+            android:layout_margin="@dimen/value_8dp"
             android:orientation="horizontal">
 
             <android.support.v7.widget.AppCompatImageView
@@ -18,7 +18,7 @@
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:layout_gravity="start"
-                android:layout_marginEnd="@dimen/margin_12dp"
+                android:layout_marginEnd="@dimen/value_12dp"
                 android:scaleType="centerCrop"
                 android:visibility="visible"
                 tools:src="@drawable/image_placeholder" />
@@ -27,7 +27,7 @@
                 android:id="@+id/llSubject"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_4dp"
+                android:layout_marginTop="@dimen/value_4dp"
                 android:layout_weight="6"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
@@ -45,7 +45,7 @@
                     android:id="@+id/textViewTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_8dp"
+                    android:layout_marginTop="@dimen/value_8dp"
                     android:visibility="visible"
                     tools:text="Submit on 23" />
 
@@ -54,7 +54,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_4dp"
+                android:layout_marginTop="@dimen/value_4dp"
                 android:layout_weight=".5"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
@@ -78,7 +78,7 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
-                        android:layout_marginStart="@dimen/margin_4dp"
+                        android:layout_marginStart="@dimen/value_4dp"
                         android:max="100"
                         android:progress="45"
                         android:visibility="visible" />
@@ -88,7 +88,7 @@
                     android:id="@+id/textViewCoverage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_8dp"
+                    android:layout_marginTop="@dimen/value_8dp"
                     android:visibility="visible"
                     tools:text="95% progress" />
             </LinearLayout>
@@ -100,8 +100,8 @@
             android:id="@+id/view"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/dividerHeight"
-            android:layout_marginStart="@dimen/margin_12dp"
-            android:layout_marginEnd="@dimen/margin_12dp"
+            android:layout_marginStart="@dimen/value_12dp"
+            android:layout_marginEnd="@dimen/value_12dp"
             android:background="@color/itemDivider"
             android:visibility="visible" />
     </android.support.v7.widget.LinearLayoutCompat>

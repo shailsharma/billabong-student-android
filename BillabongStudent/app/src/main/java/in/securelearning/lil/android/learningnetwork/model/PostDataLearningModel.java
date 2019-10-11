@@ -16,13 +16,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.base.constants.PostResponseType;
 import in.securelearning.lil.android.base.constants.SyncStatus;
 import in.securelearning.lil.android.base.dataobjects.AppUser;
+import in.securelearning.lil.android.base.dataobjects.FavouriteResource;
 import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.dataobjects.GroupAbstract;
 import in.securelearning.lil.android.base.dataobjects.GroupMember;
@@ -34,7 +37,6 @@ import in.securelearning.lil.android.base.dataobjects.PostDataDetail;
 import in.securelearning.lil.android.base.dataobjects.PostResponse;
 import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
-import in.securelearning.lil.android.base.db.DatabaseHandler;
 import in.securelearning.lil.android.base.db.query.DatabaseQueryHelper;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.model.BadgesModel;
@@ -50,12 +52,14 @@ import in.securelearning.lil.android.base.utils.DocumentUtils;
 import in.securelearning.lil.android.base.utils.FileUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
+import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
+import in.securelearning.lil.android.home.views.activity.PlayVimeoFullScreenActivity;
+import in.securelearning.lil.android.home.views.activity.PlayYouTubeFullScreenActivity;
 import in.securelearning.lil.android.learningnetwork.events.EventLatestCommentAdded;
 import in.securelearning.lil.android.learningnetwork.events.LoadGroupListEvent;
 import in.securelearning.lil.android.learningnetwork.events.LoadPostCountsEvent;
 import in.securelearning.lil.android.learningnetwork.events.NewPostResponseAdded;
 import in.securelearning.lil.android.learningnetwork.events.PostRemovedFromFavorite;
-import in.securelearning.lil.android.learningnetwork.model.interfaces.PostDataModelInterface;
 import in.securelearning.lil.android.learningnetwork.views.activity.CreatePostActivity;
 import in.securelearning.lil.android.syncadapter.service.MessageService;
 import in.securelearning.lil.android.syncadapter.utils.OgUtils;
@@ -74,7 +78,7 @@ import static in.securelearning.lil.android.syncadapter.utils.InternalNotificati
 /**
  * Created by Pushkar Raj on 9/1/2016.
  */
-public class PostDataLearningModel extends BaseModelLearningNetwork implements PostDataModelInterface {
+public class PostDataLearningModel extends BaseModelLearningNetwork {
 
     @Inject
     RxBus mRxBus;
@@ -117,67 +121,6 @@ public class PostDataLearningModel extends BaseModelLearningNetwork implements P
         getLearningNetworkComponent().inject(this);
     }
 
-    /**
-     * validate post data
-     *
-     * @param postData
-     * @return
-     */
-    @Override
-    public int validatePostData(PostData postData) {
-        return mPostDataModel.validatePostData(postData);
-    }
-
-    /**
-     * Create post Data and insert into to database
-     *
-     * @param postData
-     */
-    @Override
-    synchronized public int savePostData(PostData postData) {
-
-        int isValid = PostDataModel.VALIDATION_NO_ERROR;
-        // create an object that contains data for a document
-        Map<String, Object> docContent = new DocumentUtils().getDocumentFromObject(DatabaseHandler.DOC_TYPE_POST, postData);
-        try {
-            // mDatabaseQueryHelper.create(docContent);
-            String docId = mDatabaseQueryHelper.createInLearningNetwork(docContent);
-            postData.setDocId(docId);
-            createInternalNotificationForPost(postData, ACTION_TYPE_NETWORK_UPLOAD);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            isValid = PostDataModel.VALIDATION_ERROR1;
-            e.printStackTrace();
-        }
-
-        return isValid;
-    }
-
-    /**
-     * Create post response Data and insert into to database
-     *
-     * @param postResponse
-     */
-    @Override
-    synchronized public int savePostResponse(PostResponse postResponse) {
-        int isValid = PostDataModel.VALIDATION_NO_ERROR;
-        // create an object that contains data for a document
-        Map<String, Object> docContent = new DocumentUtils().getDocumentFromObject(DatabaseHandler.DOC_TYPE_POST_RESPONSE, postResponse);
-        try {
-            // 1. Create
-            //mDatabaseQueryHelper.create(docContent);
-            String docId = mDatabaseQueryHelper.createInLearningNetwork(docContent);
-            postResponse.setDocId(docId);
-            createInternalNotificationForPostResponse(postResponse, ACTION_TYPE_NETWORK_UPLOAD);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            isValid = PostDataModel.VALIDATION_ERROR1;
-            e.printStackTrace();
-        }
-
-        return isValid;
-    }
-
     public void savePost(PostData postData) {
         postData = mPostModel.saveObject(postData);
         createInternalNotificationForPost(postData, ACTION_TYPE_NETWORK_UPLOAD);
@@ -191,24 +134,6 @@ public class PostDataLearningModel extends BaseModelLearningNetwork implements P
         return mPostResponseModel.saveObject(postResponse);
     }
 
-    /**
-     * @param uid
-     */
-    @Override
-    synchronized public void getPostForCurrentGroupByUid(String uid) {
-//        Observable<ArrayList<PostDataDetail>> fetchGroupsFromDb = mPostDataModel.fetchPostFromGroupUid(uid);
-//        fetchGroupsFromDb.subscribeOn(Schedulers.io()).observeOn(Schedulers.computation()).subscribe(new Consumer<ArrayList<PostDataDetail>>() {
-//            @Override
-//            public void accept(ArrayList<PostDataDetail> postDatas) {
-//                for (PostDataDetail dataDetail : postDatas) {
-//                    //Updating unread  count of post
-//                    dataDetail.getPostData().setUnread(false);
-//                    mPostDataModel.savePostData(dataDetail.getPostData());
-//                }
-//                mRxBus.send(new LoadPostListEvent(postDatas));
-//            }
-//        });
-    }
 
     public void fetchGroupsByUSerUId(String userUid) {
 
@@ -250,49 +175,6 @@ public class PostDataLearningModel extends BaseModelLearningNetwork implements P
         mPostDataModel.deletePost(postDataDetail.getPostData().getDocId());
     }
 
-    /**
-     * @param uid
-     * @param filterBy
-     */
-    @Override
-    synchronized public void getFilterPostByGroupIdNdAttribute(String uid, String filterBy) {
-//        Observable<ArrayList<PostDataDetail>> fetchGroupsFromDb = mPostDataModel.fetchFilterPostByGroupIdNdAttribute(uid, filterBy);
-//        fetchGroupsFromDb.subscribeOn(Schedulers.io()).observeOn(Schedulers.computation()).subscribe(new Consumer<ArrayList<PostDataDetail>>() {
-//            @Override
-//            public void accept(ArrayList<PostDataDetail> postDatas) {
-//                for (PostDataDetail dataDetail : postDatas) {
-//                    //Updating unread  count of post
-//                    dataDetail.getPostData().setUnread(false);
-//                    mPostDataModel.savePostData(dataDetail.getPostData());
-//                }
-//                /*send an event for the refresh unread post count on LearningNetworkFragment and
-//                NavigationDrawerActivity*/
-//                mRxBus.send(new LoadRefreshAllPostUnreadStatusEvent());
-//                mRxBus.send(new LoadPostListEvent(postDatas));
-//            }
-//        });
-    }
-
-    /**
-     * @param uid
-     * @param userId
-     */
-    @Override
-    synchronized public void getFavoritePostByGroupIdNdUserId(String uid, String userId) {
-//        Observable<ArrayList<PostDataDetail>> fetchGroupsFromDb = mPostDataModel.fetchFavoritePostByGroupIdNduserId(uid, userId);
-//        fetchGroupsFromDb.subscribeOn(Schedulers.io()).observeOn(Schedulers.computation()).subscribe(new Consumer<ArrayList<PostDataDetail>>() {
-//            @Override
-//            public void accept(ArrayList<PostDataDetail> postDatas) {
-//
-//                for (PostDataDetail dataDetail : postDatas) {
-//                    //Updating unread  count of post
-//                    dataDetail.getPostData().setUnread(false);
-//                    mPostDataModel.savePostData(dataDetail.getPostData());
-//                }
-//                mRxBus.send(new LoadFavoritePostListEvent(postDatas));
-//            }
-//        });
-    }
 
     /**
      * create internal notification for post upload
@@ -462,7 +344,7 @@ public class PostDataLearningModel extends BaseModelLearningNetwork implements P
         PostByUser fromUser = new PostByUser();
         fromUser.setName(mAppUserModel.getApplicationUser().getName());
         fromUser.setId(mAppUserModel.getObjectId());
-        fromUser.setRole(AppUser.USERTYPE.TEACHER.toString());
+        fromUser.setRole(mAppUserModel.getApplicationUser().getRole().getName());
         postResponse.setFrom(fromUser);
         postResponse.setTo(postData.getTo());
         postResponse.setObjectId(null);
@@ -488,11 +370,12 @@ public class PostDataLearningModel extends BaseModelLearningNetwork implements P
         Completable.complete().subscribeOn(Schedulers.io()).subscribe(new Action() {
             @Override
             public void run() throws Exception {
+
                 PostResponse postResponse = new PostResponse();
                 PostByUser fromUser = new PostByUser();
                 fromUser.setName(mAppUserModel.getApplicationUser().getName());
                 fromUser.setId(mAppUserModel.getObjectId());
-                fromUser.setRole(AppUser.USERTYPE.TEACHER.toString());
+                fromUser.setRole(mAppUserModel.getApplicationUser().getRole().getName());
                 postResponse.setFrom(fromUser);
                 postResponse.setTo(postData.getTo());
                 postResponse.setObjectId(null);
@@ -508,8 +391,10 @@ public class PostDataLearningModel extends BaseModelLearningNetwork implements P
                 postResponse.setAssignedPostResponseId(null);
                 postResponse.setAssignedBadgeId(null);
                 postResponse.setGroupId(postData.getTo().getId());
+
                 mPostResponseModel.saveObject(postResponse);
                 createInternalNotificationForPostResponse(postResponse, ACTION_TYPE_NETWORK_UPLOAD);
+
             }
         }, new Consumer<Throwable>() {
             @Override
@@ -524,11 +409,12 @@ public class PostDataLearningModel extends BaseModelLearningNetwork implements P
         Completable.complete().subscribeOn(Schedulers.io()).subscribe(new Action() {
             @Override
             public void run() throws Exception {
+
                 PostResponse postResponse = new PostResponse();
                 PostByUser fromUser = new PostByUser();
                 fromUser.setName(mAppUserModel.getApplicationUser().getName());
                 fromUser.setId(mAppUserModel.getObjectId());
-                fromUser.setRole(setUserRole());
+                fromUser.setRole(mAppUserModel.getApplicationUser().getRole().getName());
                 postResponse.setFrom(fromUser);
                 postResponse.setTo(postData.getTo());
                 postResponse.setObjectId(null);
@@ -542,6 +428,7 @@ public class PostDataLearningModel extends BaseModelLearningNetwork implements P
                 postResponse.setAlias(GeneralUtils.generateAlias("PostResponse", fromUser.getId(), "" + System.currentTimeMillis()));
                 postResponse.setSyncStatus(SyncStatus.NOT_SYNC.toString());
                 postResponse.setoGDataList(CreatePostActivity.extractUrls(postResponseText));
+
                 postResponse = mPostResponseModel.saveObject(postResponse);
                 createInternalNotificationForPostResponse(postResponse, ACTION_TYPE_NETWORK_UPLOAD);
                 mRxBus.send(new NewPostResponseAdded());
@@ -886,6 +773,80 @@ public class PostDataLearningModel extends BaseModelLearningNetwork implements P
     public void clearLearningNetworkGroupNotification(Context context, int groupHashCode) {
         NotificationManager nMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         nMgr.cancel(groupHashCode);
+    }
+
+    /*To play video*/
+    public void playVideo(Resource resource) {
+
+        String type = resource.getType();
+
+        String url = "";
+        if (!TextUtils.isEmpty(resource.getUrl())) {
+            url = resource.getUrl();
+        } else if (!TextUtils.isEmpty(resource.getUrlMain())) {
+            url = resource.getUrlMain();
+        } else if (!TextUtils.isEmpty(resource.getSourceURL())) {
+            url = resource.getSourceURL();
+        }
+        if (TextUtils.isEmpty(type)) {
+            if (url.contains(mAppContext.getString(R.string.typeVimeoVideo))) {
+                type = mAppContext.getString(R.string.typeVimeoVideo);
+            } else if (url.matches("^(http(s)?:\\/\\/)?((w){3}.)?youtu(be|.be)?(\\.com)?\\/.+")) {
+                type = mAppContext.getString(R.string.typeYouTubeVideo);
+            } else if (url.contains(mAppContext.getString(R.string.typeVideo))) {
+                type = mAppContext.getString(R.string.typeVideo);
+            } else if (url.contains("youtu.be") || url.contains("youtube.com")) {
+                type = mAppContext.getString(R.string.typeYouTubeVideo);
+            } else {
+                if (url.contains(mAppContext.getString(R.string.typeVimeoVideo))) {
+                    type = mAppContext.getString(R.string.typeVimeoVideo);
+                } else if (url.matches("^(http(s)?:\\/\\/)?((w){3}.)?youtu(be|.be)?(\\.com)?\\/.+")) {
+                    type = mAppContext.getString(R.string.typeYouTubeVideo);
+                } else if (url.contains(mAppContext.getString(R.string.typeVideo))) {
+                    type = mAppContext.getString(R.string.typeVideo);
+                } else if (url.contains("youtu.be") || url.contains("youtube.com")) {
+                    type = mAppContext.getString(R.string.typeYouTubeVideo);
+                } else {
+                    type = mAppContext.getString(R.string.typeVideo);
+                }
+
+            }
+        }
+
+        if (type.equalsIgnoreCase(mAppContext.getString(R.string.typeVideo))) {
+            Resource item = new Resource();
+            item.setType(mAppContext.getString(R.string.typeVideo));
+            item.setUrlMain(url);
+            mAppContext.startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(mAppContext, PlayVideoFullScreenActivity.NETWORK_TYPE_ONLINE, (Resource) item));
+        } else if (type.equalsIgnoreCase(mAppContext.getString(R.string.typeYouTubeVideo))) {
+            if (!url.contains("https:") && !url.startsWith("www")) {
+                FavouriteResource favouriteResource = new FavouriteResource();
+                favouriteResource.setName(url);
+                favouriteResource.setUrlThumbnail("");
+                mAppContext.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(mAppContext, favouriteResource, false));
+            } else {
+                String pattern = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
+
+                Pattern compiledPattern = Pattern.compile(pattern);
+                Matcher matcher = compiledPattern.matcher(url); //url is youtube url for which you want to extract the id.
+                if (matcher.find()) {
+                    String videoId = matcher.group();
+                    FavouriteResource favouriteResource = new FavouriteResource();
+                    favouriteResource.setName(videoId);
+                    favouriteResource.setUrlThumbnail("");
+                    mAppContext.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(mAppContext, favouriteResource, false));
+                }
+            }
+
+
+        } else if (type.equalsIgnoreCase(mAppContext.getString(R.string.typeVimeoVideo))) {
+            mAppContext.startActivity(PlayVimeoFullScreenActivity.getStartIntent(mAppContext, url));
+        } else {
+            Resource item = new Resource();
+            item.setType(mAppContext.getString(R.string.typeVideo));
+            item.setUrlMain(url);
+            mAppContext.startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(mAppContext, PlayVideoFullScreenActivity.NETWORK_TYPE_ONLINE, (Resource) item));
+        }
     }
 
 

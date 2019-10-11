@@ -23,7 +23,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/noimage"/>
+                app:srcCompat="@drawable/image_placeholder"/>
         </RelativeLayout>
 
         <LinearLayout

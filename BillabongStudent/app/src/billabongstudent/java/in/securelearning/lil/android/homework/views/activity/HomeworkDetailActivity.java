@@ -42,13 +42,13 @@ import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
 import in.securelearning.lil.android.base.widget.TextViewCustom;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.homework.dataobject.Homework;
 import in.securelearning.lil.android.homework.dataobject.HomeworkSubmitResponse;
 import in.securelearning.lil.android.homework.event.RefreshHomeworkEvent;
 import in.securelearning.lil.android.homework.model.HomeworkModel;
 import in.securelearning.lil.android.player.view.activity.QuizPlayerActivity;
 import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
+import in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
@@ -470,16 +470,18 @@ public class HomeworkDetailActivity extends AppCompatActivity {
             String teacherName = assignmentResponse.getTeacherInformation().getName();
             setValuesToTextView(mBinding.textviewAssignedBy, teacherName);
             CommonUtils.getInstance().setUserThumbnail(HomeworkDetailActivity.this, teacherName, teacherThumbnail, mBinding.imageViewAssignedBy);
+
             mBinding.layoutAssignedBy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-                        startActivity(UserProfileActivity.getStartIntent(assignmentResponse.getAssignedBy(), HomeworkDetailActivity.this));
+                        startActivity(UserPublicProfileActivity.getStartIntent(HomeworkDetailActivity.this, assignmentResponse.getAssignedBy()));
                     } else {
                         ToastUtils.showToastAlert(getBaseContext(), getString(R.string.connect_internet));
                     }
                 }
             });
+
         } else {
             mBinding.layoutAssignedBy.setVisibility(View.GONE);
         }

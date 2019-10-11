@@ -23,7 +23,7 @@
                 android:layout_weight="1"
                 android:padding="8dp"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/noimage" />
+                app:srcCompat="@drawable/image_placeholder" />
         </RelativeLayout>
 
         <LinearLayout

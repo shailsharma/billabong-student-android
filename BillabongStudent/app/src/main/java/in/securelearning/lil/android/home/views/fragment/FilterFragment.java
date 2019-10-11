@@ -15,16 +15,16 @@ import in.securelearning.lil.android.app.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
+ * Activities that contain this activity must implement the
  * {@link OnFilterFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link FilterFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * create an instance of this activity.
  */
 
 public class FilterFragment extends DialogFragment {
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    // the activity initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_FILTER = "filter";
     private static final String ARG_PARAM2 = "param2";
 
@@ -40,11 +40,11 @@ public class FilterFragment extends DialogFragment {
 
     /**
      * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * this activity using the provided parameters.
      *
      * @param filterList Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment FilterFragment.
+     * @return A new instance of activity FilterFragment.
      */
     // TODO: Rename and change types and number of parameters
     public static FilterFragment newInstance(FilterList filterList, String param2) {
@@ -87,7 +87,7 @@ public class FilterFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the layout for this activity
         View view = inflater.inflate(R.layout.fragment_filter, container, false);
         View done = view.findViewById(R.id.done);
         done.setOnClickListener(new View.OnClickListener() {

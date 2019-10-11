@@ -18,6 +18,7 @@ import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,6 +37,7 @@ import in.securelearning.lil.android.home.utils.PreferenceSettingUtilClass;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
 import in.securelearning.lil.android.provider.SearchSuggestionProvider;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.NotificationUtil;
 import in.securelearning.lil.android.syncadapter.utils.ShortcutUtil;
 
@@ -46,8 +48,8 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
 
     ActivityNewSettingBinding mBinding;
 
-    private String mChosenRingtone;
     private Uri mRingtoneUri;
+
     @Inject
     AppUserModel mAppUserModel;
 
@@ -56,8 +58,7 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
         super.onCreate(savedInstanceState);
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_new_setting);
-        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimarySettings));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setUpToolbar();
         checkLoggedInUser();
         showVersion();
         // Reading from SharedPreferences
@@ -86,6 +87,15 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
         mBinding.workspaceShortcut.setOnClickListener(this);
         mBinding.trainingShortcut.setOnClickListener(this);
         mBinding.learningMapShortcut.setOnClickListener(this);
+    }
+
+    private void setUpToolbar() {
+        getWindow().setBackgroundDrawableResource(R.drawable.gradient_app);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setBackgroundDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.gradient_app));
+        }
+        CommonUtils.getInstance().setStatusBarIconsLight(SettingActivity.this);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     public static Intent getStartIntent(Context context) {
@@ -252,7 +262,7 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
                 break;
 
             case R.id.assignmentShortcut:
-                ShortcutUtil.addShortcut(getBaseContext(), getString(R.string.idAssignmentShortcut), getString(R.string.homework), R.drawable.logo_assignment_c, ShortcutUtil.ACTION_SHORTCUT_ASSIGNMENT);
+                ShortcutUtil.addShortcut(getBaseContext(), getString(R.string.idAssignmentShortcut), getString(R.string.homework), R.drawable.logo_homework_c, ShortcutUtil.ACTION_SHORTCUT_ASSIGNMENT);
 
                 break;
 
@@ -299,7 +309,7 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
                 mBinding.notificationDefaultSound.setText(ringtone.getTitle(this));
                 PreferenceSettingUtilClass.setNotifications_soundKey(uri, this);
             } else {
-                this.mChosenRingtone = null;
+                String chosenRingtone = null;
             }
 //            mBinding.notificationDefaultSound.setText();
             // Writing data to SharedPreferences
@@ -336,11 +346,41 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
         alert.show();
     }
 
+
+    /*Showing logout dialog to logout.*/
+    /*Only activity context is allowed here.*/
+    private void logoutFromApp(final Activity context) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(context.getString(R.string.logout_message))
+                .setPositiveButton(context.getString(R.string.logout), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        SyncServiceHelper.performUserLogout(context, getString(R.string.logging_out));
+                    }
+                })
+                .setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+
+                    }
+                })
+                .setCancelable(false);
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             onBackPressed();
+        } else if (id == R.id.menu_logout) {
+            logoutFromApp(SettingActivity.this);
         }
         return super.onOptionsItemSelected(item);
     }

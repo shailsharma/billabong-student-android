@@ -1,11 +1,13 @@
 package in.securelearning.lil.android.syncadapter.job.download;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
@@ -98,7 +100,11 @@ public class DownloadNetworkGroupJob {
 
     private void downloadFullGroupObject(ArrayList<IdNameObject> list) {
         for (IdNameObject object : list) {
-            JobCreator.createDownloadGroupJob(object.getId(), ConstantUtil.GROUP_TYPE_NETWORK).execute();
+            Group localGroup = mJobModel.fetchGroupFromObjectId(object.getId());
+            if (TextUtils.isEmpty(localGroup.getObjectId())) {
+                JobCreator.createDownloadGroupJob(object.getId(), ConstantUtil.GROUP_TYPE_NETWORK).execute();
+            }
+
         }
 
     }

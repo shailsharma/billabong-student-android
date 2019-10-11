@@ -6,8 +6,8 @@
         android:id="@+id/layout_assignments_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_16dp"
-        android:layout_marginRight="@dimen/margin_16dp"
+        android:layout_marginLeft="@dimen/value_16dp"
+        android:layout_marginRight="@dimen/value_16dp"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:gravity="end"
-                android:padding="@dimen/padding_8dp"
+                android:padding="@dimen/value_8dp"
                 android:src="@drawable/icon_dashboard_assignment"
                 android:visibility="invisible" />
 
@@ -42,8 +42,8 @@
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_8dp"
-            android:layout_marginBottom="@dimen/margin_8dp"
+            android:layout_marginTop="@dimen/value_8dp"
+            android:layout_marginBottom="@dimen/value_8dp"
             android:orientation="horizontal">
 
 
@@ -51,10 +51,10 @@
                 android:id="@+id/layoutAssignmentCount1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_4dp"
+                android:layout_marginBottom="@dimen/value_4dp"
                 android:layout_weight="1"
                 android:background="@drawable/gradient_chip"
-                android:elevation="@dimen/padding_2dp"
+                android:elevation="@dimen/elevation_2dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -62,7 +62,7 @@
                     android:id="@+id/textViewAssignmentCount1"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_margin="@dimen/margin_4dp"
+                    android:layout_margin="@dimen/value_4dp"
                     android:background="@drawable/background_circle_white_stroke"
                     android:fontFamily="@font/poppins_regular"
                     android:gravity="center"
@@ -73,7 +73,7 @@
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_4dp"
+                    android:layout_marginStart="@dimen/value_4dp"
                     android:fontFamily="@font/poppins_regular"
                     android:gravity="center_vertical"
                     android:includeFontPadding="false"
@@ -87,19 +87,19 @@
                 android:id="@+id/layoutAssignmentCount2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_4dp"
-                android:layout_marginRight="@dimen/margin_4dp"
-                android:layout_marginBottom="@dimen/margin_4dp"
+                android:layout_marginLeft="@dimen/value_4dp"
+                android:layout_marginRight="@dimen/value_4dp"
+                android:layout_marginBottom="@dimen/value_4dp"
                 android:layout_weight="1"
                 android:background="@drawable/gradient_chip"
-                android:elevation="@dimen/padding_2dp"
+                android:elevation="@dimen/elevation_2dp"
                 android:gravity="center_vertical">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/textViewAssignmentCount2"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_margin="@dimen/margin_4dp"
+                    android:layout_margin="@dimen/value_4dp"
                     android:background="@drawable/background_circle_white_stroke"
                     android:fontFamily="@font/poppins_regular"
                     android:gravity="center"
@@ -110,7 +110,7 @@
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_4dp"
+                    android:layout_marginStart="@dimen/value_4dp"
                     android:fontFamily="@font/poppins_regular"
                     android:gravity="center_vertical"
                     android:includeFontPadding="false"
@@ -124,17 +124,17 @@
                 android:id="@+id/layoutAssignmentCount3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_4dp"
+                android:layout_marginBottom="@dimen/value_4dp"
                 android:layout_weight="1"
                 android:background="@drawable/gradient_chip"
-                android:elevation="@dimen/padding_2dp"
+                android:elevation="@dimen/elevation_2dp"
                 android:gravity="center_vertical">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/textViewAssignmentCount3"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_margin="@dimen/margin_4dp"
+                    android:layout_margin="@dimen/value_4dp"
                     android:background="@drawable/background_circle_white_stroke"
                     android:fontFamily="@font/poppins_regular"
                     android:gravity="center"
@@ -145,7 +145,7 @@
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_4dp"
+                    android:layout_marginStart="@dimen/value_4dp"
                     android:fontFamily="@font/poppins_regular"
                     android:gravity="center_vertical"
                     android:includeFontPadding="false"

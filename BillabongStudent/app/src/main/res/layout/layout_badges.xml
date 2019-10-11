@@ -5,5 +5,5 @@
     android:layout_width="48dp"
     android:layout_height="48dp"
     android:paddingLeft="3dp"
-    android:src="@drawable/badge_music"
+    android:src="@drawable/badge_g"
     tools:showIn="@layout/layout_member_list_itemview" />

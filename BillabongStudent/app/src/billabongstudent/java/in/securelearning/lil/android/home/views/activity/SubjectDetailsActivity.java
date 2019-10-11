@@ -14,14 +14,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -31,9 +29,8 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-import in.securelearning.lil.android.analytics.views.activity.TimeEffortDetailActivity;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.databinding.LayoutSubjectDetailsBinding;
+import in.securelearning.lil.android.app.databinding.LayoutCustomAppBarViewpagerBinding;
 import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
@@ -50,6 +47,8 @@ import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanGroupDeta
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubject;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectDetails;
 import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
+import in.securelearning.lil.android.syncadapter.utils.AppBarStateChangeListener;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -67,7 +66,13 @@ import static in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanCh
 
 public class SubjectDetailsActivity extends AppCompatActivity {
 
-    LayoutSubjectDetailsBinding mBinding;
+    @Inject
+    FlavorHomeModel mFlavorHomeModel;
+
+    @Inject
+    RxBus mRxBus;
+
+    LayoutCustomAppBarViewpagerBinding mBinding;
     private final static String SUBJECT_ID = "subjectId";
     private String mSubjectId;
     private String mGradeName;
@@ -78,25 +83,18 @@ public class SubjectDetailsActivity extends AppCompatActivity {
     private String mGroupId;
     private String mBannerUrl;
     private Disposable mDisposable;
-    //private GradientDrawable mTabsGradientDrawable;
-
-    @Inject
-    FlavorHomeModel mFlavorHomeModel;
-
-    @Inject
-    RxBus mRxBus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InjectorHome.INSTANCE.getComponent().inject(this);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.layout_subject_details);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.layout_custom_app_bar_viewpager);
 
         handleIntent();
         listenRxEvent();
-        /*Setting status bar style immersive*/
-        mFlavorHomeModel.setImmersiveStatusBar(getWindow());
 
+        /*Setting status bar style immersive*/
+        CommonUtils.getInstance().setImmersiveStatusBar(getWindow());
 
     }
 
@@ -127,11 +125,12 @@ public class SubjectDetailsActivity extends AppCompatActivity {
                             setTopicContent(lessonPlanChapter);
                             mBinding.viewPager.setCurrentItem(0, true);
 
-                            if (mSubjectName.contains("Math")) {
-                                fetchThirdPartyMapping(mSubjectId, topicId);
-                            } else {
-                                handleViewPagerRefresh();
-                            }
+//                            if (mSubjectName.contains("Math")) {
+//                                fetchThirdPartyMapping(mSubjectId, topicId);
+//                            } else {
+//                                handleViewPagerRefresh();
+//                            }
+                            handleViewPagerRefresh();
 
                         }
                     }, new Consumer<Throwable>() {
@@ -144,7 +143,7 @@ public class SubjectDetailsActivity extends AppCompatActivity {
                     Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
                         @Override
                         public void run() throws Exception {
-                            mFlavorHomeModel.showAlertDialog(SubjectDetailsActivity.this, getString(R.string.mindSparkNoUnitMessageHome));
+                            CommonUtils.getInstance().showAlertDialog(SubjectDetailsActivity.this, getString(R.string.mindSparkNoUnitMessageHome));
 
                         }
                     }, new Consumer<Throwable>() {
@@ -167,14 +166,9 @@ public class SubjectDetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            case R.id.actionAnalytics:
-                startActivity(TimeEffortDetailActivity.getStartIntent(getBaseContext(), mSubjectId, mSubjectName));
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -182,7 +176,7 @@ public class SubjectDetailsActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void fetchSubjectDetails(final String subjectId) {
         if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-            final Dialog progressDialog = mFlavorHomeModel.loadingDialog(SubjectDetailsActivity.this, getString(R.string.messagePleaseWait));
+            final Dialog progressDialog = CommonUtils.getInstance().loadingDialog(SubjectDetailsActivity.this, getString(R.string.messagePleaseWait));
 
             mFlavorHomeModel.getSubjectDetails(subjectId)
                     .subscribeOn(Schedulers.io())
@@ -198,11 +192,12 @@ public class SubjectDetailsActivity extends AppCompatActivity {
                             setGradeDetail(lessonPlanSubjectDetails.getGroup(), subjectId);
 
                             /*TODO hard coded logic for subject check, remove when dynamically done*/
-                            if (mSubjectName.contains("Math")) {
-                                fetchThirdPartyMapping(lessonPlanSubjectDetails.getSubject().getId(), lessonPlanSubjectDetails.getTopic().getId());
-                            } else {
-                                handleViewPagerRefresh();
-                            }
+//                            if (mSubjectName.contains("Math")) {
+//                                fetchThirdPartyMapping(lessonPlanSubjectDetails.getSubject().getId(), lessonPlanSubjectDetails.getTopic().getId());
+//                            } else {
+//                                handleViewPagerRefresh();
+//                            }
+                            handleViewPagerRefresh();
 
 
                         }
@@ -226,7 +221,7 @@ public class SubjectDetailsActivity extends AppCompatActivity {
 
     @SuppressLint("CheckResult")
     private void fetchThirdPartyMapping(String subjectId, String topicId) {
-        final Dialog progressDialog = mFlavorHomeModel.loadingDialog(SubjectDetailsActivity.this, getString(R.string.messagePleaseWait));
+        final Dialog progressDialog = CommonUtils.getInstance().loadingDialog(SubjectDetailsActivity.this, getString(R.string.messagePleaseWait));
 
         mFlavorHomeModel.fetchThirdPartyMapping(new ThirdPartyMapping(subjectId, topicId))
                 .subscribeOn(Schedulers.io())
@@ -344,21 +339,21 @@ public class SubjectDetailsActivity extends AppCompatActivity {
     /*Set topic details*/
     private void setTopicContent(LessonPlanChapter lessonPlanChapter) {
         if (lessonPlanChapter != null) {
-            mBinding.layoutTopic.setVisibility(View.VISIBLE);
+            mBinding.layoutHeaderContent.setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(lessonPlanChapter.getName())) {
-                mBinding.textViewTopic.setText(lessonPlanChapter.getName());
+                mBinding.textViewHeaderTitle.setText(lessonPlanChapter.getName());
                 mTopicName = lessonPlanChapter.getName();
             }
 
             String chapterStatus = "(" + getChapterStatus(lessonPlanChapter.getStatus()) + ")";
-            mBinding.textViewTopicStatus.setText(chapterStatus);
+            mBinding.textViewHeaderSubTitle.setText(chapterStatus);
 
 
             if (!TextUtils.isEmpty(lessonPlanChapter.getId())) {
                 mTopicId = lessonPlanChapter.getId();
             }
         } else {
-            mBinding.layoutTopic.setVisibility(View.GONE);
+            mBinding.layoutHeaderContent.setVisibility(View.GONE);
         }
     }
 
@@ -405,19 +400,14 @@ public class SubjectDetailsActivity extends AppCompatActivity {
         mBinding.textViewToolbarTitle.setText(title);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        mBinding.appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+        mBinding.collapsingToolbarLayout.setContentScrimColor(ContextCompat.getColor(getBaseContext(), R.color.colorWhite66));
+        mBinding.collapsingToolbarLayout.setStatusBarScrimColor(ContextCompat.getColor(getBaseContext(), R.color.colorTransparent));
 
-            boolean isVisible = true;
-            int scrollRange = -1;
-
+        mBinding.appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
             @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-
-                if (scrollRange + verticalOffset == 0) {
-
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                Log.e("STATE", state.name());
+                if (state.name().equalsIgnoreCase(State.COLLAPSED.toString())) {
                     /*collapsed completely*/
 
                     /*for status bar*/
@@ -437,11 +427,9 @@ public class SubjectDetailsActivity extends AppCompatActivity {
                     mBinding.toolbar.setNavigationIcon(R.drawable.action_arrow_left_dark);
                     mBinding.textViewToolbarTitle.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorBlack));
 
+                    requestLayout(mBinding.viewPager);
 
-                    isVisible = true;
-
-                } else if (isVisible) {
-
+                } else if (state.name().equalsIgnoreCase(State.EXPANDED.toString())) {
                     /* not collapsed*/
 
                     /*for status bar*/
@@ -462,12 +450,17 @@ public class SubjectDetailsActivity extends AppCompatActivity {
                     mBinding.toolbar.setNavigationIcon(R.drawable.action_arrow_left_light);
                     mBinding.textViewToolbarTitle.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorWhite));
 
-                    isVisible = false;
+                    requestLayout(mBinding.appBarLayout);
 
                 }
             }
         });
 
+
+    }
+
+    private void requestLayout(View view) {
+        view.requestLayout();
     }
 
     /*alert dialog to show error, message and providing option to retry the respective call*/
@@ -512,26 +505,24 @@ public class SubjectDetailsActivity extends AppCompatActivity {
 //        mBinding.tabLayout.setSelectedTabIndicatorHeight(0);
 //        setUpTabLayout();
 
-        ViewGroup vg = (ViewGroup) mBinding.tabLayout.getChildAt(0);
-        int tabCount = vg.getChildCount();
-
-        for (int j = 0; j < tabCount; j++) {
-            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
-
-            int tabChildsCount = vgTab.getChildCount();
-
-            for (int i = 0; i < tabChildsCount; i++) {
-                View tabViewChild = vgTab.getChildAt(i);
-                if (tabViewChild instanceof TextView) {
-
-                    ((TextView) tabViewChild).setTextSize(20);
-                    ((TextView) tabViewChild).setTypeface(ResourcesCompat.getFont(getBaseContext(), R.font.poppins_regular));
-                    ((TextView) tabViewChild).setAllCaps(false);
-// ((TextView) tabViewChild).setTextAppearance(StudentAnalyticsTabActivity.this, android.R.style.TextAppearance_Large);
-
-                }
-            }
-        }
+//        ViewGroup vg = (ViewGroup) mBinding.tabLayout.getChildAt(0);
+//        int tabCount = vg.getChildCount();
+//
+//        for (int j = 0; j < tabCount; j++) {
+//            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+//
+//            int tabChildCount = vgTab.getChildCount();
+//
+//            for (int i = 0; i < tabChildCount; i++) {
+//                View tabViewChild = vgTab.getChildAt(i);
+//                if (tabViewChild instanceof TextView) {
+//
+//                    ((TextView) tabViewChild).setTypeface(ResourcesCompat.getFont(getBaseContext(), R.font.poppins_regular));
+//                    ((TextView) tabViewChild).setAllCaps(false);
+//
+//                }
+//            }
+//        }
 
 
         /*mBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

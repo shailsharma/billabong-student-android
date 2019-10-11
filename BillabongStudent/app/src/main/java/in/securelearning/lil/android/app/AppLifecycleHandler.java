@@ -12,7 +12,6 @@ import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 
 public class AppLifecycleHandler implements Application.ActivityLifecycleCallbacks {
     private static AppLifecycleHandler instance;
-    private final String DebugName = "AppLifecycleHandler";
     public FlavorHomeModel mFlavorHomeModel;
     private int resumed;
     private int started;
@@ -49,14 +48,12 @@ public class AppLifecycleHandler implements Application.ActivityLifecycleCallbac
     @Override
     public void onActivityResumed(Activity activity) {
         ++resumed;
-        android.util.Log.w(DebugName, "onActivityResumed -> application is in foreground: " + (resumed > 0) + " (" + activity.getClass() + ")");
         setForeground((resumed > 0));
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
         --resumed;
-        android.util.Log.w(DebugName, "onActivityPaused -> application is in foreground: " + (resumed > 0) + " (" + activity.getClass() + ")");
         setForeground((resumed > 0));
     }
 
@@ -72,14 +69,12 @@ public class AppLifecycleHandler implements Application.ActivityLifecycleCallbac
             }
         }
         ++started;
-        android.util.Log.w(DebugName, "onActivityStarted -> application is visible: " + (started > 0) + " (" + activity.getClass() + ")");
         setVisible((started > 0));
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
         --started;
-        android.util.Log.w(DebugName, "onActivityStopped -> application is visible: " + (started > 0) + " (" + activity.getClass() + ")");
         if (mFlavorHomeModel != null && !isApplicationVisible()) {
             callUserStatus(activity, ConstantUtil.TYPE_INACTIVE);
         }
@@ -102,7 +97,6 @@ public class AppLifecycleHandler implements Application.ActivityLifecycleCallbac
 
         // visibility changed
         isVisible = visible;
-        android.util.Log.w(DebugName, "App Visibility Changed -> application is visible: " + isVisible);
 
         // take some action on change of visibility
     }
@@ -115,7 +109,6 @@ public class AppLifecycleHandler implements Application.ActivityLifecycleCallbac
 
         // in foreground changed
         isInForeground = inForeground;
-        android.util.Log.w(DebugName, "App In Foreground Changed -> application is in foreground: " + isInForeground);
 
         // take some action on change of in foreground
 

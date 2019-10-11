@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:id="@+id/layoutContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <!--Video, Name, Role, Association-->
+                        <android.support.v7.widget.LinearLayoutCompat
+                            android:id="@+id/layoutBasicInfo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/colorWhite"
+                            android:orientation="vertical">
+
+
+                            <!--Video, Name-->
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <!--Video-->
+                                <FrameLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content">
+
+
+                                    <android.support.v7.widget.AppCompatImageView
+                                        android:id="@+id/imageViewProfileVideo"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="208dp"
+                                        app:srcCompat="@drawable/image_placeholder" />
+
+                                    <ProgressBar
+                                        android:id="@+id/progressBarVideo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:visibility="gone" />
+
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:layout_height="208dp"
+                                        android:alpha="0.3"
+                                        android:background="#777" />
+
+                                    <android.support.v7.widget.AppCompatImageView
+                                        android:id="@+id/imageViewPlayVideo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:visibility="gone"
+                                        app:srcCompat="@drawable/icon_play_white" />
+
+                                </FrameLayout>
+
+                                <!--Name-->
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/textViewUserName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom"
+                                    android:layout_marginStart="112dp"
+                                    android:layout_marginEnd="@dimen/value_16dp"
+                                    android:layout_marginBottom="@dimen/value_8dp"
+                                    android:shadowColor="@android:color/black"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                    android:textColor="@color/white"
+                                    android:textStyle="bold"
+                                    tools:text="Surekha Ji Sharma" />
+
+
+                            </FrameLayout>
+
+                            <!--Branch name, email, Role, Subject-->
+                            <android.support.v7.widget.LinearLayoutCompat
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="112dp"
+                                android:layout_marginEnd="@dimen/value_12dp"
+                                android:layout_marginBottom="@dimen/value_8dp"
+                                android:orientation="vertical"
+                                android:paddingTop="@dimen/value_4dp"
+                                android:paddingBottom="@dimen/value_8dp">
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/textViewUserBranch"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:singleLine="true"
+                                    android:textColor="@color/colorBlack"
+                                    tools:text="EuroSchool-Aroli" />
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/textViewUserEmail"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    tools:text="aarushi.m@euroschool.com" />
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/textViewUserLearningLevel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    tools:text="Primary Teacher - Maths, Physics" />
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/textViewUserRoleSubject"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    tools:text="Primary Teacher - Maths, Physics" />
+
+                            </android.support.v7.widget.LinearLayoutCompat>
+
+
+                        </android.support.v7.widget.LinearLayoutCompat>
+
+                        <android.support.v7.widget.Toolbar
+                            android:id="@+id/toolbar"
+                            android:layout_width="match_parent"
+                            android:layout_height="?attr/actionBarSize"
+                            android:layout_gravity="top"
+                            android:layout_marginTop="@dimen/value_24dp"
+                            app:navigationIcon="@drawable/chevron_left_white"
+                            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                            app:titleTextColor="@android:color/white" />
+
+                        <!--Profile Picture-->
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/value_16dp"
+                            android:layout_marginTop="164dp">
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:id="@+id/imageViewProfilePicture"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
+                                android:layout_margin="@dimen/value_4dp"
+                                android:padding="@dimen/value_4dp"
+                                tools:srcCompat="@tools:sample/avatars[0]" />
+
+                        </FrameLayout>
+
+                    </FrameLayout>
+
+                    <!--Divider-->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/itemDivider" />
+
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="?actionBarSize"
+                        android:orientation="horizontal">
+
+
+                        <!--euros-->
+                        <android.support.v7.widget.LinearLayoutCompat
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@color/colorWhite"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+
+                            <android.support.v7.widget.LinearLayoutCompat
+                                android:id="@+id/layoutEuroHeader"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingStart="@dimen/value_8dp"
+                                android:paddingTop="@dimen/value_4dp"
+                                android:paddingEnd="@dimen/value_8dp"
+                                android:paddingBottom="@dimen/value_4dp">
+
+                                <!--Icon big-->
+                                <android.support.v7.widget.AppCompatImageView
+                                    android:layout_width="44dp"
+                                    android:layout_height="48dp"
+                                    android:layout_marginEnd="@dimen/value_8dp"
+                                    app:srcCompat="@drawable/icon_coin_gold_48_vector" />
+
+                                <!--Total euros-->
+                                <android.support.v7.widget.LinearLayoutCompat
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="vertical">
+
+                                    <android.support.v7.widget.AppCompatTextView
+                                        android:id="@+id/textViewTotalEuros"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/zero"
+                                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                        android:textColor="@android:color/black"
+                                        android:textStyle="bold"
+                                        tools:text="33750" />
+
+                                    <android.support.v7.widget.AppCompatTextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/euros"
+                                        android:textColor="@android:color/black" />
+
+                                </android.support.v7.widget.LinearLayoutCompat>
+
+                                <!--down arrow with tint-->
+                                <android.support.v7.widget.AppCompatImageView
+                                    android:id="@+id/imageViewEuroIndicator"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="@dimen/value_4dp"
+                                    android:tint="@color/colorPrimary"
+                                    android:visibility="gone"
+                                    app:srcCompat="@drawable/chevron_right_white" />
+
+                            </android.support.v7.widget.LinearLayoutCompat>
+
+
+                            <!--Bottom line euros-->
+                            <View
+                                android:id="@+id/bottomLineEuros"
+                                android:layout_width="match_parent"
+                                android:layout_height="4dp"
+                                android:background="@color/colorPrimary"
+                                android:visibility="gone" />
+
+
+                        </android.support.v7.widget.LinearLayoutCompat>
+
+                        <!--Divider-->
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/itemDivider" />
+
+                        <!--Shields-->
+                        <android.support.v7.widget.LinearLayoutCompat
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@color/colorWhite"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+
+                            <android.support.v7.widget.LinearLayoutCompat
+                                android:id="@+id/layoutShieldsHeader"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingStart="@dimen/value_8dp"
+                                android:paddingTop="@dimen/value_4dp"
+                                android:paddingEnd="@dimen/value_8dp"
+                                android:paddingBottom="@dimen/value_4dp">
+
+                                <!--Icon big-->
+                                <android.support.v7.widget.AppCompatImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="48dp"
+                                    android:layout_marginEnd="@dimen/value_8dp"
+                                    app:srcCompat="@drawable/icon_shield_blue_48_vector" />
+
+                                <!--Total-->
+                                <android.support.v7.widget.LinearLayoutCompat
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="vertical">
+
+
+                                    <android.support.v7.widget.AppCompatTextView
+                                        android:id="@+id/textViewTotalShields"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                        android:textColor="@android:color/black"
+                                        android:textStyle="bold"
+                                        tools:text="5" />
+
+                                    <android.support.v7.widget.AppCompatTextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/shields"
+                                        android:textColor="@android:color/black" />
+
+                                </android.support.v7.widget.LinearLayoutCompat>
+
+                                <!--down arrow with tint-->
+                                <android.support.v7.widget.AppCompatImageView
+                                    android:id="@+id/imageViewShieldsIndicator"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="@dimen/value_4dp"
+                                    android:tint="@color/colorPrimary"
+                                    android:visibility="gone"
+                                    app:srcCompat="@drawable/chevron_right_white" />
+
+                            </android.support.v7.widget.LinearLayoutCompat>
+
+
+                            <!--Bottom line Shields-->
+                            <View
+                                android:id="@+id/bottomLineShields"
+                                android:layout_width="match_parent"
+                                android:layout_height="4dp"
+                                android:background="@color/colorPrimary"
+                                android:visibility="gone" />
+
+                        </android.support.v7.widget.LinearLayoutCompat>
+
+
+                    </android.support.v7.widget.LinearLayoutCompat>
+
+                    <!--Divider-->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/itemDivider" />
+
+                    <!--euros-->
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:id="@+id/layoutEuros"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <!--Training-->
+                        <include
+                            android:id="@+id/layoutEurosTraining"
+                            layout="@layout/layout_profile_euros_list_item" />
+
+                        <!--Etat-->
+                        <include
+                            android:id="@+id/layoutEurosEtat"
+                            layout="@layout/layout_profile_euros_list_item" />
+
+                        <!--Reflection-->
+                        <include
+                            android:id="@+id/layoutEurosReflection"
+                            layout="@layout/layout_profile_euros_list_item" />
+
+                        <!--Contribution-->
+                        <include
+                            android:id="@+id/layoutEurosContribution"
+                            layout="@layout/layout_profile_euros_list_item" />
+
+                        <!--Observation-->
+                        <include
+                            android:id="@+id/layoutEurosObservation"
+                            layout="@layout/layout_profile_euros_list_item" />
+
+                    </android.support.v7.widget.LinearLayoutCompat>
+
+                    <!--shields-->
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerViewShields"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never"
+                        android:visibility="gone"
+                        tools:listitem="@layout/layout_profile_shield_list_item" />
+
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+            </android.support.v4.widget.NestedScrollView>
+
+            <!--Bottom progress-->
+            <android.support.v7.widget.LinearLayoutCompat
+                android:id="@+id/layoutProgressBottom"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#44000000"
+                android:clickable="true"
+                android:elevation="4dp"
+                android:focusable="true"
+                android:longClickable="false"
+                android:visibility="gone">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/progressContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="@dimen/value_16dp"
+                    android:layout_marginRight="@dimen/value_16dp"
+                    android:layout_marginBottom="@dimen/value_24dp"
+                    app:cardCornerRadius="@dimen/radius_8dp"
+                    app:cardElevation="@dimen/elevation_4dp">
+
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorGreyDark"
+                        android:gravity="center_vertical">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewBottomProgressMessage"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/value_16dp"
+                            android:layout_marginRight="@dimen/value_16dp"
+                            android:layout_weight="1"
+                            android:text="@string/labelPleaseWait"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/colorWhite" />
+
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/value_8dp"
+                            android:theme="@style/ProgressWhiteAccent" />
+
+                    </android.support.v7.widget.LinearLayoutCompat>
+
+                </android.support.v7.widget.CardView>
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+        </FrameLayout>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+</layout>

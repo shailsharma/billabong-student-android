@@ -5,9 +5,9 @@
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_4dp"
+        android:layout_marginTop="@dimen/value_4dp"
+        android:layout_marginBottom="@dimen/value_4dp"
         android:background="?android:attr/selectableItemBackground"
-        android:layout_marginBottom="@dimen/margin_4dp"
         android:orientation="vertical">
 
         <android.support.v7.widget.LinearLayoutCompat
@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="@dimen/padding_16dp">
+            android:paddingStart="@dimen/value_16dp">
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/imageViewIcon"
@@ -28,8 +28,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingStart="@dimen/margin_16dp"
-                android:paddingEnd="@dimen/margin_8dp"
+                android:paddingStart="@dimen/value_16dp"
+                android:paddingEnd="@dimen/value_8dp"
                 android:textColor="@color/colorBlack"
                 tools:text="@string/error_something_went_wrong" />
 
@@ -37,11 +37,11 @@
                 android:id="@+id/textViewScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_16dp"
-                android:drawableStart="@drawable/euro_flower_logo"
-                android:drawablePadding="@dimen/padding_4dp"
+                android:layout_marginEnd="@dimen/value_16dp"
+                android:drawableEnd="@drawable/icon_coin_gold_24_vector"
+                android:drawablePadding="@dimen/value_4dp"
                 android:gravity="center|start"
-                android:padding="@dimen/padding_4dp"
+                android:padding="@dimen/value_4dp"
                 android:textColor="@color/colorBlack"
                 tools:text="470" />
 
@@ -51,9 +51,9 @@
             android:id="@+id/viewDivider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginTop="@dimen/margin_4dp"
-            android:layout_marginEnd="@dimen/margin_16dp"
+            android:layout_marginStart="@dimen/value_16dp"
+            android:layout_marginTop="@dimen/value_4dp"
+            android:layout_marginEnd="@dimen/value_16dp"
             android:background="@color/itemDivider" />
 
     </android.support.v7.widget.LinearLayoutCompat>

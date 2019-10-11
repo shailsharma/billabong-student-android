@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:src="@drawable/close_popup" />
+            android:src="@drawable/action_close_w" />
 
     </RelativeLayout>
 

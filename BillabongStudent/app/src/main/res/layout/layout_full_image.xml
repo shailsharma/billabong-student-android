@@ -11,10 +11,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|top"
-            android:layout_margin="@dimen/margin_8dp"
+            android:layout_margin="@dimen/value_8dp"
             android:background="@drawable/background_circle_solid_white"
             android:elevation="@dimen/elevation_8dp"
-            android:padding="@dimen/padding_8dp"
+            android:padding="@dimen/value_8dp"
             android:tint="@color/colorPrimary"
             app:srcCompat="@drawable/action_close_w"/>
 

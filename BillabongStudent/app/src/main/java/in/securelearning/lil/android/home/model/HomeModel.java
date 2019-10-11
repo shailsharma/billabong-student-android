@@ -1213,12 +1213,12 @@ public class HomeModel {
         });
     }
 
-    public Observable<String> checkForNewVersionOnPlayStore() {
+    public Observable<Float> checkForNewVersionOnPlayStore() {
 
         return
-                io.reactivex.Observable.create(new ObservableOnSubscribe<String>() {
+                io.reactivex.Observable.create(new ObservableOnSubscribe<Float>() {
                     @Override
-                    public void subscribe(ObservableEmitter<String> e) throws Exception {
+                    public void subscribe(ObservableEmitter<Float> e) throws Exception {
                         String newVersion = Jsoup.connect(
                                 "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "&hl=en")
                                 .timeout(30000)
@@ -1228,16 +1228,14 @@ public class HomeModel {
                                 .select("div.hAyfc:nth-child(4) > span:nth-child(2) > div:nth-child(1) > span:nth-child(1)")
                                 .first()
                                 .ownText();
-                        e.onNext(newVersion);
+                        e.onNext(Float.parseFloat(newVersion));
                         e.onComplete();
-                        Log.e("new Version", newVersion);
+                        Log.e("playStoreVersion--", newVersion);
 
 
                     }
                 });
     }
-
-
 
 
 }

@@ -1,4 +1,6 @@
 <resources>
+
+    <!--App names according to variant-->
     <string name="app_name_release">Billabong@Home</string>
     <string name="app_name_test">Billabong@Home Test</string>
     <string name="app_name_debug">Billabong@Home Dev</string>
@@ -20,7 +22,7 @@
     <string name="mind_spark_base_url">https://www.mindspark.in/api/</string>
 
     <!--wikiHow string-->
-    <string name="wikiHow_base_url">https://www.wikihow.com/</string>
+    <string name="base_url_wikiHow">https://www.wikihow.com/</string>
 
     <!--Freadom url-->
     <string name="base_url_freadom_dev">https://euro-web-dev.getfreadom.com/euro-login/</string>
@@ -29,16 +31,18 @@
     <!--Lightsail url-->
     <string name="base_url_lightsail">https://s2m-euro-reader.lightsailed.com/Reader/index.html?jwtToken=</string>
 
+    <!--Logiqids base url-->
+    <string name="base_url_logiqids">https://api.logiqids.com/</string>
 
+    <!--search provider authorities variant wise-->
     <string name="search_provider_authority">in.securelearning.lil.android.app.billabongstudent.provider.SearchSuggestionProvider</string>
     <string name="search_provider_authority_debug">in.securelearning.lil.android.app.billabongstudent.debug.provider.SearchSuggestionProvider</string>
     <string name="search_provider_authority_test">in.securelearning.lil.android.app.billabongstudent.demo.provider.SearchSuggestionProvider</string>
+
+    <!--file provider authorities variant wise-->
     <string name="file_provider_authority">in.securelearning.lil.android.app.billabongstudent.provider.FileProvider</string>
     <string name="file_provider_authority_debug">in.securelearning.lil.android.app.billabongstudent.debug.provider.FileProvider</string>
     <string name="file_provider_authority_test">in.securelearning.lil.android.app.billabongstudent.demo.provider.FileProvider</string>
-
-    <string name="title_activity_settings_preference_flavor">Settings</string>
-
 
     <!-- Strings related to Settings -->
     <!-- SkillMasteryQuestionPostData General settings -->
@@ -183,14 +187,16 @@
         <item>@string/labelSessions</item>
     </string-array>
 
-    <!--Euro@Home-->
     <string name="messageNoDataFound">No data found</string>
     <string name="messagePracticeAvailable">No practice available</string>
     <string name="no_subject_available">No subject available</string>
     <string name="no_recap_for_today">No recap for today</string>
-    <string name="labelLearn">Learn</string>
-    <string name="labelReinforce">Reinforce</string>
-    <string name="labelApply">Apply</string>
+
+    <string name="label_learn">Know &amp; Inquire</string>
+    <string name="label_reinforce">Explore &amp; Explain</string>
+    <string name="label_practice">Analyze &amp; Apply</string>
+    <string name="label_apply">Reflect</string>
+
     <string name="no_chapter">No Chapter</string>
     <string name="chapters">Chapters</string>
     <string name="chapter">Chapter</string>
@@ -225,8 +231,9 @@
     <string name="messageMSEndTopic">Congratulations your practice on this topic submitted.\nPlease Go Back and try practice for another topic.</string>
     <string name="messageNoMoreQuestion">No more questions available for this topic.\nPlease Go Back and try practice for another topic.</string>
     <string name="messageNoQuestionForTopic">No question available for this topic.\nPlease Go Back and try practice for another topic.</string>
-    <string name="messagePracticeMotivation">Oops! You can\'t continue the practice.\nPlease learn and try again.</string>
+    <string name="messagePracticeMotivation">Oops! You can\'t continue the practice, since all the answers are wrong until now.\nPlease learn and try again.</string>
     <string name="messagePracticeConfigurationNotAvailable">Oops! Configuration not available for the practice, please contact to administrator.</string>
+    <string name="practice_force_close">Something went wrong, please close the practice and try again.</string>
     <string name="messageQuizConfigurationNotAvailable">Oops! Configuration not available for the quiz, please contact to administrator.</string>
     <string name="total_trophies">Total Trophies</string>
     <string name="total_badges">Total Badges</string>
@@ -250,7 +257,6 @@
     <string name="please_fill_all_the_blanks">Please fill all the blanks</string>
     <string name="please_match_all_entities">Please match all entities with placeholder</string>
     <string name="please_fill_all_the_dropdown">Please fill all the dropdown</string>
-    <string name="practice_force_close">Something went wrong, please close the practice and try again.</string>
     <string name="quiz_force_close">Something went wrong, please close the quiz and try again.</string>
     <string name="efforts_based_on_time_spent">Efforts Based On Time Spent</string>
     <string name="performance_based_on_assessments">Performance Based On Assessments</string>
@@ -262,6 +268,7 @@
     <string name="are_you_sure">Are you sure ?</string>
     <string name="logout_message">Would you like to logout from App ?</string>
     <string name="logout">Logout</string>
+    <string name="logout_from_app">Logout from app</string>
     <string name="message_multiple_login">You are already logged in from another device.\nAre you sure you want to logout from previous device ?</string>
     <string name="message_invalidate_other_login_success">You have been logged out from your previous device.</string>
     <string name="mindSparkNoUnitMessageHome">No question available for this topic, please try practice on another topic by clicking on \'More\'</string>
@@ -377,22 +384,6 @@
     <string name="correct_message_9">That’s the way!</string>
     <string name="correct_message_10">You\'ve nailed It!</string>
 
-    <!--messages when incorrect response-->
-    <string name="incorrect_message_1">Oops..you missed this time!</string>
-    <string name="incorrect_message_2">Never mind! It happens with many.</string>
-    <string name="incorrect_message_3">That\'s not the right one!</string>
-    <string name="incorrect_message_4">Ohh..you were just there!</string>
-    <string name="incorrect_message_5">Nice attempt..Lets not miss the next one.</string>
-    <string name="incorrect_message_6">It was difficult..isn\'t it ?</string>
-    <string name="incorrect_message_7">No worries..you are not the only one who got it wrong.</string>
-    <string name="incorrect_message_8">Ohh..Surely a better focus would get you full Euros.</string>
-    <string name="incorrect_message_9">Ohh..May you want to try hints or ask someone.</string>
-    <string name="incorrect_message_10">It seems next one will be alright!</string>
-    <string name="thank_you">Thank you</string>
-    <string name="accuracyCaps">ACCURACY</string>
-    <string name="type_wikihow">wikihow</string>
-    <string name="label_wikiHow">wikiHow</string>
-
     <string-array name="correct_response_messages">
         <item>@string/correct_message_1</item>
         <item>@string/correct_message_2</item>
@@ -406,6 +397,18 @@
         <item>@string/correct_message_10</item>
     </string-array>
 
+    <!--messages when incorrect response-->
+    <string name="incorrect_message_1">Oops..you missed this time!</string>
+    <string name="incorrect_message_2">Never mind! It happens with many.</string>
+    <string name="incorrect_message_3">That\'s not the right one!</string>
+    <string name="incorrect_message_4">Ohh..you were just there!</string>
+    <string name="incorrect_message_5">Nice attempt..Lets not miss the next one.</string>
+    <string name="incorrect_message_6">It was difficult..isn\'t it ?</string>
+    <string name="incorrect_message_7">No worries..you are not the only one who got it wrong.</string>
+    <string name="incorrect_message_8">Ohh..Surely a better focus would get you full Euros.</string>
+    <string name="incorrect_message_9">Ohh..May you want to try hints or ask someone.</string>
+    <string name="incorrect_message_10">It seems next one will be alright!</string>
+
     <string-array name="incorrect_response_messages">
         <item>@string/incorrect_message_1</item>
         <item>@string/incorrect_message_2</item>
@@ -418,5 +421,36 @@
         <item>@string/incorrect_message_9</item>
         <item>@string/incorrect_message_10</item>
     </string-array>
+
+    <string name="thank_you">Thank you</string>
+    <string name="accuracyCaps">ACCURACY</string>
+    <string name="type_wikihow">wikihow</string>
+    <string name="label_wikiHow">wikiHow</string>
+    <string name="watch_the_video_to_reinforce_concept">Watch the video to reinforce concept</string>
+    <string name="labelCorrectQuestions">Correct Questions</string>
+    <string name="labelTotalTimeMin">Total Time (min)</string>
+
+    <!--Interest and Goal-->
+    <string name="stringDashboardInterestAndGoal">Hey Buddy!!\nPlease add your \n<b>Interest and Goal</b></string>
+    <string name="labelChallengeForTheDay">Challenge for the day</string>
+    <string name="labelVideoForTheDay">Video for the day</string>
+    <string name="labelPleaseWait">Please wait…</string>
+    <string name="labelTakeAChallenge">Take a challenge</string>
+    <string name="labelWatchAndLearn"><![CDATA[Watch & Learn]]></string>
+    <string name="teacher">Teacher</string>
+    <string name="shields">Shields</string>
+    <string name="labelEtat">ETAT</string>
+    <string name="labelLessonPlanReflections">Lesson Plan Reflections</string>
+    <string name="labelContribution">Contribution</string>
+    <string name="labelClassroomObservations">Classroom Observations</string>
+    <string name="labelDateOfAdmission">Date Of Admission</string>
+    <string name="messageUnableToLoginOnLogiqids">Oops! Unable to login on Logiqids, please wait or contact to administrator.</string>
+    <string name="messageGettingAnswer">Hold on! getting answer.</string>
+    <string name="messageNoMoreQuestionFoundForThisWorksheet">Oops! No more question available for this worksheet.</string>
+    <string name="later">later</string>
+    <string name="labelViewProfileImage">View profile image</string>
+    <string name="labelPleaseSelect">Please select</string>
+    <string name="labelUpdateProfileImage">Update profile image</string>
+
 
 </resources>

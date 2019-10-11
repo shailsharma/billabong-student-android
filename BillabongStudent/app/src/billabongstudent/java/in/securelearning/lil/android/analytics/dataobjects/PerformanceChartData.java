@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class PerformanceChartData implements Serializable ,Comparable<PerformanceChartData>{
+public class PerformanceChartData implements Serializable, Comparable<PerformanceChartData> {
 
     @SerializedName("performance")
     @Expose
@@ -24,6 +24,10 @@ public class PerformanceChartData implements Serializable ,Comparable<Performanc
     @SerializedName("name")
     @Expose
     private String mName;
+
+    @SerializedName("thumbnail")
+    @Expose
+    private String mSubjectIcon;
 
     public float getPerformance() {
         return mPerformance;
@@ -55,6 +59,15 @@ public class PerformanceChartData implements Serializable ,Comparable<Performanc
 
     public void setName(String name) {
         mName = name;
+    }
+
+
+    public String getSubjectIcon() {
+        return mSubjectIcon;
+    }
+
+    public void setSubjectIcon(String subjectIcon) {
+        mSubjectIcon = subjectIcon;
     }
 
     @Override

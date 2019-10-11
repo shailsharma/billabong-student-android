@@ -36,9 +36,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import static in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity.COURSE_TYPE_BOOK;
-import static in.securelearning.lil.android.player.view.activity.QuizPlayerActivity.TYPE_ASSESSMENT_FOR_LEARNING;
-import static in.securelearning.lil.android.player.view.activity.QuizPlayerActivity.TYPE_ASSESSMENT_OF_LEARNING;
 import static in.securelearning.lil.android.syncadapter.utils.InternalNotificationActionUtils.ACTION_TYPE_NETWORK_DOWNLOAD;
 
 /**
@@ -201,6 +198,7 @@ public class WebPlayerLiveModel implements WebPlayerLiveModelInterface {
         if (type.equalsIgnoreCase(mContext.getString(R.string.typePdf))) {
             try {
                 if (!TextUtils.isEmpty(url)) {
+
                     url = url.trim();
                     if (url.endsWith(".pdf")) {
                         Uri uri = Uri.parse(url);
@@ -222,31 +220,10 @@ public class WebPlayerLiveModel implements WebPlayerLiveModelInterface {
             item.setUrlMain(url);
             mContext.startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(mContext, PlayVideoFullScreenActivity.NETWORK_TYPE_ONLINE, (Resource) item));
         } else if (type.contains("you") || type.contains("vimeo")) {
-//            if (!url.contains("http:") || !url.contains("https:")) {
-//                FavouriteResource favouriteResource = new FavouriteResource();
-//                favouriteResource.setName(url);
-//                favouriteResource.setUrlThumbnail("");
-//                mContext.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(mContext, favouriteResource, false));
-//            } else {
-//                String pattern = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
-//
-//                Pattern compiledPattern = Pattern.compile(pattern);
-//                Matcher matcher = compiledPattern.matcher(url); //url is youtube url for which you want to extract the id.
-//                if (matcher.find()) {
-//                    String videoId = matcher.group();
-//                    FavouriteResource favouriteResource = new FavouriteResource();
-//                    favouriteResource.setName(videoId);
-//                    favouriteResource.setUrlThumbnail("");
-//                    mContext.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(mContext, favouriteResource, false));
-//                }
-//            }
+
             WebPlayerLiveActivity.startWebPlayerForResourcePreview(mContext, mAppUserModel.getObjectId(), url);
 
-
         }
-//        else if (type.equalsIgnoreCase(mContext.getString(R.string.typeVimeoVideo))) {
-//            mContext.startActivity(PlayVimeoFullScreenActivity.getStartIntent(mContext, url));
-//        }
     }
 
     @Override
@@ -277,6 +254,17 @@ public class WebPlayerLiveModel implements WebPlayerLiveModelInterface {
     public Response<ResponseBody> dictionariesSearch(String response) {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), response);
         return webCallExecutor(mNetworkModel.dictionariesSearch(body));
+    }
+
+    @Override
+    public Response<ResponseBody> getAflAolConfiguration(String response) {
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), response);
+        return webCallExecutor(mNetworkModel.getAflAolConfiguration(body));
+    }
+
+    @Override
+    public void openBlogCommentView(String blogId) {
+
     }
 
 

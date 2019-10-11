@@ -30,15 +30,15 @@
                     android:background="@color/colorWhite"
                     android:elevation="@dimen/elevation_2dp"
                     android:orientation="vertical"
-                    android:paddingTop="@dimen/margin_8dp">
+                    android:paddingTop="@dimen/value_8dp">
 
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/textViewEffortTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="@dimen/margin_8dp"
-                        android:layout_marginBottom="@dimen/margin_8dp"
+                        android:layout_marginTop="@dimen/value_8dp"
+                        android:layout_marginBottom="@dimen/value_8dp"
                         android:text="@string/efforts_based_on_time_spent"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/colorBlack"/>
@@ -46,8 +46,8 @@
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_16dp"
-                        android:layout_marginEnd="@dimen/margin_16dp">
+                        android:layout_marginStart="@dimen/value_16dp"
+                        android:layout_marginEnd="@dimen/value_16dp">
 
                         <!--total-->
                         <android.support.v7.widget.LinearLayoutCompat
@@ -116,7 +116,7 @@
                         android:id="@+id/chartEffort"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/margin_16dp"
+                        android:layout_margin="@dimen/value_16dp"
                         android:minHeight="248dp"
                         android:visibility="gone"/>
 
@@ -124,7 +124,7 @@
                         android:id="@+id/textViewNoEffortData"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_16dp"
+                        android:layout_margin="@dimen/value_16dp"
                         android:gravity="center"
                         android:minHeight="248dp"
                         android:text="@string/messageNoDataFound"
@@ -138,8 +138,8 @@
                         android:layout_gravity="center_horizontal|center_vertical"
                         android:layout_margin="80dp"
                         android:background="@drawable/background_circle_solid_white"
-                        android:elevation="@dimen/margin_8dp"
-                        android:padding="@dimen/padding_4dp"
+                        android:elevation="@dimen/elevation_8dp"
+                        android:padding="@dimen/value_4dp"
                         android:visibility="visible"/>
 
                 </android.support.v7.widget.LinearLayoutCompat>
@@ -148,7 +148,7 @@
                 <android.support.v7.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/value_16dp"
                     android:background="@color/colorWhite"
                     android:elevation="@dimen/elevation_2dp"
                     android:orientation="vertical">
@@ -158,8 +158,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="@dimen/margin_8dp"
-                        android:layout_marginBottom="@dimen/margin_8dp"
+                        android:layout_marginTop="@dimen/value_8dp"
+                        android:layout_marginBottom="@dimen/value_8dp"
                         android:text="@string/performance_based_on_assessments"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/colorBlack"/>
@@ -168,7 +168,7 @@
                         android:id="@+id/chartPerformance"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/margin_8dp"
+                        android:layout_margin="@dimen/value_8dp"
                         android:minHeight="248dp"
                         android:visibility="gone"/>
 
@@ -176,7 +176,7 @@
                         android:id="@+id/textViewNoPerformanceData"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_16dp"
+                        android:layout_margin="@dimen/value_16dp"
                         android:gravity="center"
                         android:minHeight="248dp"
                         android:text="@string/messageNoDataFound"
@@ -190,8 +190,8 @@
                         android:layout_gravity="center_horizontal|center_vertical"
                         android:layout_margin="80dp"
                         android:background="@drawable/background_circle_solid_white"
-                        android:elevation="@dimen/margin_8dp"
-                        android:padding="@dimen/padding_4dp"
+                        android:elevation="@dimen/elevation_8dp"
+                        android:padding="@dimen/value_4dp"
                         android:visibility="visible"/>
 
                 </android.support.v7.widget.LinearLayoutCompat>
@@ -200,8 +200,8 @@
                 <android.support.v7.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_16dp"
-                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/value_16dp"
+                    android:layout_marginBottom="@dimen/value_16dp"
                     android:background="@color/colorWhite"
                     android:elevation="@dimen/elevation_2dp"
                     android:orientation="vertical">
@@ -211,8 +211,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="@dimen/margin_8dp"
-                        android:layout_marginBottom="@dimen/margin_8dp"
+                        android:layout_marginTop="@dimen/value_8dp"
+                        android:layout_marginBottom="@dimen/value_8dp"
                         android:text="@string/progress_based_on_coverage"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/colorBlack"/>
@@ -221,7 +221,7 @@
                         android:id="@+id/chartCoverage"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/margin_8dp"
+                        android:layout_margin="@dimen/value_8dp"
                         android:minHeight="248dp"
                         android:visibility="gone"/>
 
@@ -230,7 +230,7 @@
                         android:id="@+id/textViewNoCoverageData"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_16dp"
+                        android:layout_margin="@dimen/value_16dp"
                         android:gravity="center"
                         android:minHeight="248dp"
                         android:text="@string/messageNoDataFound"
@@ -244,8 +244,8 @@
                         android:layout_gravity="center_horizontal|center_vertical"
                         android:layout_margin="80dp"
                         android:background="@drawable/background_circle_solid_white"
-                        android:elevation="@dimen/margin_8dp"
-                        android:padding="@dimen/padding_4dp"
+                        android:elevation="@dimen/elevation_8dp"
+                        android:padding="@dimen/value_4dp"
                         android:visibility="visible"/>
 
                 </android.support.v7.widget.LinearLayoutCompat>

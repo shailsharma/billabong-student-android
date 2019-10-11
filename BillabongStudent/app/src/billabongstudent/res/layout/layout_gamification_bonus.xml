@@ -1,36 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
-                  android:id="@+id/layout_bonus"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:gravity="center"
-                  android:orientation="horizontal">
+        android:id="@+id/layout_bonus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
 
 
-                <TextView
-                    android:id="@+id/textViewBonus"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/avail_bonus"
-                    android:paddingTop="@dimen/padding_12dp"
-                    android:paddingBottom="@dimen/padding_12dp"
-                    android:paddingStart="@dimen/padding_12dp"
-                    android:paddingEnd="@dimen/padding_12dp"
-                    android:elevation="@dimen/elevation_4dp"
-                    android:background="@drawable/chip_accent_color"
-                   android:textColor="@color/white"
-                    android:layout_margin="@dimen/margin_4dp"
-                    android:layout_height="wrap_content" />
-
-
-
-
-
-
+        <TextView
+            android:id="@+id/textViewBonus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/value_4dp"
+            android:background="@drawable/gradient_chip"
+            android:elevation="@dimen/elevation_4dp"
+            android:paddingStart="@dimen/value_12dp"
+            android:paddingTop="@dimen/value_12dp"
+            android:paddingEnd="@dimen/value_12dp"
+            android:paddingBottom="@dimen/value_12dp"
+            android:text="@string/avail_bonus"
+            android:textColor="@color/white" />
 
 
     </LinearLayout>

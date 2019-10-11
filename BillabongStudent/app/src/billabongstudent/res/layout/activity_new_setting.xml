@@ -1,8 +1,9 @@
 <layout>
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -14,8 +15,8 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="Notifications"
-                android:textColor="@color/colorAccentSettings"
-                android:textStyle="bold"/>
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold" />
 
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/notification_sound_enable"
@@ -28,7 +29,7 @@
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
-                android:text="Sound"/>
+                android:text="Sound" />
 
             <View
                 android:layout_width="match_parent"
@@ -52,7 +53,7 @@
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="Choose notification tone"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/notification_default_sound"
@@ -61,7 +62,7 @@
                     android:hint="default name"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:textColor="#90A4AE"/>
+                    android:textColor="#90A4AE" />
 
             </LinearLayout>
 
@@ -84,7 +85,7 @@
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
                 android:text="Courses"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <View
                 android:layout_width="match_parent"
@@ -92,7 +93,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:background="#CFD8DC"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/notification_learning"
@@ -105,7 +106,7 @@
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
-                android:text="@string/title_network"/>
+                android:text="@string/title_network" />
 
             <View
                 android:id="@+id/viewAboveAssignment"
@@ -114,7 +115,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:background="#CFD8DC"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/notification_assignment"
@@ -127,8 +128,8 @@
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
-                android:visibility="gone"
-                android:text="Homework Reminder"/>
+                android:text="Homework Reminder"
+                android:visibility="gone" />
 
 
             <android.support.v7.widget.AppCompatCheckBox
@@ -143,25 +144,25 @@
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
                 android:text="vibrate"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="Personalize"
-                android:textColor="@color/colorAccentSettings"
+                android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="Data Sync"
-                android:textColor="@color/colorAccentSettings"
-                android:visibility="gone"
-                android:textStyle="bold"/>
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/sync_wifi_check"
@@ -174,16 +175,16 @@
                 android:paddingTop="16dp"
                 android:paddingRight="32dp"
                 android:paddingBottom="16dp"
-                android:visibility="gone"
-                android:text="Download courses only on WiFi"/>
+                android:text="Download courses only on WiFi"
+                android:visibility="gone" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:visibility="gone"
-                android:background="#CFD8DC"/>
+                android:background="#CFD8DC"
+                android:visibility="gone" />
 
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/sync_media_check"
@@ -197,7 +198,7 @@
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
                 android:text="Auto download learning network media"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <View
                 android:layout_width="match_parent"
@@ -215,8 +216,7 @@
                 android:padding="16dp"
                 android:text="Sync queue"
                 android:textColor="#000000"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/sync_now"
@@ -226,7 +226,7 @@
                 android:padding="16dp"
                 android:text="Sync now"
                 android:textColor="#000000"
-                />
+                android:visibility="gone" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/viewASH"
@@ -234,8 +234,8 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="@string/labelAddShortcut"
-                android:textColor="@color/colorAccentSettings"
-                android:textStyle="bold"/>
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/layoutAddShortcut"
@@ -248,16 +248,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
-                    android:orientation="vertical"
-                    >
+                    android:orientation="vertical">
 
                     <in.securelearning.lil.android.base.widget.TextViewCustom
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
                         android:text="@string/homework"
-                        android:textColor="#000000"
-                        />
+                        android:textColor="#000000" />
 
                     <View
                         android:layout_width="match_parent"
@@ -281,8 +279,7 @@
                         android:layout_height="wrap_content"
                         android:padding="16dp"
                         android:text="@string/title_network"
-                        android:textColor="#000000"
-                        />
+                        android:textColor="#000000" />
 
                     <View
                         android:layout_width="match_parent"
@@ -307,8 +304,7 @@
                         android:layout_height="wrap_content"
                         android:padding="16dp"
                         android:text="@string/string_calendar"
-                        android:textColor="#000000"
-                        />
+                        android:textColor="#000000" />
 
                     <View
                         android:layout_width="match_parent"
@@ -332,8 +328,7 @@
                         android:layout_height="wrap_content"
                         android:padding="16dp"
                         android:text="@string/label_workspace"
-                        android:textColor="#000000"
-                        />
+                        android:textColor="#000000" />
 
                     <View
                         android:layout_width="match_parent"
@@ -357,8 +352,7 @@
                         android:layout_height="wrap_content"
                         android:padding="16dp"
                         android:text="@string/labelTraining"
-                        android:textColor="#000000"
-                        />
+                        android:textColor="#000000" />
 
                 </LinearLayout>
 
@@ -375,8 +369,7 @@
                         android:layout_height="wrap_content"
                         android:padding="16dp"
                         android:text="@string/string_nav_learning_map"
-                        android:textColor="#000000"
-                        />
+                        android:textColor="#000000" />
 
                 </LinearLayout>
 
@@ -388,8 +381,8 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="History and privacy"
-                android:textColor="@color/colorAccentSettings"
-                android:textStyle="bold"/>
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/clear_history"
@@ -406,7 +399,7 @@
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="Clear search history"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="match_parent"
@@ -414,7 +407,7 @@
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="Clear searches made on this device"
-                    android:textColor="#90A4AE"/>
+                    android:textColor="#90A4AE" />
 
             </LinearLayout>
 
@@ -423,8 +416,8 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="General"
-                android:textColor="@color/colorAccentSettings"
-                android:textStyle="bold"/>
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/general_version"
@@ -441,7 +434,7 @@
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="App version"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/general_default_version"
@@ -450,7 +443,7 @@
                     android:hint="Default version"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:textColor="#90A4AE"/>
+                    android:textColor="#90A4AE" />
 
             </LinearLayout>
 
@@ -477,7 +470,7 @@
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="Language"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/general_default_Language"
@@ -486,7 +479,7 @@
                     android:hint="Default language"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:textColor="#90A4AE"/>
+                    android:textColor="#90A4AE" />
 
             </LinearLayout>
 
@@ -506,7 +499,7 @@
                 android:padding="16dp"
                 android:text="Help"
                 android:textColor="#000000"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <View
                 android:layout_width="match_parent"
@@ -524,7 +517,7 @@
                 android:padding="16dp"
                 android:text="About"
                 android:textColor="#000000"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <View
                 android:layout_width="match_parent"
@@ -549,7 +542,7 @@
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="@string/labelChangePassword"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="match_parent"
@@ -557,7 +550,7 @@
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="@string/labelChangePasswordDesc"
-                    android:textColor="#90A4AE"/>
+                    android:textColor="#90A4AE" />
 
             </LinearLayout>
 
@@ -577,7 +570,7 @@
                 android:padding="16dp"
                 android:text="Log out"
                 android:textColor="#000000"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </LinearLayout>
 

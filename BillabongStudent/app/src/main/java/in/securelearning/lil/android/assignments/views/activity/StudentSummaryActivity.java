@@ -42,7 +42,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.StudentImageListRowBinding;
 import in.securelearning.lil.android.assignments.events.LoadAssignmentResponseListTeacher;
 import in.securelearning.lil.android.assignments.model.AssignmentTeacherModel;
@@ -76,13 +75,14 @@ import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.courses.views.activity.CourseDetailActivity;
 import in.securelearning.lil.android.home.dataobjects.TimeUtils;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.learningnetwork.views.activity.GroupDetailActivity;
+import in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity;
 import in.securelearning.lil.android.resources.view.activity.VideoPlayActivity;
 import in.securelearning.lil.android.resources.view.activity.VimeoActivity;
 import in.securelearning.lil.android.resources.view.activity.YoutubePlayActivity;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -90,8 +90,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class StudentSummaryActivity extends AppCompatActivity {
 
-    public static final String ASSIGNMENT_MINIMAL_DOC_ID = "assignmentMinimalDocId";
-    public static final String ASSIGNMENT_DOC_ID = "docIdAssignment";
     @Inject
     public PendingSummaryTeacherActivityModel mPendingSummaryTeacherActivityModel;
     @Inject
@@ -100,19 +98,25 @@ public class StudentSummaryActivity extends AppCompatActivity {
     AssignmentModel mAssignmentModel;
     @Inject
     AssignmentTeacherModel mAssignmentTeacherModel;
-    int mColor = Color.BLACK;
-    int color2 = Color.parseColor("#d3d3d3");
-    Toolbar mToolbar;
+
+    public static final String ASSIGNMENT_MINIMAL_DOC_ID = "assignmentMinimalDocId";
+    public static final String ASSIGNMENT_DOC_ID = "docIdAssignment";
+
+    private int mColor = Color.BLACK;
+    private int color2 = Color.parseColor("#d3d3d3");
+    private Toolbar mToolbar;
     private boolean isTypeQuiz = false;
     private boolean isTypeCourse = false;
     private boolean isTypeResource = false;
-    private RecyclerView assignmentExcellentRecycleList, assignmentAverageRecycleList, assignmentPoorRecycleList, assignmentPendingRecycleList, assignmentViewedByRecycleList;
+    private RecyclerView assignmentExcellentRecycleList, assignmentAverageRecycleList, assignmentPoorRecycleList,
+            assignmentPendingRecycleList, assignmentViewedByRecycleList;
     private Disposable mSubscription;
     private LinearLayout lay_submitionDetails, mAssignmentDurationLayout, mLayAssignment4;
     private Assignment mAssignment;
     private ImageView mAssignmentThumbnail;
     private TextView mInstructionTextView, mViewMoreLessTextView, mSubmittedCountTextView, mAssignmentViewedByRecycleListText,
-            mPendingCountTextView, mAssignmentText1, mAssignmentText2, mAssignmentText3, mAssignmentText4, mAssignmentExcellentRecycleListText, mAssignmentAverageRecycleListText, mAssignmentPoorRecycleListText, mAssignmentPendingRecycleListText;
+            mPendingCountTextView, mAssignmentText1, mAssignmentText2, mAssignmentText3, mAssignmentText4,
+            mAssignmentExcellentRecycleListText, mAssignmentAverageRecycleListText, mAssignmentPoorRecycleListText, mAssignmentPendingRecycleListText;
     private CardView mInstructionView, cardViewGraph;
     private Group mAssignedGroup;
     private ArrayList<GroupMember> mMemberArrayList = new ArrayList<>();
@@ -120,7 +124,8 @@ public class StudentSummaryActivity extends AppCompatActivity {
     private Class mObjectClass = null;
     private PieChart mAssignmentChart;
     private View mAssignmentImage1, mAssignmentImage2, mAssignmentImage3, mAssignmentImage4;
-    private TextView subjectText, topicText, textview_due_date_new, textview_assigned_date_new, textAssignedByName, textAssigneToName, mDurationTextView, mTextviewAssignmentType, mTextViewDueDate, mTxtViewedBy;
+    private TextView subjectText, topicText, textview_due_date_new, textview_assigned_date_new, textAssignedByName,
+            textAssigneToName, mDurationTextView, mTextviewAssignmentType, mTextViewDueDate, mTxtViewedBy;
     private ImageView imgAssignedBy, imgAssignedTo;
     private ImageView mAssignedByImageView, mAssignedToImageView;
     private Menu menu;
@@ -475,7 +480,7 @@ public class StudentSummaryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-                    startActivity(UserProfileActivity.getStartIntent(mAssignment.getAssignedBy().getId(), getBaseContext()));
+                    startActivity(UserPublicProfileActivity.getStartIntent(getBaseContext(), mAssignment.getAssignedBy().getId()));
                 } else {
                     ToastUtils.showToastAlert(getBaseContext(), getString(R.string.connect_internet));
                 }

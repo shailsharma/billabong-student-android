@@ -3,10 +3,8 @@ package in.securelearning.lil.android.syncadapter.fcmservices;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -43,18 +41,26 @@ public class FlavorFCMReceiverService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
+
         if (remoteMessage.getData().size() > 0 && remoteMessage.getData().containsKey("type")) {
+
             final String type = remoteMessage.getData().get("type");
+
             switch (type) {
-                case NetworkModel.TYPE_POST_DATA:
+
+                case NetworkModel.TYPE_POST_DATA: {
                     String postId = remoteMessage.getData().get("id");
                     JobCreator.createDownloadPostDataJob(postId, ConstantUtil.BLANK, true).execute();
                     break;
-                case NetworkModel.TYPE_POST_RESPONSE:
+                }
+
+                case NetworkModel.TYPE_POST_RESPONSE: {
                     String responseId = remoteMessage.getData().get("id");
                     JobCreator.createPostResponseDownloadJob(responseId, ConstantUtil.BLANK, true).execute();
                     break;
-                case NetworkModel.TYPE_HOMEWORK:
+                }
+
+                case NetworkModel.TYPE_HOMEWORK: {
                     String homeworkTitle = remoteMessage.getData().get("title");
                     String homeworkId = remoteMessage.getData().get("id");
                     String notificationTitle = "New Homework";
@@ -63,24 +69,29 @@ public class FlavorFCMReceiverService extends FirebaseMessagingService {
                             homeworkTitle, notificationTitle);
                     mRxBus.send(new RefreshHomeworkEvent());
                     break;
+                }
 
-                case NetworkModel.TYPE_USER_PROFILE:
+                case NetworkModel.TYPE_USER_PROFILE: {
                     final String userId = remoteMessage.getData().get("userId");
                     final String groupId = remoteMessage.getData().get("groupId");
                     final String userName = remoteMessage.getData().get("userFullName");
-                    UserService.startActionUpdateUserProfile(this, userId, groupId);
+                    UserService.startActionUpdateUserProfile(this);
                     break;
+                }
+
                 case NetworkModel.TYPE_INSTITUTE_UPDATE: {
                     final String id = remoteMessage.getData().get("id");
                     UserService.startActionUpdateInstitute(this, id);
                     break;
                 }
+
                 case NetworkModel.TYPE_GROUP_UPDATE: {
                     final String id = remoteMessage.getData().get("groupId");
                     UserService.startActionUpdateGroup(this, id);
                     break;
                 }
-                case NetworkModel.TYPE_USER_ARCHIVED:
+
+                case NetworkModel.TYPE_USER_ARCHIVED: {
                     Intent intent = LoginActivity.getUserArchivedIntent(getBaseContext());
                     startActivity(intent);
                     int pendingIntentId = 123456;
@@ -91,10 +102,13 @@ public class FlavorFCMReceiverService extends FirebaseMessagingService {
                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                     System.exit(0);
                     break;
+                }
 
             }
 
+
         }
+
         if (remoteMessage.getNotification() != null) {
             if (isAppIsInBackground(getBaseContext())) { // If app is in background
             } else { // If app is in foreground
@@ -112,22 +126,14 @@ public class FlavorFCMReceiverService extends FirebaseMessagingService {
     private boolean isAppIsInBackground(Context context) {
         boolean isInBackground = true;
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
-            List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
-            for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
-                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-                    for (String activeProcess : processInfo.pkgList) {
-                        if (activeProcess.equals(context.getPackageName())) {
-                            isInBackground = false;
-                        }
+        List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
+            if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                for (String activeProcess : processInfo.pkgList) {
+                    if (activeProcess.equals(context.getPackageName())) {
+                        isInBackground = false;
                     }
                 }
-            }
-        } else {
-            List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-            ComponentName componentInfo = taskInfo.get(0).topActivity;
-            if (componentInfo.getPackageName().equals(context.getPackageName())) {
-                isInBackground = false;
             }
         }
         return isInBackground;

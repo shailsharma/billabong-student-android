@@ -966,7 +966,7 @@ public class QuestionPlayerActivity extends AppCompatActivity {
             if (mimeType.contains("image")) {
                 ArrayList<String> pathArrayList = new ArrayList<>();
                 pathArrayList.add("file://" + resourcePath);
-                FullScreenImage.setUpFullImageView(this, 0, false, true, FullScreenImage.getResourceArrayList(pathArrayList));
+                FullScreenImage.setUpFullImageView(this, 0, false, true, false, FullScreenImage.getResourceArrayList(pathArrayList));
 
             } else if (mimeType.contains("video")) {
 

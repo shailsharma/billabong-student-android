@@ -2,85 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/nav_blogs"
-        android:icon="@drawable/logo_blog_c"
-        android:title="@string/title_blog"
-        android:visible="false"/>
-    <item
-        android:id="@+id/nav_courses"
-        android:icon="@drawable/logo_course_c"
-        android:title="@string/title_courses"
-        android:visible="false"/>
-    <item
-        android:id="@+id/nav_resources"
-        android:icon="@drawable/logo_resource_c"
-        android:title="@string/title_resources"
-        android:visible="false"/>
-
-    <item
-        android:id="@+id/nav_quizess"
-        android:icon="@drawable/workspace_c"
-        android:title="@string/label_workspace"
-        android:visible="false"/>
-
-    <item
-        android:id="@+id/nav_learning_map"
-        android:icon="@drawable/logo_learning_map"
-        android:title="@string/string_nav_learning_map"
-        android:visible="false"/>
-
-    <item
-        android:id="@+id/nav_teacher_map"
-        android:icon="@drawable/logo_learning_map"
-        android:title="@string/string_nav_teacher_map"
-        android:visible="false"/>
-
-    <item
-        android:id="@+id/nav_my_trainings"
-        android:icon="@drawable/logo_training_c"
-        android:title="@string/labelTrainings"
-        android:visible="false"/>
-
-    <item
-        android:id="@+id/nav_class_planner"
-        android:icon="@drawable/class_planner_c"
-        android:title="@string/labelClassPlanner"
-        android:visible="false"/>
-
-    <item
-        android:id="@+id/nav_featured_card"
-        android:icon="@drawable/noimage"
-        android:title="@string/labelRapidLearning"
-        android:visible="false"/>
-
-    <item
-        android:id="@+id/navStartPractice"
-        android:icon="@drawable/logo_practice_c"
-        android:title="@string/labelStartPracticeTest"
-        android:visible="false"/>
-
-
-    <!--   </group>-->
-    <item
-        android:id="@+id/nav_tracking"
-        android:icon="@drawable/logo_tracking"
-        android:title="@string/string_nav_tracking"
-        android:visible="false"/>
-    <item
         android:id="@+id/nav_user_profile"
         android:icon="@drawable/logo_profile"
-        android:title="Profile"/>
-    <item android:title="Preferences">
+        android:title="@string/profile" />
+
+    <item android:title="@string/preferences">
         <menu>
             <item
                 android:id="@+id/nav_setting"
                 android:icon="@drawable/logo_setting"
-                android:title="Settings"/>
+                android:title="@string/label_settings" />
 
             <item
                 android:id="@+id/navLogout"
                 android:icon="@drawable/icon_exit_colored"
-                android:title="@string/logout"/>
+                android:title="@string/logout" />
         </menu>
     </item>
 

@@ -9,16 +9,30 @@
         android:overScrollMode="never"
         android:scrollbars="none">
 
-        <android.support.v7.widget.LinearLayoutCompat
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:padding="@dimen/margin_16dp">
+            android:layout_margin="@dimen/value_12dp">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/buttonClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|top"
+                android:background="@drawable/background_circle_solid_white"
+                android:elevation="@dimen/elevation_2dp"
+                android:layout_margin="@dimen/value_4dp"
+                android:padding="@dimen/value_8dp"
+                android:tint="@color/colorBlack"
+                app:srcCompat="@drawable/action_close_w"/>
 
             <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/value_16dp"
+                android:layout_marginBottom="@dimen/value_4dp"
+                android:layout_marginStart="@dimen/value_4dp"
+                android:layout_marginEnd="@dimen/value_4dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
@@ -34,6 +48,8 @@
                     android:id="@+id/textViewUserName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold"
@@ -43,7 +59,7 @@
                     android:id="@+id/textViewGreetingMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_8dp"
+                    android:layout_marginTop="@dimen/value_8dp"
                     android:gravity="center_horizontal"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/colorBlack"
@@ -52,7 +68,7 @@
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_32dp"
+                    android:layout_marginTop="@dimen/value_32dp"
                     android:gravity="center_horizontal"
                     android:text="@string/accuracyCaps"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -69,7 +85,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:layout_margin="@dimen/margin_8dp" />
+                        android:layout_margin="@dimen/value_8dp" />
 
                 </FrameLayout>
 
@@ -113,8 +129,8 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/chip_solid_blue_primary_left"
                                 android:gravity="center_vertical"
-                                android:padding="@dimen/padding_8dp"
-                                android:text="Score"
+                                android:padding="@dimen/value_8dp"
+                                android:text="@string/score"
                                 android:textColor="@color/colorWhite"
                                 android:textStyle="bold" />
 
@@ -123,7 +139,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:gravity="center_vertical"
-                                android:padding="@dimen/padding_8dp">
+                                android:padding="@dimen/value_8dp">
 
                                 <android.support.v7.widget.AppCompatTextView
                                     android:id="@+id/textViewScore"
@@ -133,12 +149,12 @@
                                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                                     android:textColor="@color/colorPrimary"
                                     android:textStyle="bold"
-                                    tools:text="150" />
+                                    tools:text="9999" />
 
                                 <android.support.v7.widget.AppCompatImageView
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
-                                    app:srcCompat="@drawable/euro_flower" />
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    app:srcCompat="@drawable/icon_coin_gold_24_vector" />
 
                             </android.support.v7.widget.LinearLayoutCompat>
 
@@ -171,8 +187,8 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/chip_solid_blue_primary_left"
                                 android:gravity="center_vertical"
-                                android:padding="@dimen/padding_8dp"
-                                android:text="Bonus"
+                                android:padding="@dimen/value_8dp"
+                                android:text="@string/bonus"
                                 android:textColor="@color/colorWhite"
                                 android:textStyle="bold" />
 
@@ -181,7 +197,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:gravity="center_vertical"
-                                android:padding="@dimen/padding_8dp">
+                                android:padding="@dimen/value_8dp">
 
                                 <android.support.v7.widget.AppCompatTextView
                                     android:id="@+id/textViewBonus"
@@ -196,7 +212,7 @@
                                 <android.support.v7.widget.AppCompatImageView
                                     android:layout_width="16dp"
                                     android:layout_height="16dp"
-                                    app:srcCompat="@drawable/euro_flower" />
+                                    app:srcCompat="@drawable/icon_coin_gold_24_vector" />
 
                             </android.support.v7.widget.LinearLayoutCompat>
 
@@ -235,8 +251,8 @@
                         <android.support.v7.widget.AppCompatTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_4dp"
-                            android:text="Correct Questions" />
+                            android:layout_marginTop="@dimen/value_4dp"
+                            android:text="@string/labelCorrectQuestions" />
 
 
                     </android.support.v7.widget.LinearLayoutCompat>
@@ -260,8 +276,8 @@
                         <android.support.v7.widget.AppCompatTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_4dp"
-                            android:text="Total Time (min)" />
+                            android:layout_marginTop="@dimen/value_4dp"
+                            android:text="@string/labelTotalTimeMin" />
 
 
                     </android.support.v7.widget.LinearLayoutCompat>
@@ -270,13 +286,13 @@
                 </android.support.v7.widget.LinearLayoutCompat>
 
                 <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/buttonClose"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_24dp"
-                    android:layout_marginTop="@dimen/margin_16dp"
-                    android:layout_marginEnd="@dimen/margin_24dp"
-                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:layout_marginStart="@dimen/value_24dp"
+                    android:layout_marginTop="@dimen/value_16dp"
+                    android:layout_marginEnd="@dimen/value_24dp"
+                    android:layout_marginBottom="@dimen/value_16dp"
                     android:background="@drawable/gradient_chip"
                     android:text="@string/close"
                     android:textAllCaps="false"
@@ -291,8 +307,8 @@
                 android:id="@+id/lottie"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_24dp"
-                android:layout_marginBottom="@dimen/margin_24dp"
+                android:layout_marginTop="@dimen/value_24dp"
+                android:layout_marginBottom="@dimen/value_24dp"
                 android:scaleType="centerCrop"
                 android:visibility="gone" />
 
@@ -315,7 +331,7 @@
                 <android.support.v7.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_8dp"
+                    android:layout_marginTop="@dimen/value_8dp"
                     android:background="@drawable/chip_accent_color"
                     android:elevation="@dimen/elevation_4dp"
                     android:orientation="horizontal">
@@ -336,7 +352,7 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:layout_gravity="center_vertical"
-                        app:srcCompat="@drawable/icon_euro_coin" />
+                        app:srcCompat="@drawable/icon_coin" />
 
                 </android.support.v7.widget.LinearLayoutCompat>
 
@@ -344,7 +360,7 @@
             </android.support.v7.widget.LinearLayoutCompat>
 
 
-        </android.support.v7.widget.LinearLayoutCompat>
+        </FrameLayout>
 
 
     </ScrollView>

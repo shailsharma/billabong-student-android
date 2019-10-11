@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <android.support.v7.widget.CardView
-        android:layout_width="224dp"
+        android:layout_width="208dp"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
@@ -16,7 +16,8 @@
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/colorBackgroundLight">
 
             <!--Title-->
             <android.support.v7.widget.AppCompatTextView
@@ -25,47 +26,51 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:ellipsize="end"
+                android:fontFamily="@font/poppins_regular"
+                android:includeFontPadding="false"
                 android:lines="2"
-                android:paddingStart="@dimen/padding_12dp"
-                android:paddingTop="@dimen/padding_8dp"
-                android:paddingEnd="@dimen/padding_8dp"
-                android:paddingBottom="@dimen/padding_4dp"
+                android:paddingStart="@dimen/value_12dp"
+                android:paddingTop="@dimen/value_6dp"
+                android:paddingEnd="@dimen/value_8dp"
                 android:textColor="@color/colorBlack"
                 android:textStyle="bold"
-                android:fontFamily="@font/poppins_regular"
                 tools:text="Natural Methods of Vegetative Propagation by Animals and Humans on the Earth" />
 
             <!--Background Image-->
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/imageViewBackground"
-                    android:layout_width="208dp"
-                    android:layout_height="108dp"
-                    android:layout_gravity="center"
-                    android:paddingEnd="@dimen/margin_8dp"
-                    android:paddingStart="@dimen/margin_8dp"
-                    tools:srcCompat="@drawable/image_placeholder" />
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/imageViewBackground"
+                android:layout_width="match_parent"
+                android:layout_height="102dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/value_8dp"
+                android:layout_marginTop="@dimen/value_2dp"
+                android:layout_marginEnd="@dimen/value_8dp"
+                android:layout_marginBottom="@dimen/value_2dp"
+                tools:srcCompat="@drawable/image_placeholder" />
 
 
             <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/value_12dp"
+                android:paddingTop="@dimen/value_4dp"
+                android:paddingEnd="@dimen/value_8dp"
+                android:paddingBottom="@dimen/value_6dp">
 
                 <!--Type-->
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/textViewType"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/value_4dp"
                     android:layout_weight="1"
                     android:ellipsize="end"
-                    android:lines="1"
-                    android:paddingStart="@dimen/padding_12dp"
-                    android:paddingTop="@dimen/padding_8dp"
-                    android:paddingEnd="@dimen/padding_8dp"
-                    android:paddingBottom="@dimen/padding_8dp"
-                    android:textColor="@color/colorBlack"
                     android:fontFamily="@font/poppins_regular"
+                    android:includeFontPadding="false"
+                    android:lines="1"
+                    android:textColor="@color/colorBlack"
                     tools:text="Digital Book" />
 
                 <!--Reward score-->
@@ -73,12 +78,8 @@
                     android:id="@+id/layoutReward"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_marginStart="@dimen/margin_8dp"
-                    android:layout_marginTop="@dimen/margin_8dp"
-                    android:layout_marginEnd="@dimen/margin_8dp"
-                    android:layout_marginBottom="@dimen/margin_8dp"
-                    android:elevation="2dp"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="@dimen/value_4dp"
                     android:gravity="center_vertical"
                     android:visibility="gone">
 
@@ -86,21 +87,17 @@
                         android:id="@+id/viewCourseStatus"
                         android:layout_width="12dp"
                         android:layout_height="12dp"
-                        android:layout_marginStart="@dimen/margin_4dp"
-                        android:layout_marginTop="@dimen/margin_4dp"
-                        android:layout_marginEnd="@dimen/margin_4dp"
-                        android:layout_marginBottom="@dimen/margin_4dp"
+                        android:layout_margin="@dimen/value_2dp"
                         android:background="@drawable/circle_solid_primary_outlined" />
 
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/textViewRewardPoints"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginEnd="@dimen/margin_4dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        android:textColor="@color/colorGreyDark"
                         android:fontFamily="@font/poppins_regular"
+                        android:includeFontPadding="false"
+                        android:textColor="@color/colorGreyDark"
+                        android:textSize="12sp"
                         tools:text="100" />
 
                 </android.support.v7.widget.LinearLayoutCompat>

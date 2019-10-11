@@ -5,10 +5,12 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +31,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -58,6 +61,7 @@ public class StudentCoverageFragment extends Fragment {
 
     @Inject
     AnalyticsModel mAnalyticsModel;
+
     private LayoutStudentAnalyticsCoverageBinding mBinding;
     private boolean fragmentResume = false;
     private boolean fragmentVisible = false;
@@ -83,24 +87,29 @@ public class StudentCoverageFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.layout_student_analytics_coverage, container, false);
-        if (!fragmentResume && fragmentVisible) {   //only when first time fragment is created
+
+        if (!fragmentResume && fragmentVisible) {   //only when first time activity is created
             fetchCoverageData(mChartConfigurationData);
-        } else {
+        } /*else {
             mBinding.textViewNoCoverageData.setVisibility(View.VISIBLE);
-        }
+        }*/
 
         return mBinding.getRoot();
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    @Override
     public void setUserVisibleHint(boolean visible) {
         super.setUserVisibleHint(visible);
-        if (visible && isResumed()) {   // only at fragment screen is resumed
+        if (visible && isResumed()) {   // only at activity screen is resumed
             fragmentResume = true;
             fragmentVisible = false;
             fragmentOnCreated = true;
@@ -109,11 +118,11 @@ public class StudentCoverageFragment extends Fragment {
             } else {
                 mBinding.textViewNoCoverageData.setVisibility(View.VISIBLE);
             }
-        } else if (visible) {        // only at fragment onCreated
+        } else if (visible) {        // only at activity onCreated
             fragmentResume = false;
             fragmentVisible = true;
             fragmentOnCreated = true;
-        } else if (!visible && fragmentOnCreated) {// only when you go out of fragment screen
+        } else if (!visible && fragmentOnCreated) {// only when you go out of activity screen
             fragmentVisible = false;
             fragmentResume = false;
         }
@@ -122,20 +131,31 @@ public class StudentCoverageFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void fetchCoverageData(final ArrayList<ChartConfigurationData> coverageConfiguration) {
+
         if (GeneralUtils.isNetworkAvailable(mContext)) {
+
             mBinding.progressBarCoverage.setVisibility(View.VISIBLE);
+            mBinding.textViewNoCoverageData.setVisibility(View.GONE);
+            mBinding.llCoverage.setVisibility(View.GONE);
+            mBinding.layoutRecyclerView.setVisibility(View.GONE);
+
             mAnalyticsModel.fetchCoverageData("").subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<ArrayList<CoverageChartData>>() {
                         @Override
                         public void accept(ArrayList<CoverageChartData> coverageChartData) throws Exception {
-                            mBinding.progressBarCoverage.setVisibility(View.GONE);
+
+//                            mBinding.progressBarCoverage.setVisibility(View.GONE);
+
                             if (coverageConfiguration != null && !coverageConfiguration.isEmpty() && !coverageChartData.isEmpty()) {
+
                                 mBinding.chartCoverage.setVisibility(View.VISIBLE);
                                 mBinding.textViewNoCoverageData.setVisibility(View.GONE);
 
                                 drawCoverageChart(coverageConfiguration, coverageChartData);
+
                             } else {
+                                mBinding.progressBarCoverage.setVisibility(View.GONE);
                                 mBinding.textViewNoCoverageData.setVisibility(View.VISIBLE);
                             }
 
@@ -257,7 +277,9 @@ public class StudentCoverageFragment extends Fragment {
         mBinding.chartCoverage.setFitBars(true);
         mBinding.chartCoverage.animateY(1400);
         mBinding.chartCoverage.getLegend().setWordWrapEnabled(true);
-        mBinding.chartCoverage.setXAxisRenderer(new ChartXAxisRenderer(mBinding.chartCoverage.getViewPortHandler(), mBinding.chartCoverage.getXAxis(), mBinding.chartCoverage.getTransformer(YAxis.AxisDependency.LEFT)));
+        mBinding.chartCoverage.setXAxisRenderer(new ChartXAxisRenderer(mBinding.chartCoverage.getViewPortHandler(),
+                mBinding.chartCoverage.getXAxis(),
+                mBinding.chartCoverage.getTransformer(YAxis.AxisDependency.LEFT)));
         mBinding.chartCoverage.setExtraBottomOffset(10);
 
         mBinding.chartCoverage.clear();
@@ -274,10 +296,11 @@ public class StudentCoverageFragment extends Fragment {
 
                 //startActivity(ProgressDetailActivity.getStartIntent(mContext, ccd.getId(), ccd.getName(), coverage));
                 drawProgress(coverage);
-                fetchCoverageData(ccd.getId());
+                getCoverageDataOfSubject(ccd.getId());
                 pickColorAccording(coverage);
-                mBinding.llCoverage.setVisibility(View.VISIBLE);
+                setSubjectIcon(ccd.getSubjectIcon());
                 mBinding.textViewPerformance.setText(ccd.getName());
+                mBinding.llCoverage.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -289,15 +312,25 @@ public class StudentCoverageFragment extends Fragment {
 
     }
 
+    private void setSubjectIcon(String subjectIcon) {
+        if (!TextUtils.isEmpty(subjectIcon)) {
+            Picasso.with(getContext()).load(subjectIcon).placeholder(R.drawable.icon_book).fit().centerCrop().into(mBinding.imageViewSubjectIcon);
+        } else {
+            Picasso.with(getContext()).load(R.drawable.icon_book).fit().centerCrop().into(mBinding.imageViewSubjectIcon);
+
+        }
+    }
+
     private void showHighestValue(ArrayList<CoverageChartData> list) {
         if (list != null && !list.isEmpty() && list.get(0) != null) {
             CoverageChartData data = list.get(0);
             int coverage = Math.round(data.getCoverage());
 
-            mBinding.llCoverage.setVisibility(View.VISIBLE);
-            mBinding.textViewPerformance.setText(data.getName());
             drawProgress(coverage);
-            fetchCoverageData(data.getId());
+            setSubjectIcon(data.getSubjectIcon());
+            mBinding.textViewPerformance.setText(data.getName());
+            mBinding.llCoverage.setVisibility(View.VISIBLE);
+            getCoverageDataOfSubject(data.getId());
         }
     }
 
@@ -347,24 +380,40 @@ public class StudentCoverageFragment extends Fragment {
         mBinding.pieChartPerformance.invalidate();
         mBinding.pieChartPerformance.setClickable(false);
         mBinding.pieChartPerformance.setTouchEnabled(false);
+        mBinding.pieChartPerformance.setNoDataText("");
+
     }
 
     @SuppressLint("CheckResult")
-    private void fetchCoverageData(String subjectId) {
+    private void getCoverageDataOfSubject(String subjectId) {
+
         if (GeneralUtils.isNetworkAvailable(mContext)) {
+
+            mBinding.textViewNoCoverageData.setVisibility(View.GONE);
+            mBinding.layoutRecyclerView.setVisibility(View.GONE);
+            mBinding.recyclerView.setVisibility(View.GONE);
+            mBinding.textViewNoRecyclerViewData.setVisibility(View.GONE);
             mBinding.progressBarCoverage.setVisibility(View.VISIBLE);
-            mAnalyticsModel.fetchCoverageData(subjectId).subscribeOn(Schedulers.io())
+
+
+            mAnalyticsModel.fetchCoverageData(subjectId)
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<ArrayList<CoverageChartData>>() {
                         @Override
                         public void accept(ArrayList<CoverageChartData> coverageChartData) throws Exception {
+
                             mBinding.progressBarCoverage.setVisibility(View.GONE);
+                            mBinding.layoutRecyclerView.setVisibility(View.VISIBLE);
+
                             if (!coverageChartData.isEmpty()) {
-                                mBinding.layoutRecyclerView.setVisibility(View.VISIBLE);
-                                mBinding.textViewNoCoverageData.setVisibility(View.GONE);
+                                mBinding.recyclerView.setVisibility(View.VISIBLE);
+
                                 setPerformanceTopicList(coverageChartData);
+
                             } else {
-                                mBinding.textViewNoCoverageData.setVisibility(View.VISIBLE);
+                                mBinding.recyclerView.setVisibility(View.GONE);
+                                mBinding.textViewNoRecyclerViewData.setVisibility(View.VISIBLE);
                             }
 
                         }
@@ -373,13 +422,16 @@ public class StudentCoverageFragment extends Fragment {
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
                             mBinding.progressBarCoverage.setVisibility(View.GONE);
-                            mBinding.textViewNoCoverageData.setVisibility(View.VISIBLE);
+                            mBinding.recyclerView.setVisibility(View.GONE);
+                            mBinding.layoutRecyclerView.setVisibility(View.VISIBLE);
+                            mBinding.textViewNoRecyclerViewData.setVisibility(View.VISIBLE);
 
                         }
                     });
         } else {
             showInternetSnackBar(subjectId);
         }
+
     }
 
     private void setPerformanceTopicList(ArrayList<CoverageChartData> coverageChartData) {
@@ -394,7 +446,8 @@ public class StudentCoverageFragment extends Fragment {
                 .setAction((R.string.labelRetry), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        fetchCoverageData(subjectId);
+
+                        getCoverageDataOfSubject(subjectId);
 
                     }
                 })
@@ -413,12 +466,6 @@ public class StudentCoverageFragment extends Fragment {
                 })
                 .show();
 
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
     }
 
 

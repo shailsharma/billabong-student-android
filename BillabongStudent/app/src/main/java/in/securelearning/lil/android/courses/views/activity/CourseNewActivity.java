@@ -49,7 +49,7 @@ public class CourseNewActivity extends AppCompatActivity implements SearchView.O
         if (getResources().getBoolean(R.bool.isTablet)) {
             colCount = 2;
         }
-//        final CourseFragmentNew fragment = CourseFragmentNew.newInstance(colCount);
+//        final CourseFragmentNew activity = CourseFragmentNew.newInstance(colCount);
         final RecommendedCourseFragment2 fragment = RecommendedCourseFragment2.newInstance(colCount);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -10,28 +11,25 @@
             android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:enabled="false"
-            >
+            android:enabled="false">
 
-            <LinearLayout
+            <android.support.v7.widget.LinearLayoutCompat
                 android:id="@+id/layoutMain"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
                 android:orientation="vertical">
 
                 <include
                     android:id="@+id/layoutToolbar"
                     layout="@layout/layout_custom_app_toolbar_normal"
-                    android:visibility="gone"/>
-
+                    android:visibility="gone" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="gone"
-                    tools:listitem="@layout/fragment_demo_course"/>
+                    tools:listitem="@layout/fragment_demo_course" />
 
 
                 <ProgressBar
@@ -40,9 +38,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="8dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
-                <LinearLayout
+                <!--No Result-->
+                <android.support.v7.widget.LinearLayoutCompat
                     android:id="@+id/layoutNoResult"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -50,23 +49,24 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/imageViewNoResult"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/logo_assignment_g"/>
+                        app:srcCompat="@drawable/logo_homework_g" />
 
-                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                    <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/textViewNoResult"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="@string/string_homework_found"
-                        android:textAppearance="?android:textAppearanceMedium"/>
+                        android:textAppearance="?android:textAppearanceMedium" />
 
-                </LinearLayout>
+                </android.support.v7.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <!--Progress bar-->
+                <android.support.v7.widget.LinearLayoutCompat
                     android:id="@+id/progress_bar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -77,10 +77,12 @@
                     <ProgressBar
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"/>
-                </LinearLayout>
+                        android:layout_gravity="center" />
 
-                <LinearLayout
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <!--Retry-->
+                <android.support.v7.widget.LinearLayoutCompat
                     android:id="@+id/layoutRetry"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -88,12 +90,12 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/imageViewRetry"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content" />
 
-                    <in.securelearning.lil.android.base.widget.TextViewCustom
+                    <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/textViewRetry"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -101,7 +103,7 @@
                         android:layout_margin="8dp"
                         android:gravity="center"
                         android:textAppearance="?android:textAppearanceMedium"
-                        android:textColor="@color/colorGrey77"/>
+                        android:textColor="@color/colorGrey77" />
 
                     <android.support.v7.widget.AppCompatButton
                         android:id="@+id/buttonRetry"
@@ -111,14 +113,14 @@
                         android:text="@string/labelRetry"
                         android:textAllCaps="false"
                         android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
-                        />
+                        android:textSize="20sp" />
 
-                </LinearLayout>
+                </android.support.v7.widget.LinearLayoutCompat>
 
-            </LinearLayout>
+            </android.support.v7.widget.LinearLayoutCompat>
 
         </android.support.v4.widget.SwipeRefreshLayout>
+
     </android.support.design.widget.CoordinatorLayout>
 
 </layout>

@@ -1,12 +1,12 @@
 package in.securelearning.lil.android.syncadapter.rest;
 
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkLoginRequest;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkLoginResponse;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkQuestionParent;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkQuestionRequest;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkQuestionSubmit;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkTopicListRequest;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkTopicResult;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkLoginRequest;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkLoginResponse;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkQuestionParent;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkQuestionRequest;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkQuestionSubmit;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkTopicListRequest;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkTopicResult;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;

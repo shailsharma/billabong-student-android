@@ -28,7 +28,7 @@ public class RadioButtonCustom extends AppCompatRadioButton implements Target {
 
     @Override
     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-        setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, new BitmapDrawable(bitmap), null);
+        setCompoundDrawablesRelativeWithIntrinsicBounds(new BitmapDrawable(getResources(), bitmap), null, null, null);
 
     }
 

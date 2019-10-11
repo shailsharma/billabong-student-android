@@ -11,9 +11,9 @@
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_16dp"
-            android:layout_marginTop="@dimen/margin_16dp"
-            android:layout_marginRight="@dimen/margin_16dp"
+            android:layout_marginLeft="@dimen/value_16dp"
+            android:layout_marginTop="@dimen/value_16dp"
+            android:layout_marginRight="@dimen/value_16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -41,8 +41,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
-                android:paddingStart="@dimen/padding_16dp"
-                android:paddingEnd="@dimen/padding_16dp"
+                android:paddingStart="@dimen/value_16dp"
+                android:paddingEnd="@dimen/value_16dp"
                 android:visibility="visible"
                 app:rvp_singlePageFling="true"
                 app:rvp_triggerOffset="0.1"
@@ -64,6 +64,7 @@
                 android:id="@+id/layoutRecapProgressBar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/event_item_height"
+                android:visibility="gone"
                 android:gravity="center">
 
                 <ProgressBar

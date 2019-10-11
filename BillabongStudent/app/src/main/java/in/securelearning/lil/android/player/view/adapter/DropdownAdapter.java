@@ -5,8 +5,8 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +28,7 @@ import java.util.Objects;
 
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutQuestionDropdownItemBinding;
+import in.securelearning.lil.android.app.databinding.LayoutRecyclerViewInCardBinding;
 import in.securelearning.lil.android.base.dataobjects.QuestionPart;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 
@@ -108,18 +109,15 @@ public class DropdownAdapter extends RecyclerView.Adapter<DropdownAdapter.ViewHo
 
     }
 
-    private void setUpChoicePopup(final QuestionPart questionPart, final TextInputEditText editTextDropdown) {
+    private void setUpChoicePopup(final QuestionPart questionPart, final AppCompatEditText editTextDropdown) {
 
-        LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        assert layoutInflater != null;
-        View layout = layoutInflater.inflate(R.layout.layout_recyclerview_popup, null);
+        LayoutRecyclerViewInCardBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_recycler_view_in_card, null, false);
 
-        RecyclerView recyclerView = layout.findViewById(R.id.listview_edittext_data);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
         DividerItemDecoration itemDecorator = new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL);
         itemDecorator.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(mContext, R.drawable.recycler_view_item_divider)));
-        recyclerView.addItemDecoration(itemDecorator);
+        binding.recyclerView.addItemDecoration(itemDecorator);
 
         WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         assert wm != null;
@@ -131,10 +129,10 @@ public class DropdownAdapter extends RecyclerView.Adapter<DropdownAdapter.ViewHo
         ArrayList<String> values = questionPart.getValues();
 
         int popupWidth = width.intValue();
-        int popupHeight = editTextDropdown.getHeight() * (values.size());
+        int popupHeight = ViewGroup.LayoutParams.WRAP_CONTENT;
 
         final PopupWindow popupWindow = new PopupWindow(editTextDropdown.getContext());
-        popupWindow.setContentView(layout);
+        popupWindow.setContentView(binding.getRoot());
         popupWindow.setWidth(popupWidth);
         popupWindow.setHeight(popupHeight);
         popupWindow.setFocusable(true);
@@ -142,10 +140,10 @@ public class DropdownAdapter extends RecyclerView.Adapter<DropdownAdapter.ViewHo
         int OFFSET_X = 10;
         int OFFSET_Y = editTextDropdown.getHeight();
 
-        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         popupWindow.setOutsideTouchable(true);
-        popupWindow.setElevation(10f);
-        popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
+        popupWindow.setElevation(8f);
+        popupWindow.setAnimationStyle(android.R.style.Animation_InputMethod);
 
         int[] location = new int[2];
         editTextDropdown.getLocationOnScreen(location);
@@ -153,10 +151,10 @@ public class DropdownAdapter extends RecyclerView.Adapter<DropdownAdapter.ViewHo
         point.x = location[0];
         point.y = location[1];
 
-        popupWindow.showAtLocation(layout, Gravity.NO_GRAVITY, point.x + OFFSET_X, point.y + OFFSET_Y);
+        popupWindow.showAtLocation(binding.getRoot(), Gravity.NO_GRAVITY, point.x + OFFSET_X, point.y + OFFSET_Y);
 
         final DropdownChoiceItemAdapter arrayAdapter = new DropdownChoiceItemAdapter(values);
-        recyclerView.setAdapter(arrayAdapter);
+        binding.recyclerView.setAdapter(arrayAdapter);
 
         arrayAdapter.setItemClickAction(new View.OnClickListener() {
             @Override

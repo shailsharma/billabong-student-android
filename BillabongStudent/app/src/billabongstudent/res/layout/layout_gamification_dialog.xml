@@ -1,81 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <RelativeLayout
         android:id="@+id/layout_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#0Dffffff"
+        android:background="@drawable/background_mascot_gradient"
+        android:paddingTop="@dimen/value_24dp"
         android:visibility="visible">
 
-        <ImageView
+
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/closeButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_alignParentTop="true"
-            android:layout_margin="@dimen/margin_8dp"
-            android:background="@drawable/gradient_circle"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/value_16dp"
+            android:layout_marginEnd="@dimen/value_16dp"
+            android:background="@drawable/circle_solid_white"
+            android:elevation="@dimen/value_8dp"
             android:scaleType="center"
-            android:src="@drawable/close_white"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:srcCompat="@drawable/close" />
 
 
         <pl.droidsonroids.gif.GifImageView
             android:id="@+id/gifImage"
-            android:layout_width="350dp"
-            android:layout_height="350dp"
+            android:layout_width="256dp"
+            android:layout_height="256dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="-40dp"
-            android:adjustViewBounds="true"
             android:scaleType="fitXY"
-            android:src="@drawable/mascot_lil_gif"
-            android:visibility="visible" />
+            android:src="@drawable/image_mascot_speak"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/image_arrow"
             android:layout_width="wrap_content"
-            android:background="@drawable/image_game_arrow"
+            android:layout_height="100dp"
             android:layout_above="@+id/gifImage"
-            android:layout_marginBottom="-30dp"
+            android:layout_marginStart="130dp"
             android:layout_marginTop="-50dp"
-            android:layout_centerInParent="true"
-            android:layout_height="100dp" />
+            android:layout_marginBottom="-30dp"
+            android:background="@drawable/image_game_arrow"
+            android:elevation="@dimen/value_8dp"
+            android:visibility="gone" />
 
 
-        <RelativeLayout
+        <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/layoutContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="100dp"
-            android:minWidth="150dp"
             android:layout_above="@+id/image_arrow"
-            android:layout_marginStart="@dimen/margin_40dp"
-            android:layout_marginEnd="@dimen/margin_40dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/ic_cloud_no_arrow"
-            android:visibility="visible">
+            android:layout_marginStart="@dimen/value_40dp"
+            android:layout_marginEnd="@dimen/value_40dp"
+            android:background="@drawable/chip_cloud_rectangle_white"
+            android:elevation="@dimen/value_8dp"
+            android:gravity="center"
+            android:minWidth="196dp"
+            android:minHeight="100dp"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/value_8dp"
                 android:fadeScrollbars="false"
-                android:gravity="center|center_horizontal|center_vertical"
-                 android:padding="8dp"
+                android:gravity="center"
+                android:padding="8dp"
                 android:singleLine="false"
-                android:layout_margin="@dimen/margin_8dp"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/black"
                 android:textSize="16sp"
-                tools:text="How was the school " />
+                tools:text="If you use this site regularly" />
 
             <include
                 android:id="@+id/layout_survey"
                 layout="@layout/layout_gamification_survey"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/text"
-                android:layout_margin="@dimen/margin_8dp"
+                android:layout_margin="@dimen/value_8dp"
                 android:visibility="gone" />
 
             <include
@@ -84,11 +94,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/text"
-                android:layout_margin="@dimen/margin_8dp"
+                android:layout_margin="@dimen/value_8dp"
                 android:visibility="gone" />
 
 
-        </RelativeLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
+
+        <LinearLayout
+            android:id="@+id/layoutProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/event_item_height"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
 
 
     </RelativeLayout>

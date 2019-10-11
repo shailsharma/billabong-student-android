@@ -10,6 +10,11 @@ public class GlobalConfigurationRequest implements Serializable {
     @SerializedName("BonusConfig")
     @Expose
     private Boolean isBonusValue;
+    //Added for quiz chart color code
+
+    @SerializedName("quizAnalyticsConfig")
+    @Expose
+    private Boolean isQuizConfig;
 
     @SerializedName("performance")
     @Expose
@@ -37,5 +42,13 @@ public class GlobalConfigurationRequest implements Serializable {
 
     public void setPerformanceStandards(boolean performanceStandards) {
         mIsPerformanceStandards = performanceStandards;
+    }
+
+    public void setBonusValue(Boolean bonusValue) {
+        isBonusValue = bonusValue;
+    }
+
+    public void setQuizConfig(Boolean quizConfig) {
+        isQuizConfig = quizConfig;
     }
 }

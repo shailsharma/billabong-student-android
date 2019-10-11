@@ -70,7 +70,9 @@ public class PasswordChangeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        SyncServiceHelper.performUserLogout(PasswordChangeActivity.this, getString(R.string.messagePleaseWait));
+        if (mFrom == FROM_LOGIN) {
+            SyncServiceHelper.performUserLogout(PasswordChangeActivity.this, getString(R.string.messagePleaseWait));
+        }
         finish();
     }
 
@@ -217,7 +219,7 @@ public class PasswordChangeActivity extends AppCompatActivity {
                                 showAlert(mSuccessMessage);
 
                             } else {
-                                SnackBarUtils.showSnackBar(getBaseContext(), mBinding.layoutPassword, getString(R.string.messageUnableToGetData), SnackBarUtils.UNSUCCESSFUL);
+                                SnackBarUtils.showAlertSnackBar(getBaseContext(), mBinding.layoutPassword, getString(R.string.messageUnableToGetData));
                             }
                         }
                     }, new Consumer<Throwable>() {
@@ -225,7 +227,7 @@ public class PasswordChangeActivity extends AppCompatActivity {
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
                             progressDialog.dismiss();
-                            SnackBarUtils.showSuccessSnackBar(getBaseContext(), mBinding.layoutPassword, throwable.getMessage());
+                            SnackBarUtils.showAlertSnackBar(getBaseContext(), mBinding.layoutPassword, throwable.getMessage());
                         }
                     });
         } else {

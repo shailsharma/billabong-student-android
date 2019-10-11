@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--Player Response for User-->
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/layoutQuestionResponse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_rectangle_curved_white_top"
+        android:fadingEdge="vertical"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/value_12dp"
+        android:paddingTop="@dimen/value_16dp"
+        android:paddingEnd="@dimen/value_12dp"
+        android:visibility="gone">
+
+        <!--Mascot Correct Response-->
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/imageViewMascotCorrectResponse"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:visibility="gone"
+            app:srcCompat="@drawable/image_mascot_correct_response" />
+
+        <!--Lottie, Response right/wrong text-->
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <!--Response right/wrong animation-->
+            <!--For now not in use-->
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+            <!--Response right/wrong text-->
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/textViewQuestionResponse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/value_12dp"
+                android:gravity="center"
+                android:textColor="@color/colorGreyDark"
+                android:textSize="22dp"
+                android:textStyle="bold"
+                tools:ignore="SpUsage"
+                tools:text="@string/incorrect_message_7" />
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+        <!--Mascot Wrong Response-->
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/imageViewMascotWrongResponse"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:visibility="gone"
+            app:srcCompat="@drawable/image_mascot_wrong_response" />
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+</layout>

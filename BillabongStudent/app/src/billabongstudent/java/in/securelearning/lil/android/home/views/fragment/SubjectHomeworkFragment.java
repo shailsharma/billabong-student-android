@@ -119,7 +119,8 @@ public class SubjectHomeworkFragment extends Fragment {
     }
 
     @SuppressLint("CheckResult")
-    private void fetchAssignedHomework(final String subjectId) {
+    private void
+    fetchAssignedHomework(final String subjectId) {
         if (GeneralUtils.isNetworkAvailable(mContext)) {
             mBinding.progressBar.setVisibility(View.VISIBLE);
             mHomeworkModel.fetchHomework(subjectId).subscribeOn(Schedulers.io())

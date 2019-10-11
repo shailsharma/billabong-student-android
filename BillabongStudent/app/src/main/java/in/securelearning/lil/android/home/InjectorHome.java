@@ -10,7 +10,7 @@ import in.securelearning.lil.android.home.di.component.HomeBaseComponent;
  */
 
 public class InjectorHome {
-    public static final InjectorHome INSTANCE=new InjectorHome();
+    public static final InjectorHome INSTANCE = new InjectorHome();
 
     protected HomeBaseComponent mComponent;
 

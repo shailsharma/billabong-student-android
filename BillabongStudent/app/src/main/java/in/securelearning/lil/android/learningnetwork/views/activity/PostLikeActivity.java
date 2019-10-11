@@ -31,17 +31,23 @@ import in.securelearning.lil.android.base.constants.PostResponseType;
 import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.dataobjects.GroupMember;
 import in.securelearning.lil.android.base.dataobjects.Moderator;
+import in.securelearning.lil.android.base.dataobjects.PostByUser;
 import in.securelearning.lil.android.base.dataobjects.PostResponse;
+import in.securelearning.lil.android.base.dataobjects.Thumbnail;
+import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
+import in.securelearning.lil.android.profile.views.activity.StudentProfileActivity;
 import in.securelearning.lil.android.learningnetwork.InjectorLearningNetwork;
 import in.securelearning.lil.android.learningnetwork.model.PostDataLearningModel;
+import in.securelearning.lil.android.profile.views.activity.StudentPublicProfileActivity;
+import in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 /**
  * Created by Chaitendra on 2/22/2017.
@@ -53,6 +59,9 @@ public class PostLikeActivity extends AppCompatActivity {
 
     @Inject
     PostDataLearningModel mPostDataLearningModel;
+
+    @Inject
+    AppUserModel mAppUserModel;
 
     private LayoutLikedListBinding mBinding;
     private static String GROUP_ID = "groupId";
@@ -193,13 +202,28 @@ public class PostLikeActivity extends AppCompatActivity {
 
             final PostResponse postResponse = mPostResponses.get(position);
             holder.mBinding.textViewUserName.setText(postResponse.getFrom().getName());
-            setUserThumbnailToView(holder.mBinding.imageViewUserIcon, postResponse.getFrom().getId());
+            setUserThumbnailToView(holder.mBinding.imageViewUserIcon, postResponse.getFrom().getId(), postResponse.getFrom());
 
             holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (GeneralUtils.isNetworkAvailable(mContext)) {
-                        startActivity(UserProfileActivity.getStartIntent(postResponse.getFrom().getId(), mContext));
+
+                        if (postResponse.getFrom().getId().equals(mAppUserModel.getObjectId())) {
+                            // private profile of student
+                            startActivity(StudentProfileActivity.getStartIntent(mAppUserModel.getObjectId(), getBaseContext()));
+
+                        } else {
+
+                            if (postResponse.getFrom().getRole().equalsIgnoreCase("Student")) {
+                                // public profile of student
+//                                startActivity(StudentPublicProfileActivity.getStartIntent(postResponse.getFrom().getId(), getBaseContext()));
+                            } else {
+                                // public profile of non-student
+                                startActivity(UserPublicProfileActivity.getStartIntent(getBaseContext(), postResponse.getFrom().getId()));
+                            }
+
+                        }
 
                     } else {
                         ToastUtils.showToastAlert(mContext, getString(R.string.connect_internet));
@@ -236,47 +260,115 @@ public class PostLikeActivity extends AppCompatActivity {
      * @param imageView in which view you want to set
      * @param userId    id of user for which thumbnail will set
      */
-    private void setUserThumbnailToView(ImageView imageView, String userId) {
+    private void setUserThumbnailToView(ImageView imageView, String userId, PostByUser fromUser) {
 
-        boolean isUserThumbnailFetched = false;
-        ArrayList<GroupMember> groupMembers = mGroup.getMembers();
-        for (GroupMember groupMember : groupMembers) {
-            if (groupMember.getObjectId().equalsIgnoreCase(userId)) {
-                if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getLocalUrl())) {
-                    Picasso.with(getBaseContext()).load(groupMember.getPic().getLocalUrl()).transform(new CircleTransform()).placeholder(R.drawable.icon_profile_large).resize(300, 300).centerCrop().into(imageView);
-                } else if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getUrl())) {
-                    Picasso.with(getBaseContext()).load(groupMember.getPic().getUrl()).transform(new CircleTransform()).placeholder(R.drawable.icon_profile_large).resize(300, 300).centerCrop().into(imageView);
-                } else if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getThumb())) {
-                    Picasso.with(getBaseContext()).load(groupMember.getPic().getThumb()).transform(new CircleTransform()).placeholder(R.drawable.icon_profile_large).resize(300, 300).centerCrop().into(imageView);
-                } else {
-                    String firstWord = groupMember.getName().substring(0, 1).toUpperCase();
-                    TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimaryLN);
-                    imageView.setImageDrawable(textDrawable);
-                }
+        if (!TextUtils.isEmpty(fromUser.getId())
+                && fromUser.getId().equalsIgnoreCase(mAppUserModel.getApplicationUser().getObjectId())) {
 
-                isUserThumbnailFetched = true;
-                break;
+            Context context = getBaseContext();
+            String name = "";
+            if (!TextUtils.isEmpty(mAppUserModel.getApplicationUser().getName())) {
+                name = mAppUserModel.getApplicationUser().getName();
             }
-        }
 
-        if (!isUserThumbnailFetched) {
-            ArrayList<Moderator> groupModerators = mGroup.getModerators();
-            for (Moderator moderator : groupModerators) {
-                if (moderator.getId().equalsIgnoreCase(userId)) {
-                    if (moderator.getPic() != null && !TextUtils.isEmpty(moderator.getPic().getLocalUrl())) {
-                        Picasso.with(getBaseContext()).load(moderator.getPic().getLocalUrl()).transform(new CircleTransform()).placeholder(R.drawable.icon_profile_large).resize(300, 300).centerCrop().into(imageView);
-                    } else if (moderator.getPic() != null && !TextUtils.isEmpty(moderator.getPic().getUrl())) {
-                        Picasso.with(getBaseContext()).load(moderator.getPic().getUrl()).transform(new CircleTransform()).placeholder(R.drawable.icon_profile_large).resize(300, 300).centerCrop().into(imageView);
-                    } else if (moderator.getPic() != null && !TextUtils.isEmpty(moderator.getPic().getThumb())) {
-                        Picasso.with(getBaseContext()).load(moderator.getPic().getThumb()).transform(new CircleTransform()).placeholder(R.drawable.icon_profile_large).resize(300, 300).centerCrop().into(imageView);
+            Thumbnail thumbnail = new Thumbnail();
+            if (mAppUserModel.getApplicationUser().getThumbnail() != null) {
+                thumbnail = mAppUserModel.getApplicationUser().getThumbnail();
+            }
+
+
+            if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumbXL())) {
+                Picasso.with(context).load(thumbnail.getThumbXL()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumb())) {
+                Picasso.with(context).load(thumbnail.getThumb()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
+                Picasso.with(context).load(thumbnail.getUrl()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+            } else {
+                if (!TextUtils.isEmpty(name)) {
+                    String firstWord = name.substring(0, 1).toUpperCase();
+                    TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimary);
+                    imageView.setImageDrawable(textDrawable);
+                }/* else {
+                    Picasso.with(context).load(R.drawable.icon_profile_large).transform(new CropCircleTransformation()).fit().centerCrop().into(imageView);
+                }*/
+            }
+
+        } else if (fromUser.getUserProfileLite() != null) {
+
+            Context context = getBaseContext();
+            String name = "";
+            if (!TextUtils.isEmpty(fromUser.getName())) {
+                name = fromUser.getName();
+            }
+
+            Thumbnail thumbnail = new Thumbnail();
+            if (fromUser.getUserProfileLite().getThumbnail() != null) {
+                thumbnail = fromUser.getUserProfileLite().getThumbnail();
+            }
+
+
+            if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumbXL())) {
+                Picasso.with(context).load(thumbnail.getThumbXL()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumb())) {
+                Picasso.with(context).load(thumbnail.getThumb()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
+                Picasso.with(context).load(thumbnail.getUrl()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+            } else {
+                if (!TextUtils.isEmpty(name)) {
+                    String firstWord = name.substring(0, 1).toUpperCase();
+                    TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimary);
+                    imageView.setImageDrawable(textDrawable);
+                }/* else {
+                    Picasso.with(context).load(R.drawable.icon_profile_large).transform(new CropCircleTransformation()).fit().centerCrop().into(imageView);
+                }*/
+            }
+
+        } else {
+
+            // For older post
+
+
+            boolean isUserThumbnailFetched = false;
+            ArrayList<GroupMember> groupMembers = mGroup.getMembers();
+            for (GroupMember groupMember : groupMembers) {
+                if (groupMember.getObjectId().equalsIgnoreCase(userId)) {
+                    if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getLocalUrl())) {
+                        Picasso.with(getBaseContext()).load(groupMember.getPic().getLocalUrl()).transform(new CircleTransform()).placeholder(R.drawable.icon_profile_large).resize(300, 300).centerCrop().into(imageView);
+                    } else if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getUrl())) {
+                        Picasso.with(getBaseContext()).load(groupMember.getPic().getUrl()).transform(new CircleTransform()).placeholder(R.drawable.icon_profile_large).resize(300, 300).centerCrop().into(imageView);
+                    } else if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getThumb())) {
+                        Picasso.with(getBaseContext()).load(groupMember.getPic().getThumb()).transform(new CircleTransform()).placeholder(R.drawable.icon_profile_large).resize(300, 300).centerCrop().into(imageView);
                     } else {
-                        String firstWord = moderator.getName().substring(0, 1).toUpperCase();
+                        String firstWord = groupMember.getName().substring(0, 1).toUpperCase();
                         TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimaryLN);
                         imageView.setImageDrawable(textDrawable);
                     }
+
+                    isUserThumbnailFetched = true;
                     break;
                 }
             }
+
+            if (!isUserThumbnailFetched) {
+                ArrayList<Moderator> groupModerators = mGroup.getModerators();
+                for (Moderator moderator : groupModerators) {
+                    if (moderator.getId().equalsIgnoreCase(userId)) {
+                        if (moderator.getPic() != null && !TextUtils.isEmpty(moderator.getPic().getLocalUrl())) {
+                            Picasso.with(getBaseContext()).load(moderator.getPic().getLocalUrl()).transform(new CircleTransform()).placeholder(R.drawable.icon_profile_large).resize(300, 300).centerCrop().into(imageView);
+                        } else if (moderator.getPic() != null && !TextUtils.isEmpty(moderator.getPic().getUrl())) {
+                            Picasso.with(getBaseContext()).load(moderator.getPic().getUrl()).transform(new CircleTransform()).placeholder(R.drawable.icon_profile_large).resize(300, 300).centerCrop().into(imageView);
+                        } else if (moderator.getPic() != null && !TextUtils.isEmpty(moderator.getPic().getThumb())) {
+                            Picasso.with(getBaseContext()).load(moderator.getPic().getThumb()).transform(new CircleTransform()).placeholder(R.drawable.icon_profile_large).resize(300, 300).centerCrop().into(imageView);
+                        } else {
+                            String firstWord = moderator.getName().substring(0, 1).toUpperCase();
+                            TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimaryLN);
+                            imageView.setImageDrawable(textDrawable);
+                        }
+                        break;
+                    }
+                }
+            }
+
         }
 
     }

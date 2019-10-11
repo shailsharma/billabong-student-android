@@ -10,9 +10,6 @@
     <color name="colorStartGradient">#fbbd18</color>
 
     <color name="notification_small_background">#03a9f4</color>
-    <color name="colorPrimarySettings">#3F51B5</color>
-    <color name="colorPrimaryDarkSettings">#303F9F</color>
-    <color name="colorAccentSettings">#03A9F4</color>
     <color name="colorAssignActivity">#3F51B5</color>
     <color name="colorDialogBackground">#88000000</color>
     <color name="colorWhite33">#33ffffff</color>
@@ -166,6 +163,28 @@
     <color name="colorPractice">#FF8B66</color>
     <color name="colorApplication">#BB69C8</color>
     <color name="colorLRPACustomTab">#0399A8</color>
+    <color name="colorLRPATabIndicator">#0399A8</color>
 
+    <!--Colors for chapter-->
+    <color name="colorChapterInProgressChildItem">#2029abe2</color>
+    <color name="colorChapterYetToStartChildItem">#20fbb03b</color>
+    <color name="colorChapterCompletedChildItem">#2039b54a</color>
+
+    <array name="color_bubble">
+        <item>#0399A8</item>
+        <item>#E53935</item>
+        <item>#fbb03b</item>
+        <item>#2ba3e0</item>
+        <item>#188177</item>
+        <item>#ff1d25</item>
+        <item>#32CCBC</item>
+        <item>#fcde21</item>
+        <item>#BD3326</item>
+        <item>#30383f</item>
+    </array>
+
+    <color name="colorGoalBubbleBackground">#163C77</color>
+    <color name="colorGoalBubbleBackgroundSelected">#30ABD8</color>
+    <color name="colorEuroGrey">#4A4A4A</color>
 
 </resources>

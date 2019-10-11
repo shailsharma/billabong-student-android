@@ -116,14 +116,14 @@
                         android:padding="8dp"
                         android:text="Recently Read"
                         android:textAppearance="?android:textAppearanceMedium"
-                        android:textColor="@color/black_de"
+                        android:textColor="@color/colorBlack"
                         android:textStyle="bold" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="20dp"
-                        android:background="@color/black_de"></View>
+                        android:background="@color/colorBlack"></View>
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/recyclerViewRecentRead"
@@ -139,7 +139,7 @@
                         android:padding="8dp"
                         android:text="Load More...."
                         android:textAppearance="?android:textAppearanceMedium"
-                        android:textColor="@color/black_de"
+                        android:textColor="@color/colorBlack"
                         />
 
                     <LinearLayout

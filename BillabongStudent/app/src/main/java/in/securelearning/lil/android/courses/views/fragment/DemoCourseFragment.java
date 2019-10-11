@@ -50,9 +50,9 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
- * A fragment representing a list of Items.
+ * A activity representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this activity MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
 public class DemoCourseFragment extends Fragment {
@@ -76,8 +76,8 @@ public class DemoCourseFragment extends Fragment {
     String mSearchQuery = "";
 
     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * Mandatory empty constructor for the activity manager to instantiate the
+     * activity (e.g. upon screen orientation changes).
      */
     public DemoCourseFragment() {
     }
@@ -319,7 +319,7 @@ public class DemoCourseFragment extends Fragment {
                     if (null != mListener) {
                         Course item = holder.mItem;
                         // Notify the active callbacks interface (the activity, if the
-                        // fragment is attached to one) that an item has been selected.
+                        // activity is attached to one) that an item has been selected.
                         // mListener.onListFragmentInteraction(holder.mItem);
 //                        if (item instanceof DigitalBook) {
 //                        /*requires the json of the digital book and the referenced jsons*/

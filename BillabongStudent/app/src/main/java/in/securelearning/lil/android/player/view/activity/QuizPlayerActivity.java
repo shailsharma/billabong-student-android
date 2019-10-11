@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,7 +24,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.text.util.Linkify;
@@ -57,8 +57,6 @@ import com.google.gson.JsonObject;
 import com.robinhood.ticker.TickerUtils;
 import com.squareup.picasso.Picasso;
 
-import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
-
 import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -67,6 +65,7 @@ import java.util.Random;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationData;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.Widgets.CheckBoxCustom;
 import in.securelearning.lil.android.app.Widgets.RadioButtonCustom;
@@ -89,6 +88,7 @@ import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity;
 import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
 import in.securelearning.lil.android.player.InjectorPlayer;
+import in.securelearning.lil.android.player.dataobject.KhanAcademyVideo;
 import in.securelearning.lil.android.player.dataobject.MatchingContent;
 import in.securelearning.lil.android.player.dataobject.ModuleDetail;
 import in.securelearning.lil.android.player.dataobject.QuestionTypeMatchTheFollowing;
@@ -97,13 +97,15 @@ import in.securelearning.lil.android.player.dataobject.QuizQuestionResponse;
 import in.securelearning.lil.android.player.dataobject.QuizResponsePost;
 import in.securelearning.lil.android.player.model.PlayerModel;
 import in.securelearning.lil.android.player.view.adapter.DropdownAdapter;
+import in.securelearning.lil.android.player.view.adapter.ExplanationVideoAdapter;
+import in.securelearning.lil.android.player.view.adapter.QuestionResourceAdapter;
+import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
 import in.securelearning.lil.android.syncadapter.dataobject.QuizResponse;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.FlyObjectAnimationUtil;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import in.securelearning.lil.android.syncadapter.utils.SoundUtils;
-import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -158,6 +160,7 @@ public class QuizPlayerActivity extends AppCompatActivity {
     private String[] mInCorrectMessages;
     private DropdownAdapter mDropdownAdapter;
     private ProgressDialog mProgressDialog;
+
 
     @Override
     public void onBackPressed() {
@@ -287,7 +290,9 @@ public class QuizPlayerActivity extends AppCompatActivity {
 
     /*Method to initialize question ui*/
     private void initializeQuestionUi() {
+
         if (!mQuestionList.isEmpty()) {
+
             Question question = mQuestionList.get(mQuestionCounter);
             setDefaultsForNewQuestion();
             setQuestionCounter(mUiQuestionCounter);
@@ -298,11 +303,44 @@ public class QuizPlayerActivity extends AppCompatActivity {
             setQuestionResource(question);
             initializeClickListeners(question);
             setMaxAttemptByQuestionAndLearningType(question);
+            fetchExplanationVideos(mPlayerModel.getSkillIdList(question.getSkills()));
             mQuestionCounter++;
             mUiQuestionCounter++;
 
         }
 
+    }
+
+    /*To fetch explanation videos*/
+    @SuppressLint("CheckResult")
+    private void fetchExplanationVideos(ArrayList<String> skillIdList) {
+        mBinding.layoutExplanationKhanAcademyVideo.getRoot().setVisibility(View.VISIBLE);
+        mBinding.layoutExplanationKhanAcademyVideo.progressBar.setVisibility(View.VISIBLE);
+        mBinding.layoutExplanationKhanAcademyVideo.recyclerViewExplanationVideos.setVisibility(View.GONE);
+        mPlayerModel.fetchExplanationVideos(skillIdList)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ArrayList<KhanAcademyVideo>>() {
+                    @Override
+                    public void accept(ArrayList<KhanAcademyVideo> khanAcademyVideos) throws Exception {
+                        mBinding.layoutExplanationKhanAcademyVideo.progressBar.setVisibility(View.GONE);
+
+                        if (khanAcademyVideos != null && !khanAcademyVideos.isEmpty()) {
+                            mBinding.layoutExplanationKhanAcademyVideo.getRoot().setVisibility(View.VISIBLE);
+                            mBinding.layoutExplanationKhanAcademyVideo.recyclerViewExplanationVideos.setVisibility(View.VISIBLE);
+                            mBinding.layoutExplanationKhanAcademyVideo.recyclerViewExplanationVideos.setAdapter(new ExplanationVideoAdapter(getBaseContext(), khanAcademyVideos));
+                        } else {
+                            mBinding.layoutExplanationKhanAcademyVideo.getRoot().setVisibility(View.GONE);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                        mBinding.layoutExplanationKhanAcademyVideo.getRoot().setVisibility(View.GONE);
+
+                    }
+                });
     }
 
     /**
@@ -411,6 +449,7 @@ public class QuizPlayerActivity extends AppCompatActivity {
             } else {
                 mBinding.buttonDone.setText(getString(R.string.next));
             }
+            hideHintLayouts();
         } else {
             if (mUserAttemptPerQuestion < mMaxAttemptLimitPerQuestion) {
                 mBinding.buttonDone.setText(getString(R.string.submit));
@@ -420,19 +459,23 @@ public class QuizPlayerActivity extends AppCompatActivity {
             } else if (mQuestionList.size() == mQuestionCounter) {
                 mBinding.chronometerQuestionTimer.stop();
                 mBinding.buttonDone.setText(getString(R.string.finish));
+                hideHintLayouts();
             } else {
                 mBinding.chronometerQuestionTimer.stop();
                 mBinding.buttonDone.setText(getString(R.string.next));
+                hideHintLayouts();
             }
         }
 
+    }
+
+    private void hideHintLayouts() {
         mBinding.cardViewHints.setVisibility(View.GONE);
-        mBinding.buttonQuestionHints.setVisibility(View.GONE);
-        mBinding.textQuestionHints.setVisibility(View.GONE);
+        mBinding.layoutHintButton.setVisibility(View.GONE);
     }
 
     private void initializeClickListeners(final Question question) {
-        mBinding.buttonQuestionHints.setOnClickListener(new View.OnClickListener() {
+        mBinding.layoutHintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -610,7 +653,8 @@ public class QuizPlayerActivity extends AppCompatActivity {
                             progressDialog.dismiss();
                             if (quizResponse != null) {
                                 mRxBus.send(new QuizCompletedEvent(mQuizId));
-                                showPracticeEndDialog(quizResponse);
+                                // showPracticeEndDialog(quizResponse);
+                                fetchQuizAnalyticsConfiguration(quizResponse);
                             } else {
                                 showAlertDialog(getString(R.string.error_something_went_wrong));
                             }
@@ -689,21 +733,27 @@ public class QuizPlayerActivity extends AppCompatActivity {
 
     /*Setup question text view when question initialize*/
     private void setQuestionText(Question question) {
+
         mBinding.textViewQuestion.setVisibility(View.VISIBLE);
+
+        ArrayList<Resource> questionResourceList = mPlayerModel.extractResourceListFromText(question.getQuestionText());
+
+        initializeQuestionResourceRecyclerView(questionResourceList);
+
         setMovementMethod();
+        String questionText;
 
-        if (question.getQuestionType().equals(Question.TYPE_DISPLAY_FILL_IN_THE_BLANKS)) {
-            String questionText = mPlayerModel.replaceAllCharacter(question.getQuestionText(), "<input ", "______<input ");
+        if (!TextUtils.isEmpty(question.getQuestionText())) {
+            questionText = question.getQuestionText();
 
-            HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(mBinding.textViewQuestion);
-            mBinding.textViewQuestion.setText(Html.fromHtml(TextViewMore.removeSpaceTags(questionText), htmlHttpImageGetter, new TextViewMore.UlTagHandler()));
-        } else {
-            String questionText = question.getQuestionText();
-            HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(mBinding.textViewQuestion);
-            mBinding.textViewQuestion.setText(Html.fromHtml(TextViewMore.removeSpaceTags(questionText), htmlHttpImageGetter, new TextViewMore.UlTagHandler()));
+            if (question.getQuestionType().equals(Question.TYPE_DISPLAY_FILL_IN_THE_BLANKS)) {
+                questionText = mPlayerModel.replaceAllCharacter(question.getQuestionText(), ConstantUtil.HTML_INPUT_START_TAG_WITH_SPACE, ConstantUtil.HTML_INPUT_START_TAG_WITH_SPACE_REPLACEMENT);
+            }
+
+            String questionTextFinal = mPlayerModel.cleanHtmlTextForPlayer(questionText);
+            mBinding.textViewQuestion.setText(mPlayerModel.removeTrailingSpace(questionTextFinal));
 
         }
-
 
     }
 
@@ -734,6 +784,35 @@ public class QuizPlayerActivity extends AppCompatActivity {
 
     }
 
+    /*Question Resource Recycler View*/
+    private void initializeQuestionResourceRecyclerView(ArrayList<Resource> questionResourceList) {
+        if (!questionResourceList.isEmpty()) {
+            mBinding.listQuestionResource.setLayoutManager(null);
+            mBinding.listQuestionResource.setAdapter(null);
+            mBinding.listQuestionResource.setVisibility(View.VISIBLE);
+            FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getBaseContext());
+            mBinding.listQuestionResource.setLayoutManager(layoutManager);
+            mBinding.listQuestionResource.setAdapter(new QuestionResourceAdapter(getBaseContext(), questionResourceList));
+        } else {
+            mBinding.listQuestionResource.setVisibility(View.GONE);
+        }
+    }
+
+    /*Explanation Resource Recycler View*/
+    private void initializeExplanationResourceRecyclerView(ArrayList<Resource> explanationResourceList) {
+        if (!explanationResourceList.isEmpty()) {
+            mBinding.listExplanationResource.setLayoutManager(null);
+            mBinding.listExplanationResource.setAdapter(null);
+            mBinding.listExplanationResource.setVisibility(View.VISIBLE);
+            FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getBaseContext());
+            mBinding.listExplanationResource.setLayoutManager(layoutManager);
+            mBinding.listExplanationResource.setAdapter(new QuestionResourceAdapter(getBaseContext(), explanationResourceList));
+        } else {
+            mBinding.listExplanationResource.setVisibility(View.GONE);
+        }
+    }
+
+
     /*Setup choice view when question initialize*/
     @SuppressLint("ClickableViewAccessibility")
     private void setChoicesView(final Question question) {
@@ -746,79 +825,122 @@ public class QuizPlayerActivity extends AppCompatActivity {
         mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_UP);
 
         if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_RADIO) || questionType.equalsIgnoreCase("trueFalse")) {
+
             layoutInflater.inflate(R.layout.layout_response_mcq_single_correct, mBinding.layoutChoices);
             RadioGroup radioGroup = mBinding.layoutChoices.findViewById(R.id.radio_group_response);
+
             mBinding.layoutChoices.setVisibility(View.VISIBLE);
             mBinding.recyclerView.setVisibility(View.GONE);
             mBinding.textViewQuestionType.setText(getString(R.string.single_correct));
+
             for (final QuestionChoice questionChoice : questionChoices) {
-                String thumbUrl = questionChoice.getChoiceResource().getUrlMain();
-                final String mainUrl = questionChoice.getChoiceResource().getUrlMain();
 
-                String choiceText = questionChoice.getChoiceText();
                 layoutInflater.inflate(R.layout.layout_practice_response_item_mcq_single_correct, radioGroup);
-                RadioButtonCustom choice = (RadioButtonCustom) radioGroup.getChildAt(radioGroup.getChildCount() - 1);
+                final RadioButtonCustom choice = (RadioButtonCustom) radioGroup.getChildAt(radioGroup.getChildCount() - 1);
 
-                HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(choice);
-                choice.setText(Html.fromHtml(TextViewMore.removeSpaceTags(choiceText), htmlHttpImageGetter, null));
+                final String thumbUrl, mainUrl;
+
+                if (!TextUtils.isEmpty(questionChoice.getChoiceText())
+                        && questionChoice.getChoiceText().contains(ConstantUtil.HTML_IMAGE_START_TAG)
+                        && questionChoice.getChoiceText().contains(ConstantUtil.HTML_IMAGE_SRC_TAG)) {
+
+                    String choiceImageUrl = mPlayerModel.getStringFromHtmlTextAfterTagRemoval(questionChoice.getChoiceText(),
+                            ConstantUtil.HTML_IMAGE_SRC_TAG, ConstantUtil.HTML_DOUBLE_QUOTE);
+
+                    thumbUrl = choiceImageUrl;
+                    mainUrl = choiceImageUrl;
+
+
+                } else {
+                    thumbUrl = questionChoice.getChoiceResource().getUrlMain();
+                    mainUrl = questionChoice.getChoiceResource().getUrlMain();
+                }
+
+
+                if (!TextUtils.isEmpty(questionChoice.getChoiceText())) {
+
+                    String choiceTextFinal = mPlayerModel.cleanHtmlTextForPlayer(questionChoice.getChoiceText());
+                    choice.setText(mPlayerModel.removeTrailingSpace(choiceTextFinal));
+
+                }
 
                 choice.setClickable(true);
                 choice.setAlpha(1f);
                 choice.setTag(questionChoice.isChoiceCorrect());
+
                 if (!TextUtils.isEmpty(thumbUrl) && !TextUtils.isEmpty(mainUrl)) {
-                    Picasso.with(getBaseContext()).load(thumbUrl).into(choice);
-                    choice.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-                            showResource(mainUrl);
-                            return false;
-                        }
-                    });
+                    Picasso.with(getBaseContext())
+                            .load(thumbUrl)
+                            .resize(ConstantUtil.CHOICE_IMAGE_MAX_WIDTH, 0)
+                            .into(choice);
                 }
 
             }
 
+
         } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_CHECKBOX)) {
+
             mBinding.layoutChoices.setVisibility(View.VISIBLE);
             mBinding.recyclerView.setVisibility(View.GONE);
             mBinding.textViewQuestionType.setText(getString(R.string.multiple_correct));
+
             for (final QuestionChoice questionChoice : questionChoices) {
-                String thumbUrl = questionChoice.getChoiceResource().getUrlMain();
-                String mainUrl = questionChoice.getChoiceResource().getUrlMain();
-
-
-                String choiceText = questionChoice.getChoiceText();
 
                 layoutInflater.inflate(R.layout.layout_practice_response_item_mcq_multiple_correct, mBinding.layoutChoices);
                 CheckBoxCustom choice = (CheckBoxCustom) mBinding.layoutChoices.getChildAt(mBinding.layoutChoices.getChildCount() - 1);
-                HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(choice);
-                choice.setText(Html.fromHtml(TextViewMore.removeSpaceTags(choiceText), htmlHttpImageGetter, null));
+
+                final String thumbUrl, mainUrl;
+
+                if (!TextUtils.isEmpty(questionChoice.getChoiceText())
+                        && questionChoice.getChoiceText().contains(ConstantUtil.HTML_IMAGE_START_TAG)
+                        && questionChoice.getChoiceText().contains(ConstantUtil.HTML_IMAGE_SRC_TAG)) {
+
+                    String choiceImageUrl = mPlayerModel.getStringFromHtmlTextAfterTagRemoval(questionChoice.getChoiceText(),
+                            ConstantUtil.HTML_IMAGE_SRC_TAG, ConstantUtil.HTML_DOUBLE_QUOTE);
+
+                    thumbUrl = choiceImageUrl;
+                    mainUrl = choiceImageUrl;
+
+
+                } else {
+                    thumbUrl = questionChoice.getChoiceResource().getUrlMain();
+                    mainUrl = questionChoice.getChoiceResource().getUrlMain();
+                }
+
+
+                if (!TextUtils.isEmpty(questionChoice.getChoiceText())) {
+                    String choiceTextFinal = mPlayerModel.cleanHtmlTextForPlayer(questionChoice.getChoiceText());
+                    choice.setText(mPlayerModel.removeTrailingSpace(choiceTextFinal));
+
+
+                }
+
                 choice.setClickable(true);
                 choice.setAlpha(1f);
                 choice.setTag(questionChoice.isChoiceCorrect());
+
                 if (!TextUtils.isEmpty(thumbUrl) && !TextUtils.isEmpty(mainUrl)) {
-                    Picasso.with(getBaseContext()).load(thumbUrl).into(choice);
-                    choice.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-                            showResource(questionChoice.getChoiceResource().getUrlMain());
-                            return false;
-                        }
-                    });
+                    Picasso.with(getBaseContext())
+                            .load(thumbUrl)
+                            .resize(ConstantUtil.CHOICE_IMAGE_MAX_WIDTH, 0)
+                            .into(choice);
                 }
+
 
             }
 
         } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_FILL_IN_THE_BLANKS)) {
+
             mBinding.layoutChoices.setVisibility(View.VISIBLE);
             mBinding.recyclerView.setVisibility(View.GONE);
+
             mBinding.textViewQuestionType.setText(getString(R.string.fill_the_blanks));
-            int count = mPlayerModel.checkWordOccurrence(question.getQuestionText(), "<input ");
-            ArrayList<String> inputTypeList = mPlayerModel.getInputTypeListFromString(count, question.getQuestionText());
+            ArrayList<String> inputTypeList = mPlayerModel.getStringListFromHtmlText(question.getQuestionText(), "<input ", "/>");
             ArrayList<String> fillTheBlankChoiceList = new ArrayList<>();
 
             for (int i = 0; i < inputTypeList.size(); i++) {
-                fillTheBlankChoiceList.add(mPlayerModel.getInputTypeValueListFromString(inputTypeList.get(i)));
+                fillTheBlankChoiceList.add(mPlayerModel.getStringFromHtmlTextAfterTagRemoval(inputTypeList.get(i),
+                        ConstantUtil.HTML_VALUE_TAG, ConstantUtil.HTML_DOUBLE_QUOTE));
             }
 
             for (String questionChoice : fillTheBlankChoiceList) {
@@ -835,15 +957,17 @@ public class QuizPlayerActivity extends AppCompatActivity {
                     }
                 });
             }
+
         } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_MATCH_THE_FOLLOWING)) {
 
             setMatchTheFollowingView(question.getQuestionObject());
 
         } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_DROPDOWN)) {
+
             setDropdownQuestionView(question, true);
+
         }
 
-        setMovementMethod();
 
     }
 
@@ -863,8 +987,7 @@ public class QuizPlayerActivity extends AppCompatActivity {
             mBinding.recyclerView.setAdapter(mDropdownAdapter);
 
         } else {
-            GeneralUtils.showToastShort(getBaseContext(), "Unable to load question, skipping");
-            nextClickAction();
+            showAlertDialog(getString(R.string.quiz_force_close));
         }
     }
 
@@ -923,17 +1046,20 @@ public class QuizPlayerActivity extends AppCompatActivity {
     /*Setup hint view when question initialize*/
     private void setHintView(Question question) {
 
-        if (question.getQuestionHints() != null && !question.getQuestionHints().isEmpty()) {
-            int hintSize = question.getQuestionHints().size();
+        if (mTypeOfLearning.equalsIgnoreCase(TYPE_ASSESSMENT_FOR_LEARNING)) {
+            if (question.getQuestionHints() != null && !question.getQuestionHints().isEmpty()) {
+                int hintSize = question.getQuestionHints().size();
 
-            String hintCounterText = "0/" + hintSize;
-            mBinding.textQuestionHints.setText(hintCounterText);
-            mBinding.buttonQuestionHints.setVisibility(View.VISIBLE);
-            mBinding.textQuestionHints.setVisibility(View.VISIBLE);
+                String hintCounterText = "0/" + hintSize;
+                mBinding.textHintCounter.setText(hintCounterText);
+                mBinding.layoutHintButton.setVisibility(View.VISIBLE);
+            } else {
+                mBinding.layoutHintButton.setVisibility(View.GONE);
+            }
         } else {
-            mBinding.buttonQuestionHints.setVisibility(View.GONE);
-            mBinding.textQuestionHints.setVisibility(View.GONE);
+            mBinding.layoutHintButton.setVisibility(View.GONE);
         }
+
 
     }
 
@@ -957,22 +1083,37 @@ public class QuizPlayerActivity extends AppCompatActivity {
                 this.getLayoutInflater().inflate(R.layout.layout_practice_response_hint_text, mBinding.layoutHints);
                 LinearLayout layout = (LinearLayout) mBinding.layoutHints.getChildAt(mBinding.layoutHints.getChildCount() - 1);
                 TextView hintTextView = layout.findViewById(R.id.text_view_hint);
+                RecyclerView hintResourceRecyclerView = layout.findViewById(R.id.listHintResource);
 
                 final TextView hintCounterTextView = layout.findViewById(R.id.text_view_hint_counter);
                 String hintCounterText = currentHint + "/" + totalHints;
                 hintCounterTextView.setText(hintCounterText);
 
-                HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(hintTextView);
-                hintTextView.setText(Html.fromHtml(TextViewMore.removeSpaceTags(questionHint.getHintText()), htmlHttpImageGetter, null));
+                ArrayList<Resource> hintResourceList = mPlayerModel.extractResourceListFromText(questionHint.getHintText());
+
+                initializeHintResourceRecyclerView(hintResourceRecyclerView, hintResourceList);
+
+                String hintTextFinal = mPlayerModel.cleanHtmlTextForPlayer(questionHint.getHintText());
+
+                CharSequence hintCharSequence = mPlayerModel.removeTrailingSpace(hintTextFinal);
+                if (!TextUtils.isEmpty(hintCharSequence)) {
+                    hintTextView.setVisibility(View.VISIBLE);
+                    hintTextView.setText(hintCharSequence);
+                } else {
+                    hintTextView.setVisibility(View.GONE);
+                }
 
 
                 hintTextView.setMaxLines(Integer.MAX_VALUE);
                 hintTextView.setVerticalScrollBarEnabled(true);
                 hintTextView.setMovementMethod(new ScrollingMovementMethod());
                 setMovementMethod();
+
             } else {
+
                 final String resourcePath = questionHint.getHintResource().getUrlMain();
                 String mimeType = URLConnection.guessContentTypeFromName(resourcePath);
+
                 if (!TextUtils.isEmpty(mimeType) && mimeType.contains("image")) {
                     this.getLayoutInflater().inflate(R.layout.layout_practice_response_hint_image_thumbnail, mBinding.layoutHints);
                     LinearLayout mLayout = (LinearLayout) mBinding.layoutHints.getChildAt(mBinding.layoutHints.getChildCount() - 1);
@@ -990,6 +1131,7 @@ public class QuizPlayerActivity extends AppCompatActivity {
                     });
 
                 } else if (!TextUtils.isEmpty(mimeType) && mimeType.contains("video")) {
+
                     this.getLayoutInflater().inflate(R.layout.layout_practice_response_hint_video_thumbnail, mBinding.layoutHints);
                     LinearLayout mLayout = (LinearLayout) mBinding.layoutHints.getChildAt(mBinding.layoutHints.getChildCount() - 1);
                     final TextView hintCounterTextView = mLayout.findViewById(R.id.text_view_hint_counter);
@@ -1011,13 +1153,29 @@ public class QuizPlayerActivity extends AppCompatActivity {
             }
             mHintCounter++;
             String hintCounterText = mHintCounter + "/" + hintSize;
-            mBinding.textQuestionHints.setText(hintCounterText);
+            mBinding.textHintCounter.setText(hintCounterText);
+        }
+    }
+
+    private void initializeHintResourceRecyclerView(RecyclerView hintResourceRecyclerView, ArrayList<Resource> resourceList) {
+        if (!resourceList.isEmpty()) {
+            hintResourceRecyclerView.setLayoutManager(null);
+            hintResourceRecyclerView.setAdapter(null);
+            hintResourceRecyclerView.setVisibility(View.VISIBLE);
+            FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getBaseContext());
+            hintResourceRecyclerView.setLayoutManager(layoutManager);
+            hintResourceRecyclerView.setAdapter(new QuestionResourceAdapter(getBaseContext(), resourceList));
+        } else {
+            hintResourceRecyclerView.setVisibility(View.GONE);
         }
     }
 
     /*Show explanation view if question contains, after submitting the current question response.*/
     private void showExplanation(final Question question) {
-        if ((question.getChoiceConfiguration().getQuestionExplanation() != null && !TextUtils.isEmpty(question.getChoiceConfiguration().getQuestionExplanation().getExplanationText())) || !TextUtils.isEmpty(question.getExplanation())) {
+
+        if ((question.getChoiceConfiguration().getQuestionExplanation() != null
+                && !TextUtils.isEmpty(question.getChoiceConfiguration().getQuestionExplanation().getExplanationText()))
+                || !TextUtils.isEmpty(question.getExplanation())) {
 
             String explanationText = question.getChoiceConfiguration().getQuestionExplanation().getExplanationText();
 
@@ -1027,21 +1185,26 @@ public class QuizPlayerActivity extends AppCompatActivity {
 
             if (!TextUtils.isEmpty(explanationText)) {
 
+                ArrayList<Resource> explanationResourceList = mPlayerModel.extractResourceListFromText(explanationText);
+                initializeExplanationResourceRecyclerView(explanationResourceList);
+
                 mBinding.layoutExplanation.setVisibility(View.VISIBLE);
                 mBinding.textViewExplanationText.setVisibility(View.VISIBLE);
 
                 AnimationUtils.pushUpEnter(getBaseContext(), mBinding.layoutExplanation);
 
-                HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(mBinding.textViewExplanationText);
-                mBinding.textViewExplanationText.setText(Html.fromHtml(TextViewMore.removeSpaceTags(explanationText), htmlHttpImageGetter, null));
+
+                String explanationTextFinal = mPlayerModel.cleanHtmlTextForPlayer(explanationText);
+                mBinding.textViewExplanationText.setText(mPlayerModel.removeTrailingSpace(explanationTextFinal));
+
 
                 mBinding.scrollView.post(new Runnable() {
                     @Override
                     public void run() {
                         mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_DOWN);
-
                     }
                 });
+
             } else {
                 mBinding.layoutExplanation.setVisibility(View.GONE);
             }
@@ -1084,6 +1247,7 @@ public class QuizPlayerActivity extends AppCompatActivity {
 
             }
         }
+
         setMovementMethod();
     }
 
@@ -1194,32 +1358,52 @@ public class QuizPlayerActivity extends AppCompatActivity {
             }
         } else if (question.getQuestionType().equalsIgnoreCase(Question.TYPE_DISPLAY_DROPDOWN)) {
             if (!getSubmittedAnswerFromView(false, question).isEmpty()) {
+                mUserAttemptPerQuestion++;
                 Attempt attempt = new Attempt();
                 attempt.setSubmittedAnswer(getSubmittedAnswerFromView(true, question));
 
                 if (mDropdownAdapter != null) {
                     boolean isCorrectResponse = mPlayerModel.checkDropdownCorrectness(mDropdownAdapter.getResponseList());
                     if (isCorrectResponse) {
+
                         mTotalCorrect++;
-                        mTotalInCorrect = 0;
-                        attempt.setStatusCode(Attempt.TYPE_STATUS_CODE_CORRECT);
+                        mStreak++;
+                        resetTotalInCorrectCounter();
+                        setStreakView(mTotalCorrect);
+                        addAttemptToList(attempt, true);
                         setResponseView(true);
-                        setStreakView(mTotalCorrect);
+                        showExplanation(question);
+                        setDropdownQuestionView(question, false);
+
+                        generateQuestionResponse(Boolean.toString(true), question, mHintCounter, mAttemptList);
+
                     } else {
-                        mTotalInCorrect++;
-                        mTotalCorrect = 0;
-                        attempt.setStatusCode(Attempt.TYPE_STATUS_CODE_INCORRECT);
+
+                        if (mUserAttemptPerQuestion < mMaxAttemptLimitPerQuestion) {
+
+                            addAttemptToList(attempt, false);
+
+                        } else {
+
+                            mTotalInCorrect++;
+
+                            setStreakView(mTotalCorrect);
+
+                            showExplanation(question);
+
+                            addAttemptToList(attempt, false);
+
+                            setDropdownQuestionView(question, false);
+
+                            generateQuestionResponse(Boolean.toString(false), question, mHintCounter, mAttemptList);
+
+                        }
                         setResponseView(false);
-                        setStreakView(mTotalCorrect);
+                        resetTotalCorrectCounter();
+
                     }
-
                     setViewAfterQuestionAttempt(isCorrectResponse);
-                    showExplanation(question);
 
-                    attempt.setSubmissionDateTime(DateUtils.getISO8601DateStringFromSeconds(DateUtils.getCurrentTimeInSeconds()));
-                    attempt.setHintsAvailed(mHintCounter);
-                    attempt.setTimeTaken(SystemClock.elapsedRealtime() - mBinding.chronometerQuestionTimer.getBase());
-                    generateQuestionResponse(Boolean.toString(isCorrectResponse), question, mHintCounter, mAttemptList);
                 } else {
                     showSnackBar(getString(R.string.practice_force_close));
                 }
@@ -1296,28 +1480,37 @@ public class QuizPlayerActivity extends AppCompatActivity {
      * send false if response is incorrect
      */
     private void setResponseView(boolean response) {
-        mBinding.layoutQuestionResponse.setVisibility(View.VISIBLE);
-        AnimationUtils.pushUpEnter(getBaseContext(), mBinding.layoutQuestionResponse);
+
+        mBinding.layoutPlayerResponseForUser.layoutQuestionResponse.setVisibility(View.VISIBLE);
+        AnimationUtils.pushUpEnter(getBaseContext(), mBinding.layoutPlayerResponseForUser.layoutQuestionResponse);
 
         if (response) {
+
             int randomIndex = new Random().nextInt(mCorrectMessages.length);
             String message = mCorrectMessages[randomIndex];
-            mBinding.textViewQuestionResponse.setText(message);
-            mBinding.lottie.setAnimation("lottie_success.json");
+            mBinding.layoutPlayerResponseForUser.textViewQuestionResponse.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorGreenDark));
+            mBinding.layoutPlayerResponseForUser.textViewQuestionResponse.setText(message);
+            mBinding.layoutPlayerResponseForUser.imageViewMascotCorrectResponse.setVisibility(View.VISIBLE);
+            mBinding.layoutPlayerResponseForUser.imageViewMascotWrongResponse.setVisibility(View.GONE);
+//            mBinding.lottie.setAnimation("lottie_success.json");
             SoundUtils.playSound(getBaseContext(), SoundUtils.QUIZ_CORRECT_ANSWER);
             addPoints();
 
 
         } else {
+
             int randomIndex = new Random().nextInt(mInCorrectMessages.length);
             String message = mInCorrectMessages[randomIndex];
-            mBinding.textViewQuestionResponse.setText(message);
+            mBinding.layoutPlayerResponseForUser.textViewQuestionResponse.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorLNRed));
+            mBinding.layoutPlayerResponseForUser.textViewQuestionResponse.setText(message);
+            mBinding.layoutPlayerResponseForUser.imageViewMascotCorrectResponse.setVisibility(View.GONE);
+            mBinding.layoutPlayerResponseForUser.imageViewMascotWrongResponse.setVisibility(View.VISIBLE);
             SoundUtils.playSound(getBaseContext(), SoundUtils.QUIZ_INCORRECT_ANSWER);
-            mBinding.lottie.setAnimation("lottie_failed.json");
+//            mBinding.lottie.setAnimation("lottie_failed.json");
 
         }
 
-        mBinding.lottie.playAnimation();
+//        mBinding.lottie.playAnimation();
 
         Handler hold = new Handler();
         hold.postDelayed(new Runnable() {
@@ -1325,11 +1518,11 @@ public class QuizPlayerActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                AnimationUtils.pushDownExit(getBaseContext(), mBinding.layoutQuestionResponse);
-                mBinding.layoutQuestionResponse.setVisibility(View.GONE);
+                AnimationUtils.pushDownExit(getBaseContext(), mBinding.layoutPlayerResponseForUser.layoutQuestionResponse);
+                mBinding.layoutPlayerResponseForUser.layoutQuestionResponse.setVisibility(View.GONE);
 
             }
-        }, 2500);
+        }, ConstantUtil.PLAYER_RESPONSE_DURATION);
     }
 
     /*Set streak count, for ui it a continuously correct answer count.*/
@@ -1373,12 +1566,21 @@ public class QuizPlayerActivity extends AppCompatActivity {
                     choiceResponses.add(String.valueOf(i));
                 }
                 if (isSubmission) {
-                    if (!(boolean) view.getTag()) {
-                        view.setVisibility(View.GONE);
+
+                    Drawable drawable;
+
+                    if (view.isChecked() && !(boolean) view.getTag()) {
+                        drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_selected_incorrect);
+
                     } else {
-                        view.setChecked(true);
+                        if ((boolean) view.getTag()) {
+                            drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_selected_correct);
+                        } else {
+                            drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_unselected);
+                        }
                     }
 
+                    view.setBackground(drawable);
                     view.setEnabled(false);
                 }
             }
@@ -1392,12 +1594,21 @@ public class QuizPlayerActivity extends AppCompatActivity {
                 }
 
                 if (isSubmission) {
-                    if (!(boolean) view.getTag()) {
-                        view.setVisibility(View.GONE);
+
+                    Drawable drawable;
+
+                    if (view.isChecked() && !(boolean) view.getTag()) {
+                        drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_selected_incorrect);
+
                     } else {
-                        view.setChecked(true);
+                        if ((boolean) view.getTag()) {
+                            drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_selected_correct);
+                        } else {
+                            drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_unselected);
+                        }
                     }
 
+                    view.setBackground(drawable);
                     view.setEnabled(false);
                 }
             }
@@ -1439,9 +1650,7 @@ public class QuizPlayerActivity extends AppCompatActivity {
                     }
                 }
 
-                if (isSubmission) {
-                    setDropdownQuestionView(question, false);
-                }
+
             }
         }
 
@@ -1463,6 +1672,7 @@ public class QuizPlayerActivity extends AppCompatActivity {
         for (int i = 0; i < attemptList.size(); i++) {
             questionResponse.addAttempt(attemptList.get(i));
         }
+
         mQuestionResponses.add(questionResponse);
 
     }
@@ -1481,13 +1691,13 @@ public class QuizPlayerActivity extends AppCompatActivity {
     }
 
     /*Show this alert dialog in case of practice ends.*/
-    private void showPracticeEndDialog(QuizResponse quizResponse) {
+    private void showPracticeEndDialog(QuizResponse quizResponse, ArrayList<ChartConfigurationData> quizAnalyticsConfigData) {
         LayoutQuizEndBinding view = DataBindingUtil.inflate(LayoutInflater.from(getBaseContext()), R.layout.layout_quiz_end, null, false);
         final Dialog dialog = new Dialog(QuizPlayerActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
         dialog.setContentView(view.getRoot());
-        setQuizDataOnEndDialog(view, quizResponse);
+        setQuizDataOnEndDialog(view, quizResponse, quizAnalyticsConfigData);
         view.textViewGreetingMessage.setText(getString(R.string.quiz_end_response_submitted));
         view.lottie.setVisibility(View.GONE);
 
@@ -1514,7 +1724,7 @@ public class QuizPlayerActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void setQuizDataOnEndDialog(LayoutQuizEndBinding endDialogBinding, QuizResponse quizResponse) {
+    private void setQuizDataOnEndDialog(LayoutQuizEndBinding endDialogBinding, QuizResponse quizResponse, ArrayList<ChartConfigurationData> quizAnalyticsConfigData) {
 
         if (!TextUtils.isEmpty(mAppUserModel.getApplicationUser().getName())) {
             endDialogBinding.textViewUserName.setText(mAppUserModel.getApplicationUser().getName());
@@ -1549,7 +1759,7 @@ public class QuizPlayerActivity extends AppCompatActivity {
         endDialogBinding.textViewTotalTime.setText(CommonUtils.getInstance().showSecondAndMinutesFromLong(totalTimeTaken));
 
         float correctAnsPercentage = (float) (totalCorrectAnswers * 100.00) / mQuestionList.size();
-        drawAccuracyChart(correctAnsPercentage, endDialogBinding);
+        drawAccuracyChart(correctAnsPercentage, endDialogBinding, quizAnalyticsConfigData);
 
         if (quizResponse.getQuizAttempts() <= 0) {
             endDialogBinding.textViewAttempt.setVisibility(View.GONE);
@@ -1565,21 +1775,17 @@ public class QuizPlayerActivity extends AppCompatActivity {
     }
 
     /*draw and set values for accuracy pie chart*/
-    private void drawAccuracyChart(float correctAnsPercent, LayoutQuizEndBinding endDialogBinding) {
+    /*Get color form config */
+    private void drawAccuracyChart(float correctAnsPercent, LayoutQuizEndBinding endDialogBinding, ArrayList<ChartConfigurationData> quizAnalyticsConfigData) {
 
         float total = 100;
         float remaining = total - correctAnsPercent;
 
         ArrayList<PieEntry> fillValues = new ArrayList<>();
         int progressColor = ContextCompat.getColor(getBaseContext(), R.color.colorPrimary);
-        if (correctAnsPercent <= 70) {
-            progressColor = ContextCompat.getColor(getBaseContext(), R.color.colorPerformanceLow);
-        } else if (correctAnsPercent >= 71 && correctAnsPercent <= 90) {
-            progressColor = ContextCompat.getColor(getBaseContext(), R.color.colorPerformanceAverage);
 
-        } else if (correctAnsPercent >= 91) {
-            progressColor = ContextCompat.getColor(getBaseContext(), R.color.colorPerformanceVeryGood);
-
+        if (quizAnalyticsConfigData != null && !quizAnalyticsConfigData.isEmpty()) {
+            progressColor = pickColorAccording((int) correctAnsPercent, quizAnalyticsConfigData);
         }
 
         fillValues.add(new PieEntry(correctAnsPercent, 0));
@@ -1597,9 +1803,8 @@ public class QuizPlayerActivity extends AppCompatActivity {
         description.setText(ConstantUtil.BLANK);
         endDialogBinding.pieChartAccuracy.setDescription(description);
         endDialogBinding.pieChartAccuracy.setDrawCenterText(true);
-        endDialogBinding.pieChartAccuracy.setCenterTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorBlack));
         endDialogBinding.pieChartAccuracy.setCenterTextSize(24f);
-        endDialogBinding.pieChartAccuracy.setCenterTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimary));
+        endDialogBinding.pieChartAccuracy.setCenterTextColor(progressColor);
         String centerTextValue = new DecimalFormat("##.##").format(correctAnsPercent) + "%";
         endDialogBinding.pieChartAccuracy.setCenterTextTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         if (centerTextValue.contains("NaN")) {
@@ -1638,6 +1843,7 @@ public class QuizPlayerActivity extends AppCompatActivity {
                             } else {
                                 fetchQuizConfiguration();
                             }
+
                         }
                     }
                 })
@@ -1670,6 +1876,47 @@ public class QuizPlayerActivity extends AppCompatActivity {
         SnackBarUtils.showAlertSnackBar(this, mBinding.getRoot(), message);
     }
 
+    @SuppressLint("CheckResult")
+    private void fetchQuizAnalyticsConfiguration(final QuizResponse quizResponse) {
+        if (GeneralUtils.isNetworkAvailable(this)) {
+            mPlayerModel.fetchQuizAnalyticsConfiguration().subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<GlobalConfigurationParent>() {
+                        @Override
+                        public void accept(GlobalConfigurationParent configurationData) throws Exception {
+
+                            if (configurationData != null
+                                    && configurationData.getQuizAnalyticsConfig() != null
+                                    && !configurationData.getQuizAnalyticsConfig().isEmpty()) {
+                                showPracticeEndDialog(quizResponse, configurationData.getQuizAnalyticsConfig());
+                            } else {
+                                showPracticeEndDialog(quizResponse, null);
+                            }
+                        }
+
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
+                            showPracticeEndDialog(quizResponse, null);
+                        }
+                    });
+        } else {
+
+        }
+
+    }
+
+    public int pickColorAccording(int performance, ArrayList<ChartConfigurationData> quizAnalyticsConfigData) {
+
+        for (int j = 0; j < quizAnalyticsConfigData.size(); j++) {
+            ChartConfigurationData chartConfigurationData = quizAnalyticsConfigData.get(j);
+            if (performance >= chartConfigurationData.getFrom() && performance <= chartConfigurationData.getTo()) {
+                return Color.parseColor(chartConfigurationData.getColorCode());
+            }
+        }
+        return R.color.colorRed;
+    }
 
     /*Drag Listeners*/
     private class ChoiceDragListener implements View.OnDragListener {

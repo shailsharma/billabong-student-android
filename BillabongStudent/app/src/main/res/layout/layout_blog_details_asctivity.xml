@@ -24,7 +24,7 @@
                 android:id="@+id/textview_blog_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/gradient_black_category"
+                android:background="@drawable/gradient_black_bottom"
                 android:padding="5dp"
                 android:text="Blog Title"
                 android:textColor="@color/colorWhite"
@@ -137,7 +137,7 @@ The rocky ball that forms our world is one of nine planets in the Solar System. 
                         android:id="@+id/imageview_blogger"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
-                        android:src="@drawable/user_thumbnail"
+                        android:src="@drawable/logo_profile_g"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentStart="true" />
 
@@ -177,7 +177,7 @@ The rocky ball that forms our world is one of nine planets in the Solar System. 
                         android:layout_alignParentLeft="true"
                         android:layout_below="@+id/textview_comment_lable"
                         android:layout_margin="5dp"
-                        android:src="@drawable/user_thumbnail" />
+                        android:src="@drawable/logo_profile_g" />
 
                     <in.securelearning.lil.android.base.widget.EditTextCustom
                         android:id="@+id/edittext_comment"

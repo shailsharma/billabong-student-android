@@ -485,7 +485,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
         mBinding.textViewQuestion.setText(TextViewMore.stripHtml(question.getQuestionText()));
         HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(mBinding.textViewQuestion);
         htmlHttpImageGetter.enableCompressImage(true, 80);
-        // String newText = question.getQuestionText().replace("#000000", "#ffffff");
+        // String newText = question.getText().replace("#000000", "#ffffff");
         mBinding.textViewQuestion.setText(Html.fromHtml(TextViewMore.stripHtmlForQuiz(question.getQuestionText()).trim(), htmlHttpImageGetter, new TextViewMore.UlTagHandler()));
     }
 

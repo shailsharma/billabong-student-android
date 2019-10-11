@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +25,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.text.util.Linkify;
@@ -56,8 +56,6 @@ import com.google.gson.JsonObject;
 import com.robinhood.ticker.TickerUtils;
 import com.squareup.picasso.Picasso;
 
-import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
-
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,10 +80,12 @@ import in.securelearning.lil.android.base.dataobjects.Skill;
 import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
+import in.securelearning.lil.android.gamification.dataobject.GamificationEvent;
+import in.securelearning.lil.android.gamification.views.activity.MascotActivity;
 import in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity;
 import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.player.InjectorPlayer;
+import in.securelearning.lil.android.player.dataobject.KhanAcademyVideo;
 import in.securelearning.lil.android.player.dataobject.MatchingContent;
 import in.securelearning.lil.android.player.dataobject.PracticeFilter;
 import in.securelearning.lil.android.player.dataobject.PracticeParent;
@@ -94,6 +94,8 @@ import in.securelearning.lil.android.player.dataobject.PracticeResponse;
 import in.securelearning.lil.android.player.dataobject.QuestionTypeMatchTheFollowing;
 import in.securelearning.lil.android.player.model.PlayerModel;
 import in.securelearning.lil.android.player.view.adapter.DropdownAdapter;
+import in.securelearning.lil.android.player.view.adapter.ExplanationVideoAdapter;
+import in.securelearning.lil.android.player.view.adapter.QuestionResourceAdapter;
 import in.securelearning.lil.android.syncadapter.dataobject.BonusConfigurationResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
@@ -101,7 +103,6 @@ import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.FlyObjectAnimationUtil;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import in.securelearning.lil.android.syncadapter.utils.SoundUtils;
-import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -147,6 +148,7 @@ public class PracticePlayerActivity extends AppCompatActivity {
     private String[] mInCorrectMessages;
     private DropdownAdapter mDropdownAdapter;
     private ProgressDialog mProgressDialog;
+
 
     @Override
 
@@ -263,6 +265,7 @@ public class PracticePlayerActivity extends AppCompatActivity {
             setChoicesView(question);
             startTimer();
             setQuestionResource(question);
+            fetchExplanationVideos(mPlayerModel.getSkillIdList(question.getSkills()));
             initializeClickListeners(question);
             mQuestionComplexityLevel = question.getComplexityLevel();
             mQuestionSkillId = getCurrentQuestionSkillId(question.getSkills());
@@ -270,6 +273,39 @@ public class PracticePlayerActivity extends AppCompatActivity {
 
         }
 
+    }
+
+
+    /*To fetch explanation videos*/
+    @SuppressLint("CheckResult")
+    private void fetchExplanationVideos(ArrayList<String> skillIdList) {
+        mBinding.layoutExplanationKhanAcademyVideo.getRoot().setVisibility(View.VISIBLE);
+        mBinding.layoutExplanationKhanAcademyVideo.progressBar.setVisibility(View.VISIBLE);
+        mBinding.layoutExplanationKhanAcademyVideo.recyclerViewExplanationVideos.setVisibility(View.GONE);
+        mPlayerModel.fetchExplanationVideos(skillIdList)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ArrayList<KhanAcademyVideo>>() {
+                    @Override
+                    public void accept(ArrayList<KhanAcademyVideo> khanAcademyVideos) throws Exception {
+                        mBinding.layoutExplanationKhanAcademyVideo.progressBar.setVisibility(View.GONE);
+
+                        if (khanAcademyVideos != null && !khanAcademyVideos.isEmpty()) {
+                            mBinding.layoutExplanationKhanAcademyVideo.getRoot().setVisibility(View.VISIBLE);
+                            mBinding.layoutExplanationKhanAcademyVideo.recyclerViewExplanationVideos.setVisibility(View.VISIBLE);
+                            mBinding.layoutExplanationKhanAcademyVideo.recyclerViewExplanationVideos.setAdapter(new ExplanationVideoAdapter(getBaseContext(), khanAcademyVideos));
+                        } else {
+                            mBinding.layoutExplanationKhanAcademyVideo.getRoot().setVisibility(View.GONE);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                        mBinding.layoutExplanationKhanAcademyVideo.getRoot().setVisibility(View.GONE);
+
+                    }
+                });
     }
 
     /*To handle clicks of url in questionText, choices, explanation and hints*/
@@ -380,6 +416,7 @@ public class PracticePlayerActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     @SuppressLint("CheckResult")
@@ -460,12 +497,13 @@ public class PracticePlayerActivity extends AppCompatActivity {
                                 if (practiceQuestionResponse != null) {
 
                                 /*When isQuestionExist == true and question array length is greater then 0,
-                                then pass to the ui for practice.*/
+                                  then pass to the ui for practice.*/
                                     if (practiceQuestionResponse.isQuestionExist()
                                             && practiceQuestionResponse.getQuestionList() != null
                                             && !practiceQuestionResponse.getQuestionList().isEmpty()) {
                                         checkLevelUpgrade(practiceQuestionResponse.getQuestionList().get(0).getSkills().get(0), practiceQuestionResponse.getQuestionList().get(0).getComplexityLevel());
                                         setValueDefault();
+
                                         mQuestionList = practiceQuestionResponse.getQuestionList();
                                         mSkip += mQuestionList.size();
                                         initializeQuestionUi();
@@ -541,7 +579,8 @@ public class PracticePlayerActivity extends AppCompatActivity {
                     }
                 }
             } else {
-                showLevelUpgradeMessage(getString(R.string.messageNextSkill) + ConstantUtil.BLANK_SPACE + skill.getSkillName());
+                String skillName = "<b><i>" + skill.getSkillName() + "</i></b>";
+                showLevelUpgradeMessage(getString(R.string.messageNextSkill) + ConstantUtil.BLANK_SPACE + skillName);
             }
         }
     }
@@ -604,22 +643,13 @@ public class PracticePlayerActivity extends AppCompatActivity {
 
     /*Showing ui for showing level upgrade*/
     private void showLevelUpgradeMessage(String message) {
-        mBinding.layoutQuestionResponse.setVisibility(View.VISIBLE);
-        AnimationUtils.pushUpEnter(getBaseContext(), mBinding.layoutQuestionResponse);
-        mBinding.textViewQuestionResponse.setText(message);
-        mBinding.lottie.setAnimation("lottie_success.json");
-        mBinding.lottie.playAnimation();
-        Handler hold = new Handler();
-        hold.postDelayed(new Runnable() {
 
-            @Override
-            public void run() {
+        GamificationEvent event = new GamificationEvent();
+        event.setMessage(message);
+        event.setEventType(getString(R.string.other));
 
-                AnimationUtils.pushDownExit(getBaseContext(), mBinding.layoutQuestionResponse);
-                mBinding.layoutQuestionResponse.setVisibility(View.GONE);
+        startActivity(MascotActivity.getStartIntent(getBaseContext(), message, event));
 
-            }
-        }, 3000);
     }
 
     /*Start question timer when question initialize*/
@@ -638,19 +668,25 @@ public class PracticePlayerActivity extends AppCompatActivity {
     /*Setup question text view when question initialize*/
     private void setQuestionText(Question question) {
         mBinding.textViewQuestion.setVisibility(View.VISIBLE);
+
+        ArrayList<Resource> questionResourceList = mPlayerModel.extractResourceListFromText(question.getQuestionText());
+
+        initializeQuestionResourceRecyclerView(questionResourceList);
+
         setMovementMethod();
+        String questionText;
 
-        if (question.getQuestionType().equals(Question.TYPE_DISPLAY_FILL_IN_THE_BLANKS)) {
-            String questionText = mPlayerModel.replaceAllCharacter(question.getQuestionText(), "<input ", "______<input ");
+        if (!TextUtils.isEmpty(question.getQuestionText())) {
+            questionText = question.getQuestionText();
 
-            HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(mBinding.textViewQuestion);
-            mBinding.textViewQuestion.setText(Html.fromHtml(TextViewMore.removeSpaceTags(questionText), htmlHttpImageGetter, new TextViewMore.UlTagHandler()));
-        } else {
-            String questionText = question.getQuestionText();
-            HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(mBinding.textViewQuestion);
-            mBinding.textViewQuestion.setText(Html.fromHtml(TextViewMore.removeSpaceTags(questionText), htmlHttpImageGetter, new TextViewMore.UlTagHandler()));
+            if (question.getQuestionType().equals(Question.TYPE_DISPLAY_FILL_IN_THE_BLANKS)) {
+                questionText = mPlayerModel.replaceAllCharacter(question.getQuestionText(), ConstantUtil.HTML_INPUT_START_TAG_WITH_SPACE, ConstantUtil.HTML_INPUT_START_TAG_WITH_SPACE_REPLACEMENT);
+            }
 
+            String questionTextFinal = mPlayerModel.cleanHtmlTextForPlayer(questionText);
+            mBinding.textViewQuestion.setText(mPlayerModel.removeTrailingSpace(questionTextFinal));
         }
+
     }
 
     /*Setup question resource view when question initialize*/
@@ -680,6 +716,30 @@ public class PracticePlayerActivity extends AppCompatActivity {
 
     }
 
+    /*Question Resource Recycler View*/
+    private void initializeQuestionResourceRecyclerView(ArrayList<Resource> questionResourceList) {
+        if (!questionResourceList.isEmpty()) {
+            mBinding.listQuestionResource.setVisibility(View.VISIBLE);
+            FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getBaseContext());
+            mBinding.listQuestionResource.setLayoutManager(layoutManager);
+            mBinding.listQuestionResource.setAdapter(new QuestionResourceAdapter(getBaseContext(), questionResourceList));
+        } else {
+            mBinding.listQuestionResource.setVisibility(View.GONE);
+        }
+    }
+
+    /*Explanation Resource Recycler View*/
+    private void initializeExplanationResourceRecyclerView(ArrayList<Resource> explanationResourceList) {
+        if (!explanationResourceList.isEmpty()) {
+            mBinding.listExplanationResource.setVisibility(View.VISIBLE);
+            FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getBaseContext());
+            mBinding.listExplanationResource.setLayoutManager(layoutManager);
+            mBinding.listExplanationResource.setAdapter(new QuestionResourceAdapter(getBaseContext(), explanationResourceList));
+        } else {
+            mBinding.listExplanationResource.setVisibility(View.GONE);
+        }
+    }
+
     /*Setup choice view when question initialize*/
     @SuppressLint("ClickableViewAccessibility")
     private void setChoicesView(Question question) {
@@ -691,90 +751,114 @@ public class PracticePlayerActivity extends AppCompatActivity {
 
         if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_RADIO)
                 || questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_TRUE_FALSE)) {
+
             mBinding.layoutChoices.setVisibility(View.VISIBLE);
             mBinding.recyclerView.setVisibility(View.GONE);
+
             layoutInflater.inflate(R.layout.layout_response_mcq_single_correct, mBinding.layoutChoices);
             RadioGroup radioGroup = mBinding.layoutChoices.findViewById(R.id.radio_group_response);
             mBinding.textViewQuestionType.setText(getString(R.string.single_correct));
+
             for (final QuestionChoice questionChoice : questionChoices) {
-                String thumbUrl = questionChoice.getChoiceResource().getUrlMain();
-                final String mainUrl = questionChoice.getChoiceResource().getUrlMain();
 
-                String choiceText = questionChoice.getChoiceText();
                 layoutInflater.inflate(R.layout.layout_practice_response_item_mcq_single_correct, radioGroup);
-                RadioButtonCustom choice = (RadioButtonCustom) radioGroup.getChildAt(radioGroup.getChildCount() - 1);
+                final RadioButtonCustom choice = (RadioButtonCustom) radioGroup.getChildAt(radioGroup.getChildCount() - 1);
 
-                HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(choice);
-                choice.setText(Html.fromHtml(TextViewMore.removeSpaceTags(choiceText), htmlHttpImageGetter, null));
+                final String thumbUrl, mainUrl;
+
+                if (!TextUtils.isEmpty(questionChoice.getChoiceText())
+                        && questionChoice.getChoiceText().contains(ConstantUtil.HTML_IMAGE_START_TAG)
+                        && questionChoice.getChoiceText().contains(ConstantUtil.HTML_IMAGE_SRC_TAG)) {
+
+                    String choiceImageUrl = mPlayerModel.getStringFromHtmlTextAfterTagRemoval(questionChoice.getChoiceText(),
+                            ConstantUtil.HTML_IMAGE_SRC_TAG, ConstantUtil.HTML_DOUBLE_QUOTE);
+
+                    thumbUrl = choiceImageUrl;
+                    mainUrl = choiceImageUrl;
+
+
+                } else {
+                    thumbUrl = questionChoice.getChoiceResource().getUrlMain();
+                    mainUrl = questionChoice.getChoiceResource().getUrlMain();
+                }
+
+                if (!TextUtils.isEmpty(questionChoice.getChoiceText())) {
+
+                    String choiceTextFinal = mPlayerModel.cleanHtmlTextForPlayer(questionChoice.getChoiceText());
+                    choice.setText(mPlayerModel.removeTrailingSpace(choiceTextFinal));
+
+                }
 
                 choice.setClickable(true);
                 choice.setAlpha(1f);
                 choice.setTag(questionChoice.isChoiceCorrect());
                 if (!TextUtils.isEmpty(thumbUrl) && !TextUtils.isEmpty(mainUrl)) {
-                    Picasso.with(getBaseContext()).load(thumbUrl).into(choice);
-                    choice.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-                            showResource(mainUrl);
-                            return false;
-                        }
-                    });
+                    Picasso.with(getBaseContext())
+                            .load(thumbUrl)
+                            .resize(ConstantUtil.CHOICE_IMAGE_MAX_WIDTH, 0)
+                            .into(choice);
                 }
 
-                if (!TextUtils.isEmpty(choiceText)) {
-                    choice.setText(TextViewMore.stripHtml(choiceText));
-
-                }
             }
 
 
         } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_CHECKBOX)) {
+
             mBinding.layoutChoices.setVisibility(View.VISIBLE);
             mBinding.recyclerView.setVisibility(View.GONE);
             mBinding.textViewQuestionType.setText(getString(R.string.multiple_correct));
+
             for (final QuestionChoice questionChoice : questionChoices) {
-                String thumbUrl = questionChoice.getChoiceResource().getUrlMain();
-                String mainUrl = questionChoice.getChoiceResource().getUrlMain();
-
-
-                String choiceText = questionChoice.getChoiceText();
 
                 layoutInflater.inflate(R.layout.layout_practice_response_item_mcq_multiple_correct, mBinding.layoutChoices);
                 CheckBoxCustom choice = (CheckBoxCustom) mBinding.layoutChoices.getChildAt(mBinding.layoutChoices.getChildCount() - 1);
 
-                HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(choice);
-                choice.setText(Html.fromHtml(TextViewMore.removeSpaceTags(choiceText), htmlHttpImageGetter, null));
+                final String thumbUrl, mainUrl;
+
+                if (!TextUtils.isEmpty(questionChoice.getChoiceText())
+                        && questionChoice.getChoiceText().contains(ConstantUtil.HTML_IMAGE_START_TAG)
+                        && questionChoice.getChoiceText().contains(ConstantUtil.HTML_IMAGE_SRC_TAG)) {
+
+                    String choiceImageUrl = mPlayerModel.getStringFromHtmlTextAfterTagRemoval(questionChoice.getChoiceText(),
+                            ConstantUtil.HTML_IMAGE_SRC_TAG, ConstantUtil.HTML_DOUBLE_QUOTE);
+
+                    thumbUrl = choiceImageUrl;
+                    mainUrl = choiceImageUrl;
+
+
+                } else {
+                    thumbUrl = questionChoice.getChoiceResource().getUrlMain();
+                    mainUrl = questionChoice.getChoiceResource().getUrlMain();
+                }
+
+
+                String choiceTextFinal = mPlayerModel.cleanHtmlTextForPlayer(questionChoice.getChoiceText());
+                choice.setText(mPlayerModel.removeTrailingSpace(choiceTextFinal));
 
                 choice.setClickable(true);
                 choice.setAlpha(1f);
                 choice.setTag(questionChoice.isChoiceCorrect());
                 if (!TextUtils.isEmpty(thumbUrl) && !TextUtils.isEmpty(mainUrl)) {
-                    Picasso.with(getBaseContext()).load(thumbUrl).into(choice);
-                    choice.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-                            showResource(questionChoice.getChoiceResource().getUrlMain());
-                            return false;
-                        }
-                    });
+                    Picasso.with(getBaseContext())
+                            .load(thumbUrl)
+                            .resize(ConstantUtil.CHOICE_IMAGE_MAX_WIDTH, 0).into(choice);
                 }
 
-                if (!TextUtils.isEmpty(choiceText)) {
-                    choice.setText(TextViewMore.stripHtml(choiceText));
-                }
+
             }
 
         } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_FILL_IN_THE_BLANKS)) {
+
             mBinding.layoutChoices.setVisibility(View.VISIBLE);
             mBinding.recyclerView.setVisibility(View.GONE);
 
             mBinding.textViewQuestionType.setText(getString(R.string.fill_the_blanks));
-            int count = mPlayerModel.checkWordOccurrence(question.getQuestionText(), "<input ");
-            ArrayList<String> inputTypeList = mPlayerModel.getInputTypeListFromString(count, question.getQuestionText());
+            ArrayList<String> inputTypeList = mPlayerModel.getStringListFromHtmlText(question.getQuestionText(), "<input ", "/>");
             ArrayList<String> fillTheBlankChoiceList = new ArrayList<>();
 
             for (int i = 0; i < inputTypeList.size(); i++) {
-                fillTheBlankChoiceList.add(mPlayerModel.getInputTypeValueListFromString(inputTypeList.get(i)));
+                fillTheBlankChoiceList.add(mPlayerModel.getStringFromHtmlTextAfterTagRemoval(inputTypeList.get(i),
+                        ConstantUtil.HTML_VALUE_TAG, ConstantUtil.HTML_DOUBLE_QUOTE));
             }
 
             for (String questionChoice : fillTheBlankChoiceList) {
@@ -791,6 +875,7 @@ public class PracticePlayerActivity extends AppCompatActivity {
                     }
                 });
             }
+
         } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_MATCH_THE_FOLLOWING)) {
             setMatchTheFollowingView(question.getQuestionObject());
         } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_DROPDOWN)) {
@@ -803,27 +888,6 @@ public class PracticePlayerActivity extends AppCompatActivity {
 
     private void setDropdownQuestionView(Question question, boolean isAttempt) {
 
-//        QuestionPart questionPart1 = new QuestionPart();
-//        questionPart1.setValues(new ArrayList<>(Arrays.asList("Udaipur", "Jodhpur", "Jaipur")));
-//        questionPart1.setType(DropdownAdapter.TYPE_CHOICE);
-//        questionPart1.setCorrectValue("Udaipur");
-//
-//        QuestionPart questionPart2 = new QuestionPart();
-//        questionPart2.setType(TYPE_QUESTION);
-//        questionPart2.setQuestion("is known as Lakecity of");
-//
-//        QuestionPart questionPart3 = new QuestionPart();
-//        questionPart3.setValues(new ArrayList<>(Arrays.asList("Gujrat", "Rajasthan is largest state of India(Area wise) hahahahahaha", "Punjab")));
-//        questionPart3.setType(DropdownAdapter.TYPE_CHOICE);
-//        questionPart3.setCorrectValue("Rajasthan is largest state of India(Area wise) hahahahahaha");
-//
-//        QuestionPart questionPart4 = new QuestionPart();
-//        questionPart4.setType(TYPE_QUESTION);
-//        questionPart4.setQuestion("of Republic of India.");
-//
-//        question.setQuestionPartList(new ArrayList<>(Arrays.asList(questionPart1, questionPart2, questionPart3, questionPart4)));
-
-
         if (question.getQuestionPartList() != null && !question.getQuestionPartList().isEmpty()) {
             mBinding.textViewQuestionType.setText(getString(R.string.fill_the_dropdown));
             mBinding.textViewQuestion.setVisibility(View.GONE);
@@ -831,14 +895,15 @@ public class PracticePlayerActivity extends AppCompatActivity {
             mBinding.recyclerView.setVisibility(View.VISIBLE);
             mBinding.layoutChoices.setVisibility(View.GONE);
 
-            mBinding.recyclerView.setLayoutManager(new FlexboxLayoutManager(getBaseContext()));
+
+            FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
+            mBinding.recyclerView.setLayoutManager(layoutManager);
             mBinding.recyclerView.setNestedScrollingEnabled(false);
             mDropdownAdapter = new DropdownAdapter(getBaseContext(), question.getQuestionPartList(), isAttempt);
             mBinding.recyclerView.setAdapter(mDropdownAdapter);
 
         } else {
-            GeneralUtils.showToastShort(getBaseContext(), "Unable to load question, skipping");
-            nextClickAction();
+            showAlertDialog(getString(R.string.practice_force_close));
         }
     }
 
@@ -928,24 +993,40 @@ public class PracticePlayerActivity extends AppCompatActivity {
             }
 
             if (!TextUtils.isEmpty(questionHint.getHintText())) {
+
                 this.getLayoutInflater().inflate(R.layout.layout_practice_response_hint_text, mBinding.layoutHints);
                 LinearLayout layout = (LinearLayout) mBinding.layoutHints.getChildAt(mBinding.layoutHints.getChildCount() - 1);
                 TextView hintTextView = layout.findViewById(R.id.text_view_hint);
+                RecyclerView hintResourceRecyclerView = layout.findViewById(R.id.listHintResource);
 
                 final TextView hintCounterTextView = layout.findViewById(R.id.text_view_hint_counter);
                 String hintCounterText = currentHint + "/" + totalHints;
                 hintCounterTextView.setText(hintCounterText);
 
-                HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(hintTextView);
-                hintTextView.setText(Html.fromHtml(TextViewMore.removeSpaceTags(questionHint.getHintText()), htmlHttpImageGetter, null));
+                ArrayList<Resource> hintResourceList = mPlayerModel.extractResourceListFromText(questionHint.getHintText());
+
+                initializeHintResourceRecyclerView(hintResourceRecyclerView, hintResourceList);
+
+                String hintTextFinal = mPlayerModel.cleanHtmlTextForPlayer(questionHint.getHintText());
+
+                CharSequence hintCharSequence = mPlayerModel.removeTrailingSpace(hintTextFinal);
+                if (!TextUtils.isEmpty(hintCharSequence)) {
+                    hintTextView.setVisibility(View.VISIBLE);
+                    hintTextView.setText(hintCharSequence);
+                } else {
+                    hintTextView.setVisibility(View.GONE);
+                }
 
                 hintTextView.setMaxLines(Integer.MAX_VALUE);
                 hintTextView.setVerticalScrollBarEnabled(true);
                 hintTextView.setMovementMethod(new ScrollingMovementMethod());
                 setMovementMethod();
+
             } else {
+
                 final String resourcePath = questionHint.getHintResource().getUrlMain();
                 String mimeType = URLConnection.guessContentTypeFromName(resourcePath);
+
                 if (!TextUtils.isEmpty(mimeType) && mimeType.contains("image")) {
                     this.getLayoutInflater().inflate(R.layout.layout_practice_response_hint_image_thumbnail, mBinding.layoutHints);
                     LinearLayout mLayout = (LinearLayout) mBinding.layoutHints.getChildAt(mBinding.layoutHints.getChildCount() - 1);
@@ -988,9 +1069,24 @@ public class PracticePlayerActivity extends AppCompatActivity {
         }
     }
 
+    private void initializeHintResourceRecyclerView(RecyclerView hintResourceRecyclerView, ArrayList<Resource> resourceList) {
+        if (!resourceList.isEmpty()) {
+            hintResourceRecyclerView.setLayoutManager(null);
+            hintResourceRecyclerView.setAdapter(null);
+            hintResourceRecyclerView.setVisibility(View.VISIBLE);
+            FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getBaseContext());
+            hintResourceRecyclerView.setLayoutManager(layoutManager);
+            hintResourceRecyclerView.setAdapter(new QuestionResourceAdapter(getBaseContext(), resourceList));
+        } else {
+            hintResourceRecyclerView.setVisibility(View.GONE);
+        }
+    }
+
     /*Show explanation view if question contains, after submitting the current question response.*/
     private void showExplanation(final Question question) {
-        if ((question.getChoiceConfiguration().getQuestionExplanation() != null && !TextUtils.isEmpty(question.getChoiceConfiguration().getQuestionExplanation().getExplanationText())) || !TextUtils.isEmpty(question.getExplanation())) {
+        if ((question.getChoiceConfiguration().getQuestionExplanation() != null
+                && !TextUtils.isEmpty(question.getChoiceConfiguration().getQuestionExplanation().getExplanationText()))
+                || !TextUtils.isEmpty(question.getExplanation())) {
 
             String explanationText = question.getChoiceConfiguration().getQuestionExplanation().getExplanationText();
 
@@ -1000,21 +1096,26 @@ public class PracticePlayerActivity extends AppCompatActivity {
 
             if (!TextUtils.isEmpty(explanationText)) {
 
+                ArrayList<Resource> explanationResourceList = mPlayerModel.extractResourceListFromText(explanationText);
+                initializeExplanationResourceRecyclerView(explanationResourceList);
+
                 mBinding.layoutExplanation.setVisibility(View.VISIBLE);
                 mBinding.textViewExplanationText.setVisibility(View.VISIBLE);
 
                 AnimationUtils.pushUpEnter(getBaseContext(), mBinding.layoutExplanation);
 
-                HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(mBinding.textViewExplanationText);
-                mBinding.textViewExplanationText.setText(Html.fromHtml(TextViewMore.removeSpaceTags(explanationText), htmlHttpImageGetter, null));
+
+                String explanationTextFinal = mPlayerModel.cleanHtmlTextForPlayer(explanationText);
+                mBinding.textViewExplanationText.setText(mPlayerModel.removeTrailingSpace(explanationTextFinal));
+
 
                 mBinding.scrollView.post(new Runnable() {
                     @Override
                     public void run() {
                         mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_DOWN);
-
                     }
                 });
+
             } else {
                 mBinding.layoutExplanation.setVisibility(View.GONE);
             }
@@ -1057,6 +1158,7 @@ public class PracticePlayerActivity extends AppCompatActivity {
 
             }
         }
+
         setMovementMethod();
     }
 
@@ -1175,7 +1277,7 @@ public class PracticePlayerActivity extends AppCompatActivity {
                         setResponseView(false);
                         setStreakView(mTotalCorrect);
                     }
-
+                    setDropdownQuestionView(question, false);
                     setViewAfterQuestionAttempt();
                     showExplanation(question);
 
@@ -1184,7 +1286,7 @@ public class PracticePlayerActivity extends AppCompatActivity {
                     attempt.setTimeTaken(SystemClock.elapsedRealtime() - mBinding.chronometerQuestionTimer.getBase());
                     generateQuestionResponse(attempt, Boolean.toString(isCorrectResponse), question, mHintCounter);
                 } else {
-                    showSnackBar(getString(R.string.practice_force_close));
+                    showAlertDialog(getString(R.string.practice_force_close));
                 }
 
             } else {
@@ -1269,28 +1371,36 @@ public class PracticePlayerActivity extends AppCompatActivity {
      */
     private void setResponseView(boolean response) {
 
-        mBinding.layoutQuestionResponse.setVisibility(View.VISIBLE);
-        AnimationUtils.pushUpEnter(getBaseContext(), mBinding.layoutQuestionResponse);
+        mBinding.layoutPlayerResponseForUser.layoutQuestionResponse.setVisibility(View.VISIBLE);
+        AnimationUtils.pushUpEnter(getBaseContext(), mBinding.layoutPlayerResponseForUser.layoutQuestionResponse);
 
         if (response) {
+
             int randomIndex = new Random().nextInt(mCorrectMessages.length);
             String message = mCorrectMessages[randomIndex];
-            mBinding.textViewQuestionResponse.setText(message);
-            mBinding.lottie.setAnimation("lottie_success.json");
+            mBinding.layoutPlayerResponseForUser.textViewQuestionResponse.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorGreenDark));
+            mBinding.layoutPlayerResponseForUser.textViewQuestionResponse.setText(message);
+            mBinding.layoutPlayerResponseForUser.imageViewMascotCorrectResponse.setVisibility(View.VISIBLE);
+            mBinding.layoutPlayerResponseForUser.imageViewMascotWrongResponse.setVisibility(View.GONE);
+//            mBinding.lottie.setAnimation("lottie_success.json");
             SoundUtils.playSound(getBaseContext(), SoundUtils.QUIZ_CORRECT_ANSWER);
             addPoints(false, QUESTION_POINT);
 
 
         } else {
+
             int randomIndex = new Random().nextInt(mInCorrectMessages.length);
             String message = mInCorrectMessages[randomIndex];
-            mBinding.textViewQuestionResponse.setText(message);
+            mBinding.layoutPlayerResponseForUser.textViewQuestionResponse.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorLNRed));
+            mBinding.layoutPlayerResponseForUser.textViewQuestionResponse.setText(message);
+            mBinding.layoutPlayerResponseForUser.imageViewMascotCorrectResponse.setVisibility(View.GONE);
+            mBinding.layoutPlayerResponseForUser.imageViewMascotWrongResponse.setVisibility(View.VISIBLE);
             SoundUtils.playSound(getBaseContext(), SoundUtils.QUIZ_INCORRECT_ANSWER);
-            mBinding.lottie.setAnimation("lottie_failed.json");
+//            mBinding.lottie.setAnimation("lottie_failed.json");
 
         }
 
-        mBinding.lottie.playAnimation();
+//        mBinding.lottie.playAnimation();
 
         Handler hold = new Handler();
         hold.postDelayed(new Runnable() {
@@ -1298,11 +1408,12 @@ public class PracticePlayerActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                AnimationUtils.pushDownExit(getBaseContext(), mBinding.layoutQuestionResponse);
-                mBinding.layoutQuestionResponse.setVisibility(View.GONE);
+                AnimationUtils.pushDownExit(getBaseContext(), mBinding.layoutPlayerResponseForUser.layoutQuestionResponse);
+                mBinding.layoutPlayerResponseForUser.layoutQuestionResponse.setVisibility(View.GONE);
 
             }
-        }, 2500);
+        }, ConstantUtil.PLAYER_RESPONSE_DURATION);
+
     }
 
     /*Set streak count, for ui it a continuously correct answer count.*/
@@ -1320,14 +1431,11 @@ public class PracticePlayerActivity extends AppCompatActivity {
         if (mimeType != null) {
             if (mimeType.contains("image")) {
                 startActivity(PlayFullScreenImageActivity.getStartIntent(getBaseContext(), resourcePath, true));
-
-                UserProfileActivity.showFullImage(resourcePath, PracticePlayerActivity.this);
-
             } else if (mimeType.contains("video")) {
                 Resource item = new Resource();
                 item.setType("video");
                 item.setUrlMain(resourcePath);
-                startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(getBaseContext(), PlayVideoFullScreenActivity.NETWORK_TYPE_LOCAL, item));
+                startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(getBaseContext(), PlayVideoFullScreenActivity.NETWORK_TYPE_ONLINE, item));
             }
         }
 
@@ -1339,21 +1447,37 @@ public class PracticePlayerActivity extends AppCompatActivity {
 
         String questionType = question.getQuestionType();
         ArrayList<String> choiceResponses = new ArrayList<>();
-        if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_RADIO) || questionType.equalsIgnoreCase("trueFalse")) {
+        if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_RADIO)
+                || questionType.equalsIgnoreCase("trueFalse")) {
+
             RadioGroup radioGroup = mBinding.layoutChoices.findViewById(R.id.radio_group_response);
+
             int count = radioGroup.getChildCount();
+
             for (int i = 0; i < count; i++) {
+
                 RadioButton view = ((RadioButton) radioGroup.getChildAt(i));
+
                 if (view.isChecked()) {
                     choiceResponses.add(String.valueOf(i));
                 }
+
                 if (isSubmission) {
-                    if (!(boolean) view.getTag()) {
-                        view.setVisibility(View.GONE);
+
+                    Drawable drawable;
+
+                    if (view.isChecked() && !(boolean) view.getTag()) {
+                        drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_selected_incorrect);
+
                     } else {
-                        view.setChecked(true);
+                        if ((boolean) view.getTag()) {
+                            drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_selected_correct);
+                        } else {
+                            drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_unselected);
+                        }
                     }
 
+                    view.setBackground(drawable);
                     view.setEnabled(false);
                 }
             }
@@ -1367,12 +1491,21 @@ public class PracticePlayerActivity extends AppCompatActivity {
                 }
 
                 if (isSubmission) {
-                    if (!(boolean) view.getTag()) {
-                        view.setVisibility(View.GONE);
+
+                    Drawable drawable;
+
+                    if (view.isChecked() && !(boolean) view.getTag()) {
+                        drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_selected_incorrect);
+
                     } else {
-                        view.setChecked(true);
+                        if ((boolean) view.getTag()) {
+                            drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_selected_correct);
+                        } else {
+                            drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_unselected);
+                        }
                     }
 
+                    view.setBackground(drawable);
                     view.setEnabled(false);
                 }
             }
@@ -1414,9 +1547,6 @@ public class PracticePlayerActivity extends AppCompatActivity {
                     }
                 }
 
-                if (isSubmission) {
-                    setDropdownQuestionView(question, false);
-                }
             }
         }
 

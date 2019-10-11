@@ -10,19 +10,20 @@ import in.securelearning.lil.android.base.model.BadgesModel;
 import in.securelearning.lil.android.base.model.CalEventModel;
 import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.courses.models.CoursesModel;
-import in.securelearning.lil.android.gamification.model.GamificationModel;
-import in.securelearning.lil.android.gamification.views.fragment.GamificationDialog;
+import in.securelearning.lil.android.gamification.model.MascotModel;
+import in.securelearning.lil.android.gamification.views.activity.MascotActivity;
 import in.securelearning.lil.android.home.model.CalendarEventModel;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
 import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.home.model.SearchModel;
 import in.securelearning.lil.android.homework.model.HomeworkModel;
 import in.securelearning.lil.android.learningnetwork.model.PostDataLearningModel;
-import in.securelearning.lil.android.mindspark.model.MindSparkModel;
+import in.securelearning.lil.android.profile.model.ProfileModel;
 import in.securelearning.lil.android.syncadapter.ftp.FtpFunctions;
 import in.securelearning.lil.android.syncadapter.model.FlavorNetworkModel;
 import in.securelearning.lil.android.syncadapter.model.JobModel;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
+import in.securelearning.lil.android.thirdparty.model.ThirdPartyModel;
 
 /**
  * Created by Prabodh Dhabaria on 14-11-2016.
@@ -129,8 +130,8 @@ public class HomeModule {
 
     @Provides
     @ActivityScope
-    public MindSparkModel mindSparkModel() {
-        return new MindSparkModel();
+    public ThirdPartyModel mindSparkModel() {
+        return new ThirdPartyModel();
     }
 
     @Provides
@@ -139,16 +140,21 @@ public class HomeModule {
         return new HomeworkModel();
     }
 
-
     @Provides
     @ActivityScope
-    public GamificationDialog gamificationDialog() {
-        return new GamificationDialog();
+    public MascotActivity gamificationDialog() {
+        return new MascotActivity();
     }
 
     @Provides
     @ActivityScope
-    public GamificationModel gamificationModel() {
-        return new GamificationModel();
+    public MascotModel gamificationModel() {
+        return new MascotModel();
+    }
+
+    @Provides
+    @ActivityScope
+    public ProfileModel profileModel() {
+        return new ProfileModel();
     }
 }

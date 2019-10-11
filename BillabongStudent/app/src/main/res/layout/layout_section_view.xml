@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/layoutMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorGreen"
         android:orientation="vertical">
 
-        <LinearLayout
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="?android:actionBarSize"
             android:gravity="center_vertical"
@@ -22,46 +21,62 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:padding="8dp"
-                android:src="@drawable/action_close_w"/>
+                android:src="@drawable/action_close_w" />
 
             <in.securelearning.lil.android.base.widget.TextViewCustom
                 android:id="@+id/textViewTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/medium_highlight_text_size"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="@color/colorWhite"/>
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/medium_highlight_text_size" />
 
 
-        </LinearLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
 
         <com.yuyakaido.android.cardstackview.CardStackView
             android:id="@+id/cardStackView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
             android:layout_weight="1"
             android:clickable="true"
             android:clipToPadding="false"
             android:focusable="true"
             android:focusableInTouchMode="true"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="12dp"
+            android:visibility="visible"
             app:elevationEnabled="true"
             app:scaleDiff="0.02"
             app:stackFrom="top"
+            app:swipeEnabled="true"
             app:swipeForwardDirection="right"
             app:swipeReverseDirection="left"
-            app:swipeEnabled="true"
             app:swipeThreshold="0.20"
             app:translationDiff="12"
-            app:visibleCount="3"
-            />
+            app:visibleCount="3" />
 
         <LinearLayout
+            android:id="@+id/layoutRapidProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -74,19 +89,18 @@
                 android:layout_marginRight="12dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:theme="@style/ProgressWhiteAccent"
-                />
+                android:theme="@style/ProgressWhiteAccent" />
 
             <in.securelearning.lil.android.base.widget.TextViewCustom
                 android:id="@+id/textViewProgressCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorWhite"
-                />
+                android:textColor="@color/colorWhite" />
 
 
-        </LinearLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
 
     </LinearLayout>
+
 </layout>

@@ -3,6 +3,7 @@ package in.securelearning.lil.android.syncadapter.utils;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -60,6 +61,24 @@ public class CommonUtils {
         } else return ConstantUtil.BLANK;
     }
 
+
+    /*alert dialog to show any error, message*/
+    /*Context should be activity context only.*/
+    public void showAlertDialog(@NonNull Context context, String message) {
+        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+        builder.setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                })
+
+                .setCancelable(false);
+        final android.app.AlertDialog alert = builder.create();
+        alert.show();
+
+    }
 
     public void setUserThumbnail(Context context, String name, Thumbnail thumbnail, AppCompatImageView imageView) {
         if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getLocalUrl())) {
@@ -214,12 +233,29 @@ public class CommonUtils {
         return strHours + ":" + strMinutes; // + ":" + strSeconds;
     }
 
+
     public GradientDrawable getGradientDrawableFromSingleColor(int color) {
-        int lightColor = manipulateColor(color, 0.7f);
-        int[] colors = {lightColor, color};
+        int centerColor = lighter(color, 0.2f);
+        int endColor = lighter(color, 0.3f);
+        int[] colors = {color, centerColor, endColor};
 
         return new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors);
 
+    }
+
+    /**
+     * Lightens a color by a given factor.
+     *
+     * @param color  The color to lighten
+     * @param factor The factor to lighten the color. 0 will make the color unchanged. 1 will make the
+     *               color white.
+     * @return lighter version of the specified color.
+     */
+    private int lighter(int color, float factor) {
+        int red = (int) ((Color.red(color) * (1 - factor) / 255 + factor) * 255);
+        int green = (int) ((Color.green(color) * (1 - factor) / 255 + factor) * 255);
+        int blue = (int) ((Color.blue(color) * (1 - factor) / 255 + factor) * 255);
+        return Color.argb(Color.alpha(color), red, green, blue);
     }
 
 
@@ -326,11 +362,11 @@ public class CommonUtils {
         try {
 
             dStartEvent = DateUtils.convertrIsoDate(eventStartDate);
-            Log.e("dStartEvent", String.valueOf(dStartEvent));
+//            Log.e("dStartEvent", String.valueOf(dStartEvent));
             dEndEvent = DateUtils.convertrIsoDate(eventEndDate);
-            Log.e("dEndEvent", String.valueOf(dEndEvent));
+//            Log.e("dEndEvent", String.valueOf(dEndEvent));
             dSystem = new Date();
-            Log.e("dSystem", String.valueOf(dSystem));
+//            Log.e("dSystem", String.valueOf(dSystem));
             if (dSystem.getTime() > dStartEvent.getTime() && dSystem.getTime() < dEndEvent.getTime()) {
                 return true;
             }
@@ -350,7 +386,7 @@ public class CommonUtils {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Log.e("dSystem", String.valueOf(dSystem));
+//        Log.e("dSystem", String.valueOf(dSystem));
         if (dSystem.getDate() != dEventDone.getDate() && dSystem.getDate() > dEventDone.getDate() && CommonUtils.getInstance().getHoursOfDay() >= 15) {
             return true;
         }
@@ -399,10 +435,10 @@ public class CommonUtils {
         Date dSystem = null;
         try {
             dStartEvent = DateUtils.convertrIsoDate(eventStartDate);
-            Log.e("dStartEvent", String.valueOf(dStartEvent));
+//            Log.e("dStartEvent", String.valueOf(dStartEvent));
 
             dSystem = new Date();
-            Log.e("dSystem", String.valueOf(dSystem));
+//            Log.e("dSystem", String.valueOf(dSystem));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -492,8 +528,7 @@ public class CommonUtils {
         Date date = new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        int hour = cal.get(Calendar.HOUR_OF_DAY);
-        return hour;
+        return cal.get(Calendar.HOUR_OF_DAY);
 
     }
 
@@ -552,6 +587,15 @@ public class CommonUtils {
 
     }
 
+    /* Set activity status bar style immersive without coordinator layout and without fitSystemWindow=true
+     * and custom status bar color*/
+    public void setImmersiveUiWithoutFitSystemWindow(Window window, int statusBarColor) {
+        window.getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
+        window.setStatusBarColor(statusBarColor);
+    }
 
 }
 

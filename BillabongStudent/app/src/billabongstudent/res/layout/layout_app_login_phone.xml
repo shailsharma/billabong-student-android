@@ -86,7 +86,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                app:srcCompat="@drawable/image_lil_logo_dark"/>
+                app:srcCompat="@drawable/logo_powered_by_lil"/>
 
             <!--layout otp fields-->
             <LinearLayout
@@ -217,7 +217,6 @@
                     <!--app:hint="0"-->
                     <!--app:inputType="number"-->
                     <!--app:password="false"-->
-                    <!--app:pinBackground="@drawable/background_edittext_thin_bottom_line"-->
                     <!--app:pinHeight="30dp"-->
                     <!--app:pinLength="6"-->
                     <!--app:pinWidth="30dp"-->

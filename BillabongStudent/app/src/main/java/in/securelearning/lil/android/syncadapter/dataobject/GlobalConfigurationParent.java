@@ -15,6 +15,11 @@ public class GlobalConfigurationParent implements Serializable {
     @Expose
     private BonusConfigurationResponse mBonus;
 
+
+    @SerializedName("quizAnalyticsConfig")
+    @Expose
+    private ArrayList<ChartConfigurationData> quizAnalyticsConfig;
+
     @SerializedName("performance")
     @Expose
     private ArrayList<ChartConfigurationData> mPerformanceConfiguration;
@@ -43,4 +48,7 @@ public class GlobalConfigurationParent implements Serializable {
         return mBenchMarkPerformance;
     }
 
+    public ArrayList<ChartConfigurationData> getQuizAnalyticsConfig() {
+        return quizAnalyticsConfig;
+    }
 }

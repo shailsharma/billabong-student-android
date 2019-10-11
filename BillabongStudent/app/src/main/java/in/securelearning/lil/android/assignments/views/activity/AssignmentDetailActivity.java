@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.assignments.views.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -31,11 +32,11 @@ import com.squareup.picasso.Picasso;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.assignments.model.AssignmentResponseStudentModel;
 import in.securelearning.lil.android.assignments.views.fragment.InjectorAssignment;
 import in.securelearning.lil.android.base.constants.AssignmentStage;
@@ -67,9 +68,9 @@ import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
 import in.securelearning.lil.android.home.dataobjects.TimeUtils;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.learningnetwork.events.LoadRefreshAssignmentStageEvent;
 import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
+import in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity;
 import in.securelearning.lil.android.quizpreview.events.AssignmentSubmittedEvent;
 import in.securelearning.lil.android.resources.view.activity.VideoPlayActivity;
 import in.securelearning.lil.android.resources.view.activity.VimeoActivity;
@@ -77,6 +78,7 @@ import in.securelearning.lil.android.resources.view.activity.YoutubePlayActivity
 import in.securelearning.lil.android.syncadapter.service.SyncService;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -86,8 +88,24 @@ import io.reactivex.schedulers.Schedulers;
 
 public class AssignmentDetailActivity extends AppCompatActivity {
 
-    public static final String ASSIGNMENT_STUDENT_DOC_ID = "docIdAssignmentStudent";
-    public static final String ASSIGNMENT_RESPONSE_OBJECT_ID = "objectIdAssignmentResponse";
+    @Inject
+    AppUserModel mAppUserModel;
+
+    @Inject
+    RxBus mRxBus;
+
+    @Inject
+    AssignmentResponseModel mAssignmentResponseModel;
+
+    @Inject
+    AssignmentResponseStudentModel mAssignmentResponseStudentModel;
+
+    @Inject
+    AssignmentModel mAssignmentModel;
+
+    private static final String ASSIGNMENT_STUDENT_DOC_ID = "docIdAssignmentStudent";
+    private static final String ASSIGNMENT_RESPONSE_OBJECT_ID = "objectIdAssignmentResponse";
+
     private FloatingActionButton mAttemptButton;
     private AssignmentResponse mAssignmentResponse;
     private Assignment mAssignment;
@@ -103,20 +121,6 @@ public class AssignmentDetailActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private Disposable mSubscription;
     private Menu menu;
-    @Inject
-    AppUserModel mAppUserModel;
-
-    @Inject
-    RxBus mRxBus;
-
-    @Inject
-    AssignmentResponseModel mAssignmentResponseModel;
-
-    @Inject
-    AssignmentResponseStudentModel mAssignmentResponseStudentModel;
-
-    @Inject
-    AssignmentModel mAssignmentModel;
 
     private boolean isTypeQuiz = false;
     private boolean isTypeCourse = false;
@@ -159,7 +163,8 @@ public class AssignmentDetailActivity extends AppCompatActivity {
                 if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
                     if (isTypeQuiz) {
                         boolean isAttempt = true;
-                        if (mAssignmentResponse.getStage().equals(AssignmentStage.STAGE_SUBMITTED.getAssignmentStage()) || mAssignmentResponse.getStage().equals(AssignmentStage.STAGE_GRADED.getAssignmentStage())) {
+                        if (mAssignmentResponse.getStage().equals(AssignmentStage.STAGE_SUBMITTED.getAssignmentStage())
+                                || mAssignmentResponse.getStage().equals(AssignmentStage.STAGE_GRADED.getAssignmentStage())) {
                             isAttempt = false;
                         }
                     } else if (isTypeCourse) {
@@ -196,6 +201,7 @@ public class AssignmentDetailActivity extends AppCompatActivity {
         initializeViews();
         listenRxBusEvents();
         initializeUIAndClickListeners();
+
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             mAssignmentStudentDocId = bundle.getString(ASSIGNMENT_STUDENT_DOC_ID);
@@ -212,22 +218,29 @@ public class AssignmentDetailActivity extends AppCompatActivity {
             setColor(R.id.textview_assignment_date, color);
             findViewById(R.id.textview_type).setBackgroundColor(color);
             initializeViewsWithValues(mAssignmentResponse, mAssignment);
-            if (mAssignmentResponse.getStage().equalsIgnoreCase(AssignmentStage.STAGE_ASSIGNED.getAssignmentStage()) || mAssignmentResponse.getStage().equalsIgnoreCase(AssignmentStage.STAGE_WIP.getAssignmentStage())) {
+
+            if (mAssignmentResponse.getStage().equalsIgnoreCase(AssignmentStage.STAGE_ASSIGNED.getAssignmentStage())
+                    || mAssignmentResponse.getStage().equalsIgnoreCase(AssignmentStage.STAGE_WIP.getAssignmentStage())) {
                 mGenerateSubmissionEvent = true;
             } else {
                 mGenerateSubmissionEvent = false;
             }
+
             if (mAssignmentResponse.getStage().equalsIgnoreCase(AssignmentStage.STAGE_ASSIGNED.getAssignmentStage())) {
                 mAssignmentResponse.setStage(AssignmentStage.STAGE_WIP.getAssignmentStage());
                 mAssignmentResponseModel.saveAssignmentResponse(mAssignmentResponse);
                 mRxBus.send(new LoadRefreshAssignmentStageEvent(mAssignmentResponse));
             }
+
             purgeNewAssignmentStudentStatus(mAssignmentResponse.getAssignmentID());
+
         } else {
+
             finish();
+
         }
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(mAssignmentResponse.getAssignmentTitle());
 
     }
@@ -235,13 +248,16 @@ public class AssignmentDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         if (!TextUtils.isEmpty(mAssignmentResponseObjectId)) {
             mAssignmentResponse = mAssignmentResponseModel.getAssignmentResponseFromUidSync(mAssignmentResponseObjectId);
-            if (mAssignmentResponse != null && !TextUtils.isEmpty(mAssignmentResponse.getObjectId()) && mAssignmentResponse.getObjectId().equals(mAssignmentResponseObjectId)) {
+            if (mAssignmentResponse != null && !TextUtils.isEmpty(mAssignmentResponse.getObjectId())
+                    && mAssignmentResponse.getObjectId().equals(mAssignmentResponseObjectId)) {
                 mAssignment = mAssignmentModel.getAssignmentFromUidSync(mAssignmentResponse.getAssignmentID());
                 initializeViewsWithValues(mAssignmentResponse, mAssignment);
             }
         }
+
     }
 
     private void listenRxBusEvents() {
@@ -286,13 +302,16 @@ public class AssignmentDetailActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("CheckResult")
     private void purgeNewAssignmentStudentStatus(final String assignmentID) {
-        Completable.complete().observeOn(Schedulers.io()).subscribe(new Action() {
-            @Override
-            public void run() throws Exception {
-                mAssignmentResponseStudentModel.deleteNewAssignmentStudentStatus(assignmentID);
-            }
-        });
+        Completable.complete()
+                .observeOn(Schedulers.io())
+                .subscribe(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        mAssignmentResponseStudentModel.deleteNewAssignmentStudentStatus(assignmentID);
+                    }
+                });
     }
 
     private void initializeViews() {
@@ -390,7 +409,7 @@ public class AssignmentDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-                    startActivity(UserProfileActivity.getStartIntent(assignmentResponse.getAssignedBy().getId(), AssignmentDetailActivity.this));
+                    startActivity(UserPublicProfileActivity.getStartIntent(AssignmentDetailActivity.this, assignmentResponse.getAssignedBy().getId()));
                 } else {
                     ToastUtils.showToastAlert(getBaseContext(), getString(R.string.connect_internet));
                 }

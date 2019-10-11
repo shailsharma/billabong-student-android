@@ -28,6 +28,7 @@ public class ConstantUtil {
     public static final String MASTERED = "Mastered";
     public static final String GRADE_ID = "grade_id";
     public static final String SECTION_ID = "section_id";
+
     //BENCHMARK_TIME is in mins
     public static final double BENCHMARK_TIME = 1;
     public static final int NINTY_PERCENTAGE = 90;
@@ -46,6 +47,10 @@ public class ConstantUtil {
     public final static String MIME_TYPE_IMAGE = "image/";
     public final static String MIME_TYPE_VIDEO = "video/";
 
+
+    public final static String TYPE_VIDEO = "video";
+    public final static String TYPE_IMAGE = "image";
+
     public final static float TOOLBAR_ELEVATION = 8f;
     public final static float NO_TOOLBAR_ELEVATION = 0f;
 
@@ -55,6 +60,8 @@ public class ConstantUtil {
     public final static int CHECK_CODE = 1;
 
     public static final String GAMIFICATION_OBJECT = "gamification_object";
+    public static final String DASHBOARD_IS_SUBJECT_DONE = "subject_done";
+    public static final String DASHBOARD_LOAD_FIRST_TIME = "first_time";
     public static final String GAMIFICATION_EVENT_POSITION = "gamification_event_position";
 
     /*userStatus call type*/
@@ -64,15 +71,53 @@ public class ConstantUtil {
     public static final String TYPE_ACTIVE = "active";
     public static final String TYPE_INACTIVE = "inactive";
 
-
     /*GroupType*/
     public static final String GROUP_TYPE_NETWORK = "learningNetwork";
     public static final String GROUP_TYPE_TRAINING = "training";
     public static final String GROUP_TYPE_LRPA = "lrpa";
-    public static final float BONUS_PERCENTAGE = 20;
-    public static final float BONUS_TIME = 5;
     public static final String GAMIFICATION_PRACTISE = "gamification_practise";
     public static final String GAMIFICATION_SELECTED_ID = "id";
-    public static final String TTS_AVAILABLE= "gamification_survey";
+    public static final String TTS_AVAILABLE = "gamification_survey";
     public static final String EFFORT = "effort";
+    public static final float BONUS_PERCENTAGE = 20;
+    public static final float BONUS_TIME = 5;
+
+    /*Student Goal and Interest*/
+    public static final int PROFILE_ACADEMIC_SUBJECT = 2;
+    public static final int PROFILE_CO_CURRICULAR_ACTIVITY = 3;
+    public static final int PROFILE_HOBBY = 4;
+
+    public static final String CHALLENGE_PER_DAY_LOGIQIDS = "logiqids";
+    public static final String VIDEO_PER_DAY = "video";
+
+    public static final String RAPID_LOAD_FIRST_TIME = "first_time";
+    public static final String RAPID_CARD_POSITION = "rapid_card_postion";
+
+    public final static int PROFILE_IMAGE_MAX_SIZE_IN_MB = 10;
+
+    public static final String MESSAGE = "message";
+    public static final String GAMIFICATION_EVENT = "gamification_event";
+
+    /*LRPA cards*/
+    public final static int LRPA_CARD_CORNER_RADIUS = 36;
+    public final static int LRPA_CARD_MARGIN = 0;
+
+    public static final String HTML_IMAGE_SRC_TAG = "src=";
+    public static final String HTML_DOUBLE_QUOTE = "\"";
+    public static final String HTML_IMAGE_START_TAG = "<img";
+    public static final String HTML_VALUE_TAG = "value=";
+    public static final String HTML_END_TAG = "/>";// please do not use this to equalIgnoreCase or equals for string
+    public static final String HTML_INPUT_START_TAG_WITH_SPACE = "<input ";
+    public static final String HTML_INPUT_START_TAG_WITH_SPACE_REPLACEMENT = "______<input ";// For fill in the blanks
+    public static final String HTML_EXTRACT_FIGURE_REGEX = "<figure.+?>";
+    public static final String HTML_EXTRACT_FIGCAPTION_REGEX = "<figcaption>.+?>";
+    public static final String HTML_EXTRACT_IMG_REGEX = "<img.+?>";
+    public static final String HTML_SUPERSCRIPT_START_TAG = "<sup>";
+    public static final String HTML_SUBSCRIPT_START_TAG = "<sub>";
+
+    /*Player*/
+    public final static int PLAYER_RESPONSE_DURATION = 3000;// in milliseconds
+    public final static int CHOICE_IMAGE_MAX_WIDTH = 108;
+
+
 }

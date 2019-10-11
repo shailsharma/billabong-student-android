@@ -11,9 +11,9 @@
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginEnd="@dimen/margin_16dp"
-            android:layout_marginTop="@dimen/margin_16dp"
+            android:layout_marginStart="@dimen/value_16dp"
+            android:layout_marginEnd="@dimen/value_16dp"
+            android:layout_marginTop="@dimen/value_16dp"
             >
 
             <android.support.v7.widget.AppCompatTextView
@@ -44,7 +44,7 @@
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_16dp"
+            android:layout_margin="@dimen/value_16dp"
             android:orientation="horizontal">
 
             <android.support.v7.widget.LinearLayoutCompat
@@ -62,14 +62,14 @@
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_4dp"
+                    android:layout_marginTop="@dimen/value_4dp"
                     android:text="@string/label_video"
                     android:textColor="@color/colorBlack"/>
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_4dp"
+                    android:layout_marginTop="@dimen/value_4dp"
                     android:text="@string/labelPractice"
                     android:textColor="@color/colorBlack"/>
 
@@ -78,8 +78,8 @@
             <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_8dp"
-                android:layout_marginEnd="@dimen/margin_8dp"
+                android:layout_marginStart="@dimen/value_8dp"
+                android:layout_marginEnd="@dimen/value_8dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -88,7 +88,7 @@
                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_4dp"
+                    android:layout_marginTop="@dimen/value_4dp"
                     android:max="100"
                     android:scaleY="3"/>
 
@@ -97,7 +97,7 @@
                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_4dp"
+                    android:layout_marginTop="@dimen/value_4dp"
                     android:max="100"
                     android:scaleY="3"
                     />
@@ -129,7 +129,7 @@
                     android:id="@+id/textViewVideoTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_4dp"
+                    android:layout_marginTop="@dimen/value_4dp"
                     android:textColor="@color/colorBlack"
                     tools:text="15:60"/>
 
@@ -137,7 +137,7 @@
                     android:id="@+id/textViewPracticeTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_4dp"
+                    android:layout_marginTop="@dimen/value_4dp"
                     android:textColor="@color/colorBlack"
                     tools:text="15:60"/>
 

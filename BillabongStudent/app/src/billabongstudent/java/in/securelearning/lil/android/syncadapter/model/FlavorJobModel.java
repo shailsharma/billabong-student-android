@@ -1,13 +1,9 @@
 package in.securelearning.lil.android.syncadapter.model;
 
-import android.content.Context;
-
 import java.util.ArrayList;
-import java.util.Collection;
 
 import javax.inject.Inject;
 
-import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.base.constants.AssignmentStage;
 import in.securelearning.lil.android.base.constants.SyncStatus;
 import in.securelearning.lil.android.base.dataobjects.AboutCourse;
@@ -27,7 +23,6 @@ import in.securelearning.lil.android.base.dataobjects.CuratorMapping;
 import in.securelearning.lil.android.base.dataobjects.Curriculum;
 import in.securelearning.lil.android.base.dataobjects.CustomSection;
 import in.securelearning.lil.android.base.dataobjects.DigitalBook;
-import in.securelearning.lil.android.base.dataobjects.Grade;
 import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.dataobjects.GroupPostsNResponse;
 import in.securelearning.lil.android.base.dataobjects.InteractiveImage;
@@ -43,7 +38,6 @@ import in.securelearning.lil.android.base.dataobjects.PostResponse;
 import in.securelearning.lil.android.base.dataobjects.Quiz;
 import in.securelearning.lil.android.base.dataobjects.QuizWeb;
 import in.securelearning.lil.android.base.dataobjects.Resource;
-import in.securelearning.lil.android.base.dataobjects.Subject;
 import in.securelearning.lil.android.base.dataobjects.TrackingRoute;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.dataobjects.VideoCourse;
@@ -80,7 +74,6 @@ import in.securelearning.lil.android.base.model.TrackingModel;
 import in.securelearning.lil.android.base.model.VideoCourseModel;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.dataobject.ServerDataPackage;
-import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 
 /**
  * Model for database access.
@@ -291,7 +284,7 @@ public class FlavorJobModel extends BaseModel {
             list.get(i).setDocId(assignmentResponse.getDocId());
         }
 
-         /*return updated list*/
+        /*return updated list*/
         return list;
     }
 
@@ -313,7 +306,7 @@ public class FlavorJobModel extends BaseModel {
             list.get(i).setDocId(postData.getDocId());
         }
 
-         /*return updated list*/
+        /*return updated list*/
         return list;
     }
 
@@ -329,7 +322,7 @@ public class FlavorJobModel extends BaseModel {
             list.get(i).setDocId(postResponse.getDocId());
         }
 
-         /*return updated list*/
+        /*return updated list*/
         return list;
     }
 
@@ -639,7 +632,7 @@ public class FlavorJobModel extends BaseModel {
     }
 
     public AssignmentResponse fetchAssignmentResponseFromObjectId(String objectId) {
-         /*fetch assignment using assignment model*/
+        /*fetch assignment using assignment model*/
         return mAssignmentResponseModel.getAssignmentResponseFromUidSync(objectId);
     }
 
@@ -716,7 +709,7 @@ public class FlavorJobModel extends BaseModel {
     }
 
     public void updateAndSaveCompleteSyncStatus(Blog blog) {
- /*update status of the blog*/
+        /*update status of the blog*/
         blog.setSyncStatus(SyncStatus.COMPLETE_SYNC.toString());
 
         /*save blog*/
@@ -735,7 +728,7 @@ public class FlavorJobModel extends BaseModel {
 
     public void updateAndSaveCompleteSyncStatus(BlogDetails blogDetails) {
 
-         /*update status of the blog*/
+        /*update status of the blog*/
         blogDetails.setSyncStatus(SyncStatus.COMPLETE_SYNC.toString());
 
         /*save blog*/
@@ -824,7 +817,7 @@ public class FlavorJobModel extends BaseModel {
     }
 
     public void updateAndSaveCompleteSyncStatus(PostData postData) {
-          /*update status of the postData*/
+        /*update status of the postData*/
         postData.setSyncStatus(SyncStatus.COMPLETE_SYNC.toString());
 
 //         /*Increament unread post count to one*/
@@ -837,14 +830,14 @@ public class FlavorJobModel extends BaseModel {
     }
 
     public void updateAndSaveCompleteSyncStatus(CalendarEvent calendarEvent) {
-       /*update status of the calendarEvent*/
+        /*update status of the calendarEvent*/
         calendarEvent.setSyncStatus(SyncStatus.COMPLETE_SYNC.toString());
         saveCalendarEventData(calendarEvent);
 
     }
 
     public void updateAndSaveCompleteSyncStatus(PostResponse postResponse) {
-          /*update status of the postResponse*/
+        /*update status of the postResponse*/
         postResponse.setSyncStatus(SyncStatus.COMPLETE_SYNC.toString());
 
         /*save postResponse*/
@@ -867,7 +860,7 @@ public class FlavorJobModel extends BaseModel {
         /*save assignment*/
         saveAssignment(assignment);
 
-         /*get list of assignment responses tagging the assignment*/
+        /*get list of assignment responses tagging the assignment*/
         // List<AssignmentResponse> list = mAssignmentResponseModel.getAssignmentResponseListFromAssignmentUidSync(assignment.getObjectId());
 
         /*one by one update status of all assignment responses*/
@@ -914,7 +907,7 @@ public class FlavorJobModel extends BaseModel {
      * @param conceptMap to update and save
      */
     public void updateAndSaveCompleteSyncStatus(ConceptMap conceptMap) {
-         /*update status of the conceptMap*/
+        /*update status of the conceptMap*/
         conceptMap.setSyncStatus(SyncStatus.COMPLETE_SYNC.toString());
 
         /*save conceptMap*/
@@ -1019,58 +1012,6 @@ public class FlavorJobModel extends BaseModel {
         return mAssignmentResponseModel.setAssignmentStudentFromResponse(assignmentResponse, assignmentResponse.getStage());
     }
 
-    public void saveSubjectList(Collection<Subject> collection, Context context) {
-        int[] colors = context.getResources().getIntArray(R.array.subject_color);
-        int[] textColors = context.getResources().getIntArray(R.array.subject_text_color);
-        int[] foregroundColors = context.getResources().getIntArray(R.array.subject_foreground_color);
-        java.util.ArrayList<PrefManager.SubjectExt> categories = new java.util.ArrayList<>();
-        int i = 0;
-        for (Subject subject : collection) {
-            categories.add(new PrefManager.SubjectExt(subject.getName(), subject.getId(), colors[i % colors.length], textColors[i % textColors.length], foregroundColors[i % foregroundColors.length], getSubjectDrawableWhiteIdentifierFromString(context, subject.getId()), getSubjectDrawableTransparentIdentifierFromString(context, subject.getId())));
-            i++;
-        }
-
-        PrefManager.setSubjectList(categories, context);
-    }
-
-    public void saveGradeList(Collection<Grade> collection, Context context) {
-        PrefManager.setGradeList(collection, context);
-    }
-
-    public void updateSubjectIcons(Context context) {
-        java.util.ArrayList<PrefManager.SubjectExt> collection = PrefManager.getSubjectList(context);
-        int[] colors = context.getResources().getIntArray(R.array.subject_color);
-        int[] textColors = context.getResources().getIntArray(R.array.subject_text_color);
-        int[] foregroundColors = context.getResources().getIntArray(R.array.subject_foreground_color);
-        java.util.ArrayList<PrefManager.SubjectExt> categories = new java.util.ArrayList<>();
-        int i = 0;
-        for (PrefManager.SubjectExt subject : collection) {
-            categories.add(new PrefManager.SubjectExt(subject.getName(), subject.getId(), colors[i % colors.length], textColors[i % textColors.length], foregroundColors[i % foregroundColors.length], getSubjectDrawableWhiteIdentifierFromString(context, subject.getId()), getSubjectDrawableTransparentIdentifierFromString(context, subject.getId())));
-            i++;
-        }
-
-        PrefManager.setSubjectList(categories, context);
-    }
-
-    public int getSubjectDrawableWhiteIdentifierFromString(Context context, String subjectId) {
-        String name = "subjectWhite" + subjectId;
-        int id = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
-        if (id == 0) {
-            id = R.drawable.white_default_course;
-        }
-        return id;
-
-    }
-
-    public int getSubjectDrawableTransparentIdentifierFromString(Context context, String subjectId) {
-        String name = "subjectTransparent" + subjectId;
-        int id = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
-        if (id == 0) {
-            id = R.drawable.transparent_default_course;
-        }
-        return id;
-
-    }
 
     public void saveCuratorMapping(CuratorMapping curatorMapping) {
         mCuratorMappingModel.saveObject(curatorMapping);

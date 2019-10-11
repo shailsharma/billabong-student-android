@@ -105,7 +105,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/badge_art" />
+                    android:src="@drawable/action_image_w" />
 
                 <in.securelearning.lil.android.base.widget.TextViewCustom
                     android:layout_width="wrap_content"

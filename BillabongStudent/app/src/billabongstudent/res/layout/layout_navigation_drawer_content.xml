@@ -29,7 +29,7 @@
             android:layout_alignParentBottom="true"
             android:background="@drawable/background_divider_top_grey"
             app:itemIconTint="@null"
-            app:menu="@menu/menu_bottombar"
+            app:menu="@menu/menu_bottom_bar"
 
             />
 

@@ -32,6 +32,7 @@ import in.securelearning.lil.android.syncadapter.dataobjects.ChapterHeaderData;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapter;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterResult;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -59,9 +60,9 @@ public class ChaptersFragment extends Fragment {
 
     /**
      * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * this activity using the provided parameters.
      *
-     * @return A new instance of fragment ChaptersFragment.
+     * @return A new instance of activity ChaptersFragment.
      */
     public static ChaptersFragment newInstance(String subjectId) {
         ChaptersFragment fragment = new ChaptersFragment();
@@ -93,10 +94,7 @@ public class ChaptersFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void getChapterResult(String subjectId) {
-        if (GeneralUtils.isNetworkAvailable(getContext())) {
-//            mBinding.recapView.layoutRecapProgressBar.setVisibility(View.VISIBLE);
-//            mBinding.recapView.recycleViewRecap.setVisibility(View.GONE);
-//            mBinding.recapView.textViewErrorRecap.setVisibility(View.GONE);
+        if (GeneralUtils.isNetworkAvailable(mContext)) {
             LessonPlanChapterPost lessonPlanChapterPost = new LessonPlanChapterPost();
             lessonPlanChapterPost.setType("topic");
             lessonPlanChapterPost.setSubjectId(subjectId);
@@ -108,21 +106,13 @@ public class ChaptersFragment extends Fragment {
                             if (lessonPlanChapterResults != null && lessonPlanChapterResults.getLessonPlanChapters() != null) {
 
                                 initializeExpandableList(lessonPlanChapterResults.getCompletedChapters(), lessonPlanChapterResults.getInProgressChapters(), lessonPlanChapterResults.getYetToStartChapters());
-//                                mBinding.recyclerView.setVisibility(View.VISIBLE);
-//                                mBinding.textViewErrorSubject.setVisibility(View.GONE);
 
-                            } else {
-//                                mBinding.textViewErrorSubject.setVisibility(View.VISIBLE);
-//                                mBinding.recyclerView.setVisibility(View.GONE);
                             }
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
 
-                            //mBinding.recapView.layoutRecapProgressBar.setVisibility(View.GONE);
-                            //mBinding.recapView.recycleViewRecap.setVisibility(View.GONE);
-                            // mBinding.recapView.textViewErrorRecap.setVisibility(View.VISIBLE);
                             throwable.printStackTrace();
                         }
 
@@ -169,6 +159,9 @@ public class ChaptersFragment extends Fragment {
         final ExpandableListAdapter expandableAdapter = new ExpandableListAdapter(listDataHeader, listDataChild);
         mBinding.expandableListViewChapters.setAdapter(expandableAdapter);
         mBinding.expandableListViewChapters.setNestedScrollingEnabled(false);
+        mBinding.expandableListViewChapters.setDividerHeight(0);
+        mBinding.expandableListViewChapters.setChildDivider(null);
+
         mBinding.expandableListViewChapters.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
@@ -219,17 +212,33 @@ public class ChaptersFragment extends Fragment {
 
             AnimationUtils.fadeInFast(mContext, binding.getRoot());
             binding.textViewChapterTitle.setText(lessonPlanChapter.getName());
-            if (childPosition % 2 == 1) {
-                convertView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorBackground));
-            } else {
-                convertView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorWhite));
+
+            if (groupPosition == 0) {
+                if (childPosition % 2 == 1) {
+                    binding.textViewChapterTitle.setBackground(ContextCompat.getDrawable(mContext, R.drawable.background_chapter_in_progress_child));
+                } else {
+                    binding.textViewChapterTitle.setBackground(null);
+                }
+            } else if (groupPosition == 1) {
+                if (childPosition % 2 == 1) {
+                    binding.textViewChapterTitle.setBackground(ContextCompat.getDrawable(mContext, R.drawable.background_chapter_yet_to_start_child));
+
+                } else {
+                    binding.textViewChapterTitle.setBackground(null);
+                }
+            } else if (groupPosition == 2) {
+                if (childPosition % 2 == 1) {
+                    binding.textViewChapterTitle.setBackground(ContextCompat.getDrawable(mContext, R.drawable.background_chapter_completed_child));
+                } else {
+                    binding.textViewChapterTitle.setBackground(null);
+                }
             }
+
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     mRxBus.send(new FetchSubjectDetailEvent(lessonPlanChapter.getId(), lessonPlanChapter.getName(), getChapterStatus(mHeaderData.get(groupPosition).getHeaderTitle())));
-                    //Toast.makeText(getContext(), lessonPlanChapter.getName(), Toast.LENGTH_SHORT).show();
                 }
             });
             return convertView;
@@ -280,32 +289,32 @@ public class ChaptersFragment extends Fragment {
 
             ChapterHeaderData chapterHeaderData = mHeaderData.get(groupPosition);
             if (isExpanded) {
-                binding.imageViewStateIndicator.setBackgroundResource(R.drawable.chevron_down_white);
+                binding.imageViewStateIndicator.setBackgroundResource(R.drawable.chevron_down_dark);
             } else {
-                binding.imageViewStateIndicator.setBackgroundResource(R.drawable.chevron_right_white);
+                binding.imageViewStateIndicator.setBackgroundResource(R.drawable.chevron_right_dark);
 
             }
 
             if (chapterHeaderData.getHeaderTitle().equalsIgnoreCase(ChapterHeaderData.HEADER_COMPLETED)) {
-                binding.getRoot().setBackgroundResource(R.drawable.background_chapter_completed);
+                binding.layoutStatus.setBackgroundResource(R.drawable.background_chapter_completed);
             } else if (chapterHeaderData.getHeaderTitle().equalsIgnoreCase(ChapterHeaderData.HEADER_IN_PROGRESS)) {
-                binding.getRoot().setBackgroundResource(R.drawable.background_chapter_in_progress);
+                binding.layoutStatus.setBackgroundResource(R.drawable.background_chapter_in_progress);
             } else if (chapterHeaderData.getHeaderTitle().equalsIgnoreCase(ChapterHeaderData.HEADER_YET_TO_START)) {
-                binding.getRoot().setBackgroundResource(R.drawable.background_chapter_yet_to_start);
+                binding.layoutStatus.setBackgroundResource(R.drawable.background_chapter_yet_to_start);
             }
 
             binding.textViewStatus.setText(chapterHeaderData.getHeaderTitle());
 
             int childCount = getChildrenCount(groupPosition);
             if (childCount == 0) {
-                binding.textViewChapterCount.setText(R.string.no_chapter);
+                binding.textViewChapterCount.setText(ConstantUtil.STRING_ZERO);
                 binding.imageViewStateIndicator.setVisibility(View.GONE);
             } else if (childCount > 1) {
-                String text = getChildrenCount(groupPosition) + " " + getString(R.string.chapters);
+                String text = String.valueOf(getChildrenCount(groupPosition));
                 binding.textViewChapterCount.setText(text);
                 binding.imageViewStateIndicator.setVisibility(View.VISIBLE);
             } else {
-                String text = getChildrenCount(groupPosition) + " " + getString(R.string.chapter);
+                String text = String.valueOf(getChildrenCount(groupPosition));
                 binding.textViewChapterCount.setText(text);
                 binding.imageViewStateIndicator.setVisibility(View.VISIBLE);
             }

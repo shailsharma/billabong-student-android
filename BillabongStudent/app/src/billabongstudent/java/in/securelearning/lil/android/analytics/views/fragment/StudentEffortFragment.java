@@ -5,6 +5,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -30,6 +31,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -87,30 +89,11 @@ public class StudentEffortFragment extends Fragment {
     }
 
     @Override
-    public void setUserVisibleHint(boolean visible) {
-        super.setUserVisibleHint(visible);
-        if (visible && isResumed()) {   // only at fragment screen is resumed
-            fragmentResume = true;
-            fragmentVisible = false;
-            fragmentOnCreated = true;
-            fetchEffortData();
-        } else if (visible) {        // only at fragment onCreated
-            fragmentResume = false;
-            fragmentVisible = true;
-            fragmentOnCreated = true;
-        } else if (!visible && fragmentOnCreated) {// only when you go out of fragment screen
-            fragmentVisible = false;
-            fragmentResume = false;
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.layout_student_analytics_effort, container, false);
-        if (!fragmentResume && fragmentVisible) {   //only when first time fragment is created
+
+        if (!fragmentResume && fragmentVisible) {   //only when first time activity is created
             fetchEffortData();
         }
 
@@ -118,16 +101,40 @@ public class StudentEffortFragment extends Fragment {
         return mBinding.getRoot();
     }
 
+    @Override
+    public void setUserVisibleHint(boolean visible) {
+        super.setUserVisibleHint(visible);
+        if (visible && isResumed()) {   // only at activity screen is resumed
+            fragmentResume = true;
+            fragmentVisible = false;
+            fragmentOnCreated = true;
+            fetchEffortData();
+        } else if (visible) {        // only at activity onCreated
+            fragmentResume = false;
+            fragmentVisible = true;
+            fragmentOnCreated = true;
+        } else if (!visible && fragmentOnCreated) {// only when you go out of activity screen
+            fragmentVisible = false;
+            fragmentResume = false;
+        }
+    }
+
     @SuppressLint("CheckResult")
     private void fetchEffortData() {
+
         if (GeneralUtils.isNetworkAvailable(mContext)) {
-            mAnalyticsModel.fetchEffortData().subscribeOn(Schedulers.io())
+
+            mBinding.progressBarEffort.setVisibility(View.VISIBLE);
+
+            mAnalyticsModel.fetchEffortData()
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<EffortChartDataParent>() {
                         @Override
                         public void accept(EffortChartDataParent effortChartDataParent) throws Exception {
+
                             mBinding.progressBarEffort.setVisibility(View.GONE);
-                            mBinding.progressBarTopicEffort.setVisibility(View.GONE);
+
                             if (!effortChartDataParent.getEffortChartDataList().isEmpty()) {
                                 mBinding.frameTime1.setVisibility(View.VISIBLE);
                                 mBinding.frameLayout2.setVisibility(View.VISIBLE);
@@ -137,6 +144,7 @@ public class StudentEffortFragment extends Fragment {
                                 mBinding.layoutRecyclerView.setVisibility(View.VISIBLE);
 
                                 drawPieChart(effortChartDataParent.getEffortChartDataList(), effortChartDataParent.getDaysCount());
+
                             } else {
                                 mBinding.frameLayout2.setVisibility(View.GONE);
                                 mBinding.frameTime1.setVisibility(View.GONE);
@@ -144,7 +152,6 @@ public class StudentEffortFragment extends Fragment {
                                 mBinding.chartEffort.setVisibility(View.GONE);
                                 mBinding.layoutDailyTimeSpent.setVisibility(View.GONE);
                                 mBinding.textViewNoEffortData.setVisibility(View.VISIBLE);
-
                             }
 
                         }
@@ -152,7 +159,6 @@ public class StudentEffortFragment extends Fragment {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
-                            mBinding.progressBarTopicEffort.setVisibility(View.GONE);
                             mBinding.progressBarEffort.setVisibility(View.GONE);
                             mBinding.frameLayout2.setVisibility(View.GONE);
                             mBinding.frameTime1.setVisibility(View.GONE);
@@ -160,7 +166,6 @@ public class StudentEffortFragment extends Fragment {
                             mBinding.chartEffort.setVisibility(View.GONE);
                             mBinding.layoutDailyTimeSpent.setVisibility(View.GONE);
                             mBinding.textViewNoEffortData.setVisibility(View.VISIBLE);
-
                         }
                     });
         } else {
@@ -202,6 +207,7 @@ public class StudentEffortFragment extends Fragment {
             totalPracticeTime += effortChartData.get(i).getTotalPracticeTimeSpent();
         }
         mTotalTime = totalTimeSpent;
+
         /*Total time spent*/
         String formattedTotalTimeSpent = mAnalyticsModel.showSecondAndMinutesAndHours((long) totalTimeSpent);
         mBinding.textViewTotalTimeSpent.setText(formattedTotalTimeSpent);
@@ -209,9 +215,6 @@ public class StudentEffortFragment extends Fragment {
         final float finalTotalReadTime = totalReadTime;
         final float finalTotalVideoTime = totalVideoTime;
         final float finalTotalPracticeTime = totalPracticeTime;
-
-        // mBinding.textViewDailyTimeSpentLabel.setPaintFlags(mBinding.textViewDailyTimeSpentLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        // mBinding.textViewTotalTimeSpentLabel.setPaintFlags(mBinding.textViewTotalTimeSpentLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         mBinding.layoutTotalTimeSpent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -277,6 +280,7 @@ public class StudentEffortFragment extends Fragment {
             public void onValueSelected(Entry e, Highlight h) {
                 EffortChartData chartData = (EffortChartData) e.getData();
                 fetchSubjectWiseEffortData(chartData.getId());
+                setSubjectIcon(chartData.getSubject().get(0).getSubjectIcon());
                 mBinding.textViewPerformance.setText(chartData.getSubject().get(0).getName());
                 int performance = Math.round((chartData.getTotalTimeSpent() / mTotalTime) * 100);
                 drawProgress(performance, (int) h.getX());
@@ -294,6 +298,7 @@ public class StudentEffortFragment extends Fragment {
             EffortChartData data = list.get(0);
             fetchSubjectWiseEffortData(data.getId());
             mBinding.llPerformance.setVisibility(View.VISIBLE);
+            setSubjectIcon(data.getSubject().get(0).getSubjectIcon());
             mBinding.textViewPerformance.setText(data.getSubject().get(0).getName());
             int performance = Math.round((data.getTotalTimeSpent() / mTotalTime) * 100);
             drawProgress(performance, 0);
@@ -302,6 +307,15 @@ public class StudentEffortFragment extends Fragment {
         }
     }
 
+
+    private void setSubjectIcon(String subjectIcon) {
+        if (!TextUtils.isEmpty(subjectIcon)) {
+            Picasso.with(getContext()).load(subjectIcon).placeholder(R.drawable.icon_book).fit().centerCrop().into(mBinding.imageViewSubjectIcon);
+        } else {
+            Picasso.with(getContext()).load(R.drawable.icon_book).fit().centerCrop().into(mBinding.imageViewSubjectIcon);
+
+        }
+    }
 
     /*draw and set values for time spent pie chart*/
     private void drawProgress(int performance, int dataSetIndex) {
@@ -359,15 +373,21 @@ public class StudentEffortFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void fetchSubjectWiseEffortData(final String subjectId) {
+
+        mBinding.progressBarEffort.setVisibility(View.VISIBLE);
+
         if (GeneralUtils.isNetworkAvailable(mContext)) {
-            mAnalyticsModel.fetchSubjectWiseEffortData(subjectId).subscribeOn(Schedulers.io())
+            mAnalyticsModel.fetchSubjectWiseEffortData(subjectId)
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<EffortChartDataParent>() {
                         @Override
                         public void accept(EffortChartDataParent effortChartDataParent) throws Exception {
-                            mBinding.progressBarTopicEffort.setVisibility(View.GONE);
+
                             mBinding.progressBarEffort.setVisibility(View.GONE);
+
                             fetchWeeklyEffortData(subjectId);
+
                             if (!effortChartDataParent.getEffortChartDataList().isEmpty()) {
                                 mBinding.linearLayoutTopicTotalTime.setVisibility(View.VISIBLE);
                                 mBinding.linearLayoutDailyTimeSpent.setVisibility(View.VISIBLE);
@@ -387,17 +407,18 @@ public class StudentEffortFragment extends Fragment {
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
+
                             throwable.printStackTrace();
+
                             fetchWeeklyEffortData(subjectId);
                             mBinding.layoutTotalTimeSpent.setVisibility(View.GONE);
                             mBinding.layoutDailyTimeSpent.setVisibility(View.GONE);
                             mBinding.layoutRecyclerView.setVisibility(View.GONE);
-                            mBinding.progressBarTopicEffort.setVisibility(View.GONE);
                             mBinding.progressBarEffort.setVisibility(View.GONE);
-
 
                         }
                     });
+
         } else {
             showInternetSnackBar();
         }
@@ -406,15 +427,23 @@ public class StudentEffortFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void fetchWeeklyEffortData(String subjectId) {
+
         if (GeneralUtils.isNetworkAvailable(mContext)) {
-            mAnalyticsModel.fetchWeeklyEffortData(subjectId).subscribeOn(Schedulers.io())
+
+            mBinding.progressBarEffort.setVisibility(View.VISIBLE);
+
+            mAnalyticsModel.fetchWeeklyEffortData(subjectId)
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<EffortChartDataParent>() {
                         @Override
                         public void accept(EffortChartDataParent effortChartDataParent) throws Exception {
-                            mBinding.progressBarTopicEffort.setVisibility(View.GONE);
+
                             mBinding.progressBarEffort.setVisibility(View.GONE);
-                            if (effortChartDataParent != null && effortChartDataParent.getEffortChartDataList() != null && !effortChartDataParent.getEffortChartDataList().isEmpty()) {
+
+                            if (effortChartDataParent != null
+                                    && effortChartDataParent.getEffortChartDataList() != null
+                                    && !effortChartDataParent.getEffortChartDataList().isEmpty()) {
 
                                 mBinding.llBarChart.setVisibility(View.VISIBLE);
                                 mBinding.textViewTopicNoEffortData.setVisibility(View.GONE);
@@ -431,14 +460,14 @@ public class StudentEffortFragment extends Fragment {
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
                             mBinding.progressBarEffort.setVisibility(View.GONE);
-                            mBinding.progressBarTopicEffort.setVisibility(View.GONE);
                             mBinding.textViewTopicNoEffortData.setVisibility(View.VISIBLE);
-
                         }
                     });
+
         } else {
             showInternetSnackBar();
         }
+
     }
 
     /*Draw bar chart for performance*/
@@ -494,7 +523,8 @@ public class StudentEffortFragment extends Fragment {
 
         YAxis leftAxis = mBinding.topicChartEffort.getAxisLeft();
         leftAxis.setAxisMinimum(0);
-        leftAxis.setAxisMaximum(100);
+        //Need to dynamic Y axis
+        //leftAxis.setAxisMaximum(100);
         leftAxis.setGridColor(ContextCompat.getColor(mContext, R.color.colorTransparent));
 
         Legend legend = mBinding.topicChartEffort.getLegend();
@@ -547,7 +577,7 @@ public class StudentEffortFragment extends Fragment {
 //                        mBinding.topicChartEffort.getTransformer(YAxis.AxisDependency.LEFT)));
         mBinding.topicChartEffort.setExtraBottomOffset(10);
         mBinding.topicChartEffort.getDescription().setEnabled(false);
-        mBinding.topicChartEffort.setMaxVisibleValueCount(100);
+        //mBinding.topicChartEffort.setMaxVisibleValueCount(100);
         mBinding.topicChartEffort.setPinchZoom(false);
         mBinding.topicChartEffort.setDrawGridBackground(false);
         mBinding.topicChartEffort.getXAxis().setDrawGridLines(false);
@@ -630,7 +660,7 @@ public class StudentEffortFragment extends Fragment {
 
     private void showTopicInternetSnackBar(final String subjectId) {
 
-        Snackbar.make(mBinding.getRoot(), getString(R.string.error_message_no_internet), Snackbar.LENGTH_INDEFINITE)
+    /*    Snackbar.make(mBinding.getRoot(), getString(R.string.error_message_no_internet), Snackbar.LENGTH_INDEFINITE)
                 .setAction((R.string.labelRetry), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -643,7 +673,7 @@ public class StudentEffortFragment extends Fragment {
                     }
                 })
                 .show();
-
+*/
     }
 
     @Override

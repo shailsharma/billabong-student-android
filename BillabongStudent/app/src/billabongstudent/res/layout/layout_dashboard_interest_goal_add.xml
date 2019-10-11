@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--Interest and Goal Add-->
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/layoutInterestGoalContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/value_16dp"
+        android:background="@drawable/gradient_app"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="88dp"
+            android:layout_height="88dp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="@dimen/value_16dp"
+            android:paddingTop="@dimen/value_8dp"
+            android:paddingBottom="@dimen/value_8dp"
+            android:text="@string/stringDashboardInterestAndGoal"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorWhite" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/imageViewAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/value_16dp"
+            android:tint="@color/colorWhite"
+            app:srcCompat="@drawable/add_gray" />
+
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+</layout>

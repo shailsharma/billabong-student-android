@@ -44,6 +44,44 @@ public class GamificationPrefs {
 
     }
 
+    public static void setFirstTimeApplicationLoaded(Context context,boolean isRanFirstTime) {
+        SharedPreferences preferences = getSharePreference(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(ConstantUtil.DASHBOARD_LOAD_FIRST_TIME, isRanFirstTime);
+        editor.apply();
+
+
+    }
+
+    public static boolean getFirstTimeApplicationLoaded(Context context) {
+
+        SharedPreferences preferences = getSharePreference(context);
+        if (preferences.contains(ConstantUtil.DASHBOARD_LOAD_FIRST_TIME)) {
+
+            return preferences.getBoolean(ConstantUtil.DASHBOARD_LOAD_FIRST_TIME, false);
+        }
+        return false;
+    }
+
+    public static void setSubjectCallDone(Context context,boolean isSubjectCallDone) {
+        SharedPreferences preferences = getSharePreference(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(ConstantUtil.DASHBOARD_IS_SUBJECT_DONE, isSubjectCallDone);
+        editor.apply();
+
+
+    }
+
+    public static boolean getSubjectDone(Context context) {
+
+        SharedPreferences preferences = getSharePreference(context);
+        if (preferences.contains(ConstantUtil.DASHBOARD_IS_SUBJECT_DONE)) {
+
+            return preferences.getBoolean(ConstantUtil.DASHBOARD_IS_SUBJECT_DONE, false);
+        }
+        return false;
+    }
+
     public static void saveGamificationData(Context context, ArrayList<GamificationEvent> eventList) {
 
         SharedPreferences preferences = getSharePreference(context);
@@ -190,6 +228,7 @@ public class GamificationPrefs {
             spreferencesEditor.apply();
         }
     }
+
 
 
 }

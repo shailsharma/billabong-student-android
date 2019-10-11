@@ -23,7 +23,6 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.FragmentBlogListItem3Binding;
 import in.securelearning.lil.android.app.databinding.LayoutBlogRecyclerViewBinding;
 import in.securelearning.lil.android.base.constants.SyncStatus;
@@ -40,6 +39,7 @@ import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -54,9 +54,9 @@ import retrofit2.Response;
 
 
 /**
- * A fragment representing a list of Items.
+ * A activity representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this activity MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
 public class BlogFragment extends Fragment {
@@ -78,8 +78,8 @@ public class BlogFragment extends Fragment {
     private LayoutBlogRecyclerViewBinding mBinding;
 
     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * Mandatory empty constructor for the activity manager to instantiate the
+     * activity (e.g. upon screen orientation changes).
      */
     public BlogFragment() {
     }
@@ -232,13 +232,9 @@ public class BlogFragment extends Fragment {
     }
 
     private void setRetryView() {
-        if (BuildConfig.FLAVOR.equalsIgnoreCase("fitness")) {
-            mBinding.imageViewRetry.setImageResource(R.drawable.daily_tips_g);
-            mBinding.textViewRetry.setText("Unable to get Tips.");
-        } else {
-            mBinding.imageViewRetry.setImageResource(R.drawable.logo_news_g);
-            mBinding.textViewRetry.setText(getString(R.string.errorFetchNews));
-        }
+
+        mBinding.imageViewRetry.setImageResource(R.drawable.logo_news_g);
+        mBinding.textViewRetry.setText(getString(R.string.errorFetchNews));
 
     }
 
@@ -254,13 +250,9 @@ public class BlogFragment extends Fragment {
     }
 
     private void setNoDataView() {
-        if (BuildConfig.FLAVOR.equalsIgnoreCase("fitness")) {
-            mBinding.imageViewNoResult.setImageResource(R.drawable.daily_tips_g);
-            mBinding.textViewNoResult.setText("No Tips available.");
-        } else {
-            mBinding.imageViewNoResult.setImageResource(R.drawable.logo_news_g);
-            mBinding.textViewNoResult.setText(getString(R.string.messageNoNewsAvailable));
-        }
+
+        mBinding.imageViewNoResult.setImageResource(R.drawable.logo_news_g);
+        mBinding.textViewNoResult.setText(getString(R.string.messageNoNewsAvailable));
 
     }
 

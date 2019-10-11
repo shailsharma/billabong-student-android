@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -17,7 +18,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -95,41 +95,41 @@ public class FullScreenImage {
      *
      * @param position
      * @param isComesFromGrid
-     * @param mAttachmentPathList
+     * @param isNetworkResource
+     * @param attachmentPathList
      */
-    public static void setUpFullImageView(Context context, int position, boolean isComesFromGrid, boolean isCountEnabled, final ArrayList<Resource> mAttachmentPathList) {
-        final Dialog mDialog = new Dialog(context);
-        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mDialog.setContentView(R.layout.layout_gallery_view);
-        mDialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
-        mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(context, R.color.colorGrey77)));
-        final ImageViewPager mImageViewPager = (ImageViewPager) mDialog.findViewById(R.id.viewpager_images);
-        ImageButton mCloseButton = (ImageButton) mDialog.findViewById(R.id.button_back);
+    public static void setUpFullImageView(Context context, int position, boolean isComesFromGrid, boolean isCountEnabled, boolean isNetworkResource, final ArrayList<Resource> attachmentPathList) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_gallery_view);
+        dialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(context, R.color.colorGrey77)));
+        final ImageViewPager imageViewPager = dialog.findViewById(R.id.viewpager_images);
+        ImageButton closeButton = dialog.findViewById(R.id.button_back);
 
-        final LinearLayout mPreviousButton = (LinearLayout) mDialog.findViewById(R.id.button_previous);
-        final LinearLayout mNextButton = (LinearLayout) mDialog.findViewById(R.id.button_next);
-        final LinearLayout mToolbarLayout = (LinearLayout) mDialog.findViewById(R.id.layout_toolbar);
-        final TextView mAttachmentCountsTextView = (TextView) mDialog.findViewById(R.id.textViewAttachmentCounts);
+        final LinearLayout previousButton = dialog.findViewById(R.id.button_previous);
+        final LinearLayout nextButton = dialog.findViewById(R.id.button_next);
+        final TextView attachmentCountsTextView = dialog.findViewById(R.id.textViewAttachmentCounts);
         if (!isCountEnabled) {
-            mAttachmentCountsTextView.setVisibility(ViewPager.GONE);
+            attachmentCountsTextView.setVisibility(ViewPager.GONE);
         }
-        setUpFullImageViewItem(context, mImageViewPager, mAttachmentPathList);
+        setUpFullImageViewItem(context, isNetworkResource, imageViewPager, attachmentPathList);
 
-        mPreviousButton.setOnClickListener(new View.OnClickListener() {
+        previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mImageViewPager.setCurrentItem(mImageViewPager.getCurrentItem() - 1, true);
+                imageViewPager.setCurrentItem(imageViewPager.getCurrentItem() - 1, true);
             }
         });
 
-        mNextButton.setOnClickListener(new View.OnClickListener() {
+        nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mImageViewPager.setCurrentItem(mImageViewPager.getCurrentItem() + 1, true);
+                imageViewPager.setCurrentItem(imageViewPager.getCurrentItem() + 1, true);
             }
         });
 
-        mImageViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        imageViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -137,19 +137,20 @@ public class FullScreenImage {
 
             @Override
             public void onPageSelected(int position) {
-                mAttachmentCountsTextView.setText(String.valueOf(position + 1) + " of " + String.valueOf(mAttachmentPathList.size()));
+                String toolbarTitle = (position + 1) + " of " + attachmentPathList.size();
+                attachmentCountsTextView.setText(toolbarTitle);
                 if (position == 0) {
-                    mPreviousButton.setVisibility(View.INVISIBLE);
+                    previousButton.setVisibility(View.INVISIBLE);
 
                 } else {
-                    mPreviousButton.setVisibility(View.VISIBLE);
+                    previousButton.setVisibility(View.VISIBLE);
                 }
 
-                if (position == (mImageViewPager.getAdapter().getCount() - 1)) {
-                    mNextButton.setVisibility(View.INVISIBLE);
+                if (position == (imageViewPager.getAdapter().getCount() - 1)) {
+                    nextButton.setVisibility(View.INVISIBLE);
 
                 } else {
-                    mNextButton.setVisibility(View.VISIBLE);
+                    nextButton.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -159,35 +160,35 @@ public class FullScreenImage {
             }
         });
 
-        mCloseButton.setOnClickListener(new View.OnClickListener() {
+        closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDialog.dismiss();
+                dialog.dismiss();
             }
         });
 
-        Window window = mDialog.getWindow();
+        Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.CENTER;
         wlp.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(wlp);
-        mDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        mDialog.show();
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        dialog.show();
 
         if (isComesFromGrid) {
-            mAttachmentCountsTextView.setText(String.valueOf(1) + " of " + String.valueOf(mAttachmentPathList.size()));
-            if (position == 0) mPreviousButton.setVisibility(View.INVISIBLE);
+            attachmentCountsTextView.setText(1 + " of " + String.valueOf(attachmentPathList.size()));
+            if (position == 0) previousButton.setVisibility(View.INVISIBLE);
 
-            if (mImageViewPager.getAdapter().getCount() <= 1)
-                mNextButton.setVisibility(View.INVISIBLE);
+            if (imageViewPager.getAdapter().getCount() <= 1)
+                nextButton.setVisibility(View.INVISIBLE);
 
-            mImageViewPager.setCurrentItem(position, true);
+            imageViewPager.setCurrentItem(position, true);
         } else {
-            mAttachmentCountsTextView.setText(String.valueOf(1) + " of " + String.valueOf(mAttachmentPathList.size()));
-            if (position == 0) mPreviousButton.setVisibility(View.INVISIBLE);
+            attachmentCountsTextView.setText(String.valueOf(1) + " of " + String.valueOf(attachmentPathList.size()));
+            if (position == 0) previousButton.setVisibility(View.INVISIBLE);
 
-            if (mImageViewPager.getAdapter().getCount() <= 1)
-                mNextButton.setVisibility(View.INVISIBLE);
+            if (imageViewPager.getAdapter().getCount() <= 1)
+                nextButton.setVisibility(View.INVISIBLE);
         }
 
     }
@@ -196,14 +197,14 @@ public class FullScreenImage {
      * set up viewpager item for showing images
      *
      * @param context
-     * @param mImageViewPager
+     * @param isNetworkResource
+     * @param imageViewPager
      * @param mAttachmentPathList
      */
-    public static void setUpFullImageViewItem(Context context, ViewPager mImageViewPager, ArrayList<Resource> mAttachmentPathList) {
-        ViewPagerImageAdapter mViewPagerImageAdapter;
-        mViewPagerImageAdapter = new ViewPagerImageAdapter(context, mAttachmentPathList);
-        mImageViewPager.setAdapter(mViewPagerImageAdapter);
-        mImageViewPager.setOffscreenPageLimit(1);
+    private static void setUpFullImageViewItem(Context context, boolean isNetworkResource, ViewPager imageViewPager, ArrayList<Resource> mAttachmentPathList) {
+        ViewPagerImageAdapter viewPagerImageAdapter = new ViewPagerImageAdapter(context, isNetworkResource, mAttachmentPathList);
+        imageViewPager.setAdapter(viewPagerImageAdapter);
+        imageViewPager.setOffscreenPageLimit(1);
     }
 
     public static ArrayList<Resource> getResourceArrayList(ArrayList<String> attachmentPathList) {
@@ -234,13 +235,14 @@ public class FullScreenImage {
         Context mContext;
         LayoutInflater inflater;
         ArrayList<Resource> mAttachmentPathList;
-        private File mImageFile;
         private String mBaseFolderPath;
+        private boolean mIsNetworkResource;
 
-        public ViewPagerImageAdapter(Context context, ArrayList<Resource> mAttachmentPathList) {
-            mContext = context;
+        ViewPagerImageAdapter(Context context, boolean isNetworkResource, ArrayList<Resource> mAttachmentPathList) {
+            this.mContext = context;
             this.mAttachmentPathList = mAttachmentPathList;
-            mBaseFolderPath = mContext.getFilesDir().getAbsolutePath() + File.separator;
+            this.mIsNetworkResource = isNetworkResource;
+            this.mBaseFolderPath = mContext.getFilesDir().getAbsolutePath() + File.separator;
 
         }
 
@@ -251,64 +253,58 @@ public class FullScreenImage {
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == ((LinearLayout) object);
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+            return view == object;
         }
 
+        @NonNull
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            TouchImageView imageView;
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
             inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View itemView = inflater.inflate(R.layout.layout_image_viewpager_itemview, container, false);
-            imageView = itemView.findViewById(R.id.imageview_viewpager_images);
 
-            if (FileUtils.checkIsFilePath(mAttachmentPathList.get(position).getDeviceURL())) {
-                mImageFile = new File(FileUtils.getPathFromFilePath(mAttachmentPathList.get(position).getDeviceURL()));
+            View itemView = inflater.inflate(R.layout.layout_image_viewpager_itemview, container, false);
+
+            TouchImageView imageView = itemView.findViewById(R.id.imageview_viewpager_images);
+
+            Resource resource = mAttachmentPathList.get(position);
+
+            if (mIsNetworkResource) {
+                String networkFile;
+                if (!TextUtils.isEmpty(resource.getUrl())) {
+                    networkFile = resource.getUrl();
+                } else if (!TextUtils.isEmpty(resource.getUrlMain())) {
+                    networkFile = resource.getUrlMain();
+                } else if (!TextUtils.isEmpty(resource.getThumbXL())) {
+                    networkFile = resource.getThumbXL();
+                } else if (!TextUtils.isEmpty(resource.getThumb())) {
+                    networkFile = resource.getThumb();
+                } else {
+                    networkFile = resource.getDeviceURL();
+                }
+                Picasso.with(mContext).load(networkFile).placeholder(R.drawable.background_transparent).into(imageView);
+
             } else {
-                mImageFile = new File(mBaseFolderPath + mAttachmentPathList.get(position));
+                File localFile;
+
+                if (FileUtils.checkIsFilePath(resource.getDeviceURL())) {
+                    localFile = new File(FileUtils.getPathFromFilePath(resource.getDeviceURL()));
+                } else {
+                    localFile = new File(mBaseFolderPath + resource);
+                }
+                Picasso.with(mContext).load(localFile).placeholder(R.drawable.background_transparent).into(imageView);
             }
 
-            Picasso.with(mContext).load(mImageFile).placeholder(R.drawable.background_transparent).into(imageView);
 
+            container.addView(itemView);
 
-            ((ViewPager) container).addView(itemView);
             return itemView;
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            // Remove viewpager_item.xml from ViewPager
-            ((ViewPager) container).removeView((LinearLayout) object);
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+            container.removeView((LinearLayout) object);
 
         }
     }
 
-    public static void checkPathOrUrl(Context context, String path, ImageView imageView) {
-        if (!TextUtils.isEmpty(path) && imageView != null) {
-            if (path.startsWith("http")) {
-                Picasso.with(context).load(path).into(imageView);
-
-            } else {
-//                if (path.startsWith("file:///")) {
-//                    path.replace("file:///", "file://");
-//                }
-//                if (path.startsWith(":")) {
-//                    path = path.substring(1);
-//                }
-//                if (path.startsWith("/")) {
-//                    path = path.substring(1);
-//                }
-//                if (path.startsWith("/")) {
-//                    path = path.substring(1);
-//                }
-//                if (path.startsWith("/")) {
-//                    path = path.substring(1);
-//                }
-//                File file = new File(path);
-                //imageView.setImageDrawable(new BitmapDrawable(path));
-                Picasso.with(context).load(new File(path)).into(imageView);
-
-            }
-        }
-    }
 }

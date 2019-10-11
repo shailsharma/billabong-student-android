@@ -26,7 +26,7 @@
             android:layout_marginRight="3dp"
             android:layout_marginTop="3dp"
             android:elevation="5dp"
-            android:src="@drawable/close_popup" />
+            android:src="@drawable/action_close_w" />
 
 
     </RelativeLayout>

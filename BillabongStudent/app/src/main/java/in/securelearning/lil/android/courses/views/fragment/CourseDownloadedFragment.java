@@ -28,7 +28,7 @@ public class CourseDownloadedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the layout for this activity
         return inflater.inflate(R.layout.layout_course_recycler_view, container, false);
     }
 

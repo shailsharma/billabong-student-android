@@ -40,6 +40,7 @@
     <string name="error_thumbnail">Please select Quiz Thumbnail</string>
 
 
+    <string name="messageGoBackExit">Press BACK again to exit.</string>
     <string name="fetching">Fetching</string>
     <string name="share">Share</string>
     <string name="download">Download</string>
@@ -358,7 +359,8 @@
     <string name="message_cannot_attach_video">You cannot select video with images</string>
     <string name="message_attach_limit">You can add 6 images only</string>
     <string name="file_not_supported">File not supported</string>
-    <string name="file_size_limit">"Can't attach file larger then 10 MB"</string>
+    <string name="file_size_limit_10MB">"Can't attach file larger then 10 MB"</string>
+    <string name="file_size_limit">Can\'t attach file larger then</string>
     <string name="valid_file">"Please select a valid file."</string>
     <string name="format_not_supported">Selected file format not supported</string>
     <string name="rate_and_review">Rate and Review</string>
@@ -750,6 +752,7 @@
     <string name="typeVideo">video</string>
     <string name="typeYouTubeVideo">youtube#video</string>
     <string name="typeVimeoVideo">vimeo</string>
+    <string name="typeVimeoVideoDotCom">vimeo.com</string>
     <string name="typeMicroCourse">microCourse</string>
     <string name="typeQuiz">quiz</string>
     <string name="messageNoDrag">Please complete mandatory task to move further.</string>
@@ -774,6 +777,7 @@
     <string name="labelAvailableTraining">Available Training</string>
     <string name="labelAnalysis">Analysis</string>
     <string name="labelAnalytics">Analytics</string>
+    <string name="labelLearningAnalytics">Learning Analytics</string>
     <string name="label_home">Home</string>
     <string name="filter_homework">Filter Homework</string>
     <string name="submitted_homework">Submitted Homework</string>
@@ -810,4 +814,7 @@
     <string name="logging_out">Logging Out…</string>
     <string name="avail_bonus">AVAIL BONUS</string>
     <string name="in_min">Min.</string>
+    <string name="profile">Profile</string>
+    <string name="preferences">Preferences</string>
+    <string name="other">Other</string>
 </resources>

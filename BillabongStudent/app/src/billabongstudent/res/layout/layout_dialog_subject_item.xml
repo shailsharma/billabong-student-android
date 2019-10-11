@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/margin_12dp">
+        android:padding="@dimen/value_12dp">
 
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
@@ -18,7 +18,7 @@
                 android:id="@+id/imageViewThumbnail"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:padding="@dimen/padding_8dp"
+                android:padding="@dimen/value_8dp"
                 android:visibility="visible"
                 tools:src="@drawable/icon_book" />
 
@@ -34,22 +34,22 @@
                 android:id="@+id/textViewScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/euro_flower_logo"
-                android:drawablePadding="@dimen/padding_4dp"
+                android:drawableEnd="@drawable/icon_coin_gold_24_vector"
+                android:drawablePadding="@dimen/value_4dp"
                 android:gravity="center"
-                android:padding="@dimen/padding_8dp"
+                android:padding="@dimen/value_8dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@android:color/black"
                 android:textStyle="bold"
-                tools:text="4700" />
+                tools:text="470000" />
 
         </android.support.v7.widget.LinearLayoutCompat>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_marginTop="@dimen/margin_4dp"
-            android:layout_marginBottom="@dimen/margin_4dp"
+            android:layout_marginTop="@dimen/value_4dp"
+            android:layout_marginBottom="@dimen/value_4dp"
             android:background="@color/itemDivider" />
 
         <android.support.v7.widget.RecyclerView

@@ -87,7 +87,12 @@ public class ValidateLearningNetworkPostDataJob extends BaseValidationJob<PostDa
         mDataObject.setoGDataList(mOgUtils.extractUrls(mDataObject.getPostText()));
         for (Resource resource : mDataObject.getPostResources()) {
 
-            String url = resource.getUrlMain();
+
+            String url = resource.getThumbXL();
+            if (TextUtils.isEmpty(url)) {
+                url = resource.getThumb();
+            }
+
             /*download Resource*/
 
             if (url != null && !url.isEmpty() && !url.endsWith(File.separator)) {
@@ -125,7 +130,7 @@ public class ValidateLearningNetworkPostDataJob extends BaseValidationJob<PostDa
             mJobModel.updateAndSaveCompleteSyncStatus(mDataObject);
 
 
-            if (mDataObject != null && mDataObject.getTo() != null && mDataObject.getTo().getId() != null) {
+  //          if (mDataObject != null && mDataObject.getTo() != null && mDataObject.getTo().getId() != null) {
                 //Fetching group and update creations time and save again
 //                Group group = mGroupModel.fetchGroupFromUUidSync(mDataObject.getTo().getId());
 
@@ -154,7 +159,7 @@ public class ValidateLearningNetworkPostDataJob extends BaseValidationJob<PostDa
 //                Log.d(TAG, "---beore save post text---" + mDataObject.getPostText());
 //                Log.d(TAG, "---beore save group text---" + group.getLastPostText());
 //                mGroupModel.saveGroup(group);
-            }
+//            }
             /*send new post downloaded event*/
             // TODO: 10-Aug-17 create entry new
             mDataObject.setDocId("");

@@ -6,6 +6,7 @@ import in.securelearning.lil.android.base.di.scope.ActivityScope;
 import in.securelearning.lil.android.base.model.UserCourseProgressModel;
 import in.securelearning.lil.android.player.model.PlayerModel;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
+import in.securelearning.lil.android.syncadapter.utils.TextToSpeechUtils;
 
 /**
  * Created by Prabodh Dhabaria on 14-11-2016.
@@ -31,6 +32,13 @@ public class PlayerModule {
     @ActivityScope
     public UserCourseProgressModel userCourseProgressModel() {
         return new UserCourseProgressModel();
+    }
+
+
+    @Provides
+    @ActivityScope
+    public TextToSpeechUtils textToSpeechUtils() {
+        return new TextToSpeechUtils();
     }
 
 }

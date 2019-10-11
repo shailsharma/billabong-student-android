@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.home.views.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -19,6 +20,8 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +40,7 @@ import in.securelearning.lil.android.home.dataobjects.Category;
 import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
 import in.securelearning.lil.android.home.views.widget.PeriodDetailPopUp;
+import in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -47,12 +51,15 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Chaitendra on 3/19/2017.
  */
 public class CalendarPeriodListActivity extends AppCompatActivity {
-    private PeriodAdapter mPeriodAdapter;
-    private LayoutCalendarCategoryListBinding mBinding;
+
     @Inject
     AppUserModel mAppUserModel;
     @Inject
     HomeModel mHomeModel;
+
+
+    private PeriodAdapter mPeriodAdapter;
+    private LayoutCalendarCategoryListBinding mBinding;
     private HashMap<String, Category> mSubjectMap;
     private String titleDate;
 
@@ -105,16 +112,19 @@ public class CalendarPeriodListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressLint("CheckResult")
     private void getData(long startSecond, long endSecond) {
 
-          mHomeModel.getPeriodOfSelectedDate(startSecond, endSecond).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<ArrayList<PeriodNew>>() {
-            @Override
-            public void accept(ArrayList<PeriodNew> periodNew) throws Exception {
-                initializeRecyclerView(periodNew);
+        mHomeModel.getPeriodOfSelectedDate(startSecond, endSecond)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ArrayList<PeriodNew>>() {
+                    @Override
+                    public void accept(ArrayList<PeriodNew> periodNew) throws Exception {
+                        initializeRecyclerView(periodNew);
 
-            }
-        });
+                    }
+                });
     }
 
 
@@ -155,15 +165,16 @@ public class CalendarPeriodListActivity extends AppCompatActivity {
             this.mExtraColorArray = getResources().getIntArray(R.array.subject_text_color_extra);
         }
 
+        @NotNull
         @Override
-        public PeriodAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public PeriodAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
 
             LayoutPeriodicEventItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_periodic_event_item, parent, false);
             return new PeriodAdapter.ViewHolder(binding);
         }
 
         @Override
-        public void onBindViewHolder(final PeriodAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NotNull final PeriodAdapter.ViewHolder holder, int position) {
             final PeriodNew period = mPeriodAdapterList.get(position);
             final boolean isBreak = period.isBreak();
 //            setPeriodStatus(period, holder.mBinding);
@@ -307,7 +318,7 @@ public class CalendarPeriodListActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-                                    startActivity(UserProfileActivity.getStartIntent(period.getTeacher().getId(), CalendarPeriodListActivity.this));
+                                    startActivity(UserPublicProfileActivity.getStartIntent(CalendarPeriodListActivity.this, period.getTeacher().getId()));
                                 } else {
                                     SnackBarUtils.showColoredSnackBar(getBaseContext(), v, getString(R.string.connect_internet), ContextCompat.getColor(getBaseContext(), R.color.colorRed));
                                 }

@@ -23,35 +23,38 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:titleTextColor="@color/colorWhite">
 
-            <android.support.v7.widget.LinearLayoutCompat
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/imageViewLogo"
-                    android:layout_width="96dp"
-                    android:layout_height="@dimen/chipButtonHeight_36dp"
-                    android:layout_marginStart="@dimen/margin_16dp"
-                    android:visibility="visible"
-                    tools:srcCompat="@drawable/logo_mind_spark" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/textViewToolbarTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_4dp"
-                    android:layout_marginEnd="@dimen/margin_8dp"
-                    android:layout_weight="1"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/value_8dp"
+                    android:layout_toStartOf="@+id/imageViewLogo"
                     android:ellipsize="end"
-                    android:gravity="end"
-                    android:maxLines="1"
+                    android:maxLines="2"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/colorWhite"
                     android:textStyle="bold"
                     android:visibility="gone"
-                    tools:text="WikiHow" />
-            </android.support.v7.widget.LinearLayoutCompat>
+                    tools:text="WikiHowWikiHowWikiHowWikiHowWikiHowWikiHowWikiHowWikiHow" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/imageViewLogo"
+                    android:layout_width="96dp"
+                    android:layout_height="@dimen/chipButtonHeight_36dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/value_16dp"
+                    android:visibility="visible"
+                    tools:srcCompat="@drawable/logo_mind_spark" />
+
+            </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>
 

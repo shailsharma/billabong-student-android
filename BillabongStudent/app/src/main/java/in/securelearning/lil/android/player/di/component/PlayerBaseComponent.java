@@ -7,10 +7,12 @@ import in.securelearning.lil.android.player.view.activity.PracticePlayerActivity
 import in.securelearning.lil.android.player.view.activity.QuizPlayerActivity;
 import in.securelearning.lil.android.player.view.activity.RapidLearningCardsActivity;
 import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
+import in.securelearning.lil.android.player.view.adapter.QuestionResourceAdapter;
 import in.securelearning.lil.android.player.view.fragment.FeaturedCardListFragment;
 import in.securelearning.lil.android.resources.view.activity.VideoPlayActivity;
 import in.securelearning.lil.android.resources.view.activity.VimeoActivity;
 import in.securelearning.lil.android.syncadapter.utils.TextToSpeechUtils;
+import in.securelearning.lil.android.thirdparty.views.activity.LogiqidsQuizPlayerActivity;
 
 /**
  * Created by Prabodh Dhabaria on 14-11-2016.
@@ -35,4 +37,6 @@ public interface PlayerBaseComponent extends BaseComponent {
     void inject(PracticePlayerActivity practicePlayerActivity);
 
     void inject(QuizPlayerActivity quizPlayerActivity);
+
+    void inject(QuestionResourceAdapter questionResourceAdapter);
 }

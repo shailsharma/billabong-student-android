@@ -135,7 +135,7 @@ public class RecommendedListFragment extends Fragment implements YouTubePlayer.O
         }
     }
 
-    // Inflate the view for the fragment based on layout XML
+    // Inflate the view for the activity based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

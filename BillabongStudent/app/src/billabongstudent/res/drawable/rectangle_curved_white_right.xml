@@ -10,9 +10,9 @@
         android:topRightRadius="180dp" />
 
     <!--<padding
-        android:bottom="@dimen/padding_4dp"
-        android:left="@dimen/padding_4dp"
-        android:right="@dimen/padding_4dp"
-        android:top="@dimen/padding_4dp" />-->
+        android:bottom="@dimen/value_4dp"
+        android:left="@dimen/value_4dp"
+        android:right="@dimen/value_4dp"
+        android:top="@dimen/value_4dp" />-->
 
 </shape>

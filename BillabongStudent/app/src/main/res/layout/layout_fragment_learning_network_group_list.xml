@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/image_dashboard_background"
-        android:orientation="vertical"
-        >
+        android:background="@color/colorWhite"
+        android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <LinearLayout
             android:id="@+id/layoutNoResult"
@@ -27,14 +26,14 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/logo_network_c"/>
+                android:src="@drawable/logo_network_c" />
 
             <in.securelearning.lil.android.base.widget.TextViewCustom
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/label_no_post"
-                android:textSize="22sp"/>
+                android:textSize="22sp" />
 
 
         </LinearLayout>
@@ -48,7 +47,7 @@
             android:src="@drawable/add_white"
             android:visibility="gone"
             app:backgroundTint="@color/colorPrimaryLN"
-            app:borderWidth="0dp"/>
+            app:borderWidth="0dp" />
 
     </android.support.design.widget.CoordinatorLayout>
 

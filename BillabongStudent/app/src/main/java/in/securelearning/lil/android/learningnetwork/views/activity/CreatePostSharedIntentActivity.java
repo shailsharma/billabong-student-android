@@ -71,7 +71,6 @@ import in.securelearning.lil.android.app.databinding.LayoutRecyclerviewPopupBind
 import in.securelearning.lil.android.base.constants.PostDataType;
 import in.securelearning.lil.android.base.constants.SyncStatus;
 import in.securelearning.lil.android.base.customchrometabutils.CustomChromeTabHelper;
-import in.securelearning.lil.android.base.dataobjects.AppUser;
 import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.dataobjects.Moderator;
 import in.securelearning.lil.android.base.dataobjects.OGMetaDataResponse;
@@ -352,7 +351,7 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
 
                 }
             } else {
-                ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit));
+                ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit_10MB));
             }
         }
 
@@ -1133,7 +1132,7 @@ public class CreatePostSharedIntentActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     String mimeType = URLConnection.guessContentTypeFromName(mAttachPathList.get(position));
                     if (mimeType.contains("image")) {
-                        FullScreenImage.setUpFullImageView(CreatePostSharedIntentActivity.this, position, true, true, FullScreenImage.getResourceArrayList(mAttachPathList));
+                        FullScreenImage.setUpFullImageView(CreatePostSharedIntentActivity.this, position, true, true, false, FullScreenImage.getResourceArrayList(mAttachPathList));
                     } else if (mimeType.contains("video")) {
                         Resource item = new Resource();
                         item.setType("video");

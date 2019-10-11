@@ -1,7 +1,6 @@
 package in.securelearning.lil.android.learningnetwork.views.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,8 +28,6 @@ import in.securelearning.lil.android.app.databinding.RyanLayoutItemLearningNetwo
 import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.dataobjects.PostData;
 import in.securelearning.lil.android.base.dataobjects.Resource;
-import in.securelearning.lil.android.base.dataobjects.Thumbnail;
-import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AnimationUtils;
@@ -45,6 +42,7 @@ import in.securelearning.lil.android.learningnetwork.events.RefreshGroupListUnre
 import in.securelearning.lil.android.learningnetwork.model.PostDataLearningModel;
 import in.securelearning.lil.android.learningnetwork.views.activity.PostListActivity;
 import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
+import in.securelearning.lil.android.syncadapter.model.JobModel;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import io.reactivex.Completable;
@@ -63,9 +61,6 @@ public class LearningNetworkGroupListFragment extends Fragment {
     RxBus mRxBus;
 
     @Inject
-    AppUserModel mAppUserModel;
-
-    @Inject
     PostDataLearningModel mPostDataLearningModel;
 
     @Inject
@@ -74,7 +69,6 @@ public class LearningNetworkGroupListFragment extends Fragment {
     private static String ARG_COLUMN_COUNT = "column-count";
     private LayoutFragmentLearningNetworkGroupListBinding mBinding;
     private boolean isTeacher = false;
-    private int mColumnCount = 1;
 
     private GroupAdapter mGroupAdapter;
     private Disposable mSubscription;
@@ -98,9 +92,6 @@ public class LearningNetworkGroupListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         InjectorLearningNetwork.INSTANCE.getLearningNetworkComponent().inject(this);
         isTeacher = PermissionPrefsCommon.getPostBadgeAssignPermission(getContext());
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
 
     }
 
@@ -240,7 +231,7 @@ public class LearningNetworkGroupListFragment extends Fragment {
             holder.mBinding.textViewGroupName.setText(name);
             //Need to set group name according to Two Letter
             CommonUtils.getInstance().
-                    setGroupThumbnail(getContext(), name, group.getThumbnail(), holder.mBinding.imageViewGroupThumbnail) ;
+                    setGroupThumbnail(getContext(), name, group.getThumbnail(), holder.mBinding.imageViewGroupThumbnail);
 
             setLatestPost(group, holder.mBinding);
 
@@ -249,7 +240,12 @@ public class LearningNetworkGroupListFragment extends Fragment {
             holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    getContext().startActivity(PostListActivity.getIntentForPostList(getContext(), group.getObjectId(), false));
+                    if (!group.isNetworkDataDownloaded()) {
+                        JobModel.startLearningNetworkSyncForGroup(group.getObjectId());
+                        getData();
+                    }
+
+                    startActivity(PostListActivity.getIntentForPostList(getContext(), group.getObjectId(), false));
                     holder.mBinding.textViewUnreadCount.setVisibility(View.GONE);
                     //     mPostDataLearningModel.deleteAllNewPostByGroupId(group.getObjectId());
                 }

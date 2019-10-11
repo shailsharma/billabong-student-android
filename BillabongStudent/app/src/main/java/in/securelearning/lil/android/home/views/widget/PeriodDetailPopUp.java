@@ -1,7 +1,6 @@
 package in.securelearning.lil.android.home.views.widget;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -34,7 +33,7 @@ import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.base.widget.RoundedImageView;
 import in.securelearning.lil.android.home.dataobjects.Category;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
+import in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 
 /**
@@ -140,8 +139,7 @@ public class PeriodDetailPopUp {
             @Override
             public void onClick(View view) {
                 if (GeneralUtils.isNetworkAvailable(context)) {
-                    Intent mIntent = UserProfileActivity.getStartIntent(period.getTeacher().getId(), context);
-                    context.startActivity(mIntent);
+                    context.startActivity(UserPublicProfileActivity.getStartIntent(context, period.getTeacher().getId()));
                 } else {
                     ToastUtils.showToastAlert(context, context.getString(R.string.connect_internet));
                 }

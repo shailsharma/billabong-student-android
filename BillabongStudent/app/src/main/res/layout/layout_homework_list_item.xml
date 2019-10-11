@@ -16,16 +16,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="@dimen/margin_4dp"
-            android:layout_marginTop="@dimen/margin_8dp"
-            android:layout_marginBottom="@dimen/margin_8dp"
+            android:layout_marginStart="@dimen/value_4dp"
+            android:layout_marginTop="@dimen/value_8dp"
+            android:layout_marginBottom="@dimen/value_8dp"
             android:adjustViewBounds="true"
             android:background="@drawable/chip_accent_color"
             android:elevation="2dp"
-            android:paddingStart="@dimen/padding_8dp"
-            android:paddingTop="@dimen/padding_8dp"
-            android:paddingEnd="@dimen/padding_8dp"
-            android:paddingBottom="@dimen/padding_8dp"
+            android:paddingStart="@dimen/value_8dp"
+            android:paddingTop="@dimen/value_8dp"
+            android:paddingEnd="@dimen/value_8dp"
+            android:paddingBottom="@dimen/value_8dp"
             android:textColor="@color/white"
             android:visibility="gone" />
 
@@ -38,7 +38,7 @@
             android:foreground="?android:attr/selectableItemBackground"
             card_view:cardCornerRadius="4dp"
             card_view:cardUseCompatPadding="true"
-            card_view:contentPadding="@dimen/padding_8dp">
+            card_view:contentPadding="@dimen/value_8dp">
 
             <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -85,9 +85,9 @@
 
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/textview_due_on"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_4dp"
+                        android:layout_marginTop="@dimen/value_4dp"
                         android:textColor="@color/colorRyanBlack"
                         android:textStyle="italic"
                         tools:text="12 May 2018" />
@@ -96,7 +96,7 @@
                         android:id="@+id/textview_submitted_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_4dp"
+                        android:layout_marginTop="@dimen/value_4dp"
                         android:textColor="@color/colorRyanBlack"
                         android:textStyle="italic"
                         android:visibility="gone"

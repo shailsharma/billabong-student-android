@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/padding_8dp"
+        android:padding="@dimen/value_8dp"
         android:foreground="?attr/selectableItemBackground">
 
         <!--<in.securelearning.lil.android.base.widget.TextViewCustom-->

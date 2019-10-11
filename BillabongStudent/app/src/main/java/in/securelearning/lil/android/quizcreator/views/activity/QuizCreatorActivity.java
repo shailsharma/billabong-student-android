@@ -300,7 +300,7 @@ public class QuizCreatorActivity extends BaseActivityQuizCreator implements Quiz
         mExplanationImage = (ImageView) this.findViewById(R.id.image_view_explanation);
         mExplanationVideoImage = (ImageView) this.findViewById(R.id.image_view_explanation_video);
         mExplanationImageLayout = (CardView) this.findViewById(R.id.layout_explanation_image);
-        mExplanationVideoLayout = (CardView) this.findViewById(R.id.layout_explanation_video);
+        mExplanationVideoLayout = (CardView) this.findViewById(R.id.layout_explanation_khan_academy_video);
         mQuestionAttachmentLayout = (CardView) this.findViewById(R.id.layout_question_attachment);
         mRemoveQuestionAttachment = (ImageView) this.findViewById(R.id.imageView_remove_attachment);
         mAttachmentResourceImage = (ImageView) this.findViewById(R.id.imageView_resource_image);
@@ -632,7 +632,7 @@ public class QuizCreatorActivity extends BaseActivityQuizCreator implements Quiz
                     mQuestionAttachmentImageView.setImageBitmap(getScaledBitmapFromPath(this.getResources(), mBaseFolder, picturePath));
                     mQuestionAttachmentImageView.setTag(mBaseFolder + File.separator + picturePath);
                 } else {
-                    ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit));
+                    ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit_10MB));
                 }
 
 
@@ -677,7 +677,7 @@ public class QuizCreatorActivity extends BaseActivityQuizCreator implements Quiz
                     String picturePath = copyFiles(picturePathOriginal, mBaseFolder, mQuizResourceImageFolder, String.valueOf(System.currentTimeMillis()) + ".jpg");
                     addHintImage(mBaseFolder + File.separator + picturePath);
                 } else {
-                    ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit));
+                    ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit_10MB));
                 }
 
             } else if (requestCode == HINT_VIDEO) {
@@ -731,7 +731,7 @@ public class QuizCreatorActivity extends BaseActivityQuizCreator implements Quiz
                     String picturePath = copyFiles(picturePathOriginal, mBaseFolder, mQuizResourceImageFolder, String.valueOf(System.currentTimeMillis()) + ".jpg");
                     addChoiceImageToSubSection(mQuestionTypeRadioGroup.getCheckedRadioButtonId(), mBaseFolder + File.separator + picturePath, null);
                 } else {
-                    ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit));
+                    ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit_10MB));
                 }
 
 
@@ -749,7 +749,7 @@ public class QuizCreatorActivity extends BaseActivityQuizCreator implements Quiz
                     String picturePath = copyFiles(picturePathOriginal, mBaseFolder, mQuizResourceImageFolder, String.valueOf(System.currentTimeMillis()) + ".jpg");
                     addExplanationImage(mBaseFolder + File.separator + picturePath);
                 } else {
-                    ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit));
+                    ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit_10MB));
                 }
 
             } else if (requestCode == EXPLANATION_VIDEO) {
@@ -2276,7 +2276,7 @@ public class QuizCreatorActivity extends BaseActivityQuizCreator implements Quiz
 
                 ArrayList<String> pathArrayList = new ArrayList<>();
                 pathArrayList.add("file://" + resourcePath);
-                FullScreenImage.setUpFullImageView(this, 0, false, true,FullScreenImage.getResourceArrayList(pathArrayList));
+                FullScreenImage.setUpFullImageView(this, 0, false, true, false, FullScreenImage.getResourceArrayList(pathArrayList));
             } else if (mimeType.contains("video")) {
 
                 Resource item = new Resource();

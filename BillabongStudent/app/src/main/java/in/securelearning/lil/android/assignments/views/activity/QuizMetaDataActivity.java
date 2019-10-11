@@ -733,7 +733,7 @@ public class QuizMetaDataActivity extends AppCompatActivity {
                     .start(this);
 
         } else {
-            ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit));
+            ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit_10MB));
         }
     }
 

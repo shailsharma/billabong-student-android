@@ -8,6 +8,6 @@
         android:startColor="@color/colorStartGradient"
         android:type="linear" />
 
-    <corners android:radius="@dimen/margin_8dp" />
+    <corners android:radius="@dimen/value_8dp" />
 
 </shape>

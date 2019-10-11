@@ -14,7 +14,7 @@ import in.securelearning.lil.android.app.databinding.LayoutRecyclerviewSimpleIte
 public class DropdownChoiceItemAdapter extends RecyclerView.Adapter<DropdownChoiceItemAdapter.ViewHolder> {
     private ArrayList<String> mList;
 
-    public DropdownChoiceItemAdapter(ArrayList<String> values) {
+    DropdownChoiceItemAdapter(ArrayList<String> values) {
         this.mList = values;
 
     }
@@ -51,7 +51,7 @@ public class DropdownChoiceItemAdapter extends RecyclerView.Adapter<DropdownChoi
 
     }
 
-    public void setItemClickAction(View.OnClickListener itemClickListener) {
+    void setItemClickAction(View.OnClickListener itemClickListener) {
         this.mItemClickListener = itemClickListener;
     }
 

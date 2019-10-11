@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/gradient_black_category"
+            android:background="@drawable/gradient_black_bottom"
             android:gravity="center_horizontal"
             android:padding="8dp"
             android:text="sdfdfsdfsdfsdf"

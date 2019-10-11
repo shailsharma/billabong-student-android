@@ -5,10 +5,12 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +31,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -83,12 +86,11 @@ public class StudentExcellenceFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.layout_student_analytics_excellence, container, false);
-        if (!fragmentResume && fragmentVisible) {   //only when first time fragment is created
+
+        if (!fragmentResume && fragmentVisible) {   //only when first time activity is created
             if (mChartConfigurationData != null && !mChartConfigurationData.isEmpty()) {
                 fetchExcellenceData(mChartConfigurationData);
             } else {
@@ -102,7 +104,7 @@ public class StudentExcellenceFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean visible) {
         super.setUserVisibleHint(visible);
-        if (visible && isResumed()) {   // only at fragment screen is resumed
+        if (visible && isResumed()) {   // only at activity screen is resumed
             fragmentResume = true;
             fragmentVisible = false;
             fragmentOnCreated = true;
@@ -111,11 +113,11 @@ public class StudentExcellenceFragment extends Fragment {
             } else {
                 mBinding.textViewNoExcellenceData.setVisibility(View.VISIBLE);
             }
-        } else if (visible) {        // only at fragment onCreated
+        } else if (visible) {        // only at activity onCreated
             fragmentResume = false;
             fragmentVisible = true;
             fragmentOnCreated = true;
-        } else if (!visible && fragmentOnCreated) {// only when you go out of fragment screen
+        } else if (!visible && fragmentOnCreated) {// only when you go out of activity screen
             fragmentVisible = false;
             fragmentResume = false;
         }
@@ -124,18 +126,28 @@ public class StudentExcellenceFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void fetchExcellenceData(final ArrayList<ChartConfigurationData> performanceConfiguration) {
+
         if (GeneralUtils.isNetworkAvailable(mContext)) {
+
             mBinding.progressBarExcellence.setVisibility(View.VISIBLE);
-            mAnalyticsModel.fetchPerformanceData("").subscribeOn(Schedulers.io())
+
+            mAnalyticsModel.fetchPerformanceData("")
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<ArrayList<PerformanceChartData>>() {
                         @Override
                         public void accept(ArrayList<PerformanceChartData> performanceChartData) throws Exception {
+
                             mBinding.progressBarExcellence.setVisibility(View.GONE);
-                            if (performanceConfiguration != null && !performanceConfiguration.isEmpty() && !performanceChartData.isEmpty()) {
+
+                            if (performanceConfiguration != null
+                                    && !performanceConfiguration.isEmpty()
+                                    && !performanceChartData.isEmpty()) {
+
                                 mBinding.chartPerformance.setVisibility(View.VISIBLE);
                                 mBinding.pieChartPerformance.setVisibility(View.VISIBLE);
                                 mBinding.textViewNoExcellenceData.setVisibility(View.GONE);
+
                                 Collections.sort(performanceChartData);
                                 drawPerformanceBarChart(performanceConfiguration, performanceChartData);
 
@@ -284,6 +296,7 @@ public class StudentExcellenceFragment extends Fragment {
                 int performance = Math.round(ccd.getPerformance());
                 drawProgress(performance);
                 fetchPerformanceData(ccd.getId());
+                setSubjectIcon(ccd.getSubjectIcon());
                 mBinding.llExcellence.setVisibility(View.VISIBLE);
                 mBinding.textViewPerformance.setText(ccd.getName());
                 //  startActivity(PerformanceDetailActivity.getStartIntent(mContext, ccd.getId(), ccd.getName(), performance));
@@ -317,8 +330,19 @@ public class StudentExcellenceFragment extends Fragment {
             PerformanceChartData data = list.get(0);
             drawProgress(Math.round(data.getPerformance()));
             fetchPerformanceData(data.getId());
+            setSubjectIcon(data.getSubjectIcon());
             mBinding.llExcellence.setVisibility(View.VISIBLE);
             mBinding.textViewPerformance.setText(data.getName());
+        }
+    }
+
+
+    private void setSubjectIcon(String subjectIcon) {
+        if (!TextUtils.isEmpty(subjectIcon)) {
+            Picasso.with(getContext()).load(subjectIcon).placeholder(R.drawable.icon_book).fit().centerCrop().into(mBinding.imageViewSubjectIcon);
+        } else {
+            Picasso.with(getContext()).load(R.drawable.icon_book).fit().centerCrop().into(mBinding.imageViewSubjectIcon);
+
         }
     }
 
@@ -362,7 +386,9 @@ public class StudentExcellenceFragment extends Fragment {
     @SuppressLint("CheckResult")
     private void fetchPerformanceData(String subjectId) {
         if (GeneralUtils.isNetworkAvailable(mContext)) {
+
             mBinding.progressBarExcellence.setVisibility(View.VISIBLE);
+
             mAnalyticsModel.fetchPerformanceData(subjectId).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<ArrayList<PerformanceChartData>>() {

@@ -56,6 +56,8 @@ import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.ArrayList;
 import in.securelearning.lil.android.courses.dataobject.CourseReview;
 import in.securelearning.lil.android.home.model.HomeModel;
+import in.securelearning.lil.android.player.dataobject.KhanAcademyVideo;
+import in.securelearning.lil.android.player.dataobject.PlayerFilterParent;
 import in.securelearning.lil.android.player.dataobject.PracticeParent;
 import in.securelearning.lil.android.player.dataobject.PracticeQuestionResponse;
 import in.securelearning.lil.android.player.dataobject.QuizConfigurationRequest;
@@ -102,7 +104,6 @@ import in.securelearning.lil.android.syncadapter.dataobject.ServerDataPackage;
 import in.securelearning.lil.android.syncadapter.dataobject.SkillMasteryQuestionData;
 import in.securelearning.lil.android.syncadapter.dataobject.StudentGradeMapping;
 import in.securelearning.lil.android.syncadapter.dataobject.TeacherGradeMapping;
-import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfile;
 import in.securelearning.lil.android.syncadapter.fcmservices.Message;
 import in.securelearning.lil.android.syncadapter.fcmservices.MessageData;
 import in.securelearning.lil.android.syncadapter.fcmservices.MessageDataPayload;
@@ -445,9 +446,9 @@ public class NetworkModel extends BaseModel {
         return mDownloadApiInterface.getUserProfile(objectId);
     }
 
-    public Call<StudentProfile> fetchStudentProfile() {
+    /*public Call<StudentProfile> fetchStudentProfile() {
         return mDownloadApiInterface.getStudentProfile();
-    }
+    }*/
 
     public Call<GroupPostsNResponse> fetchGroupPostAndResponse(String objectId) {
         return mDownloadApiInterface.fetchGroupPostAndResponse(objectId);
@@ -1242,6 +1243,10 @@ public class NetworkModel extends BaseModel {
         return mDirectUploadApiInterface.dictionariesSearch(requestBody);
     }
 
+    public Call<ResponseBody> getAflAolConfiguration(RequestBody requestBody) {
+        return mDirectUploadApiInterface.getAflAolConfiguration(requestBody);
+    }
+
     public Call<ResponseBody> deleteAnnotation(String id) {
         return mUploadApiInterface.deleteAnnotation(id);
     }
@@ -1320,6 +1325,18 @@ public class NetworkModel extends BaseModel {
     /*To fetch configuration of quiz */
     public Call<QuizConfigurationResponse> fetchQuizConfiguration(QuizConfigurationRequest quizConfigurationRequest) {
         return mDownloadApiInterface.fetchQuizConfiguration(quizConfigurationRequest);
+
+    }
+
+    /*To fetch khan academy explanation videos*/
+    public Call<java.util.ArrayList<KhanAcademyVideo>> fetchExplanationVideos(PlayerFilterParent playerFilterParent) {
+        return mDownloadApiInterface.fetchExplanationVideos(playerFilterParent);
+
+    }
+
+    /*To fetch Quiz configuration */
+    public Call<GlobalConfigurationParent> fetchQuizAnalyticsConfiguration(GlobalConfigurationRequest chartConfigurationRequest) {
+        return mDownloadApiInterface.fetchGlobalConfiguration(chartConfigurationRequest);
 
     }
 }

@@ -7,13 +7,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
 
 public class EffortChartData implements Serializable, Comparable<EffortChartData> {
-
-
 
 
     @SerializedName("_id")
@@ -42,7 +39,7 @@ public class EffortChartData implements Serializable, Comparable<EffortChartData
 
     @SerializedName("subject")
     @Expose
-    private ArrayList<IdNameObject> mSubject;
+    private ArrayList<EffortSubjectData> mSubject;
 
     @SerializedName("topic")
     @Expose
@@ -88,11 +85,11 @@ public class EffortChartData implements Serializable, Comparable<EffortChartData
         mTotalTimeSpent = totalTimeSpent;
     }
 
-    public ArrayList<IdNameObject> getSubject() {
+    public ArrayList<EffortSubjectData> getSubject() {
         return mSubject;
     }
 
-    public void setSubject(ArrayList<IdNameObject> subject) {
+    public void setSubject(ArrayList<EffortSubjectData> subject) {
         mSubject = subject;
     }
 
