@@ -17,7 +17,7 @@ import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutMyAchievementTopicItemBinding;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentTopicReward;
 
-/*To set/show data Reward/Euros in SubjectTopics*/
+/*To set/show data Reward/Billbucks in SubjectTopics*/
 public class SubjectTopicsRewardAdapter extends RecyclerView.Adapter<SubjectTopicsRewardAdapter.ViewHolder> {
 
     private ArrayList<StudentTopicReward> mList;

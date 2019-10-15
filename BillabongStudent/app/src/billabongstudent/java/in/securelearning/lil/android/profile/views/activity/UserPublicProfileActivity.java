@@ -305,7 +305,7 @@ public class UserPublicProfileActivity extends AppCompatActivity {
             mBinding.textViewUserLearningLevel.setText(learningLevelList);
             mBinding.textViewUserLearningLevel.setVisibility(View.VISIBLE);
         } else {
-            mBinding.layoutSubject.setVisibility(View.GONE);
+            mBinding.layoutLearningLevel.setVisibility(View.GONE);
 
         }
 
@@ -346,7 +346,7 @@ public class UserPublicProfileActivity extends AppCompatActivity {
     }
 
 
-    /*Set Euros count*/
+    /*Set Billbucks count*/
     private void setEuros() {
 
         String totalEuros = new DecimalFormat("##.##").format(mAchievementRewards.getTotalReward());

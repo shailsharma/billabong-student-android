@@ -46,6 +46,11 @@
 
     <string name="no_currency_found">No billbucks found</string>
     <string name="label_currency_value">Billbucks</string>
+    <string name="gamification_assignment_pending"><![CDATA[%1$s, You have %2$s new homework today.\nYou may please plan the day accordingly.]]></string>
+    <string name="gamification_bonus"><![CDATA[Congratulations! I\'ve unlocked Flash Bonus for you! You\'ll secure fifty percent extra points, should you Learn, Revise and Practice %1$s topics Today]]></string>
+    <string name="gamification_school_survey"><![CDATA[Good to see you Again! Let me know how was your School Experience today? Please select your best response from the choice. ]]></string>
+    <string name="gamification_practice_accuracy">You can Earn 50 Billbucks every streak of 4 consecutive correct answers.</string>
+    <string name="messageNextLevel">"Congratulations!\nYou have unlocked next level with Bonus Billbucks!!</string>
 
     <!-- Strings related to Settings -->
     <!-- SkillMasteryQuestionPostData General settings -->
@@ -226,7 +231,6 @@
     <string name="labelEnrollmentNumber">Enrollment number</string>
     <string name="labelMotherDetails">Mother Details</string>
     <string name="labelTotalRewards">Total Rewards</string>
-    <string name="labelTotalEuros">Total Euros</string>
     <string name="no_due_homework_for_today">No due homework for today.</string>
     <string name="pass">pass</string>
     <string name="fail">fail</string>
@@ -330,10 +334,7 @@
     <string name="zero">0</string>
     <string name="chart_configuration">Please provide the chart configuration </string>
     <string name="coverage">Coverage</string>
-    <string name="gamification_assignment_pending"><![CDATA[%1$s, You have %2$s new homework today.\nYou may please plan the day accordingly.]]></string>
-    <string name="gamification_bonus"><![CDATA[Congratulations! I\'ve unlocked Flash Bonus for you! You\'ll secure fifty percent extra points, should you Learn, Revise and Practice %1$s topics Today]]></string>
-    <string name="gamification_school_survey"><![CDATA[Good to see you Again! Let me know how was your School Experience today? Please select your best response from the choice. ]]></string>
-    <string name="gamification_practice_accuracy">You can Earn 50 Euros every streak of 4 consecutive correct answers.</string>
+
     <string name="snackbar_login_msg"><![CDATA[<i>Hey, </i><b>%1$s</b>\n Great to have you back]]></string>
     <string name="snackbar_login_msg_without_name"><![CDATA[<i>Hey</i>\n Great to have you back]]></string>
     <string name="lrpaGroupNull">Currently subject teacher not mapped for selected grade and section. Please inform to Administrator.</string>
@@ -360,7 +361,6 @@
     <string name="freadom">freadom</string>
     <string name="lightsail">lightsail</string>
     <string name="mindspark">mindspark</string>
-    <string name="messageNextLevel">"Congratulations!\nYou have unlocked next level with Bonus Euros!!</string>
     <string name="messageNextSkill">"Congratulations!\nYou have completed</string>
 
     <string name="finish">Finish</string>
@@ -407,7 +407,7 @@
     <string name="incorrect_message_5">Nice attempt..Lets not miss the next one.</string>
     <string name="incorrect_message_6">It was difficult..isn\'t it ?</string>
     <string name="incorrect_message_7">No worries..you are not the only one who got it wrong.</string>
-    <string name="incorrect_message_8">Ohh..Surely a better focus would get you full Euros.</string>
+    <string name="incorrect_message_8">Ohh..Surely a better focus would get you full Billbucks.</string>
     <string name="incorrect_message_9">Ohh..May you want to try hints or ask someone.</string>
     <string name="incorrect_message_10">It seems next one will be alright!</string>
 

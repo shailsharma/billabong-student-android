@@ -16,7 +16,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.squareup.picasso.Picasso;
@@ -1194,8 +1193,7 @@ public class DashboardFragment extends Fragment {
                             equalsIgnoreCase(AppPrefs.getUserId(mContext))
                             && CommonUtils.getInstance().checkDateRange(bonusObject.getStartDate(), bonusObject.getEndDate())
                             && !TextUtils.isEmpty(bonusObject.getSubjectName())) {
-                        String msg = "Congratulations! We have unlocked an exclusive Flash Bonus for " + bonusObject.getSubjectName() + "." + " You will secure Extra Euros. Should you \n" + "either Learn or Reinforce " + bonusObject.getSubjectName() + " topics Today?";
-                        // mGamificationDialog.display(getFragmentManager(), mContext, msg, event);
+                        String msg = "Congratulations! We have unlocked an exclusive Flash Bonus for " + bonusObject.getSubjectName() + "." + " You will secure Extra Billbucks. Should you \n" + "either Learn or Reinforce " + bonusObject.getSubjectName() + " topics Today?";
                         mContext.startActivity(MascotActivity.getStartIntent(mContext, msg, event));
                     } else {
                         mContext.startActivity(SubjectDetailsActivity.getStartIntent(getContext(), lrpaSubjectId));

@@ -81,7 +81,7 @@ public class StudentAchievementFragment extends Fragment {
         }
     }
 
-    /*Rewards are now Euros*/
+    /*Rewards are now Billbucks*/
     private void setRewards(final ArrayList<StudentSubjectReward> rewardsList, int totalRewards) {
 
         mBinding.textViewTotalRewards.setText(String.valueOf(totalRewards));
