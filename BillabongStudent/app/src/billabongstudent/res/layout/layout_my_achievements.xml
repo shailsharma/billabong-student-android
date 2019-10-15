@@ -19,8 +19,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:visibility="gone"
-                android:background="@color/itemDivider" />
+                android:background="@color/itemDivider"
+                android:visibility="gone" />
 
             <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                 android:orientation="horizontal">
 
 
-                <!--rewards/euros-->
+                <!--rewards/label_currency_value-->
                 <android.support.v7.widget.LinearLayoutCompat
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                             android:layout_marginEnd="@dimen/value_8dp"
                             app:srcCompat="@drawable/icon_coin_gold_48_vector" />
 
-                        <!--Total rewards/euros-->
+                        <!--Total rewards/label_currency_value-->
                         <android.support.v7.widget.LinearLayoutCompat
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -79,8 +79,9 @@
                             <android.support.v7.widget.AppCompatTextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/euros"
-                                android:textColor="@android:color/black" />
+                                android:text="@string/label_currency_value"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/textSize_10sp" />
 
                         </android.support.v7.widget.LinearLayoutCompat>
 
@@ -97,7 +98,7 @@
                     </android.support.v7.widget.LinearLayoutCompat>
 
 
-                    <!--Bottom line euros-->
+                    <!--Bottom line label_currency_value-->
                     <View
                         android:id="@+id/bottomLineEuros"
                         android:layout_width="match_parent"
@@ -164,7 +165,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/trophies"
-                                android:textColor="@android:color/black" />
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/textSize_10sp" />
 
                         </android.support.v7.widget.LinearLayoutCompat>
 
@@ -248,7 +250,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/badges"
-                                android:textColor="@android:color/black" />
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/textSize_10sp" />
 
                         </android.support.v7.widget.LinearLayoutCompat>
 
@@ -283,7 +286,7 @@
                 android:layout_height="0.5dp"
                 android:background="@color/itemDivider" />
 
-            <!--rewards/euros-->
+            <!--rewards/label_currency_value-->
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerViewRewards"
                 android:layout_width="match_parent"
@@ -324,7 +327,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/value_16dp"
                     android:gravity="center"
-                    android:text="No euros found"
+                    android:text="@string/no_currency_found"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             </FrameLayout>

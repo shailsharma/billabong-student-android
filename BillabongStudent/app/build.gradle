@@ -96,7 +96,7 @@ android {
             buildConfigField 'boolean', 'IS_PERIOD_ENABLED', 'false'
             buildConfigField 'boolean', 'IS_BLOGS_ENABLED', 'false'
             buildConfigField 'boolean', 'IS_COURSES_ENABLED', 'true'
-            buildConfigField 'boolean', 'IS_FCM_APP_SERVER_SYNC_ENABLED', 'false'
+            buildConfigField 'boolean', 'IS_FCM_APP_SERVER_SYNC_ENABLED', 'true'
             buildConfigField 'boolean', 'IS_TRAINING_ENABLED', 'false'
             buildConfigField 'boolean', 'ViewVisibilty', 'true'
             buildConfigField 'boolean', 'CourseAssign', 'true'

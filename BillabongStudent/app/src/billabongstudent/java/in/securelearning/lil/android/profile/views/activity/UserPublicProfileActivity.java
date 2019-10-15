@@ -5,19 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.squareup.picasso.Picasso;
@@ -29,7 +24,6 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.databinding.LayoutProfileShieldListItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutUserPublicProfileBinding;
 import in.securelearning.lil.android.base.dataobjects.BranchDetail;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
@@ -43,6 +37,7 @@ import in.securelearning.lil.android.profile.model.ProfileModel;
 import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -58,7 +53,6 @@ public class UserPublicProfileActivity extends AppCompatActivity {
     ProfileModel mProfileModel;
 
     public static final String USER_ID = "userId";
-    private static final int SHIELDS_SPAN_COUNT = 3;
 
     private LayoutUserPublicProfileBinding mBinding;
 
@@ -82,19 +76,15 @@ public class UserPublicProfileActivity extends AppCompatActivity {
         handleIntent();
         initializeUiAndListeners();
         getUserProfile();
-//        setEuros();
-        setShields(createTrophiesData(), 5);
+        setShields();
 
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -123,8 +113,6 @@ public class UserPublicProfileActivity extends AppCompatActivity {
 
     private void initializeUiAndListeners() {
 
-        /*By default*/
-        mBinding.bottomLineEuros.setVisibility(View.VISIBLE);
         mAchievementRewards = new TeacherAchievementRewards();
 
         mBinding.imageViewPlayVideo.setOnClickListener(new View.OnClickListener() {
@@ -264,13 +252,8 @@ public class UserPublicProfileActivity extends AppCompatActivity {
 
     private void setEmail(String email) {
         if (!TextUtils.isEmpty(email)) {
-            String text = makeTextBold("Email - ") + email;
-            mBinding.textViewUserEmail.setText(Html.fromHtml(text));
+            mBinding.textViewUserEmail.setText(Html.fromHtml(email));
         }
-    }
-
-    private String makeTextBold(String string) {
-        return "<b>" + string + "</b>";
     }
 
     private void setBranchName(BranchDetail branchDetail) {
@@ -286,14 +269,6 @@ public class UserPublicProfileActivity extends AppCompatActivity {
 
     private void setUserRoleSubject(ArrayList<IdNameObject> subjects) {
         String subjectNameList = "";
-//        if (!learningLevels.isEmpty()) {
-//            for (int i = 0; i < learningLevels.size(); i++) {
-//                learningLevelList = learningLevelList + learningLevels.get(i).getName() + ConstantUtil.BLANK_SPACE + getString(R.string.teacher);
-//                if (i < (learningLevels.size()) - 1) {
-//                    learningLevelList = learningLevelList + ", ";
-//                }
-//            }
-//        }
 
         if (!subjects.isEmpty()) {
             for (int i = 0; i < subjects.size(); i++) {
@@ -304,48 +279,17 @@ public class UserPublicProfileActivity extends AppCompatActivity {
             }
         }
 
-//        if (!TextUtils.isEmpty(learningLevelList) && !TextUtils.isEmpty(subjectNameList)) {
-//            finalString = learningLevelList + " - " + subjectNameList;
-//        } else if (!TextUtils.isEmpty(learningLevelList)) {
-//            finalString = learningLevelList;
-//        } else if (!TextUtils.isEmpty(subjectNameList)) {
-//            finalString = subjectNameList;
-//        }
-
-
-        //  if (!TextUtils.isEmpty(finalString)) {
-        //  Spannable wordToColorSpan = new SpannableString(finalString);
-
         if (!TextUtils.isEmpty(subjectNameList)) {
-
-//                wordToColorSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getBaseContext(), R.color.colorEuroGrey)),
-//                        (finalString.length() - subjectNameList.length()),
-//                        finalString.length(),
-//                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            String text = makeTextBold("Subjects - ") + subjectNameList;
-            mBinding.textViewUserRoleSubject.setText(Html.fromHtml(text));
+            mBinding.textViewUserRoleSubject.setText(subjectNameList);
             mBinding.textViewUserRoleSubject.setVisibility(View.VISIBLE);
         } else {
-            mBinding.textViewUserRoleSubject.setVisibility(View.GONE);
+            mBinding.layoutSubject.setVisibility(View.GONE);
 
         }
-
-//        } else {
-//            mBinding.textViewUserRoleSubject.setVisibility(View.GONE);
-//        }
-
     }
 
     private void setUserLearningLevel(ArrayList<IdNameObject> learningLevel) {
         String learningLevelList = "";
-//        if (!learningLevels.isEmpty()) {
-//            for (int i = 0; i < learningLevels.size(); i++) {
-//                learningLevelList = learningLevelList + learningLevels.get(i).getName() + ConstantUtil.BLANK_SPACE + getString(R.string.teacher);
-//                if (i < (learningLevels.size()) - 1) {
-//                    learningLevelList = learningLevelList + ", ";
-//                }
-//            }
-//        }
 
         if (!learningLevel.isEmpty()) {
             for (int i = 0; i < learningLevel.size(); i++) {
@@ -356,41 +300,16 @@ public class UserPublicProfileActivity extends AppCompatActivity {
             }
         }
 
-//        if (!TextUtils.isEmpty(learningLevelList) && !TextUtils.isEmpty(subjectNameList)) {
-//            finalString = learningLevelList + " - " + subjectNameList;
-//        } else if (!TextUtils.isEmpty(learningLevelList)) {
-//            finalString = learningLevelList;
-//        } else if (!TextUtils.isEmpty(subjectNameList)) {
-//            finalString = subjectNameList;
-//        }
-
-
-        //  if (!TextUtils.isEmpty(finalString)) {
-        //  Spannable wordToColorSpan = new SpannableString(finalString);
 
         if (!TextUtils.isEmpty(learningLevelList)) {
-
-//                wordToColorSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getBaseContext(), R.color.colorEuroGrey)),
-//                        (finalString.length() - subjectNameList.length()),
-//                        finalString.length(),
-//                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            String text = makeTextBold("Teaches - ") + learningLevelList;
-            mBinding.textViewUserLearningLevel.setText(Html.fromHtml(text));
+            mBinding.textViewUserLearningLevel.setText(learningLevelList);
             mBinding.textViewUserLearningLevel.setVisibility(View.VISIBLE);
         } else {
-            mBinding.textViewUserLearningLevel.setVisibility(View.GONE);
+            mBinding.layoutSubject.setVisibility(View.GONE);
 
         }
 
-//        } else {
-//            mBinding.textViewUserRoleSubject.setVisibility(View.GONE);
-//        }
 
-    }
-
-    /*Common method to show any error or prompt as snackBar*/
-    private void showAlertMessage(String message) {
-        SnackBarUtils.showSnackBar(getBaseContext(), mBinding.getRoot(), message, SnackBarUtils.UNSUCCESSFUL);
     }
 
     private void showInternetSnackBar() {
@@ -422,130 +341,26 @@ public class UserPublicProfileActivity extends AppCompatActivity {
     }
 
     private void showBottomProgress() {
-//        mBinding.textViewBottomProgressMessage.setText(message);
         mBinding.layoutProgressBottom.setVisibility(View.VISIBLE);
         AnimationUtils.pushUpEnter(getBaseContext(), mBinding.progressContent);
     }
 
-    /*Set tabs data*/
+
+    /*Set Euros count*/
     private void setEuros() {
 
-        mBinding.textViewTotalEuros.setText(new DecimalFormat("##.##").format(mAchievementRewards.getTotalReward()));
-        setEurosVisibility();
-
-        mBinding.layoutEuroHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                mBinding.bottomLineEuros.setVisibility(View.VISIBLE);
-                mBinding.bottomLineShields.setVisibility(View.GONE);
-                mBinding.recyclerViewShields.setVisibility(View.GONE);
-
-                setEurosVisibility();
-
-            }
-        });
+        String totalEuros = new DecimalFormat("##.##").format(mAchievementRewards.getTotalReward());
+        mBinding.textViewTotalEuros.setText(totalEuros);
     }
 
-    /*To set visibility of euros tab for first time and other times*/
-    private void setEurosVisibility() {
-        mBinding.layoutEuros.setVisibility(View.VISIBLE);
 
-        /*Training*/
-        mBinding.layoutEurosTraining.imageViewIcon.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.icon_training_blue_48_vector));
-        mBinding.layoutEurosTraining.textViewName.setText(getString(R.string.labelTraining));
-        mBinding.layoutEurosTraining.textViewScore.setText(new DecimalFormat("##.##").format(mAchievementRewards.getTraining()));
+    /*Set shield count
+     * for now fixed 5*/
+    private void setShields() {
 
-        /*ETAT*/
-        mBinding.layoutEurosEtat.imageViewIcon.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.icon_etat_blue_48_vector));
-        mBinding.layoutEurosEtat.textViewName.setText(getString(R.string.labelEtat));
-        mBinding.layoutEurosEtat.textViewScore.setText(new DecimalFormat("##.##").format(mAchievementRewards.getEtat()));
-
-        /*Lesson Plan Reflections*/
-        mBinding.layoutEurosReflection.imageViewIcon.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.icon_reflection_blue_48_vector));
-        mBinding.layoutEurosReflection.textViewName.setText(getString(R.string.labelLessonPlanReflections));
-        mBinding.layoutEurosReflection.textViewScore.setText(new DecimalFormat("##.##").format(mAchievementRewards.getLessonPlanReflection()));
-
-        /*Contribution*/
-        mBinding.layoutEurosContribution.imageViewIcon.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.icon_contribution_blue_48_vector));
-        mBinding.layoutEurosContribution.textViewName.setText(getString(R.string.labelContribution));
-        mBinding.layoutEurosContribution.textViewScore.setText(new DecimalFormat("##.##").format(mAchievementRewards.getContribution()));
-
-        /*Classroom Observations*/
-        mBinding.layoutEurosObservation.imageViewIcon.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.icon_observation_blue_48_vector));
-        mBinding.layoutEurosObservation.textViewName.setText(getString(R.string.labelClassroomObservations));
-        mBinding.layoutEurosObservation.textViewScore.setText(new DecimalFormat("##.##").format(mAchievementRewards.getClassRoomObservation()));
+        mBinding.textViewTotalShields.setText(String.valueOf(ConstantUtil.PROFILE_SHIELD_COUNT));
 
     }
 
-    private void setShields(final ArrayList<String> trophiesList, int totalShields) {
-
-        mBinding.textViewTotalShields.setText(String.valueOf(totalShields));
-        mBinding.recyclerViewShields.setLayoutManager(new GridLayoutManager(getBaseContext(), SHIELDS_SPAN_COUNT, GridLayoutManager.VERTICAL, false));
-        mBinding.recyclerViewShields.setNestedScrollingEnabled(false);
-        mBinding.recyclerViewShields.setAdapter(new ShieldsRecyclerViewAdapter(trophiesList));
-
-        mBinding.layoutShieldsHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                mBinding.bottomLineEuros.setVisibility(View.GONE);
-                mBinding.layoutEuros.setVisibility(View.GONE);
-
-                mBinding.bottomLineShields.setVisibility(View.VISIBLE);
-                mBinding.recyclerViewShields.setVisibility(View.VISIBLE);
-
-            }
-        });
-    }
-
-    private ArrayList<String> createTrophiesData() {
-        ArrayList<String> list = new ArrayList<>();
-        list.add("July 19");
-        list.add("2018");
-        list.add("November, 18");
-        list.add("September, 18");
-        list.add("June, 18");
-        return list;
-    }
-
-    /*Adapter*/
-    private class ShieldsRecyclerViewAdapter extends RecyclerView.Adapter<ShieldsRecyclerViewAdapter.ViewHolder> {
-        private ArrayList<String> mList;
-
-        private ShieldsRecyclerViewAdapter(ArrayList<String> list) {
-            this.mList = list;
-        }
-
-        @NonNull
-        @Override
-        public ShieldsRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutProfileShieldListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_profile_shield_list_item, parent, false);
-            return new ShieldsRecyclerViewAdapter.ViewHolder(binding);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull final ShieldsRecyclerViewAdapter.ViewHolder holder, int position) {
-            String trophy = mList.get(position);
-            holder.mBinding.textViewName.setText(trophy);
-            holder.mBinding.imageViewIcon.setImageResource(R.drawable.icon_shield_blue_48_vector);
-//            holder.mBinding.imageViewIcon.setColorFilter(ContextCompat.getColor(Objects.requireNonNull(getBaseContext()), R.color.colorPrimary));
-        }
-
-        @Override
-        public int getItemCount() {
-            return mList.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            LayoutProfileShieldListItemBinding mBinding;
-
-            ViewHolder(LayoutProfileShieldListItemBinding binding) {
-                super(binding.getRoot());
-                mBinding = binding;
-            }
-        }
-
-    }
 
 }

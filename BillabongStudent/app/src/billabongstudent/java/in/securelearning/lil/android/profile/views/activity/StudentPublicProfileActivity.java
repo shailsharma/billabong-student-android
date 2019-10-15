@@ -500,7 +500,7 @@ public class StudentPublicProfileActivity extends AppCompatActivity {
         });
     }
 
-    /*To set visibility of euros tab for first time and other times*/
+    /*To set visibility of label_currency_value tab for first time and other times*/
     private void setEurosVisibility(ArrayList<StudentSubjectReward> rewardsList) {
         mBinding.recyclerViewTrophies.setVisibility(View.GONE);
         mBinding.recyclerViewBadges.setVisibility(View.GONE);
@@ -592,7 +592,7 @@ public class StudentPublicProfileActivity extends AppCompatActivity {
         if (topicList != null && !topicList.isEmpty()) {
             final Dialog dialog = new Dialog(StudentPublicProfileActivity.this);
 
-            /*Dialog box when user click on subject in total rewards/euros */
+            /*Dialog box when user click on subject in total rewards/label_currency_value */
             LayoutDialogSubjectItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getBaseContext()), R.layout.layout_dialog_subject_item, null, false);
             dialog.setCancelable(true);
             dialog.setContentView(binding.getRoot());

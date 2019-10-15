@@ -15,6 +15,8 @@ public class ConstantUtil {
     public static final String TYPE_GRADE = "grade";
     public static final String TYPE_SECTION = "section";
     public static final String CURATOR_MAPPING_ID = "curatorMappingId";
+    public static final int PROFILE_SHIELD_COUNT = 5;
+
 
     public static final String ALL = "All";
     public static final String SUPERSTAR = "Superstar";

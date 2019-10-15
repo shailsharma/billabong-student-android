@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:cropToPadding="true"
-            tools:src="@drawable/icon_shield_blue_48_vector" />
+            tools:src="@drawable/icon_shield" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/textViewName"

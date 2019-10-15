@@ -44,6 +44,9 @@
     <string name="file_provider_authority_debug">in.securelearning.lil.android.app.billabongstudent.debug.provider.FileProvider</string>
     <string name="file_provider_authority_test">in.securelearning.lil.android.app.billabongstudent.demo.provider.FileProvider</string>
 
+    <string name="no_currency_found">No billbucks found</string>
+    <string name="label_currency_value">Billbucks</string>
+
     <!-- Strings related to Settings -->
     <!-- SkillMasteryQuestionPostData General settings -->
     <string name="pref_header_general">General</string>
@@ -327,7 +330,7 @@
     <string name="zero">0</string>
     <string name="chart_configuration">Please provide the chart configuration </string>
     <string name="coverage">Coverage</string>
-    <string name="gamification_assignment_pending"><![CDATA[%1$s, You have %2$s new homework today, You may please plan the day accordingly.]]></string>
+    <string name="gamification_assignment_pending"><![CDATA[%1$s, You have %2$s new homework today.\nYou may please plan the day accordingly.]]></string>
     <string name="gamification_bonus"><![CDATA[Congratulations! I\'ve unlocked Flash Bonus for you! You\'ll secure fifty percent extra points, should you Learn, Revise and Practice %1$s topics Today]]></string>
     <string name="gamification_school_survey"><![CDATA[Good to see you Again! Let me know how was your School Experience today? Please select your best response from the choice. ]]></string>
     <string name="gamification_practice_accuracy">You can Earn 50 Euros every streak of 4 consecutive correct answers.</string>
@@ -361,7 +364,6 @@
     <string name="messageNextSkill">"Congratulations!\nYou have completed</string>
 
     <string name="finish">Finish</string>
-    <string name="euros">Euros</string>
     <string name="trophies">Trophies</string>
     <string name="badges">Badges</string>
     <string name="labelApplication">Application</string>
@@ -451,6 +453,7 @@
     <string name="labelViewProfileImage">View profile image</string>
     <string name="labelPleaseSelect">Please select</string>
     <string name="labelUpdateProfileImage">Update profile image</string>
-
+    <string name="achievements">Achievements</string>
+    <string name="teaches">Teaches</string>
 
 </resources>

@@ -132,7 +132,7 @@
                     android:layout_weight="6"
                     android:paddingStart="@dimen/value_16dp"
                     android:paddingEnd="@dimen/value_16dp"
-                    android:text="@string/labelPractice"
+                    android:text="@string/label_practice"
                     android:textColor="@color/colorBlack" />
 
                 <FrameLayout
@@ -168,7 +168,7 @@
                     android:layout_weight="6"
                     android:paddingStart="@dimen/value_16dp"
                     android:paddingEnd="@dimen/value_16dp"
-                    android:text="@string/labelApplication"
+                    android:text="@string/label_apply"
                     android:textColor="@color/colorBlack" />
 
                 <FrameLayout

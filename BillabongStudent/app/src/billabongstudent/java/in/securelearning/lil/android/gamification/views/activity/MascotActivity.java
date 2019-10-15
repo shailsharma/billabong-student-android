@@ -484,6 +484,7 @@ public class MascotActivity extends AppCompatActivity {
                         @Override
                         public void accept(GamificationBonus bonus) throws Exception {
                             clearTtsEngine();
+                            setEventDone();
                             if (bonus != null) {
                                 mMascotModel.createGamificationBonusObject(bonus, false);
                                 Toast.makeText(MascotActivity.this, "Thanks " + AppPrefs.getUserName(MascotActivity.this) + " Bonus is now available for you.", Toast.LENGTH_LONG).show();
@@ -502,6 +503,7 @@ public class MascotActivity extends AppCompatActivity {
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
                             clearTtsEngine();
+                            setEventDone();
                             finish();
                         }
                     });

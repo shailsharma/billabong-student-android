@@ -107,7 +107,7 @@ public class StudentAchievementFragment extends Fragment {
         });
     }
 
-    /*To set visibility of euros tab for first time and other times*/
+    /*To set visibility of label_currency_value tab for first time and other times*/
     private void setEurosVisibility(ArrayList<StudentSubjectReward> rewardsList) {
         mBinding.recyclerViewTrophies.setVisibility(View.GONE);
         mBinding.recyclerViewBadges.setVisibility(View.GONE);
@@ -199,7 +199,7 @@ public class StudentAchievementFragment extends Fragment {
         if (topicList != null && !topicList.isEmpty()) {
             final Dialog dialog = new Dialog(Objects.requireNonNull(getContext()));
 
-            /*Dialog box when user click on subject in total rewards/euros */
+            /*Dialog box when user click on subject in total rewards/label_currency_value */
             LayoutDialogSubjectItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.layout_dialog_subject_item, null, false);
             dialog.setCancelable(true);
             dialog.setContentView(binding.getRoot());

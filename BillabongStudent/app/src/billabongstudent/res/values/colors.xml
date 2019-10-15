@@ -15,6 +15,7 @@
     <color name="colorWhite33">#33ffffff</color>
     <color name="colorWhite11">#11ffffff</color>
     <color name="colorOrange">#fb8c00</color>
+    <color name="colorMattBlack">#1A1A1A</color>
 
     <!--Quizzes colors-->
     <color name="colorQuizPrimary">#363F46</color>

@@ -82,7 +82,7 @@ import in.securelearning.lil.android.login.events.AlreadyLoggedInEvent;
 import in.securelearning.lil.android.login.events.PasswordChangeEvent;
 import in.securelearning.lil.android.syncadapter.dataobject.RolePermissions;
 import in.securelearning.lil.android.syncadapter.fcmservices.FCMToken;
-import in.securelearning.lil.android.syncadapter.job.JobCreator;
+import in.securelearning.lil.android.syncadapter.fcmservices.FlavorFCMReceiverService;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.service.MessageService;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
@@ -960,10 +960,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 startHomeActivity();
                 AppPrefs.setLoggedIn(true, LoginActivity.this);
             }
+
+            startFCMService();
             /*register device FCM token to lil server*/
             FCMToken.sendRegistrationToServer(getBaseContext(), FirebaseInstanceId.getInstance().getToken());
         } else {
             throw new SocketTimeoutException(getString(R.string.error_loading_profile));
+        }
+    }
+
+
+    /*Starting FCM Receiver service after successful login*/
+    private void startFCMService() {
+        try {
+            startService(new Intent(LoginActivity.this, FlavorFCMReceiverService.class));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
