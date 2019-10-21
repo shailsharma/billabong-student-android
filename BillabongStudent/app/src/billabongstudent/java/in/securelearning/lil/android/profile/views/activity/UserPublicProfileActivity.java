@@ -346,7 +346,7 @@ public class UserPublicProfileActivity extends AppCompatActivity {
     }
 
 
-    /*Set Billbucks count*/
+    /*Set Billabucks count*/
     private void setEuros() {
 
         String totalEuros = new DecimalFormat("##.##").format(mAchievementRewards.getTotalReward());

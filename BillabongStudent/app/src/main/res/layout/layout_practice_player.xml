@@ -6,7 +6,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/gradient_app"
+        android:background="@drawable/gradient_quiz_player"
         android:fitsSystemWindows="true"
         android:orientation="vertical">
 
@@ -214,17 +214,23 @@
                     android:src="@drawable/icon_hint_bulb"
                     android:visibility="gone" />
 
+                <!--Question Type-->
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/textViewQuestionType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/layoutQuestionCounter"
                     android:layout_marginStart="@dimen/value_8dp"
-                    android:alpha="0.8"
-                    android:textColor="@color/colorWhite"
-                    android:visibility="visible"
+                    android:layout_marginTop="@dimen/value_4dp"
+                    android:background="@drawable/background_start_color_curved"
+                    android:paddingStart="@dimen/value_4dp"
+                    android:paddingTop="@dimen/value_2dp"
+                    android:paddingEnd="@dimen/value_4dp"
+                    android:paddingBottom="@dimen/value_2dp"
+                    android:textColor="@color/colorEndGradient"
+                    android:textSize="@dimen/textSize_12sp"
+                    android:visibility="invisible"
                     tools:text="@string/single_correct" />
-
 
             </RelativeLayout>
 

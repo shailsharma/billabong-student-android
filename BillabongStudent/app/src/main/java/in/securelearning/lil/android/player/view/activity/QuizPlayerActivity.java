@@ -821,7 +821,7 @@ public class QuizPlayerActivity extends AppCompatActivity {
         ArrayList<QuestionChoice> questionChoices = question.getQuestionChoices();
 
         LayoutInflater layoutInflater = this.getLayoutInflater();
-
+        mBinding.textViewQuestionType.setVisibility(View.VISIBLE);
         mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_UP);
 
         if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_RADIO) || questionType.equalsIgnoreCase("trueFalse")) {
@@ -966,6 +966,8 @@ public class QuizPlayerActivity extends AppCompatActivity {
 
             setDropdownQuestionView(question, true);
 
+        } else {
+            mBinding.textViewQuestionType.setVisibility(View.INVISIBLE);
         }
 
 

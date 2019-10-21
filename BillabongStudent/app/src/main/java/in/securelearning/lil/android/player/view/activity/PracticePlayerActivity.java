@@ -746,7 +746,7 @@ public class PracticePlayerActivity extends AppCompatActivity {
 
         String questionType = question.getQuestionType();
         ArrayList<QuestionChoice> questionChoices = question.getQuestionChoices();
-
+        mBinding.textViewQuestionType.setVisibility(View.VISIBLE);
         LayoutInflater layoutInflater = this.getLayoutInflater();
 
         if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_RADIO)
@@ -880,6 +880,9 @@ public class PracticePlayerActivity extends AppCompatActivity {
             setMatchTheFollowingView(question.getQuestionObject());
         } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_DROPDOWN)) {
             setDropdownQuestionView(question, true);
+        }else {
+            mBinding.textViewQuestionType.setVisibility(View.INVISIBLE);
+
         }
 
         setMovementMethod();

@@ -9,6 +9,9 @@
     <color name="colorCenterGradient">#9e005d</color>
     <color name="colorStartGradient">#fbbd18</color>
 
+    <color name="colorAppLightStartGradient">#866AA8</color>
+    <color name="colorAppLightEndGradient">#F0C14F</color>
+
     <color name="notification_small_background">#03a9f4</color>
     <color name="colorAssignActivity">#3F51B5</color>
     <color name="colorDialogBackground">#88000000</color>

@@ -1193,7 +1193,7 @@ public class DashboardFragment extends Fragment {
                             equalsIgnoreCase(AppPrefs.getUserId(mContext))
                             && CommonUtils.getInstance().checkDateRange(bonusObject.getStartDate(), bonusObject.getEndDate())
                             && !TextUtils.isEmpty(bonusObject.getSubjectName())) {
-                        String msg = "Congratulations! We have unlocked an exclusive Flash Bonus for " + bonusObject.getSubjectName() + "." + " You will secure Extra Billbucks. Should you \n" + "either Learn or Reinforce " + bonusObject.getSubjectName() + " topics Today?";
+                        String msg = "Congratulations! We have unlocked an exclusive Flash Bonus for " + bonusObject.getSubjectName() + "." + " You will secure Extra Billabucks. Should you \n" + "either Learn or Reinforce " + bonusObject.getSubjectName() + " topics Today?";
                         mContext.startActivity(MascotActivity.getStartIntent(mContext, msg, event));
                     } else {
                         mContext.startActivity(SubjectDetailsActivity.getStartIntent(getContext(), lrpaSubjectId));

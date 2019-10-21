@@ -474,7 +474,7 @@ public class StudentPublicProfileActivity extends AppCompatActivity {
         }
     }
 
-    /*Rewards are now Billbucks*/
+    /*Rewards are now Billabucks*/
     private void setRewards(final ArrayList<StudentSubjectReward> rewardsList, int totalRewards) {
 
         mBinding.textViewTotalRewards.setText(String.valueOf(totalRewards));
