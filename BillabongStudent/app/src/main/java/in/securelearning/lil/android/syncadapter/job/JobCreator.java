@@ -677,8 +677,8 @@ public class JobCreator {
      * @param groupPostsNResponse to validate
      * @return
      */
-    public static BaseValidationJob<GroupPostsNResponse> createGroupPostNResponseValidationJob(GroupPostsNResponse groupPostsNResponse) {
-        return new ValidateGroupPostNResponseJob(groupPostsNResponse);
+    public static BaseValidationJob<GroupPostsNResponse> createGroupPostNResponseValidationJob(GroupPostsNResponse groupPostsNResponse, String groupObjectId) {
+        return new ValidateGroupPostNResponseJob(groupPostsNResponse,groupObjectId);
     }
 
     /**

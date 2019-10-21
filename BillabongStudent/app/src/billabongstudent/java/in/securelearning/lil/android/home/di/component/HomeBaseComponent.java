@@ -14,8 +14,8 @@ import in.securelearning.lil.android.analytics.views.fragment.StudentPerformance
 import in.securelearning.lil.android.app.MyApplication;
 import in.securelearning.lil.android.base.di.component.BaseComponent;
 import in.securelearning.lil.android.base.model.GroupModel;
-import in.securelearning.lil.android.gamification.model.GamificationModel;
-import in.securelearning.lil.android.gamification.views.fragment.GamificationDialog;
+import in.securelearning.lil.android.gamification.model.MascotModel;
+import in.securelearning.lil.android.gamification.views.activity.MascotActivity;
 import in.securelearning.lil.android.home.model.CalendarEventModel;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
 import in.securelearning.lil.android.home.model.HomeModel;
@@ -31,32 +31,24 @@ import in.securelearning.lil.android.home.views.activity.NewSearchResourceFilter
 import in.securelearning.lil.android.home.views.activity.PasswordChangeActivity;
 import in.securelearning.lil.android.home.views.activity.PersonalEventCreationActivity;
 import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.SampleWebActivity;
 import in.securelearning.lil.android.home.views.activity.SearchResourcesListFilterActivity;
 import in.securelearning.lil.android.home.views.activity.SearchResultListActivity;
 import in.securelearning.lil.android.home.views.activity.SearchResultListFilterActivity;
 import in.securelearning.lil.android.home.views.activity.SessionDetailActivity;
-import in.securelearning.lil.android.home.views.activity.SettingNewActivity;
-import in.securelearning.lil.android.home.views.activity.StudentProfileActivity;
+import in.securelearning.lil.android.home.views.activity.SettingActivity;
 import in.securelearning.lil.android.home.views.activity.SubjectDetailSearchCourseActivity;
 import in.securelearning.lil.android.home.views.activity.SubjectDetailSearchResourceActivity;
 import in.securelearning.lil.android.home.views.activity.SubjectDetailsActivity;
-import in.securelearning.lil.android.home.views.activity.TopicListActivity;
 import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.home.views.activity.UserProfileEditActivity;
-import in.securelearning.lil.android.home.views.fragment.AvailableTrainingsFragment;
+import in.securelearning.lil.android.home.views.activity.VocationalTopicsActivity;
+import in.securelearning.lil.android.home.views.activity.WikiHowListActivity;
+import in.securelearning.lil.android.home.views.adapter.LRAAdapter;
+import in.securelearning.lil.android.home.views.adapter.PracticeAdapter;
 import in.securelearning.lil.android.home.views.fragment.ChaptersFragment;
-import in.securelearning.lil.android.home.views.fragment.ClassDetailsFragments;
 import in.securelearning.lil.android.home.views.fragment.DashboardFragment;
-import in.securelearning.lil.android.home.views.fragment.LessonPlanFragment;
-import in.securelearning.lil.android.home.views.fragment.MyTrainingsFragment;
 import in.securelearning.lil.android.home.views.fragment.PeriodicFragmentForClassDetails;
-import in.securelearning.lil.android.home.views.fragment.RecapFragment;
 import in.securelearning.lil.android.home.views.fragment.ResourceFragment;
-import in.securelearning.lil.android.home.views.fragment.SampleClassPlannerFragment;
-import in.securelearning.lil.android.home.views.fragment.StudentAchievementFragment;
-import in.securelearning.lil.android.home.views.fragment.StudentParentFragment;
-import in.securelearning.lil.android.home.views.fragment.StudentPersonalFragment;
 import in.securelearning.lil.android.home.views.fragment.SubjectDetailHomeFragment;
 import in.securelearning.lil.android.home.views.fragment.SubjectHomeworkFragment;
 import in.securelearning.lil.android.home.views.fragment.TraineeLearningObjectiveFragment;
@@ -69,9 +61,18 @@ import in.securelearning.lil.android.homework.views.activity.HomeworkDetailActiv
 import in.securelearning.lil.android.homework.views.activity.SubmitHomeworkActivity;
 import in.securelearning.lil.android.homework.views.fragment.HomeworkFragment;
 import in.securelearning.lil.android.login.views.activity.GeneratePasswordActivity;
-import in.securelearning.lil.android.mindspark.model.MindSparkModel;
-import in.securelearning.lil.android.mindspark.views.activity.MindSparkAllTopicListActivity;
-import in.securelearning.lil.android.mindspark.views.activity.MindSparkPlayerActivity;
+import in.securelearning.lil.android.player.view.adapter.QuestionResourceAdapter;
+import in.securelearning.lil.android.profile.model.ProfileModel;
+import in.securelearning.lil.android.profile.views.activity.StudentProfileActivity;
+import in.securelearning.lil.android.profile.views.activity.StudentProfileCoCurricularActivity;
+import in.securelearning.lil.android.profile.views.activity.StudentProfileGoalActivity;
+import in.securelearning.lil.android.profile.views.activity.StudentProfileHobbyActivity;
+import in.securelearning.lil.android.profile.views.activity.StudentProfileSubjectActivity;
+import in.securelearning.lil.android.profile.views.activity.StudentPublicProfileActivity;
+import in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity;
+import in.securelearning.lil.android.profile.views.fragment.StudentAchievementFragment;
+import in.securelearning.lil.android.profile.views.fragment.StudentParentFragment;
+import in.securelearning.lil.android.profile.views.fragment.StudentPersonalFragment;
 
 /**
  * Created by Prabodh Dhabaria on 14-11-2016.
@@ -115,11 +116,9 @@ public interface HomeBaseComponent extends BaseComponent {
 
     void inject(CalendarActivityNew calendarActivityNew);
 
-    void inject(ClassDetailsFragments classDetailsFragments);
-
     void inject(PeriodicFragmentForClassDetails periodicFragmentForClassDetails);
 
-    void inject(SettingNewActivity settingNewActivity);
+    void inject(SettingActivity settingActivity);
 
     void inject(NewSearchCourseFilterActivity newSearchCourseFilterActivity);
 
@@ -143,25 +142,11 @@ public interface HomeBaseComponent extends BaseComponent {
 
     void inject(SessionDetailActivity sessionDetailActivity);
 
-    void inject(AvailableTrainingsFragment availableTrainingsFragment);
-
-    void inject(MyTrainingsFragment myTrainingsFragment);
-
-    void inject(LessonPlanFragment lessonPlanFragment);
-
-    void inject(SampleClassPlannerFragment sampleClassPlannerFragment);
-
-    void inject(RecapFragment recapFragment);
-
     void inject(PasswordChangeActivity passwordChangeActivity);
-
-    void inject(TopicListActivity topicListActivity);
 
     void inject(FlavorHomeModel flavorHomeModel);
 
     void inject(ChaptersFragment chaptersFragment);
-
-    void inject(SampleWebActivity sampleWebActivity);
 
     void inject(SubjectDetailHomeFragment subjectDetailHomeFragment);
 
@@ -172,8 +157,6 @@ public interface HomeBaseComponent extends BaseComponent {
     void inject(StudentPersonalFragment studentPersonalFragment);
 
     void inject(StudentParentFragment studentParentFragment);
-
-    void inject(MindSparkAllTopicListActivity mindSparkAllTopicListActivity);
 
     void inject(StudentAchievementFragment studentAchievementFragment);
 
@@ -188,10 +171,6 @@ public interface HomeBaseComponent extends BaseComponent {
     void inject(ProgressDetailActivity progressDetailActivity);
 
     void inject(GeneratePasswordActivity generatePasswordActivity);
-
-    void inject(MindSparkModel mindSparkModel);
-
-    void inject(MindSparkPlayerActivity mindSparkPlayerActivity);
 
     void inject(StudentAnalyticsTabActivity studentAnalyticsTabActivity);
 
@@ -215,7 +194,29 @@ public interface HomeBaseComponent extends BaseComponent {
 
     void inject(MyApplication myApplication);
 
-    void inject(GamificationDialog gamificationDialog);
+    void inject(MascotActivity mascotActivity);
 
-    void inject(GamificationModel gamificationModel);
+    void inject(MascotModel mascotModel);
+
+    void inject(WikiHowListActivity wikiHowListActivity);
+
+    void inject(ProfileModel profileModel);
+
+    void inject(StudentProfileCoCurricularActivity studentProfileCoCurricularActivity);
+
+    void inject(StudentProfileSubjectActivity studentProfileSubjectActivity);
+
+    void inject(StudentProfileGoalActivity studentProfileGoalActivity);
+
+    void inject(StudentProfileHobbyActivity studentProfileHobbyActivity);
+
+    void inject(UserPublicProfileActivity userPublicProfileActivity);
+
+    void inject(StudentPublicProfileActivity studentPublicProfileActivity);
+
+    void inject(VocationalTopicsActivity vocationalTopicsActivity);
+
+    void inject(LRAAdapter LRAAdapter);
+
+    void inject(PracticeAdapter practiceAdapter);
 }

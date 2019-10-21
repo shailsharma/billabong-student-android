@@ -40,7 +40,7 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.LayoutQuestionPlayerBinding;
 import in.securelearning.lil.android.base.dataobjects.Attempt;
 import in.securelearning.lil.android.base.dataobjects.MetaInformation;
@@ -966,7 +966,7 @@ public class QuestionPlayerActivity extends AppCompatActivity {
             if (mimeType.contains("image")) {
                 ArrayList<String> pathArrayList = new ArrayList<>();
                 pathArrayList.add("file://" + resourcePath);
-                FullScreenImage.setUpFullImageView(this, 0, false, true, FullScreenImage.getResourceArrayList(pathArrayList));
+                FullScreenImage.setUpFullImageView(this, 0, false, true, false, FullScreenImage.getResourceArrayList(pathArrayList));
 
             } else if (mimeType.contains("video")) {
 

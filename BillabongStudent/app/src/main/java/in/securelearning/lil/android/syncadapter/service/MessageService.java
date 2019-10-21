@@ -248,14 +248,16 @@ public class MessageService extends BaseService {
 
 
     private void handleActionDownloadGroupNetworkDataBulk() {
-        ArrayList<Group> groups = mSyncServiceModel.fetchAllGroups();
-        for (Group group : groups) {
-            if (ConstantUtil.GROUP_TYPE_NETWORK.equals(group.getGroupType()) && !group.isNetworkDataDownloaded()) {
-                JobCreator.createDownloadGroupPostAndResponseJob(group.getObjectId()).execute();
-                group.setNetworkDataDownloaded(true);
-                mSyncServiceModel.updateGroup(group);
-            }
-        }
+        JobCreator.createNetworkGroupDownloadJob().execute();
+
+//        ArrayList<Group> groups = mSyncServiceModel.fetchAllGroups();
+//        for (Group group : groups) {
+//            if (ConstantUtil.GROUP_TYPE_NETWORK.equals(group.getGroupType()) && !group.isNetworkDataDownloaded()) {
+//                JobCreator.createDownloadGroupPostAndResponseJob(group.getObjectId()).execute();
+//                group.setNetworkDataDownloaded(true);
+//                mSyncServiceModel.updateGroup(group);
+//            }
+//        }
 
     }
 

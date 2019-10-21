@@ -7,16 +7,12 @@ package in.securelearning.lil.android.home.views.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 
 import org.apache.cordova.CordovaActivity;
-
-import in.securelearning.lil.android.app.R;
 
 public class PlayVimeoFullScreenActivity extends CordovaActivity {
 
@@ -55,8 +51,9 @@ public class PlayVimeoFullScreenActivity extends CordovaActivity {
                 }
 
             }
+        } else {
+            finish();
         }
-        finish();
     }
 
     public static Intent getStartIntent(Context context, String url) {

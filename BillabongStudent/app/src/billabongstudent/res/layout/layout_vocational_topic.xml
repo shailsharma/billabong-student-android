@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"
+        android:orientation="vertical">
+
+
+        <!--Toolbar-->
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="top"
+            app:layout_collapseMode="pin"
+            app:navigationIcon="@drawable/action_arrow_left_dark"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextColor="@android:color/white">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/textViewToolbarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:textColor="@color/colorBlack"
+                tools:text="Hello" />
+
+        </android.support.v7.widget.Toolbar>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:fillViewport="true"
+                android:layout_height="match_parent">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <!--List-->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerViewTopic"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            tools:listitem="@layout/layout_vocational_topic_list_item" />
+
+                    </RelativeLayout>
+
+                    <!--Error-->
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewError"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textColor="@color/colorGrey66"
+                        android:text="@string/messageNoDataFound"
+                        android:visibility="gone" />
+
+
+                </FrameLayout>
+
+            </android.support.v4.widget.NestedScrollView>
+
+            <!--Bottom progress-->
+            <android.support.v7.widget.LinearLayoutCompat
+                android:id="@+id/layoutProgressBottom"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#44000000"
+                android:clickable="true"
+                android:elevation="4dp"
+                android:focusable="true"
+                android:longClickable="false"
+                android:visibility="gone">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/progressContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="@dimen/value_16dp"
+                    android:layout_marginRight="@dimen/value_16dp"
+                    android:layout_marginBottom="@dimen/value_24dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorGreyDark"
+                        android:gravity="center_vertical">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewBottomProgressMessage"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/value_16dp"
+                            android:layout_marginRight="@dimen/value_16dp"
+                            android:layout_weight="1"
+                            android:text="@string/labelPleaseWait"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/colorWhite" />
+
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/value_8dp"
+                            android:theme="@style/ProgressWhiteAccent" />
+
+                    </android.support.v7.widget.LinearLayoutCompat>
+
+                </android.support.v7.widget.CardView>
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+        </FrameLayout>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+</layout>

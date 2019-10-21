@@ -31,6 +31,10 @@ public class LessonPlanMinimal implements Serializable {
     @Expose
     private String mSubject;
 
+    @SerializedName("subjectColorCode")
+    @Expose
+    private String mSubjectColorCode;
+
     @SerializedName("grade")
     @Expose
     private String mGrade;
@@ -101,6 +105,14 @@ public class LessonPlanMinimal implements Serializable {
 
     public void setSubject(String subject) {
         mSubject = subject;
+    }
+
+    public String getSubjectColorCode() {
+        return mSubjectColorCode;
+    }
+
+    public void setSubjectColorCode(String subjectColorCode) {
+        mSubjectColorCode = subjectColorCode;
     }
 
     public String getGrade() {

@@ -39,6 +39,7 @@ import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartData;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -121,7 +122,7 @@ public class TimeEffortDetailActivity extends AppCompatActivity {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
-                            fetchWeeklyEffortData(subjectId);
+                            //fetchWeeklyEffortData(subjectId);
                             mBinding.layoutTotalTimeSpent.setVisibility(View.GONE);
                             mBinding.layoutDailyTimeSpent.setVisibility(View.GONE);
                             mBinding.layoutRecyclerView.setVisibility(View.GONE);
@@ -137,34 +138,7 @@ public class TimeEffortDetailActivity extends AppCompatActivity {
 
     @SuppressLint("CheckResult")
     private void fetchWeeklyEffortData(String subjectId) {
-        if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-            mAnalyticsModel.fetchWeeklyEffortData(subjectId).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<ArrayList<EffortChartDataWeekly>>() {
-                        @Override
-                        public void accept(ArrayList<EffortChartDataWeekly> effortChartDataWeeklies) throws Exception {
-                            mBinding.progressBarEffort.setVisibility(View.GONE);
-                            if (!effortChartDataWeeklies.isEmpty()) {
-                                mBinding.chartEffort.setVisibility(View.VISIBLE);
-                                drawEffortLineChart(effortChartDataWeeklies);
-                            } else {
-                                mBinding.chartEffort.setVisibility(View.GONE);
-                                mBinding.textViewNoEffortData.setVisibility(View.VISIBLE);
-                            }
 
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            throwable.printStackTrace();
-                            mBinding.progressBarEffort.setVisibility(View.GONE);
-                            mBinding.textViewNoEffortData.setVisibility(View.VISIBLE);
-
-                        }
-                    });
-        } else {
-            showInternetSnackBar("");
-        }
     }
 
     private void drawEffortLineChart(ArrayList<EffortChartDataWeekly> effortChartDataWeeklies) {
@@ -249,7 +223,7 @@ public class TimeEffortDetailActivity extends AppCompatActivity {
         mBinding.layoutTotalTimeSpent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAnalyticsModel.showDetailedTotalTimeSpent(TimeEffortDetailActivity.this, finalTotalTimeSpent, finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime);
+                mAnalyticsModel.showDetailedTotalTimeSpent(TimeEffortDetailActivity.this, finalTotalTimeSpent, finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime, ConstantUtil.BLANK);
             }
         });
 

@@ -91,8 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:padding="6dp"
-                    app:srcCompat="@drawable/logo_facebook"/>
+                    android:padding="6dp"/>
 
                 <in.securelearning.lil.android.base.widget.TextViewCustom
                     android:layout_width="wrap_content"
@@ -119,8 +118,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:padding="6dp"
-                    app:srcCompat="@drawable/logo_google_plus"/>
+                    android:padding="6dp"/>
 
                 <in.securelearning.lil.android.base.widget.TextViewCustom
                     android:layout_width="wrap_content"
@@ -264,7 +262,7 @@
                         android:hint="@string/prompt_selectassociation"
                         android:textColor="@color/colorWhite"
                         android:textColorHint="@color/hintColorWhite66"
-                        android:theme="@style/SignUpEdittext" />
+                        android:theme="@style/EditTextSignUp" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -282,7 +280,7 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:textColor="@color/colorWhite"
-                        android:theme="@style/SignUpEdittext" />
+                        android:theme="@style/EditTextSignUp" />
 
                 </android.support.design.widget.TextInputLayout>
 

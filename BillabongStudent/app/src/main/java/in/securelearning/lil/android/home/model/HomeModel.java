@@ -1,15 +1,8 @@
 package in.securelearning.lil.android.home.model;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -72,7 +65,6 @@ import in.securelearning.lil.android.base.model.PeriodicEventsModel;
 import in.securelearning.lil.android.base.model.ResourceModel;
 import in.securelearning.lil.android.base.model.TrainingModel;
 import in.securelearning.lil.android.base.model.TrainingSessionModel;
-import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.dataobjects.CalendarDayCounts;
@@ -82,22 +74,15 @@ import in.securelearning.lil.android.syncadapter.dataobject.AuthToken;
 import in.securelearning.lil.android.syncadapter.dataobject.RequestOTP;
 import in.securelearning.lil.android.syncadapter.dataobject.RequestOTPResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.TeacherGradeMapping;
-import in.securelearning.lil.android.syncadapter.dataobject.Token;
 import in.securelearning.lil.android.syncadapter.ftp.FtpFunctions;
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
-import in.securelearning.lil.android.syncadapter.rest.ApiModule;
-import in.securelearning.lil.android.syncadapter.rest.BaseApiInterface;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 import in.securelearning.lil.android.syncadapter.utils.PrefManagerStudentSubjectMapping;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -1200,7 +1185,7 @@ public class HomeModel {
                 } else if (response.code() == 404) {
                     throw new Exception(mContext.getString(R.string.messageUnableToGetData));
                 } else if (response.code() == 400) {
-                    throw new Exception(mContext.getString(R.string.invalid_code));
+                    throw new Exception(mContext.getString(R.string.invalid_otp));
                 } else if ((response.code() == 401) && SyncServiceHelper.refreshToken(mContext)) {
                     Response<AuthToken> response2 = call.clone().execute();
                     if (response2 != null && response2.isSuccessful()) {
@@ -1228,12 +1213,12 @@ public class HomeModel {
         });
     }
 
-    public Observable<String> checkForNewVersionOnPlayStore() {
+    public Observable<Float> checkForNewVersionOnPlayStore() {
 
         return
-                io.reactivex.Observable.create(new ObservableOnSubscribe<String>() {
+                io.reactivex.Observable.create(new ObservableOnSubscribe<Float>() {
                     @Override
-                    public void subscribe(ObservableEmitter<String> e) throws Exception {
+                    public void subscribe(ObservableEmitter<Float> e) throws Exception {
                         String newVersion = Jsoup.connect(
                                 "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "&hl=en")
                                 .timeout(30000)
@@ -1243,16 +1228,14 @@ public class HomeModel {
                                 .select("div.hAyfc:nth-child(4) > span:nth-child(2) > div:nth-child(1) > span:nth-child(1)")
                                 .first()
                                 .ownText();
-                        e.onNext(newVersion);
+                        e.onNext(Float.parseFloat(newVersion));
                         e.onComplete();
-                        Log.e("new Version", newVersion);
+                        Log.e("playStoreVersion--", newVersion);
 
 
                     }
                 });
     }
-
-
 
 
 }

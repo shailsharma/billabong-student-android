@@ -19,7 +19,6 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
-import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -45,10 +44,10 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.Widgets.CheckBoxCustom;
 import in.securelearning.lil.android.app.Widgets.RadioButtonCustom;
-import in.securelearning.lil.android.app.databinding.LayoutPracticeTopicBinding;
+import in.securelearning.lil.android.app.databinding.LayoutPracticePlayerBinding;
 import in.securelearning.lil.android.base.dataobjects.Attempt;
 import in.securelearning.lil.android.base.dataobjects.MetaInformation;
 import in.securelearning.lil.android.base.dataobjects.Question;
@@ -80,7 +79,6 @@ import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.FlyObjectAnimationUtil;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import in.securelearning.lil.android.syncadapter.utils.SoundUtils;
-import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -108,7 +106,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
     QuestionResponseModelApp mQuestionResponseModelApp;
     @Inject
     RxBus mRxBus;
-    LayoutPracticeTopicBinding mBinding;
+    LayoutPracticePlayerBinding mBinding;
 
     private static final String ID = "id";
     private static final String TITLE = "title";
@@ -152,7 +150,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InjectorQuizPreview.INSTANCE.getComponent().inject(this);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.layout_practice_topic);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.layout_practice_player);
         handleIntent();
         initializeClickListeners();
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
@@ -487,7 +485,7 @@ public class PracticeTopicActivity extends AppCompatActivity {
         mBinding.textViewQuestion.setText(TextViewMore.stripHtml(question.getQuestionText()));
         HtmlHttpImageGetter htmlHttpImageGetter = new HtmlHttpImageGetter(mBinding.textViewQuestion);
         htmlHttpImageGetter.enableCompressImage(true, 80);
-        // String newText = question.getQuestionText().replace("#000000", "#ffffff");
+        // String newText = question.getText().replace("#000000", "#ffffff");
         mBinding.textViewQuestion.setText(Html.fromHtml(TextViewMore.stripHtmlForQuiz(question.getQuestionText()).trim(), htmlHttpImageGetter, new TextViewMore.UlTagHandler()));
     }
 

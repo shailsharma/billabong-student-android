@@ -10,6 +10,8 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
+import android.text.Spanned;
 
 import java.util.Date;
 
@@ -99,6 +101,7 @@ public class NotificationUtil {
     }
 
     public static void showNotification(Context context, Intent intent, String msg, String title) {
+        Spanned message = Html.fromHtml(msg);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationUtil.NOTIFICATION_CHANNEL_ID)
                 .setDefaults(NotificationCompat.FLAG_ONLY_ALERT_ONCE)
                 .setSmallIcon(R.drawable.notification_icon)
@@ -106,20 +109,23 @@ public class NotificationUtil {
                 .setAutoCancel(true)
                 .setColor(getSmallBackgroundColor(context))
                 .setContentTitle(title)
-                .setContentText(msg);
+                .setContentText(message)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message));
 
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);
 
-        // Add as notification
+        //Add as notification
         NotificationManager notifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notifyMgr != null) {
             NotificationChannel channel = new NotificationChannel(NotificationUtil.NOTIFICATION_CHANNEL_ID, NotificationUtil.NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
-            assert notifyMgr != null;
             notifyMgr.createNotificationChannel(channel);
         }
-        notifyMgr.notify((int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE), builder.build());
+
+        if (notifyMgr != null) {
+            notifyMgr.notify((int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE), builder.build());
+        }
     }
 
     private static int getNotificationResourceId() {

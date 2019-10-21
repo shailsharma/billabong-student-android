@@ -1,12 +1,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/image_dashboard_background">
+        android:background="@color/colorWhite">
 
-        <LinearLayout
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -18,7 +18,12 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/gradient_app"
                 android:elevation="@dimen/elevation_4dp"
-                app:tabTextAppearance="@style/TabTextAppearance"/>
+                app:tabIndicatorColor="@color/colorWhite"
+                app:tabIndicatorHeight="@dimen/value_2dp"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/colorWhite"
+                app:tabTextAppearance="@style/TabTextAppearance"
+                app:tabTextColor="@color/colorWhite66" />
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -27,25 +32,26 @@
                 <android.support.v4.view.ViewPager
                     android:id="@+id/viewPager"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
 
-                <LinearLayout
+                <android.support.v7.widget.LinearLayoutCompat
                     android:id="@+id/layoutProgressBar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_horizontal|center_vertical"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <ProgressBar
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:visibility="visible"/>
+                        android:layout_gravity="center" />
 
-                </LinearLayout>
+                </android.support.v7.widget.LinearLayoutCompat>
+
             </FrameLayout>
-        </LinearLayout>
+
+        </android.support.v7.widget.LinearLayoutCompat>
 
 
     </android.support.design.widget.CoordinatorLayout>

@@ -60,7 +60,9 @@ public class ShortcutUtil {
     public static void removeShortcut(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             ShortcutManager shortcutManager = context.getSystemService(ShortcutManager.class);
-            shortcutManager.removeAllDynamicShortcuts();
+            if (shortcutManager != null) {
+                shortcutManager.removeAllDynamicShortcuts();
+            }
         } else {
             String[] actions = {ACTION_SHORTCUT_ASSIGNMENT,
                     ACTION_SHORTCUT_LEARNING_NETWORK,
@@ -70,7 +72,7 @@ public class ShortcutUtil {
                     ACTION_SHORTCUT_LEARNING_MAP};
 
             String[] labels = {context.getString(R.string.homework),
-                    context.getString(R.string.learning_network),
+                    context.getString(R.string.title_network),
                     context.getString(R.string.string_calendar),
                     context.getString(R.string.label_workspace),
                     context.getString(R.string.labelTraining),

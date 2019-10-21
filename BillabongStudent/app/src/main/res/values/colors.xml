@@ -12,6 +12,7 @@
     <color name="red_color">#FF0000</color>
     <color name="transparent_white">#66ffffff</color>
     <color name="colorBackground">#f5f5f5</color>
+    <color name="colorBackgroundLight">#F7F7F7</color>
     <color name="colorWhite99">#99ffffff</color>
 
 

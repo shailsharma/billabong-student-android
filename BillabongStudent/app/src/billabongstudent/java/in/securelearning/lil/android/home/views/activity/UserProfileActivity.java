@@ -39,7 +39,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
 import in.securelearning.lil.android.app.databinding.LayoutFullImageBinding;
 import in.securelearning.lil.android.app.databinding.LayoutProfileTeacherClassesItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutUserProfileActivityBinding;
@@ -77,8 +76,11 @@ import in.securelearning.lil.android.syncadapter.events.UserProfileChangeEvent;
 import in.securelearning.lil.android.syncadapter.rest.ApiModule;
 import in.securelearning.lil.android.syncadapter.rest.DownloadApiInterface;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
+import in.securelearning.lil.android.syncadapter.utils.AppBarStateChangeListener;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -153,22 +155,13 @@ public class UserProfileActivity extends AppCompatActivity {
         mBinding.collapsingToolbar.setTitleEnabled(false);
         mBinding.collapsingToolbar.setContentScrimColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimary));
         mBinding.collapsingToolbar.setStatusBarScrimColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimary));
-        mBinding.appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-
-            boolean isVisible = true;
-            int scrollRange = -1;
-
+        mBinding.appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
             @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                if (state.name().equalsIgnoreCase(State.COLLAPSED.toString())) {
                     mBinding.toolbar.setTitle(getString(R.string.label_profile));
-                    isVisible = true;
-                } else if (isVisible) {
-                    mBinding.toolbar.setTitle("");
-                    isVisible = false;
+                } else if (state.name().equalsIgnoreCase(State.EXPANDED.toString())) {
+                    mBinding.toolbar.setTitle(ConstantUtil.BLANK);
                 }
             }
         });

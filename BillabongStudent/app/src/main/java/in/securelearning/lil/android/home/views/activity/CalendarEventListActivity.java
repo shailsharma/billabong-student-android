@@ -30,7 +30,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.LayoutCalendarAnnouncementItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutCalendarCategoryListBinding;
 import in.securelearning.lil.android.base.constants.EventType;
@@ -567,7 +567,7 @@ public class CalendarEventListActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     String mimeType = URLConnection.guessContentTypeFromName(filePath);
                     if (mimeType.contains("image")) {
-                        FullScreenImage.setUpFullImageView(CalendarEventListActivity.this, position, true, true, mPathArrayList);
+                        FullScreenImage.setUpFullImageView(CalendarEventListActivity.this, position, true, true, false, mPathArrayList);
                     } else if (mimeType.contains("video")) {
                         Resource item = new Resource();
                         item.setType("video");

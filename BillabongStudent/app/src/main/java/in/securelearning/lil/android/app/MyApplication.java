@@ -10,9 +10,11 @@ import java.io.File;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.base.App;
-import in.securelearning.lil.android.gamification.model.GamificationModel;
+import in.securelearning.lil.android.base.Injector;
+import in.securelearning.lil.android.gamification.model.MascotModel;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
+import in.securelearning.lil.android.syncadapter.model.WebPlayerLiveModel;
 
 public class MyApplication extends App {
     @SuppressLint("StaticFieldLeak")
@@ -21,7 +23,7 @@ public class MyApplication extends App {
     @Inject
     FlavorHomeModel mFlavorHomeModel;
     @Inject
-    GamificationModel mGamificationModel;
+    MascotModel mMascotModel;
 
     public static MyApplication getInstance() {
         if (mMyApplication == null) {
@@ -38,10 +40,23 @@ public class MyApplication extends App {
         FirebaseApp.initializeApp(this);
         InjectorHome.INSTANCE.getComponent().inject(this);
         registerActivityLifecycleCallbacks(AppLifecycleHandler.getInstance());
+        initializeWebPlayerInterface();
         AppLifecycleHandler.getInstance().mFlavorHomeModel = mFlavorHomeModel;
-        if (mGamificationModel != null) {
-            mGamificationModel.createGamificationEvent();
+        if (mMascotModel != null) {
+            mMascotModel.createGamificationEvent();
         }
+    }
+
+
+    /*Here initializing WebPlayerLiveModel with WebPlayerLiveModelInterface
+     * for web players*/
+    private void initializeWebPlayerInterface() {
+        Context context = Injector.INSTANCE.getComponent().appContext();
+
+        if (context instanceof App) {
+            ((App) context).setWebPlayerLiveModel(new WebPlayerLiveModel());
+        }
+
     }
 
 

@@ -19,13 +19,14 @@ import android.widget.Toast;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
 import in.securelearning.lil.android.app.databinding.LayoutItemGroupMembersBinding;
 import in.securelearning.lil.android.app.databinding.LayoutSkillItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutTrainingStaticDetailBinding;
@@ -46,8 +47,8 @@ import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.model.HomeModel;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
+import in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity;
 import in.securelearning.lil.android.syncadapter.dataobject.EnrollTrainingResponse;
 import in.securelearning.lil.android.syncadapter.events.RefreshAvailableTrainingListEvent;
 import in.securelearning.lil.android.syncadapter.events.RefreshTrainingListEvent;
@@ -56,6 +57,7 @@ import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -110,7 +112,7 @@ public class TrainingStaticDetailsFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.layout_training_static_detail, container, false);
         if (getArguments() != null) {
             mTrainingId = getArguments().getString(TRAINING_ID);
@@ -556,7 +558,7 @@ public class TrainingStaticDetailsFragment extends Fragment {
                 public void onClick(View view) {
 
                     if (GeneralUtils.isNetworkAvailable(getContext())) {
-                        startActivity(UserProfileActivity.getStartIntent(coordinator.getId(), getContext()));
+                        startActivity(UserPublicProfileActivity.getStartIntent(getContext(), coordinator.getId()));
                     } else {
                         SnackBarUtils.showNoInternetSnackBar(getContext(), view);
                     }
@@ -605,7 +607,7 @@ public class TrainingStaticDetailsFragment extends Fragment {
                 public void onClick(View view) {
 
                     if (GeneralUtils.isNetworkAvailable(getContext())) {
-                        startActivity(UserProfileActivity.getStartIntent(moderator.getId(), getContext()));
+                        startActivity(UserPublicProfileActivity.getStartIntent(getContext(), moderator.getId()));
                     } else {
                         SnackBarUtils.showNoInternetSnackBar(getContext(), view);
                     }
@@ -654,7 +656,8 @@ public class TrainingStaticDetailsFragment extends Fragment {
                 public void onClick(View view) {
 
                     if (GeneralUtils.isNetworkAvailable(getContext())) {
-                        startActivity(UserProfileActivity.getStartIntent(groupMember.getObjectId(), getContext()));
+                        // group member always teacher as told
+                        startActivity(UserPublicProfileActivity.getStartIntent(getContext(), groupMember.getObjectId()));
                     } else {
                         SnackBarUtils.showNoInternetSnackBar(getContext(), view);
                     }

@@ -15,9 +15,11 @@ import retrofit2.Call;
  */
 public class DownloadGroupPostsAndResponseJob extends BaseDownloadJob<GroupPostsNResponse> {
     private final String TAG = this.getClass().getCanonicalName();
+    private String mGroupObjectId;
 
     public DownloadGroupPostsAndResponseJob(String objectId) {
         super(objectId);
+        this.mGroupObjectId = objectId;
 
         /*perform injection*/
         InjectorSyncAdapter.INSTANCE.getComponent().inject(this);
@@ -39,7 +41,7 @@ public class DownloadGroupPostsAndResponseJob extends BaseDownloadJob<GroupPosts
         /*create job to validate the downloaded group*/
 
         Log.e(TAG, "-------------------createValidationJobs()---------------------------");
-        JobCreator.createGroupPostNResponseValidationJob(groupPostsNResponse).execute();
+        JobCreator.createGroupPostNResponseValidationJob(groupPostsNResponse,mGroupObjectId).execute();
 
 
     }

@@ -194,7 +194,7 @@ public class CourseListFragment extends Fragment implements YouTubePlayer.OnFull
         mAdapter.refresh(docId);
     }
 
-    // Inflate the view for the fragment based on layout XML
+    // Inflate the view for the activity based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

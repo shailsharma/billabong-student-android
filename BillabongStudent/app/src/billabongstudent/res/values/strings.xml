@@ -1,7 +1,9 @@
 <resources>
-    <string name="app_name_release">Billabong@Home</string>
-    <string name="app_name_test">Billabong@Home Test</string>
-    <string name="app_name_debug">Billabong@Home Dev</string>
+
+    <!--App names according to variant-->
+    <string name="app_name_release">BillaboxNG</string>
+    <string name="app_name_test">BillaboxNG Test</string>
+    <string name="app_name_debug">BillaboxNG Dev</string>
 
     <!--release urls-->
     <string name="base_api_url">https://billabong.learnindialearn.in/api/</string>
@@ -19,6 +21,9 @@
     <string name="mind_spark_x_api_key">zS72YNPKoA9gK6Z6j9Msj4VO1p2SxUnx21Kwuz4P</string>
     <string name="mind_spark_base_url">https://www.mindspark.in/api/</string>
 
+    <!--wikiHow string-->
+    <string name="base_url_wikiHow">https://www.wikihow.com/</string>
+
     <!--Freadom url-->
     <string name="base_url_freadom_dev">https://euro-web-dev.getfreadom.com/euro-login/</string>
     <string name="base_url_freadom_prod">https://euro-web.getfreadom.com/euro-login/</string>
@@ -26,17 +31,32 @@
     <!--Lightsail url-->
     <string name="base_url_lightsail">https://s2m-euro-reader.lightsailed.com/Reader/index.html?jwtToken=</string>
 
+    <!--Logiqids base url-->
+    <string name="base_url_logiqids">https://api.logiqids.com/</string>
 
+    <!--search provider authorities variant wise-->
     <string name="search_provider_authority">in.securelearning.lil.android.app.billabongstudent.provider.SearchSuggestionProvider</string>
     <string name="search_provider_authority_debug">in.securelearning.lil.android.app.billabongstudent.debug.provider.SearchSuggestionProvider</string>
     <string name="search_provider_authority_test">in.securelearning.lil.android.app.billabongstudent.demo.provider.SearchSuggestionProvider</string>
+
+    <!--file provider authorities variant wise-->
     <string name="file_provider_authority">in.securelearning.lil.android.app.billabongstudent.provider.FileProvider</string>
     <string name="file_provider_authority_debug">in.securelearning.lil.android.app.billabongstudent.debug.provider.FileProvider</string>
     <string name="file_provider_authority_test">in.securelearning.lil.android.app.billabongstudent.demo.provider.FileProvider</string>
 
+    <!--generic strings-->
+    <string name="no_currency_found">No billabucks found</string>
+    <string name="label_currency_value">Billabucks</string>
+    <string name="gamification_assignment_pending"><![CDATA[%1$s, You have %2$s new homework today.\nYou may please plan the day accordingly.]]></string>
+    <string name="gamification_bonus"><![CDATA[Congratulations! I\'ve unlocked Flash Bonus for you! You\'ll secure fifty percent extra points, should you Learn, Revise and Practice %1$s topics Today]]></string>
+    <string name="gamification_school_survey"><![CDATA[Good to see you Again! Let me know how was your School Experience today? Please select your best response from the choice. ]]></string>
+    <string name="gamification_practice_accuracy">You can Earn 50 Billabucks every streak of 4 consecutive correct answers.</string>
+    <string name="messageNextLevel">"Congratulations!\nYou have unlocked next level with Bonus Billabucks!!</string>
 
-    <string name="title_activity_settings_preference_flavor">Settings</string>
-
+    <string name="label_learn">Know &amp; Inquire</string>
+    <string name="label_reinforce">Explore &amp; Explain</string>
+    <string name="label_practice">Analyze &amp; Apply</string>
+    <string name="label_apply">Reflect</string>
 
     <!-- Strings related to Settings -->
     <!-- SkillMasteryQuestionPostData General settings -->
@@ -153,6 +173,7 @@
     <string name="messageNoStudyReferencesFound">No Study References found for selected topic.\nPlease select another topic.</string>
     <string name="labelClassPerformance">Class Performance</string>
     <string name="recap">Recap</string>
+    <string name="quickRecap">Let\'s have a quick recap!</string>
     <string name="labelAndroid">android</string>
 
 
@@ -160,6 +181,7 @@
     <string name="labelNoOfSections">No. of Sections</string>
 
     <string name="messageUnableToGetData">Unable to get data</string>
+    <string name="messageUnableToSendData">Unable to send data</string>
 
     <integer name="benchmark">1</integer>
     <string-array name="training_list_item">
@@ -179,19 +201,17 @@
         <item>@string/labelSessions</item>
     </string-array>
 
-    <!--Euro@Home-->
     <string name="messageNoDataFound">No data found</string>
     <string name="messagePracticeAvailable">No practice available</string>
     <string name="no_subject_available">No subject available</string>
     <string name="no_recap_for_today">No recap for today</string>
-    <string name="labelLearn">Learn</string>
-    <string name="labelReinforce">Reinforce</string>
-    <string name="labelApply">Apply</string>
+
     <string name="no_chapter">No Chapter</string>
     <string name="chapters">Chapters</string>
     <string name="chapter">Chapter</string>
     <string name="go_back">Go Back</string>
     <string name="homework">Homework</string>
+    <string name="homeworkTime">It\'s time for homework now.</string>
     <string name="messageNewUpdateIsAvailable">A new update is available to download.\nPlease update the app for better experience.</string>
     <string name="labelUpdateAvailable">Update Available</string>
     <string name="labelUpdate">Update</string>
@@ -219,22 +239,33 @@
     <string name="messageMSEndTopic">Congratulations your practice on this topic submitted.\nPlease Go Back and try practice for another topic.</string>
     <string name="messageNoMoreQuestion">No more questions available for this topic.\nPlease Go Back and try practice for another topic.</string>
     <string name="messageNoQuestionForTopic">No question available for this topic.\nPlease Go Back and try practice for another topic.</string>
+    <string name="messagePracticeMotivation">Oops! You can\'t continue the practice, since all the answers are wrong until now.\nPlease learn and try again.</string>
+    <string name="messagePracticeConfigurationNotAvailable">Oops! Configuration not available for the practice, please contact to administrator.</string>
+    <string name="practice_force_close">Something went wrong, please close the practice and try again.</string>
+    <string name="messageQuizConfigurationNotAvailable">Oops! Configuration not available for the quiz, please contact to administrator.</string>
     <string name="total_trophies">Total Trophies</string>
     <string name="total_badges">Total Badges</string>
     <string name="daily_efforts_min">Daily Efforts (min)</string>
     <string name="total_hrs">Total (hrs)</string>
     <string name="daily_efforts">Daily Efforts</string>
+    <string name="daily_avg">Daily Avg. Efforts</string>
     <string name="total">Total</string>
+    <string name="total_efforts">Total Efforts</string>
+    <string name="total_hh_mm">Total (HH:MM)</string>
     <string name="reading">Reading</string>
     <string name="min">(min)</string>
     <string name="progress">Progress</string>
     <string name="single_correct">Single Correct</string>
     <string name="multiple_correct">Multiple Correct</string>
     <string name="fill_the_blanks">Fill the blanks</string>
+    <string name="match_the_following">Match the following</string>
+    <string name="fill_the_dropdown">Fill the dropdown</string>
     <string name="select_correct_answer">Select the correct answer</string>
     <string name="dropdown">Dropdown</string>
     <string name="please_fill_all_the_blanks">Please fill all the blanks</string>
+    <string name="please_match_all_entities">Please match all entities with placeholder</string>
     <string name="please_fill_all_the_dropdown">Please fill all the dropdown</string>
+    <string name="quiz_force_close">Something went wrong, please close the quiz and try again.</string>
     <string name="efforts_based_on_time_spent">Efforts Based On Time Spent</string>
     <string name="performance_based_on_assessments">Performance Based On Assessments</string>
     <string name="progress_based_on_coverage">Progress Based On Coverage</string>
@@ -245,6 +276,7 @@
     <string name="are_you_sure">Are you sure ?</string>
     <string name="logout_message">Would you like to logout from App ?</string>
     <string name="logout">Logout</string>
+    <string name="logout_from_app">Logout from app</string>
     <string name="message_multiple_login">You are already logged in from another device.\nAre you sure you want to logout from previous device ?</string>
     <string name="message_invalidate_other_login_success">You have been logged out from your previous device.</string>
     <string name="mindSparkNoUnitMessageHome">No question available for this topic, please try practice on another topic by clicking on \'More\'</string>
@@ -275,15 +307,15 @@
 
 
     <!--view tag id-->
-    <item name="attemptResult" type="id"/>
-    <item name="response" type="id"/>
-    <item name="selectedChoiceIndex" type="id"/>
-    <item name="coverageSubjectId" type="id"/>
-    <item name="coverageSubjectName" type="id"/>
-    <item name="correctAnswer" type="id"/>
-    <item name="isCorrect" type="id"/>
-    <item name="positionX" type="id"/>
-    <item name="positionY" type="id"/>
+    <item name="attemptResult" type="id" />
+    <item name="response" type="id" />
+    <item name="selectedChoiceIndex" type="id" />
+    <item name="coverageSubjectId" type="id" />
+    <item name="coverageSubjectName" type="id" />
+    <item name="correctAnswer" type="id" />
+    <item name="isCorrect" type="id" />
+    <item name="positionX" type="id" />
+    <item name="positionY" type="id" />
 
     <string-array name="array_student_profile_tab">
         <item>@string/label_achievement</item>
@@ -303,9 +335,9 @@
     <string name="zero">0</string>
     <string name="chart_configuration">Please provide the chart configuration </string>
     <string name="coverage">Coverage</string>
-    <string name="gamification_assignment_pending"><![CDATA[<i>Hey</i> <b>%1$s</b>\n "You have %2$s new homework today, so please plan your day"]]></string>
-    <string name="snackbar_login_msg"><![CDATA[<i>Hey</i> <b>%1$s</b>\n "Great to have you back"]]></string>
-    <string name="snackbar_login_msg_without_name"><![CDATA[<i>Hey</i>\n "Great to have you back"]]></string>
+
+    <string name="snackbar_login_msg"><![CDATA[<i>Hey, </i><b>%1$s</b>\n Great to have you back]]></string>
+    <string name="snackbar_login_msg_without_name"><![CDATA[<i>Hey</i>\n Great to have you back]]></string>
     <string name="lrpaGroupNull">Currently subject teacher not mapped for selected grade and section. Please inform to Administrator.</string>
     <string name="lrpaGradeNull">Currently grade not mapped for the topic. Please inform to Administrator.</string>
     <string name="cant_receive_video_from_this_app">Can\'t receive video from this app</string>
@@ -321,10 +353,108 @@
     <string name="homework_not_submit">Homework Not Submitted</string>
     <string name="homework_submit">Homework Submitted</string>
     <string name="congratulations">Congratulation!</string>
-    <string name="practice_end_greeting_message">You have completed the practice.</string>
+    <string name="better_luck_next_time">Better luck next time</string>
+    <string name="practice_end_greeting_message">Great! You have completed the practice.</string>
+    <string name="practice_end_failure_message">Failure is simply the opportunity to begin again, next time more intelligently.</string>
+    <string name="quiz_end_response_submitted">Your quiz is submitted.</string>
     <string name="question_response_wrong">Ohh! just Missed it</string>
     <string name="practice_repeat_message">You have already done practice on this topic.\nWould you like to repeat practice on this topic ?</string>
     <string name="freadom">freadom</string>
     <string name="lightsail">lightsail</string>
     <string name="mindspark">mindspark</string>
+    <string name="messageNextSkill">"Congratulations!\nYou have completed</string>
+
+    <string name="finish">Finish</string>
+    <string name="trophies">Trophies</string>
+    <string name="badges">Badges</string>
+    <string name="labelApplication">Application</string>
+    <string name="labelMiscellaneous">Miscellaneous</string>
+    <string name="all_matched_please_submit">All matched, please submit.</string>
+    <string name="chrome_warning_message">Chrome not installed/disabled or not set as default browser.</string>
+    <string name="score">Score</string>
+    <string name="bonus">Bonus</string>
+
+    <!--Practice/Quiz response messages-->
+    <!--messages when correct response-->
+    <string name="correct_message_1">You’re are blazing!</string>
+    <string name="correct_message_2">You’ve got it.</string>
+    <string name="correct_message_3">Super!</string>
+    <string name="correct_message_4">That’s so right!</string>
+    <string name="correct_message_5">Great Going!</string>
+    <string name="correct_message_6">That’s much better!</string>
+    <string name="correct_message_7">That’s the best ever!</string>
+    <string name="correct_message_8">Superb!</string>
+    <string name="correct_message_9">That’s the way!</string>
+    <string name="correct_message_10">You\'ve nailed It!</string>
+
+    <string-array name="correct_response_messages">
+        <item>@string/correct_message_1</item>
+        <item>@string/correct_message_2</item>
+        <item>@string/correct_message_3</item>
+        <item>@string/correct_message_4</item>
+        <item>@string/correct_message_5</item>
+        <item>@string/correct_message_6</item>
+        <item>@string/correct_message_7</item>
+        <item>@string/correct_message_8</item>
+        <item>@string/correct_message_9</item>
+        <item>@string/correct_message_10</item>
+    </string-array>
+
+    <!--messages when incorrect response-->
+    <string name="incorrect_message_1">Oops..you missed this time!</string>
+    <string name="incorrect_message_2">Never mind! It happens with many.</string>
+    <string name="incorrect_message_3">That\'s not the right one!</string>
+    <string name="incorrect_message_4">Ohh..you were just there!</string>
+    <string name="incorrect_message_5">Nice attempt..Lets not miss the next one.</string>
+    <string name="incorrect_message_6">It was difficult..isn\'t it ?</string>
+    <string name="incorrect_message_7">No worries..you are not the only one who got it wrong.</string>
+    <string name="incorrect_message_8">Ohh..Surely a better focus would get you full Billabucks.</string>
+    <string name="incorrect_message_9">Ohh..May you want to try hints or ask someone.</string>
+    <string name="incorrect_message_10">It seems next one will be alright!</string>
+
+    <string-array name="incorrect_response_messages">
+        <item>@string/incorrect_message_1</item>
+        <item>@string/incorrect_message_2</item>
+        <item>@string/incorrect_message_3</item>
+        <item>@string/incorrect_message_4</item>
+        <item>@string/incorrect_message_5</item>
+        <item>@string/incorrect_message_6</item>
+        <item>@string/incorrect_message_7</item>
+        <item>@string/incorrect_message_8</item>
+        <item>@string/incorrect_message_9</item>
+        <item>@string/incorrect_message_10</item>
+    </string-array>
+
+    <string name="thank_you">Thank you</string>
+    <string name="accuracyCaps">ACCURACY</string>
+    <string name="type_wikihow">wikihow</string>
+    <string name="label_wikiHow">wikiHow</string>
+    <string name="watch_the_video_to_reinforce_concept">Watch the video to reinforce concept</string>
+    <string name="labelCorrectQuestions">Correct Questions</string>
+    <string name="labelTotalTimeMin">Total Time (min)</string>
+
+    <!--Interest and Goal-->
+    <string name="stringDashboardInterestAndGoal">Hey Buddy!!\nPlease add your \n<b>Interest and Goal</b></string>
+    <string name="labelChallengeForTheDay">Challenge for the day</string>
+    <string name="labelVideoForTheDay">Video for the day</string>
+    <string name="labelPleaseWait">Please wait…</string>
+    <string name="labelTakeAChallenge">Take a challenge</string>
+    <string name="labelWatchAndLearn"><![CDATA[Watch & Learn]]></string>
+    <string name="teacher">Teacher</string>
+    <string name="shields">Shields</string>
+    <string name="labelEtat">ETAT</string>
+    <string name="labelLessonPlanReflections">Lesson Plan Reflections</string>
+    <string name="labelContribution">Contribution</string>
+    <string name="labelClassroomObservations">Classroom Observations</string>
+    <string name="labelDateOfAdmission">Date Of Admission</string>
+    <string name="messageUnableToLoginOnLogiqids">Oops! Unable to login on Logiqids, please wait or contact to administrator.</string>
+    <string name="messageGettingAnswer">Hold on! getting answer.</string>
+    <string name="messageNoMoreQuestionFoundForThisWorksheet">Oops! No more question available for this worksheet.</string>
+    <string name="later">later</string>
+    <string name="labelViewProfileImage">View profile image</string>
+    <string name="labelPleaseSelect">Please select</string>
+    <string name="labelUpdateProfileImage">Update profile image</string>
+    <string name="achievements">Achievements</string>
+    <string name="teaches">Teaches</string>
+
 </resources>

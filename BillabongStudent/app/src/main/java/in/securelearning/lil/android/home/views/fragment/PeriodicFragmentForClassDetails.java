@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.home.views.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.squareup.picasso.Picasso;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +35,8 @@ import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.home.views.widget.PeriodDetailPopUp;
+import in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 import io.reactivex.Observable;
@@ -45,12 +48,19 @@ import io.reactivex.schedulers.Schedulers;
 
 
 public class PeriodicFragmentForClassDetails extends Fragment {
+
+    @Inject
+    PeriodicEventsModel mPeriodicEventsModel;
+    @Inject
+    public AppUserModel mAppUserModel;
+
     public static final String SUBJECT_ID = "subject_id";
     public static final String TOPIC_ID = "topic_id";
     public static final String GRADE_ID = "grade_id";
     public static final String SECTION_ID = "section_id";
     public static final String ARG_COLUMN_COUNT = "column-count";
     public static final String DATE = "date";
+
     private int mColumnCount = 1;
     private String mSubjectId;
     private String mTopicId;
@@ -58,14 +68,11 @@ public class PeriodicFragmentForClassDetails extends Fragment {
     private String mSectionId;
     private String mDate;
     private String mSubjectName;
+
     FragmentPeriodicForClassDetailsBinding mBinding;
 
-    @Inject
-    PeriodicEventsModel mPeriodicEventsModel;
-    @Inject
-    public AppUserModel mAppUserModel;
-    int mSubjectColor = Color.BLACK;
-    PeriodAdapter mPeriodAdapter;
+    private int mSubjectColor = Color.BLACK;
+    private PeriodAdapter mPeriodAdapter;
 
     public PeriodicFragmentForClassDetails() {
     }
@@ -95,8 +102,7 @@ public class PeriodicFragmentForClassDetails extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()), R.layout.fragment_periodic_for_class_details, container, false);
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
@@ -111,7 +117,9 @@ public class PeriodicFragmentForClassDetails extends Fragment {
         return mBinding.getRoot();
     }
 
+    @SuppressLint("CheckResult")
     private void getPeriodIcData() {
+
         Observable.create(new ObservableOnSubscribe<ArrayList<PeriodNew>>() {
             @Override
             public void subscribe(ObservableEmitter<ArrayList<PeriodNew>> e) throws Exception {
@@ -121,21 +129,24 @@ public class PeriodicFragmentForClassDetails extends Fragment {
                 }
                 e.onComplete();
             }
-        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<ArrayList<PeriodNew>>() {
-            @Override
-            public void accept(final ArrayList<PeriodNew> periodNew) throws Exception {
-                if (periodNew != null && periodNew.size() > 0) {
-                    final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-                    mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                    mBinding.recycleViewPeriodEvent.setLayoutManager(mLayoutManager);
-                    mPeriodAdapter = new PeriodAdapter(periodNew, mSubjectColor, getContext());
-                    mBinding.recycleViewPeriodEvent.setAdapter(mPeriodAdapter);
-                } else {
-                    mBinding.recycleViewPeriodEvent.setVisibility(View.GONE);
-                    mBinding.layoutNoResult.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ArrayList<PeriodNew>>() {
+                    @Override
+                    public void accept(final ArrayList<PeriodNew> periodNew) throws Exception {
+                        if (periodNew != null && periodNew.size() > 0) {
+                            final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                            mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                            mBinding.recycleViewPeriodEvent.setLayoutManager(mLayoutManager);
+                            mPeriodAdapter = new PeriodAdapter(periodNew, mSubjectColor, getContext());
+                            mBinding.recycleViewPeriodEvent.setAdapter(mPeriodAdapter);
+                        } else {
+                            mBinding.recycleViewPeriodEvent.setVisibility(View.GONE);
+                            mBinding.layoutNoResult.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+
     }
 
     private class PeriodAdapter extends RecyclerView.Adapter<PeriodAdapter.ViewHolder> {
@@ -149,14 +160,15 @@ public class PeriodicFragmentForClassDetails extends Fragment {
             this.mSubjectColor = subjectColor;
         }
 
+        @NotNull
         @Override
-        public PeriodAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public PeriodAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
             ClassPeriodDetailNewBinding view = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.class_period_detail_new, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final PeriodAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NotNull final PeriodAdapter.ViewHolder holder, int position) {
             final PeriodNew period = mPeriodAdapterList.get(position);
 
             setUserView(period, holder.periodBinding);
@@ -183,7 +195,7 @@ public class PeriodicFragmentForClassDetails extends Fragment {
                 public void onClick(View v) {
                     if (GeneralUtils.isNetworkAvailable(mContext)) {
                         if (period.getTeacher() != null && !TextUtils.isEmpty(period.getTeacher().getId())) {
-                            startActivity(UserProfileActivity.getStartIntent(period.getTeacher().getId(), getContext()));
+                            startActivity(UserPublicProfileActivity.getStartIntent(getContext(), period.getTeacher().getId()));
 
                         }
 

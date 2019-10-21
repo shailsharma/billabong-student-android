@@ -5,10 +5,10 @@
     android:layout_margin="8dp"
     android:background="@drawable/background_choice_quiz"
     android:button="@null"
-    android:padding="16dp"
+    android:padding="@dimen/value_12dp"
     android:textAppearance="?android:attr/textAppearanceLarge"
     android:textColor="@color/white"
     android:textColorLink="@color/colorWhite"
-    >
+    android:drawablePadding="@dimen/value_8dp">
 
 </in.securelearning.lil.android.app.Widgets.RadioButtonCustom>

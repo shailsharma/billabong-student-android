@@ -31,15 +31,16 @@ public class PrefManager {
     private static final String NOTIFICATIONS_LAST_BROADCAST_TIME = "notifications_last_broadcast_time";
     private static final String LAST_SYNC_TIME = "last_sync_time";
     private static final String SHOULD_DOWNLOAD_NETWORK_GROUP = "shouldDownloadNetworkGroup";
+    private static final String CURRENT_DATE_LAST_SAVED = "currentDateLastSaved";
 
     public static final long MINIMUM_SYNC_DELAY = 180000L;
+
+    private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
+    private static final String UPDATED_TO_VERSION = "updatedToVersion";
 
     private static SharedPreferences getPrefs(Context context) {
         return context.getSharedPreferences(USER_SHARED_PREFRENCE, 0);
     }
-
-    private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
-    private static final String UPDATED_TO_VERSION = "updatedToVersion";
 
     public static long getLastBroadcastNotificationTime(Context con) {
         SharedPreferences sharedPrefs = getPrefs(con);
@@ -336,4 +337,18 @@ public class PrefManager {
             mColor = color;
         }
     }
+
+    /*Current date last saved for video for the day*/
+    public static void setCurrentDateLastSaved(String time, Context context) {
+        SharedPreferences sharedPrefs = getPrefs(context);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(CURRENT_DATE_LAST_SAVED, time);
+        editor.commit();
+    }
+
+    public static String getCurrentDateLastSaved(Context context) {
+        SharedPreferences pref = getPrefs(context);
+        return pref.getString(CURRENT_DATE_LAST_SAVED, "");
+    }
+
 }

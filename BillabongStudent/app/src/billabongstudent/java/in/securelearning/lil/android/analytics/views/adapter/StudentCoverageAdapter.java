@@ -10,10 +10,8 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import in.securelearning.lil.android.analytics.views.activity.ProgressDetailActivity;
 import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
 import in.securelearning.lil.android.analytics.views.fragment.StudentCoverageFragment;
-import in.securelearning.lil.android.analytics.views.fragment.StudentExcellenceFragment;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsPerformanceTopicItemBinding;
 
@@ -25,7 +23,7 @@ public class StudentCoverageAdapter extends RecyclerView.Adapter<StudentCoverage
     public StudentCoverageAdapter(Context context, ArrayList<CoverageChartData> coverageChartData, StudentCoverageFragment fragment) {
         mContext = context;
         this.mList = coverageChartData;
-        this.mFragment=fragment;
+        this.mFragment = fragment;
     }
 
     @NonNull
@@ -40,20 +38,12 @@ public class StudentCoverageAdapter extends RecyclerView.Adapter<StudentCoverage
         CoverageChartData coverageChartData = mList.get(position);
 
         holder.mBinding.textViewTopicName.setText(coverageChartData.getName());
-
         int coveragePercent = Math.round(coverageChartData.getCoverage());
-
         holder.mBinding.textViewTopicPerformance.setText((coveragePercent + "%"));
 
         if (mFragment != null) {
-            holder.mBinding.progressBar.
-                    setProgressTintList(ColorStateList.valueOf
-                            (((mFragment.pickColorAccording
-                                    (coveragePercent)))));
-
+            holder.mBinding.progressBar.setProgressTintList(ColorStateList.valueOf(((mFragment.pickColorAccording(coveragePercent)))));
         }
-
-
 
         holder.mBinding.progressBar.setMax(100);
         holder.mBinding.progressBar.setProgress(coveragePercent);

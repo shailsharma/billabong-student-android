@@ -38,6 +38,8 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URLConnection;
@@ -48,7 +50,6 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
 import in.securelearning.lil.android.app.databinding.LayoutBadgeImageviewBinding;
 import in.securelearning.lil.android.app.databinding.LayoutFragmentGroupPostListBinding;
 import in.securelearning.lil.android.app.databinding.LayoutItemPostBinding;
@@ -60,23 +61,23 @@ import in.securelearning.lil.android.base.dataobjects.GroupMember;
 import in.securelearning.lil.android.base.dataobjects.LILBadges;
 import in.securelearning.lil.android.base.dataobjects.Moderator;
 import in.securelearning.lil.android.base.dataobjects.OGMetaDataResponse;
+import in.securelearning.lil.android.base.dataobjects.PostByUser;
 import in.securelearning.lil.android.base.dataobjects.PostData;
 import in.securelearning.lil.android.base.dataobjects.PostResponse;
 import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.dataobjects.Result;
+import in.securelearning.lil.android.base.dataobjects.Thumbnail;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.model.BadgesModel;
 import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.DateUtils;
-import in.securelearning.lil.android.base.utils.FileUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.base.widget.CustomImageButton;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
 import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
 import in.securelearning.lil.android.learningnetwork.InjectorLearningNetwork;
 import in.securelearning.lil.android.learningnetwork.adapter.FullScreenImage;
 import in.securelearning.lil.android.learningnetwork.events.EventLatestCommentAdded;
@@ -88,12 +89,17 @@ import in.securelearning.lil.android.learningnetwork.model.PostDataLearningModel
 import in.securelearning.lil.android.learningnetwork.views.activity.CreatePostActivity;
 import in.securelearning.lil.android.learningnetwork.views.activity.PostLikeActivity;
 import in.securelearning.lil.android.learningnetwork.views.activity.PostResponseListActivity;
+import in.securelearning.lil.android.profile.views.activity.StudentProfileActivity;
+import in.securelearning.lil.android.profile.views.activity.StudentPublicProfileActivity;
+import in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity;
 import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.OgUtils;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import in.securelearning.lil.android.syncadapter.utils.SoundUtils;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -103,6 +109,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 /**
  * Created by Chaitendra on 02-Aug-17.
@@ -213,7 +220,7 @@ public class PostListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.layout_fragment_group_post_list, container, false);
         initializeViews();
         setDefault();
@@ -351,7 +358,8 @@ public class PostListFragment extends Fragment {
 
     private void initializeViews() {
 
-        if (PermissionPrefsCommon.getPostCreateReferencePermission(getContext()) || PermissionPrefsCommon.getPostCreateDiscussionPermission(getContext())) {
+        if (PermissionPrefsCommon.getPostCreateReferencePermission(getContext())
+                || PermissionPrefsCommon.getPostCreateDiscussionPermission(getContext())) {
             if (!mIsFavoriteListVisible) {
                 mNoResultMessageType = R.string.label_no_post_create;
                 mBinding.addPost.setVisibility(View.VISIBLE);
@@ -521,7 +529,7 @@ public class PostListFragment extends Fragment {
             });
             setUserName(postData.getFrom().getName(), holder.mBinding.textViewUserName);
             setPostedTime(postData.getCreatedTime(), holder.mBinding.textViewPostTime);
-            setUserThumbnail(postData.getFrom().getId(), holder.mBinding.imageViewUserImage);
+            setUserThumbnail(postData.getFrom(), holder.mBinding.imageViewUserImage);
             setPostType(postData.getPostType(), holder.mBinding.imageViewPostType);
             setPostResources(postData, holder.mBinding);
             setOgCard(postData, holder.mBinding);
@@ -666,85 +674,172 @@ public class PostListFragment extends Fragment {
         }
 
         private void setPostResources(PostData postData, LayoutItemPostBinding binding) {
-            final ArrayList<Resource> mResourceList = (ArrayList<Resource>) postData.getPostResources();
-            if (mResourceList != null && !mResourceList.isEmpty() && !mResourceList.get(0).getDeviceURL().isEmpty()) {
-                String mimeType = URLConnection.guessContentTypeFromName(mResourceList.get(0).getDeviceURL());
-                if (mimeType != null && mimeType.contains("image")) {
+            final ArrayList<Resource> resourceList = (ArrayList<Resource>) postData.getPostResources();
+            if (resourceList != null && !resourceList.isEmpty()
+                    && !TextUtils.isEmpty(resourceList.get(0).getDeviceURL())) {
+
+                String mimeType = resourceList.get(0).getResourceType();
+                if (mimeType != null && mimeType.contains(ConstantUtil.TYPE_IMAGE)) {
                     binding.layoutPostedImage.setVisibility(View.VISIBLE);
-                    setImageResource(mResourceList, binding);
-                } else if (mimeType != null && mimeType.contains("video")) {
+                    setImageResource(resourceList, binding);
+                } else if (mimeType != null && mimeType.contains(ConstantUtil.TYPE_VIDEO)) {
                     binding.layoutPostedVideo.setVisibility(View.VISIBLE);
-                    setVideoResource(mResourceList, binding);
+                    setVideoResource(resourceList, binding);
+                } else {
+                    binding.layoutPostedImage.setVisibility(View.GONE);
+                    binding.layoutPostedVideo.setVisibility(View.GONE);
+                }
+            } else if (resourceList != null && !resourceList.isEmpty()
+                    && !TextUtils.isEmpty(resourceList.get(0).getThumbXL())) {
+                String mimeType = resourceList.get(0).getResourceType();
+                if (mimeType != null && mimeType.contains(ConstantUtil.TYPE_IMAGE)) {
+                    binding.layoutPostedImage.setVisibility(View.VISIBLE);
+                    setImageResource(resourceList, binding);
+                } else if (mimeType != null && mimeType.contains(ConstantUtil.TYPE_VIDEO)) {
+                    binding.layoutPostedVideo.setVisibility(View.VISIBLE);
+                    setVideoResource(resourceList, binding);
                 } else {
                     binding.layoutPostedImage.setVisibility(View.GONE);
                     binding.layoutPostedVideo.setVisibility(View.GONE);
 
                 }
+            } else {
+                binding.layoutPostedImage.setVisibility(View.GONE);
+                binding.layoutPostedVideo.setVisibility(View.GONE);
             }
         }
 
-        private void setVideoResource(final ArrayList<Resource> mResourceList, final LayoutItemPostBinding binding) {
+        @SuppressLint("CheckResult")
+        private void setVideoResource(final ArrayList<Resource> resourceList, final LayoutItemPostBinding binding) {
 
-            final String videoPath = mResourceList.get(0).getDeviceURL();
-            Observable.create(new ObservableOnSubscribe<Bitmap>() {
-                @Override
-                public void subscribe(ObservableEmitter<Bitmap> subscriber) {
-                    Bitmap bitmap = getScaledBitmapFromPath(getContext().getResources(), videoPath);
-                    bitmap = Bitmap.createScaledBitmap(bitmap, 600, 340, false);
-                    subscriber.onNext(bitmap);
-                    subscriber.onComplete();
-                }
-            }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.computation())
-                    .subscribe(new Consumer<Bitmap>() {
-                        @Override
-                        public void accept(Bitmap bitmap) {
+            final Resource resource = resourceList.get(0);
 
-                            binding.imageViewPostedVideo.setImageBitmap(bitmap);
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable t) {
+            if (!TextUtils.isEmpty(resource.getThumbXL())) {
+                Picasso.with(mContext).load(resource.getThumbXL())
+                        .placeholder(R.drawable.image_placeholder)
+                        .resize(640, 480).centerCrop()
+                        .into(binding.imageViewPostedVideo);
+            } else if (!TextUtils.isEmpty(resource.getDeviceURL())) {
 
-                            t.printStackTrace();
+//                Picasso.with(mContext).load(R.drawable.image_no_thumbnail)
+//                        .placeholder(R.drawable.image_placeholder)
+//                        .resize(640, 480).centerCrop()
+//                        .into(binding.imageViewPostedVideo);
 
-                        }
-                    });
+                Observable.create(new ObservableOnSubscribe<Bitmap>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<Bitmap> subscriber) {
+                        Bitmap bitmap = getScaledBitmapFromPath(mContext.getResources(), resource.getDeviceURL());
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 640, 480, false);
+                        subscriber.onNext(bitmap);
+                        subscriber.onComplete();
+                    }
+                }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.computation())
+                        .subscribe(new Consumer<Bitmap>() {
+                            @Override
+                            public void accept(Bitmap bitmap) {
 
-            binding.imageViewPostedVideo.setTag(videoPath);
-            if (mResourceList.size() > 1) {
+                                binding.imageViewPostedVideo.setImageBitmap(bitmap);
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable t) {
+
+                                t.printStackTrace();
+
+                            }
+                        });
+
+            } else {
+                Picasso.with(mContext).load(R.drawable.image_placeholder)
+                        .fit().centerCrop().into(binding.imageViewPostedVideo);
+            }
+
+
+            if (resourceList.size() > 1) {
                 binding.imageViewMultipleVideos.setVisibility(View.VISIBLE);
             } else {
                 binding.imageViewMultipleVideos.setVisibility(View.GONE);
             }
+
             binding.imageViewPostedVideo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Resource item = new Resource();
-                    item.setType("video");
-                    item.setUrlMain(binding.imageViewPostedVideo.getTag().toString());
-                    getContext().startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(getContext(), PlayVideoFullScreenActivity.NETWORK_TYPE_LOCAL, (Resource) item));
+
+                    if (!TextUtils.isEmpty(resource.getUrl()) || !TextUtils.isEmpty(resource.getUrlMain()) || !TextUtils.isEmpty(resource.getSourceURL())) {
+                        mPostDataLearningModel.playVideo(resource);
+                    } else if (!TextUtils.isEmpty(resource.getDeviceURL())) {
+
+                        // if its local url
+
+                        Resource item = new Resource();
+                        item.setType(ConstantUtil.TYPE_VIDEO);
+                        item.setUrlMain(resource.getDeviceURL());
+                        mContext.startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(mContext, PlayVideoFullScreenActivity.NETWORK_TYPE_LOCAL, item));
+                    } else {
+                        GeneralUtils.showToastShort(mContext, mContext.getString(R.string.error_something_went_wrong));
+                    }
+
+                    /*if ((!TextUtils.isEmpty(resource.getUrl()) || !TextUtils.isEmpty(resource.getUrlMain()))
+                            && !TextUtils.isEmpty(resource.getType())
+                            && (resource.getType().equalsIgnoreCase(mContext.getString(R.string.typeVimeoVideo))
+                            || resource.getType().equalsIgnoreCase("upload"))) {
+                        if (GeneralUtils.isNetworkAvailable(mContext)) {
+                            String url = null;
+                            if (!TextUtils.isEmpty(resource.getUrl())) {
+                                url = resource.getUrl();
+                            } else if (!TextUtils.isEmpty(resource.getUrlMain())) {
+                                url = resource.getUrlMain();
+                            }
+                            mContext.startActivity(PlayVimeoFullScreenActivity.getStartIntent(mContext, url));
+
+                        } else {
+                            SnackBarUtils.showNoInternetSnackBar(mContext, v);
+                        }
+                    } else {
+                        if (!TextUtils.isEmpty(resource.getDeviceURL())) {
+                            Resource item = new Resource();
+                            item.setType(ConstantUtil.TYPE_VIDEO);
+                            item.setUrlMain(resource.getDeviceURL());
+                            mContext.startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(mContext, PlayVideoFullScreenActivity.NETWORK_TYPE_LOCAL, item));
+                        }
+                    }*/
+
+
                 }
             });
+
             binding.imageViewMultipleVideos.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String strHeaderText = binding.textViewUserName.getText().toString().trim() + "'s posts- " + binding.textViewPostTime.getText().toString().trim();
-                    FullScreenImage.setUpImageGridView(getContext(), mResourceList, strHeaderText);
+                    FullScreenImage.setUpImageGridView(getContext(), resourceList, strHeaderText);
                 }
             });
-
         }
 
-        private void setImageResource(final ArrayList<Resource> mResourceList, final LayoutItemPostBinding binding) {
-            String imagePath = mResourceList.get(0).getDeviceURL();
-            File imageFile;
-            imageFile = new File(FileUtils.getPathFromFilePath(imagePath));
-            Bitmap bitmap = getScaledBitmapFromPath(getResources(), imageFile.getAbsolutePath());
+        private void setImageResource(final ArrayList<Resource> resourceList, final LayoutItemPostBinding binding) {
+            final Resource resource = resourceList.get(0);
+            final String localPath = resource.getDeviceURL();
 
-            binding.imageViewPostedImage.setImageBitmap(bitmap);
-//            Picasso.with(getContext()).load(imageFile).resize(800, 640).onlyScaleDown().centerInside().into(binding.imageViewPostedImage);
-            binding.imageViewPostedImage.setTag(imagePath);
-            if (mResourceList.size() > 1) {
+            if (!TextUtils.isEmpty(resource.getThumbXL())) {
+                Picasso.with(mContext).load(resource.getThumbXL())
+                        .placeholder(R.drawable.image_placeholder)
+                        .resize(640, 480).centerCrop()
+                        .into(binding.imageViewPostedImage);
+
+            } else if (!TextUtils.isEmpty(localPath)) {
+                Picasso.with(mContext).load(localPath)
+                        .placeholder(R.drawable.image_placeholder)
+                        .resize(640, 480).centerCrop()
+                        .into(binding.imageViewPostedImage);
+
+            } else {
+                Picasso.with(mContext).load(R.drawable.image_placeholder).resize(640, 480).centerCrop().into(binding.imageViewPostedImage);
+            }
+
+
+            if (resourceList.size() > 1) {
                 binding.imageViewMultipleImages.setVisibility(View.VISIBLE);
             } else {
                 binding.imageViewMultipleImages.setVisibility(View.GONE);
@@ -753,7 +848,14 @@ public class PostListFragment extends Fragment {
             binding.imageViewPostedImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FullScreenImage.setUpFullImageView(getContext(), 0, false, true, mResourceList);
+                    if (!TextUtils.isEmpty(resource.getUrl())) {
+                        FullScreenImage.setUpFullImageView(getContext(), 0, true, true, true, resourceList);
+                    } else {
+                        if (!TextUtils.isEmpty(resource.getDeviceURL())) {
+                            FullScreenImage.setUpFullImageView(getContext(), 0, true, true, false, resourceList);
+
+                        }
+                    }
                 }
             });
 
@@ -761,7 +863,7 @@ public class PostListFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     String strHeaderText = binding.textViewUserName.getText().toString().trim() + "'s posts- " + binding.textViewPostTime.getText().toString().trim();
-                    FullScreenImage.setUpImageGridView(getContext(), mResourceList, strHeaderText);
+                    FullScreenImage.setUpImageGridView(getContext(), resourceList, strHeaderText);
                 }
             });
         }
@@ -774,11 +876,9 @@ public class PostListFragment extends Fragment {
                 path = path.trim().replace(filePrefix, "");
             }
 
-            Bitmap bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_add_a_photo_black_48dp);
-            Log.e("path--", path);
+            Bitmap bitmap = BitmapFactory.decodeResource(resources, R.drawable.image_loading_thumbnail);
             String mimeType = URLConnection.guessContentTypeFromName(path);
 
-            Log.e("mimeType", "" + mimeType);
             if (mimeType != null) {
                 if (mimeType.contains("image")) {
                     if (new File(path).exists())
@@ -810,14 +910,32 @@ public class PostListFragment extends Fragment {
 
         }
 
-        private void setUserThumbnail(final String userId, AppCompatImageView imageView) {
+        private void setUserThumbnail(final PostByUser postByUser, AppCompatImageView imageView) {
+
+            final String userId = postByUser.getId();
 
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
                     if (GeneralUtils.isNetworkAvailable(mContext)) {
-                        getContext().startActivity(UserProfileActivity.getStartIntent(userId, mContext));
+
+                        if (userId.equals(mAppUserModel.getObjectId())) {
+                            // private profile of student
+                            getContext().startActivity(StudentProfileActivity.getStartIntent(mAppUserModel.getObjectId(), mContext));
+
+                        } else {
+
+                            if (postByUser.getRole().equalsIgnoreCase("Student")) {
+                                // public profile of student
+//                                getContext().startActivity(StudentPublicProfileActivity.getStartIntent(userId, mContext));
+                            } else {
+                                // public profile of non-student
+                                getContext().startActivity(UserPublicProfileActivity.getStartIntent(mContext, userId));
+                            }
+
+                        }
+
                     } else {
                         ToastUtils.showToastAlert(mContext, getContext().getString(R.string.connect_internet));
                     }
@@ -825,97 +943,168 @@ public class PostListFragment extends Fragment {
                 }
             });
 
-            ArrayList<GroupMember> groupMembers = mGroup.getMembers();
-            for (GroupMember groupMember : groupMembers) {
-                if (groupMember.getObjectId().equalsIgnoreCase(userId)) {
+            if (!TextUtils.isEmpty(postByUser.getId())
+                    && postByUser.getId().equalsIgnoreCase(mAppUserModel.getApplicationUser().getObjectId())) {
 
-                    if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getLocalUrl())) {
-                        Picasso.with(getContext()).load(groupMember.getPic().getLocalUrl()).transform(new CircleTransform()).resize(48, 48).centerCrop().into(imageView);
-                    } else if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getUrl())) {
-                        Picasso.with(getContext()).load(groupMember.getPic().getUrl()).transform(new CircleTransform()).resize(48, 48).centerCrop().into(imageView);
-                    } else if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getThumb())) {
-                        Picasso.with(getContext()).load(groupMember.getPic().getThumb()).transform(new CircleTransform()).resize(48, 48).centerCrop().into(imageView);
-                    } else {
-                        String firstWord = groupMember.getName().substring(0, 1).toUpperCase();
-                        TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimaryLN);
-                        imageView.setImageDrawable(textDrawable);
-                    }
-
-                    break;
+                Context context = getContext();
+                String name = "";
+                if (!TextUtils.isEmpty(mAppUserModel.getApplicationUser().getName())) {
+                    name = mAppUserModel.getApplicationUser().getName();
                 }
+
+                Thumbnail thumbnail = new Thumbnail();
+                if (mAppUserModel.getApplicationUser().getThumbnail() != null) {
+                    thumbnail = mAppUserModel.getApplicationUser().getThumbnail();
+                }
+
+
+                if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumbXL())) {
+                    Picasso.with(context).load(thumbnail.getThumbXL()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+                } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumb())) {
+                    Picasso.with(context).load(thumbnail.getThumb()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+                } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
+                    Picasso.with(context).load(thumbnail.getUrl()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+                } else {
+                    if (!TextUtils.isEmpty(name)) {
+                        String firstWord = name.substring(0, 1).toUpperCase();
+                        TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimary);
+                        imageView.setImageDrawable(textDrawable);
+                    }/* else {
+                    Picasso.with(context).load(R.drawable.icon_profile_large).transform(new CropCircleTransformation()).fit().centerCrop().into(imageView);
+                }*/
+                }
+
+            } else if (postByUser != null && postByUser.getUserProfileLite() != null) {
+
+                Context context = getContext();
+                String name = "";
+                if (!TextUtils.isEmpty(postByUser.getName())) {
+                    name = postByUser.getName();
+                }
+
+                Thumbnail thumbnail = new Thumbnail();
+                if (postByUser.getUserProfileLite().getThumbnail() != null) {
+                    thumbnail = postByUser.getUserProfileLite().getThumbnail();
+                }
+
+
+                if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumbXL())) {
+                    Picasso.with(context).load(thumbnail.getThumbXL()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+                } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumb())) {
+                    Picasso.with(context).load(thumbnail.getThumb()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+                } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
+                    Picasso.with(context).load(thumbnail.getUrl()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+                } else {
+                    if (!TextUtils.isEmpty(name)) {
+                        String firstWord = name.substring(0, 1).toUpperCase();
+                        TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimary);
+                        imageView.setImageDrawable(textDrawable);
+                    }/* else {
+                    Picasso.with(context).load(R.drawable.icon_profile_large).transform(new CropCircleTransformation()).fit().centerCrop().into(imageView);
+                }*/
+                }
+
+            } else {
+
+                // for older post
+
+                ArrayList<GroupMember> groupMembers = mGroup.getMembers();
+                for (GroupMember groupMember : groupMembers) {
+                    if (groupMember.getObjectId().equalsIgnoreCase(userId)) {
+
+                        if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getLocalUrl())) {
+                            Picasso.with(getContext()).load(groupMember.getPic().getLocalUrl()).transform(new CircleTransform()).resize(48, 48).centerCrop().into(imageView);
+                        } else if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getUrl())) {
+                            Picasso.with(getContext()).load(groupMember.getPic().getUrl()).transform(new CircleTransform()).resize(48, 48).centerCrop().into(imageView);
+                        } else if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getThumb())) {
+                            Picasso.with(getContext()).load(groupMember.getPic().getThumb()).transform(new CircleTransform()).resize(48, 48).centerCrop().into(imageView);
+                        } else {
+                            String firstWord = groupMember.getName().substring(0, 1).toUpperCase();
+                            TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimaryLN);
+                            imageView.setImageDrawable(textDrawable);
+                        }
+
+                        break;
+                    }
+                }
+
+                ArrayList<Moderator> moderators = mGroup.getModerators();
+                for (Moderator moderator : moderators) {
+                    if (moderator.getId().equalsIgnoreCase(userId)) {
+
+                        if (moderator.getPic() != null && !TextUtils.isEmpty(moderator.getPic().getLocalUrl())) {
+                            Picasso.with(getContext()).load(moderator.getPic().getLocalUrl()).transform(new CircleTransform()).resize(48, 48).centerCrop().into(imageView);
+                        } else if (moderator.getPic() != null && !TextUtils.isEmpty(moderator.getPic().getUrl())) {
+                            Picasso.with(getContext()).load(moderator.getPic().getUrl()).transform(new CircleTransform()).resize(48, 48).centerCrop().into(imageView);
+                        } else if (moderator.getPic() != null && !TextUtils.isEmpty(moderator.getPic().getThumb())) {
+                            Picasso.with(getContext()).load(moderator.getPic().getThumb()).transform(new CircleTransform()).resize(48, 48).centerCrop().into(imageView);
+                        } else {
+                            String firstWord = moderator.getName().substring(0, 1).toUpperCase();
+                            TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimaryLN);
+                            imageView.setImageDrawable(textDrawable);
+                        }
+
+                        break;
+                    }
+                }
+
             }
 
-            ArrayList<Moderator> moderators = mGroup.getModerators();
-            for (Moderator moderator : moderators) {
-                if (moderator.getId().equalsIgnoreCase(userId)) {
-
-                    if (moderator.getPic() != null && !TextUtils.isEmpty(moderator.getPic().getLocalUrl())) {
-                        Picasso.with(getContext()).load(moderator.getPic().getLocalUrl()).transform(new CircleTransform()).resize(48, 48).centerCrop().into(imageView);
-                    } else if (moderator.getPic() != null && !TextUtils.isEmpty(moderator.getPic().getUrl())) {
-                        Picasso.with(getContext()).load(moderator.getPic().getUrl()).transform(new CircleTransform()).resize(48, 48).centerCrop().into(imageView);
-                    } else if (moderator.getPic() != null && !TextUtils.isEmpty(moderator.getPic().getThumb())) {
-                        Picasso.with(getContext()).load(moderator.getPic().getThumb()).transform(new CircleTransform()).resize(48, 48).centerCrop().into(imageView);
-                    } else {
-                        String firstWord = moderator.getName().substring(0, 1).toUpperCase();
-                        TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimaryLN);
-                        imageView.setImageDrawable(textDrawable);
-                    }
-
-                    break;
-                }
-            }
         }
 
+        @SuppressLint("CheckResult")
         private void setLikeViews(final PostData postData, final LayoutItemPostBinding binding) {
 
             mPostDataLearningModel.getPostResponseCountByPostIdAndResponseType(postData.getObjectId(), PostResponseType.TYPE_RECOMMEND.getPostResponseType())
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Integer>() {
-                @Override
-                public void accept(final Integer likeCounts) throws Exception {
-                    setDefaultAndNewLikeCounts(likeCounts, binding);
-
-                    mPostDataLearningModel.isPostLikedByUser(postData.getObjectId(), PostResponseType.TYPE_RECOMMEND.getPostResponseType())
-                            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Integer>() {
                         @Override
-                        public void accept(Boolean isAlreadyLikedByUser) throws Exception {
+                        public void accept(final Integer likeCounts) throws Exception {
+                            setDefaultAndNewLikeCounts(likeCounts, binding);
 
-                            if (isAlreadyLikedByUser) {
-                                binding.imageViewLikeClick.setSelected(true);
-                                binding.layoutLikeClick.setClickable(false);
-                                binding.imageViewLikeClick.setImageResource(R.drawable.like_trans);
-                                binding.imageViewLikeClick.setBackgroundColor(mColor);
-                            } else {
-                                binding.imageViewLikeClick.setSelected(false);
-                                binding.layoutLikeClick.setClickable(true);
-                                binding.imageViewLikeClick.setImageResource(R.drawable.like_g_w);
-                                binding.layoutLikeClick.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        if (!TextUtils.isEmpty(postData.getObjectId())) {
-                                            mPostDataLearningModel.setPostResponseForLike(postData);
-                                            binding.imageViewLikeClick.setSelected(true);
-                                            binding.layoutLikeClick.setClickable(false);
-                                            binding.imageViewLikeClick.setImageResource(R.drawable.like_trans);
-                                            binding.imageViewLikeClick.setBackgroundColor(mColor);
-                                            AnimationUtils.zoomInFast(getActivity(), binding.imageViewLikeClick);
-                                            setDefaultAndNewLikeCounts(likeCounts + 1, binding);
-                                            SoundUtils.playSound(getContext(), SoundUtils.LEARNING_NETWORK_POST_LIKE);
+                            mPostDataLearningModel.isPostLikedByUser(postData.getObjectId(), PostResponseType.TYPE_RECOMMEND.getPostResponseType())
+                                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
+                                @Override
+                                public void accept(Boolean isAlreadyLikedByUser) throws Exception {
 
-                                        } else {
-                                            SnackBarUtils.showColoredSnackBar(getActivity(), view, getActivity().getString(R.string.label_sync_post), ContextCompat.getColor(getActivity(), R.color.colorRed));
-                                        }
+                                    if (isAlreadyLikedByUser) {
+                                        binding.imageViewLikeClick.setSelected(true);
+                                        binding.layoutLikeClick.setClickable(false);
+                                        binding.imageViewLikeClick.setImageResource(R.drawable.like_trans);
+                                        binding.imageViewLikeClick.setBackgroundColor(mColor);
+                                    } else {
+                                        binding.imageViewLikeClick.setSelected(false);
+                                        binding.layoutLikeClick.setClickable(true);
+                                        binding.imageViewLikeClick.setImageResource(R.drawable.like_g_w);
+                                        binding.layoutLikeClick.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                if (!TextUtils.isEmpty(postData.getObjectId())) {
+                                                    mPostDataLearningModel.setPostResponseForLike(postData);
+                                                    binding.imageViewLikeClick.setSelected(true);
+                                                    binding.layoutLikeClick.setClickable(false);
+                                                    binding.imageViewLikeClick.setImageResource(R.drawable.like_trans);
+                                                    binding.imageViewLikeClick.setBackgroundColor(mColor);
+                                                    AnimationUtils.zoomInFast(getActivity(), binding.imageViewLikeClick);
+                                                    setDefaultAndNewLikeCounts(likeCounts + 1, binding);
+                                                    SoundUtils.playSound(getContext(), SoundUtils.LEARNING_NETWORK_POST_LIKE);
 
+                                                } else {
+                                                    SnackBarUtils.showColoredSnackBar(getActivity(), view, getActivity().getString(R.string.label_sync_post), ContextCompat.getColor(getActivity(), R.color.colorRed));
+                                                }
+
+
+                                            }
+                                        });
 
                                     }
-                                });
+                                }
+                            });
 
-                            }
+
                         }
                     });
-
-
-                }
-            });
 
             binding.layoutLikeCounts.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -970,7 +1159,7 @@ public class PostListFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     if (!TextUtils.isEmpty(postData.getObjectId())) {
-                        getContext().startActivity(PostResponseListActivity.getIntentForPostResponseList(getContext(), mGroupId, postData.getObjectId(), postData.getAlias()));
+                        mContext.startActivity(PostResponseListActivity.getIntentForPostResponseList(getContext(), mGroupId, postData.getObjectId(), postData.getAlias()));
                         mPostDataLearningModel.deleteAllNewPostResponseByPostId(postData.getObjectId());
                         mPostDataLearningModel.clearLearningNetworkGroupNotification(getActivity(), mGroupId.hashCode());
                     } else {
@@ -987,6 +1176,7 @@ public class PostListFragment extends Fragment {
             });
         }
 
+        @SuppressLint("CheckResult")
         private void setLatestCommentOnPost(PostData postData, final LayoutItemPostBinding binding) {
 
             mPostDataLearningModel.getLatestCommentOnPost(postData.getObjectId()).subscribeOn(Schedulers.io())
@@ -997,7 +1187,7 @@ public class PostListFragment extends Fragment {
                         binding.layoutLatestComment.setBackgroundColor(mAlphaColor);
                         binding.layoutLatestComment.setVisibility(View.VISIBLE);
                         binding.viewCommentSeparator.setVisibility(View.VISIBLE);
-                        setUserThumbnail(postResponse.getFrom().getId(), binding.imageViewLatestCommentUserImage);
+                        setUserThumbnail(postResponse.getFrom(), binding.imageViewLatestCommentUserImage);
                         binding.textViewLatestCommentUserName.setText(postResponse.getFrom().getName());
                         String postResponseText = String.valueOf(Html.fromHtml(postResponse.getText()));
                         postResponseText = postResponseText.replaceAll("\n", " ");

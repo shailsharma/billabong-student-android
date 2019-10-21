@@ -285,7 +285,7 @@
                 android:foreground="?android:attr/selectableItemBackground"
                 card_view:cardCornerRadius="4dp"
                 card_view:cardUseCompatPadding="true"
-                card_view:contentPadding="@dimen/padding_12dp">
+                card_view:contentPadding="@dimen/value_12dp">
 
                 <android.support.v7.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
@@ -336,7 +336,7 @@
                             android:id="@+id/textview_assigned_on"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_4dp"
+                            android:layout_marginTop="@dimen/value_4dp"
                             android:text="12 May 2018"
                             android:textColor="@color/colorRyanBlack"
                             android:textStyle="italic"/>

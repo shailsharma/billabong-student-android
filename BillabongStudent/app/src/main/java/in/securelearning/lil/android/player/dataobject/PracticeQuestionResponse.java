@@ -14,6 +14,10 @@ public class PracticeQuestionResponse implements Serializable {
     @Expose
     private boolean mIsQuestionExist;
 
+    @SerializedName("isUserThrowOut")
+    @Expose
+    private boolean mIsUserThrowOut;
+
     @SerializedName("questions")
     @Expose
     private ArrayList<Question> mQuestionList;
@@ -32,5 +36,13 @@ public class PracticeQuestionResponse implements Serializable {
 
     public void setQuestionExist(boolean questionExist) {
         mIsQuestionExist = questionExist;
+    }
+
+    public boolean isUserThrowOut() {
+        return mIsUserThrowOut;
+    }
+
+    public void setUserThrowOut(boolean userThrowOut) {
+        mIsUserThrowOut = userThrowOut;
     }
 }

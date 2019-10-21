@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/image_dashboard_background"
         android:gravity="center_horizontal"
-        android:padding="@dimen/margin_16dp">
+        android:padding="@dimen/value_16dp">
 
         <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/layoutTop"
@@ -25,17 +25,17 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/colorBlack"
                 android:textStyle="bold"
-                tools:text="Congratulations!"/>
+                tools:text="@string/congratulations" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textViewGreetingMessage"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_8dp"
+                android:layout_marginTop="@dimen/value_8dp"
                 android:gravity="center_horizontal"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/colorBlack"
-                tools:text="You have completed the practice."/>
+                tools:text="You have completed the practice." />
 
         </android.support.v7.widget.LinearLayoutCompat>
 
@@ -45,10 +45,9 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/layoutBottom"
             android:layout_below="@+id/layoutTop"
-            android:layout_marginTop="@dimen/margin_24dp"
-            android:layout_marginBottom="@dimen/margin_24dp"
-            android:scaleType="centerCrop"
-            />
+            android:layout_marginTop="@dimen/value_24dp"
+            android:layout_marginBottom="@dimen/value_24dp"
+            android:scaleType="centerCrop" />
 
 
         <android.support.v7.widget.LinearLayoutCompat
@@ -59,54 +58,128 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="YOU HAVE GOT"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorBlack"/>
-
             <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_8dp"
-                android:background="@drawable/chip_accent_color"
-                android:elevation="@dimen/elevation_4dp"
-                android:orientation="horizontal"
-                >
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
                 <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/textViewScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|end"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/colorWhite"
-                    android:visibility="visible"
-                    app:fontFamily="@font/digital"
-                    tools:text=" 150 "/>
+                    android:text="YOU HAVE GOT"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/colorBlack" />
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_gravity="center_vertical"
-                    app:srcCompat="@drawable/icon_euro_coin"/>
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/value_8dp"
+                    android:background="@drawable/chip_accent_color"
+                    android:orientation="horizontal">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewScore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|end"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textColor="@color/colorWhite"
+                        android:visibility="visible"
+                        app:fontFamily="@font/digital"
+                        tools:text=" 150 " />
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@drawable/icon_coin" />
+
+                </android.support.v7.widget.LinearLayoutCompat>
 
             </android.support.v7.widget.LinearLayoutCompat>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/value_8dp"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/score" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewPracticePoint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/value_4dp"
+                        android:drawableEnd="@drawable/icon_coin"
+                        android:drawablePadding="@dimen/value_4dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/colorBlack"
+                        app:fontFamily="@font/digital"
+                        tools:text="80" />
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/value_4dp"
+                    android:layout_marginBottom="@dimen/value_4dp"
+                    android:background="@color/colorGrey" />
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bonus" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewStreakBonus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/value_4dp"
+                        android:drawableEnd="@drawable/icon_coin"
+                        android:drawablePadding="@dimen/value_4dp"
+                        android:gravity="center_horizontal"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/colorBlack"
+                        app:fontFamily="@font/digital"
+                        tools:text="80" />
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+            </LinearLayout>
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/buttonDone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_24dp"
-                android:layout_marginTop="@dimen/margin_16dp"
-                android:layout_marginEnd="@dimen/margin_24dp"
-                android:layout_marginBottom="@dimen/margin_16dp"
+                android:layout_marginStart="@dimen/value_24dp"
+                android:layout_marginTop="@dimen/value_16dp"
+                android:layout_marginEnd="@dimen/value_24dp"
+                android:layout_marginBottom="@dimen/value_16dp"
                 android:background="@drawable/gradient_chip"
                 android:text="@string/done"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white" />
 
         </android.support.v7.widget.LinearLayoutCompat>
 

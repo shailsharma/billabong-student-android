@@ -11,13 +11,16 @@ import java.io.Serializable;
 
 public class IdNameObject implements Serializable {
 
-    @SerializedName("id")
+    @SerializedName(value = "id", alternate = "_id")
     @Expose
     private String mId;
 
     @SerializedName("name")
     @Expose
     private String mName;
+
+    public IdNameObject() {
+    }
 
     public IdNameObject(String id) {
         mId = id;

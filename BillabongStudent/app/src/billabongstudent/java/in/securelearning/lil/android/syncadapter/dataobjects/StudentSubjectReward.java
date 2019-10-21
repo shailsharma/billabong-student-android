@@ -30,7 +30,7 @@ public class StudentSubjectReward implements Serializable {
 
     @SerializedName("topics")
     @Expose
-    private ArrayList<StudentSubjectReward> topicRewardList;
+    private ArrayList<StudentTopicReward> topicRewardList;
 
     public String getUserId() {
         return mUserId;
@@ -68,7 +68,7 @@ public class StudentSubjectReward implements Serializable {
         return mThumbnailUrl;
     }
 
-    public ArrayList<StudentSubjectReward> getTopicRewardList() {
+    public ArrayList<StudentTopicReward> getTopicRewardList() {
         return topicRewardList;
     }
 }

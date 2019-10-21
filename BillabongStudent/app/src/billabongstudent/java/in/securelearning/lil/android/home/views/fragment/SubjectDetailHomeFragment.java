@@ -3,116 +3,100 @@ package in.securelearning.lil.android.home.views.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.databinding.LayoutCourseListItemBinding;
-import in.securelearning.lil.android.app.databinding.LayoutMicroCourseListItemBinding;
-import in.securelearning.lil.android.app.databinding.LayoutPracticeListItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutSubjectDetailsHomeFragmentBinding;
-import in.securelearning.lil.android.app.databinding.LayoutVideoListItemBinding;
 import in.securelearning.lil.android.base.customchrometabutils.CustomChromeTabHelper;
 import in.securelearning.lil.android.base.dataobjects.MetaInformation;
-import in.securelearning.lil.android.base.dataobjects.MicroLearningCourse;
-import in.securelearning.lil.android.base.dataobjects.Skill;
 import in.securelearning.lil.android.base.dataobjects.Thumbnail;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
+import in.securelearning.lil.android.gamification.event.GamificationEventDone;
+import in.securelearning.lil.android.gamification.utils.GamificationPrefs;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.events.MindSparkNoUnitEvent;
+import in.securelearning.lil.android.home.helper.OnStartPracticeActivityListener;
 import in.securelearning.lil.android.home.model.FlavorHomeModel;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkContentDetails;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkLoginResponse;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkTopicData;
-import in.securelearning.lil.android.mindspark.model.MindSparkModel;
-import in.securelearning.lil.android.mindspark.views.activity.MindSparkAllTopicListActivity;
-import in.securelearning.lil.android.mindspark.views.activity.MindSparkPlayerActivity;
-import in.securelearning.lil.android.player.mindspark.dataobjects.MindSparkUnitData;
-import in.securelearning.lil.android.player.view.activity.PracticeQuestionActivity;
-import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
+import in.securelearning.lil.android.home.views.activity.WikiHowListActivity;
+import in.securelearning.lil.android.home.views.adapter.LRAAdapter;
+import in.securelearning.lil.android.home.views.adapter.PracticeAdapter;
+import in.securelearning.lil.android.player.view.activity.PracticePlayerActivity;
 import in.securelearning.lil.android.syncadapter.dataobjects.AboutCourseMinimal;
 import in.securelearning.lil.android.syncadapter.dataobjects.LRPARequest;
 import in.securelearning.lil.android.syncadapter.dataobjects.LRPAResult;
+import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
+import in.securelearning.lil.android.syncadapter.dataobjects.WikiHow;
+import in.securelearning.lil.android.syncadapter.dataobjects.WikiHowParent;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkContentDetails;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkLoginResponse;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkTopicData;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkUnitData;
+import in.securelearning.lil.android.thirdparty.model.ThirdPartyModel;
+import in.securelearning.lil.android.thirdparty.views.activity.MindSparkAllTopicListActivity;
+import in.securelearning.lil.android.thirdparty.views.activity.MindSparkPlayerActivity;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class SubjectDetailHomeFragment extends Fragment {
+
+    private static final String TOPIC_ID = "topicId";
+    private static final String SUBJECT_ID = "subjectId";
+    private static final String TOPIC_NAME = "topicName";
+    private static final String SUBJECT_NAME = "subjectName";
+    private static final String GRADE_NAME = "gradeName";
+    private static final String THIRD_PARTY_TOPIC_ID_LIST = "thirdPartyTopicIdList";
+    private static final String SUBJECT_BANNER_URL = "subjectBannerUrl";
 
     @Inject
     FlavorHomeModel mFlavorHomeModel;
 
     @Inject
-    MindSparkModel mMindSparkModel;
+    ThirdPartyModel mThirdPartyModel;
 
     @Inject
     RxBus mRxBus;
 
     @Inject
     AppUserModel mAppUserModel;
+
+    LayoutSubjectDetailsHomeFragmentBinding mBinding;
     private Context mContext;
-    private static final String TOPIC_ID = "topicId";
-    private static final String TOPIC_NAME = "topicName";
-    private static final String SUBJECT_NAME = "subjectName";
-    private static final String GRADE_NAME = "gradeName";
-    private static final String THIRD_PARTY_TOPIC_ID_LIST = "thirdPartyTopicIdList";
-    private static final String SUBJECT_BANNER_URL = "subjectBannerUrl";
     private String mSubjectName;
     private String mGradeName;
     private String mSubjectBannerURL;
-    private ArrayList<String> mThirdPartyTopicIds;
-    LayoutSubjectDetailsHomeFragmentBinding mBinding;
-
     private String mTopicName;
+    private String mSubjectId;
+    private boolean mIsEnglish;
 
     public SubjectDetailHomeFragment() {
         // Required empty public constructor
     }
 
 
-    public static SubjectDetailHomeFragment newInstance(String topicId, String topicName, String subjectName, String gradeName, ArrayList<String> thirdPartyTopicIds, String bannerUrl) {
+    public static SubjectDetailHomeFragment newInstance(String subjectId, String topicId, String topicName, String subjectName, String gradeName, ArrayList<String> thirdPartyTopicIds, String bannerUrl) {
         SubjectDetailHomeFragment fragment = new SubjectDetailHomeFragment();
         Bundle args = new Bundle();
+        args.putString(SUBJECT_ID, subjectId);
         args.putString(TOPIC_ID, topicId);
         args.putString(TOPIC_NAME, topicName);
         args.putString(SUBJECT_NAME, subjectName);
@@ -124,52 +108,93 @@ public class SubjectDetailHomeFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_subject_details_home_fragment, container, false);
+
+        listenRxBusEvents();
         return mBinding.getRoot();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mContext = getActivity();
-    }
-
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mContext = null;
-
+        mContext = context;
     }
 
     @Override
     public void onResume() {
         super.onResume();
         getBundleData();
-
     }
 
+    /*To get bundle data for activity*/
     private void getBundleData() {
         if (getArguments() != null) {
             String topicId = getArguments().getString(TOPIC_ID);
+            mSubjectId = getArguments().getString(SUBJECT_ID);
             mTopicName = getArguments().getString(TOPIC_NAME);
             mSubjectName = getArguments().getString(SUBJECT_NAME);
             mGradeName = getArguments().getString(GRADE_NAME);
-            mThirdPartyTopicIds = getArguments().getStringArrayList(THIRD_PARTY_TOPIC_ID_LIST);
             mSubjectBannerURL = getArguments().getString(SUBJECT_BANNER_URL);
+
+            mIsEnglish = isEnglishSubject();
+
             if (!TextUtils.isEmpty(topicId)) {
                 fetchLearnList(topicId);
             }
         }
     }
 
+    /*To check current subject is English
+     * and grade is below IV to show Freadom card in practice.*/
+    private boolean isEnglishSubject() {
+        if (mSubjectName.contains("Eng")) {
+            return mGradeName.equals("PG")
+                    || mGradeName.equals("EuroJunior")
+                    || mGradeName.equals("EuroSenior")
+                    || mGradeName.equals("EJ")
+                    || mGradeName.equals("ES")
+                    || mGradeName.equals("Nursery")
+                    || mGradeName.equals("I")
+                    || mGradeName.equals("II")
+                    || mGradeName.equals("III");
+        } else {
+            return false;
+        }
+    }
+
+    /*To listen rx events for the activity*/
+    private void listenRxBusEvents() {
+        Disposable subscription = mRxBus.toFlowable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object event) {
+                        if (event instanceof GamificationEventDone) {
+                            GamificationEventDone gamificationEventDone = (GamificationEventDone) event;
+                            if (gamificationEventDone.getEventActivity().
+                                    equalsIgnoreCase("LRPA") &&
+                                    gamificationEventDone.getSubActivity().equalsIgnoreCase("practise")
+                                    && gamificationEventDone.isDone()) {
+                                if (GamificationPrefs.getPractiseObject(mContext) != null) {
+                                    AboutCourseMinimal courseMinimal = GamificationPrefs.getPractiseObject(mContext);
+                                    startPracticeActivity(courseMinimal);
+                                }
+                                if (mContext != null) {
+                                    GamificationPrefs.clearPractiseObject(mContext);
+                                }
+
+                            }
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+    }
 
     @SuppressLint("CheckResult")
     private void fetchLearnList(final String topicId) {
@@ -181,7 +206,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<LRPAResult>() {
                     @Override
-                    public void accept(LRPAResult lrpaResult) throws Exception {
+                    public void accept(LRPAResult lrpaResult) {
                         mBinding.progressBarLearn.setVisibility(View.GONE);
                         fetchReinforceList(topicId);
                         if (lrpaResult != null && lrpaResult.getResults() != null && !lrpaResult.getResults().isEmpty()) {
@@ -195,7 +220,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                     }
                 }, new Consumer<Throwable>() {
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
+                    public void accept(Throwable throwable) {
                         throwable.printStackTrace();
                         fetchReinforceList(topicId);
                         mBinding.listLearn.setVisibility(View.GONE);
@@ -216,7 +241,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<LRPAResult>() {
                     @Override
-                    public void accept(LRPAResult lrpaResult) throws Exception {
+                    public void accept(LRPAResult lrpaResult) {
                         fetchPracticeList(topicId);
                         mBinding.progressBarReinforce.setVisibility(View.GONE);
                         if (lrpaResult != null && lrpaResult.getResults() != null && !lrpaResult.getResults().isEmpty()) {
@@ -231,7 +256,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                     }
                 }, new Consumer<Throwable>() {
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
+                    public void accept(Throwable throwable) {
                         throwable.printStackTrace();
                         fetchPracticeList(topicId);
                         mBinding.listReinforce.setVisibility(View.GONE);
@@ -240,157 +265,6 @@ public class SubjectDetailHomeFragment extends Fragment {
                         mBinding.textViewNoDataReinforce.setText(throwable.getMessage());
                     }
                 });
-    }
-
-    /*To fetch practice if subject is maths then from mind spark
-     * else from LIL*/
-    /*TODO hard coded logic for subject check, remove when dynamically done*/
-//    private void checkSubject(String topicId) {
-    //fetchPracticeList(topicId);
-
-//        if (mSubjectName.contains("Math")) {
-    // fetchMindSparkData(mThirdPartyTopicIds, topicId);
-    //       }
-//        else if (mSubjectName.contains("Eng")) {
-//            /*TODO hard coded logic, remove when dynamically done*/
-//            if (mGradeName.equals("PG") || mGradeName.equals("EuroJunior") || mGradeName.equals("EuroSenior")
-//                    || mGradeName.equals("Nursery") || mGradeName.equals("I")
-//                    || mGradeName.equals("II") || mGradeName.equals("III")) {
-//                //displayFreadomCard();
-//                fetchPracticeList(topicId);
-//            } else {
-//                displayLightSailCard();
-//            }
-//            fetchApplyList(topicId);
-//        }
-//        else {
-//            fetchPracticeList(topicId);
-//        }
-//    }
-
-    /*Check whether thirdPartyTopicId null or empty*/
-//    private ArrayList<AboutCourseMinimal> fetchMindSparkData(ArrayList<String> thirdPartyTopicIds, String topicId) {
-//        if (thirdPartyTopicIds != null && !thirdPartyTopicIds.isEmpty()) {
-//            return fetchMindSparkPractice(list, thirdPartyTopicIds, topicId);
-//        } else {
-//            return new ArrayList<>();
-//        }
-//        else {
-//            mBinding.progressBarPractice.setVisibility(View.GONE);
-//            mBinding.textViewNoDataPractice.setVisibility(View.VISIBLE);
-//            fetchApplyList(topicId);
-//        }
-//    }
-
-    /*Display Light Sail card if subject is English*/
-    private void displayLightSailCard() {
-        mBinding.progressBarPractice.setVisibility(View.GONE);
-        mBinding.cardViewPractice.setVisibility(View.VISIBLE);
-        Picasso.with(mContext).load(R.drawable.logo_lightsail).placeholder(R.drawable.image_placeholder).into(mBinding.imageViewPractice);
-        mBinding.cardViewPractice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (GeneralUtils.isNetworkAvailable(mContext)) {
-                    String jwt = AppPrefs.getIdToken(mContext);
-                    CustomChromeTabHelper.loadCustomDataUsingColorResource(mContext, mContext.getString(R.string.base_url_lightsail) + jwt, R.color.colorPrimary);
-                    Log.e("LightSail---", mContext.getString(R.string.base_url_lightsail) + jwt);
-                } else {
-                    Toast.makeText(mContext, getString(R.string.connect_internet), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    /*Display Freadom card if subject is English*/
-    private void displayFreadomCard() {
-        mBinding.progressBarPractice.setVisibility(View.GONE);
-        mBinding.cardViewPractice.setVisibility(View.VISIBLE);
-        Picasso.with(mContext).load(R.drawable.logo_freadom).placeholder(R.drawable.image_placeholder).into(mBinding.imageViewPractice);
-        mBinding.imageViewPractice.setColorFilter(R.color.colorPrimary);
-
-        mBinding.cardViewPractice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (GeneralUtils.isNetworkAvailable(mContext)) {
-                    String jwt = AppPrefs.getIdToken(mContext);
-                    String email = mAppUserModel.getApplicationUser().getEmail();
-                    CustomChromeTabHelper.loadCustomDataUsingColorResource(mContext, mContext.getString(R.string.freadom_url) + "?email=" + email + "&token=" + jwt, R.color.colorPrimary);
-                    Log.e("Freadom---", mContext.getString(R.string.freadom_url) + "?email=" + email + "&token=" + jwt);
-                } else {
-                    Toast.makeText(mContext, getString(R.string.connect_internet), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    /*Display MindSpark card if subject is Maths*/
-    private void displayMindSparkCard(MindSparkLoginResponse response) {
-        mBinding.layoutMindSparkPractice.getRoot().setVisibility(View.VISIBLE);
-        mBinding.buttonMorePractice.setVisibility(View.VISIBLE);
-        mBinding.imageViewMindSparkLogo.setVisibility(View.VISIBLE);
-        Picasso.with(mContext).load(R.drawable.background_thumb_mind_spark).placeholder(R.drawable.image_placeholder).into(mBinding.layoutMindSparkPractice.imageViewBackground);
-
-        final MindSparkContentDetails mindSparkContentDetails = response.getMindSparkContentDetails();
-        MindSparkTopicData mindSparkTopicData = response.getMindSparkTopicData();
-        if (mindSparkTopicData.getMindSparkUnitList() != null && mindSparkTopicData.getMindSparkUnitList().size() > 0) {
-            MindSparkUnitData mindSparkUnitData = mindSparkTopicData.getMindSparkUnitList().get(0);
-            mBinding.layoutMindSparkPractice.textViewSubTitle.setText(mindSparkUnitData.getUnitName());
-
-        }
-        String value;
-        if (mindSparkContentDetails.getUnitsCleared() > 1) {
-            value = mindSparkContentDetails.getUnitsCleared() + " out of " + mindSparkContentDetails.getUnitsOverall() + " units covered";
-        } else {
-            value = mindSparkContentDetails.getUnitsCleared() + " out of " + mindSparkContentDetails.getUnitsOverall() + " unit covered";
-        }
-        mBinding.layoutMindSparkPractice.textViewStatus.setText(value);
-        mBinding.layoutMindSparkPractice.textViewTitle.setText(mindSparkContentDetails.getContentName());
-        mBinding.layoutMindSparkPractice.textViewRewardPoints.setVisibility(View.GONE);
-
-        mBinding.layoutMindSparkPractice.getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (GeneralUtils.isNetworkAvailable(mContext)) {
-                    if (mindSparkContentDetails.getUnitsOverall() > 0) {
-                        startActivity(MindSparkPlayerActivity.getStartIntent(mContext, mindSparkContentDetails.getContentId(), mindSparkContentDetails.getContentName()));
-                    } else {
-                        mRxBus.send(new MindSparkNoUnitEvent());
-                    }
-                }
-            }
-        });
-
-        mBinding.buttonMorePractice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(MindSparkAllTopicListActivity.getStartIntent(getContext()));
-
-            }
-        });
-    }
-
-    /*Display Practice card if subject is English*/
-    private void displayPracticeCard(final ArrayList<String> skillIds, final MetaInformation metaInformation) {
-        mBinding.layoutPractice.getRoot().setVisibility(View.VISIBLE);
-        if (!TextUtils.isEmpty(mSubjectBannerURL)) {
-            Picasso.with(mContext).load(mSubjectBannerURL).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(mBinding.layoutPractice.imageViewBackground);
-        } else {
-            Picasso.with(mContext).load(R.drawable.background_thumb_mind_spark).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(mBinding.layoutPractice.imageViewBackground);
-        }
-        mBinding.layoutPractice.textViewTitle.setText(mTopicName);
-        mBinding.layoutPractice.getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (GeneralUtils.isNetworkAvailable(mContext)) {
-
-                    String subjectId = getSubjectId(metaInformation);
-                    String topicId = getTopicId(metaInformation);
-                    startActivity(PracticeQuestionActivity.getStartIntent(mContext, mTopicName, skillIds, subjectId, topicId));
-                } else {
-                    Toast.makeText(getContext(), getString(R.string.connect_internet), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 
     @SuppressLint("CheckResult")
@@ -403,7 +277,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<LRPAResult>() {
                     @Override
-                    public void accept(LRPAResult lrpaResult) throws Exception {
+                    public void accept(LRPAResult lrpaResult) {
                         fetchApplyList(topicId);
                         if (lrpaResult != null) {
                             mBinding.listPractice.setVisibility(View.VISIBLE);
@@ -426,15 +300,8 @@ public class SubjectDetailHomeFragment extends Fragment {
                                     }
                                 }
 
-                                boolean isMathOrEnglish;
-                                if (mSubjectName.contains("Eng")) {
-                                    isMathOrEnglish = true;
-                                } else {
-                                    isMathOrEnglish = mSubjectName.contains("Math");
-                                }
-
                                 /*Create a single object of practice and insert into array at 0*/
-                                if (isPractice && !isMathOrEnglish) {
+                                if (isPractice && !mIsEnglish) {
 
                                     AboutCourseMinimal aboutCourseMinimal = new AboutCourseMinimal();
                                     aboutCourseMinimal.setTitle(mTopicName);
@@ -453,74 +320,45 @@ public class SubjectDetailHomeFragment extends Fragment {
                                     list.add(0, aboutCourseMinimal);
                                     initializeRecyclerViewPractice(list);
 
-                                } else {
-                                    if (mSubjectName.contains("Eng")) {
-                                        if (mGradeName.equals("PG") || mGradeName.equals("EuroJunior") || mGradeName.equals("EuroSenior")
-                                                || mGradeName.equals("Nursery") || mGradeName.equals("I")
-                                                || mGradeName.equals("II") || mGradeName.equals("III")) {
-
-                                            AboutCourseMinimal aboutCourseMinimal = new AboutCourseMinimal();
-                                            aboutCourseMinimal.setCourseType(mContext.getString(R.string.freadom));
-                                            list.add(0, aboutCourseMinimal);
-                                        } else {
-                                            AboutCourseMinimal aboutCourseMinimal = new AboutCourseMinimal();
-                                            aboutCourseMinimal.setCourseType(mContext.getString(R.string.lightsail));
-                                            list.add(0, aboutCourseMinimal);
-                                        }
-                                        initializeRecyclerViewPractice(list);
-
-                                    } else if (mSubjectName.contains("Math")) {
-                                        fetchMindSparkPractice(list, mThirdPartyTopicIds, topicId);
-                                    }
-                                }
-
-                            } else if (mSubjectName.contains("Eng")) {
-                                ArrayList<AboutCourseMinimal> courseList = new ArrayList<>();
-                                if (mGradeName.equals("PG") || mGradeName.equals("EuroJunior") || mGradeName.equals("EuroSenior")
-                                        || mGradeName.equals("Nursery") || mGradeName.equals("I")
-                                        || mGradeName.equals("II") || mGradeName.equals("III")) {
-
+                                } else if (mIsEnglish) {
                                     AboutCourseMinimal aboutCourseMinimal = new AboutCourseMinimal();
                                     aboutCourseMinimal.setCourseType(mContext.getString(R.string.freadom));
-                                    courseList.add(0, aboutCourseMinimal);
-
+                                    list.add(0, aboutCourseMinimal);
+                                    initializeRecyclerViewPractice(list);
                                 } else {
-                                    AboutCourseMinimal aboutCourseMinimal = new AboutCourseMinimal();
-                                    aboutCourseMinimal.setCourseType(mContext.getString(R.string.lightsail));
-                                    courseList.add(0, aboutCourseMinimal);
-
+                                    mBinding.listPractice.setVisibility(View.GONE);
+                                    mBinding.textViewNoDataPractice.setVisibility(View.VISIBLE);
                                 }
+
+                            } else if (mIsEnglish) {
+                                ArrayList<AboutCourseMinimal> courseList = new ArrayList<>();
+
+                                AboutCourseMinimal aboutCourseMinimal = new AboutCourseMinimal();
+                                aboutCourseMinimal.setCourseType(mContext.getString(R.string.freadom));
+                                courseList.add(0, aboutCourseMinimal);
+
                                 initializeRecyclerViewPractice(courseList);
 
-                            } else if (mSubjectName.contains("Math")) {
-                                fetchMindSparkPractice(new ArrayList<AboutCourseMinimal>(), mThirdPartyTopicIds, topicId);
                             } else {
                                 mBinding.listPractice.setVisibility(View.GONE);
                                 mBinding.textViewNoDataPractice.setVisibility(View.VISIBLE);
                             }
 
 
-                        } else if (mSubjectName.contains("Eng")) {
+                        } else if (mIsEnglish) {
                             ArrayList<AboutCourseMinimal> courseList = new ArrayList<>();
-                            if (mGradeName.equals("PG") || mGradeName.equals("EuroJunior") || mGradeName.equals("EuroSenior")
-                                    || mGradeName.equals("Nursery") || mGradeName.equals("I")
-                                    || mGradeName.equals("II") || mGradeName.equals("III")) {
 
-                                AboutCourseMinimal aboutCourseMinimal = new AboutCourseMinimal();
-                                aboutCourseMinimal.setCourseType(mContext.getString(R.string.freadom));
-                                courseList.add(0, aboutCourseMinimal);
+                            AboutCourseMinimal aboutCourseMinimal = new AboutCourseMinimal();
+                            aboutCourseMinimal.setCourseType(mContext.getString(R.string.freadom));
+                            courseList.add(0, aboutCourseMinimal);
 
-                            } else {
-                                AboutCourseMinimal aboutCourseMinimal = new AboutCourseMinimal();
-                                aboutCourseMinimal.setCourseType(mContext.getString(R.string.lightsail));
-                                courseList.add(0, aboutCourseMinimal);
-
-                            }
                             initializeRecyclerViewPractice(courseList);
 
-                        } else if (mSubjectName.contains("Math")) {
-                            fetchMindSparkPractice(new ArrayList<AboutCourseMinimal>(), mThirdPartyTopicIds, topicId);
-                        } else {
+                        }
+//                        else if (mSubjectName.contains("Math")) {
+//                            fetchMindSparkPractice(new ArrayList<AboutCourseMinimal>(), mThirdPartyTopicIds, topicId);
+//                        }
+                        else {
                             mBinding.listPractice.setVisibility(View.GONE);
                             mBinding.textViewNoDataPractice.setVisibility(View.VISIBLE);
                         }
@@ -529,7 +367,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                     }
                 }, new Consumer<Throwable>() {
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
+                    public void accept(Throwable throwable) {
                         throwable.printStackTrace();
                         fetchApplyList(topicId);
                         mBinding.listPractice.setVisibility(View.GONE);
@@ -541,7 +379,7 @@ public class SubjectDetailHomeFragment extends Fragment {
     }
 
     @SuppressLint("CheckResult")
-    private void fetchApplyList(String topicId) {
+    private void fetchApplyList(final String topicId) {
         mBinding.listApply.setVisibility(View.GONE);
         mBinding.progressBarApply.setVisibility(View.VISIBLE);
         mBinding.textViewNoDataApply.setVisibility(View.GONE);
@@ -550,26 +388,144 @@ public class SubjectDetailHomeFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<LRPAResult>() {
                     @Override
-                    public void accept(LRPAResult lrpaResult) throws Exception {
-                        mBinding.progressBarApply.setVisibility(View.GONE);
-                        if (lrpaResult != null && lrpaResult.getResults() != null && !lrpaResult.getResults().isEmpty()) {
-                            mBinding.listApply.setVisibility(View.VISIBLE);
-                            mBinding.textViewNoDataApply.setVisibility(View.GONE);
-                            initializeRecyclerViewApply(lrpaResult.getResults());
+                    public void accept(LRPAResult lrpaResult) {
+
+                        if (lrpaResult != null && lrpaResult.getResults() != null
+                                && !lrpaResult.getResults().isEmpty()) {
+
+                            fetchWikiHowMapping(mSubjectId, topicId, lrpaResult.getResults());
                         } else {
-                            mBinding.listApply.setVisibility(View.GONE);
-                            mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
+                            fetchWikiHowMapping(mSubjectId, topicId, new ArrayList<AboutCourseMinimal>());
 
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
+                    public void accept(Throwable throwable) {
                         throwable.printStackTrace();
-                        mBinding.listApply.setVisibility(View.GONE);
+                        fetchWikiHowMapping(mSubjectId, topicId, new ArrayList<AboutCourseMinimal>());
+                    }
+                });
+    }
+
+    @SuppressLint("CheckResult")
+    private void fetchWikiHowMapping(String subjectId, String topicId, final ArrayList<AboutCourseMinimal> applyList) {
+        mFlavorHomeModel.fetchThirdPartyMapping(new ThirdPartyMapping(subjectId, topicId, mContext.getString(R.string.type_wikihow)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ArrayList<String>>() {
+                    @Override
+                    public void accept(ArrayList<String> strings) {
+                        if (strings != null && !strings.isEmpty()) {
+                            fetchWikiHowCardDetail(strings.get(0), strings, applyList);
+                        } else {
+                            mBinding.progressBarApply.setVisibility(View.GONE);
+                            if (applyList != null && !applyList.isEmpty()) {
+                                mBinding.listApply.setVisibility(View.VISIBLE);
+                                mBinding.textViewNoDataApply.setVisibility(View.GONE);
+                                initializeRecyclerViewApply(applyList);
+                            } else {
+                                mBinding.listApply.setVisibility(View.GONE);
+                                mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) {
+                        throwable.printStackTrace();
                         mBinding.progressBarApply.setVisibility(View.GONE);
-                        mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
-                        mBinding.textViewNoDataApply.setText(throwable.getMessage());
+                        if (applyList != null && !applyList.isEmpty()) {
+                            mBinding.listApply.setVisibility(View.VISIBLE);
+                            mBinding.textViewNoDataApply.setVisibility(View.GONE);
+                            initializeRecyclerViewApply(applyList);
+                        } else {
+                            mBinding.listApply.setVisibility(View.GONE);
+                            mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+    }
+
+    @SuppressLint("CheckResult")
+    private void fetchWikiHowCardDetail(String wikiHowId, final ArrayList<String> wikiHowTopicIds, final ArrayList<AboutCourseMinimal> applyList) {
+        mFlavorHomeModel.fetchWikiHowCardDetail(wikiHowId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<WikiHowParent>() {
+                    @Override
+                    public void accept(WikiHowParent wikiHowParent) {
+                        mBinding.progressBarApply.setVisibility(View.GONE);
+
+                        if (wikiHowParent != null && wikiHowParent.getWikiHow() != null) {
+                            WikiHow wikiHow = wikiHowParent.getWikiHow();
+                            AboutCourseMinimal aboutCourseMinimal = new AboutCourseMinimal();
+                            aboutCourseMinimal.setTitle(wikiHow.getTitle());
+                            aboutCourseMinimal.setId(wikiHow.getId());
+                            aboutCourseMinimal.setCourseType(mContext.getString(R.string.label_wikiHow));
+                            if (wikiHow.getThumbnail() != null) {
+                                Thumbnail thumbnail = new Thumbnail();
+                                if (!TextUtils.isEmpty(wikiHow.getThumbnail().getThumb())) {
+                                    thumbnail.setUrl(wikiHow.getThumbnail().getThumb());
+                                }
+                                if (!TextUtils.isEmpty(wikiHow.getThumbnail().getThumbLarge())) {
+                                    thumbnail.setThumb(wikiHow.getThumbnail().getThumbLarge());
+
+                                }
+                                aboutCourseMinimal.setThumbnail(thumbnail);
+
+                            }
+
+                            applyList.add(0, aboutCourseMinimal);
+
+                            if (wikiHowTopicIds.size() > 1) {
+                                mBinding.imageViewWikiHowLogo.setVisibility(View.VISIBLE);
+                                mBinding.buttonMoreApply.setVisibility(View.VISIBLE);
+                            }
+
+                            mBinding.buttonMoreApply.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    if (GeneralUtils.isNetworkAvailable(mContext)) {
+
+                                        mContext.startActivity(WikiHowListActivity.getStartIntent(mContext, mTopicName, wikiHowTopicIds));
+                                    } else {
+                                        GeneralUtils.showToastShort(mContext, getString(R.string.connect_internet));
+                                    }
+                                }
+                            });
+
+                            if (!applyList.isEmpty()) {
+                                mBinding.listApply.setVisibility(View.VISIBLE);
+                                mBinding.textViewNoDataApply.setVisibility(View.GONE);
+                                initializeRecyclerViewApply(applyList);
+                            } else {
+                                mBinding.listApply.setVisibility(View.GONE);
+                                mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            if (!applyList.isEmpty()) {
+                                mBinding.listApply.setVisibility(View.VISIBLE);
+                                mBinding.textViewNoDataApply.setVisibility(View.GONE);
+                                initializeRecyclerViewApply(applyList);
+                            } else {
+                                mBinding.listApply.setVisibility(View.GONE);
+                                mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) {
+                        throwable.printStackTrace();
+                        if (!applyList.isEmpty()) {
+                            mBinding.listApply.setVisibility(View.VISIBLE);
+                            mBinding.textViewNoDataApply.setVisibility(View.GONE);
+                            initializeRecyclerViewApply(applyList);
+                        } else {
+                            mBinding.listApply.setVisibility(View.GONE);
+                            mBinding.textViewNoDataApply.setVisibility(View.VISIBLE);
+                        }
                     }
                 });
     }
@@ -579,12 +535,12 @@ public class SubjectDetailHomeFragment extends Fragment {
         final ArrayList<AboutCourseMinimal> courseList = new ArrayList<>();
         mBinding.progressBarPractice.setVisibility(View.VISIBLE);
         if (thirdPartyTopicIds != null && !thirdPartyTopicIds.isEmpty()) {
-            mMindSparkModel.loginUserToMindSpark(thirdPartyTopicIds)
+            mThirdPartyModel.loginUserToMindSpark(thirdPartyTopicIds)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<ArrayList<MindSparkLoginResponse>>() {
                         @Override
-                        public void accept(ArrayList<MindSparkLoginResponse> responseArrayList) throws Exception {
+                        public void accept(ArrayList<MindSparkLoginResponse> responseArrayList) {
 
                             if (responseArrayList != null && !responseArrayList.isEmpty()) {
 
@@ -626,7 +582,7 @@ public class SubjectDetailHomeFragment extends Fragment {
                                     mBinding.buttonMorePractice.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            startActivity(MindSparkAllTopicListActivity.getStartIntent(getContext()));
+                                            mContext.startActivity(MindSparkAllTopicListActivity.getStartIntent(getContext()));
                                         }
                                     });
 
@@ -654,8 +610,11 @@ public class SubjectDetailHomeFragment extends Fragment {
 
                     }, new Consumer<Throwable>() {
                         @Override
-                        public void accept(Throwable throwable) throws Exception {
+                        public void accept(Throwable throwable) {
                             throwable.printStackTrace();
+                            mBinding.progressBarPractice.setVisibility(View.GONE);
+                            mBinding.listPractice.setVisibility(View.GONE);
+                            mBinding.textViewNoDataPractice.setVisibility(View.VISIBLE);
                         }
                     });
         } else {
@@ -671,58 +630,50 @@ public class SubjectDetailHomeFragment extends Fragment {
 
     }
 
-    /*Recycler view initialization*/
+    /*initialization of Learn Adapter and Recycler view  */
     private void initializeRecyclerViewLearn(ArrayList<AboutCourseMinimal> list) {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mBinding.listLearn.setLayoutManager(layoutManager);
-        LearnAdapter learnAdapter = new LearnAdapter(mContext, list);
-        mBinding.listLearn.setAdapter(learnAdapter);
+        LRAAdapter LRAAdapter = new LRAAdapter(mContext, list);
+        mBinding.listLearn.setAdapter(LRAAdapter);
 
     }
 
+    /*initialization of Reinforce Adapter and Recycler view  */
     private void initializeRecyclerViewReinforce(ArrayList<AboutCourseMinimal> list) {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mBinding.listReinforce.setLayoutManager(layoutManager);
-        ReinforceAdapter reinforceAdapter = new ReinforceAdapter(mContext, list);
+        LRAAdapter reinforceAdapter = new LRAAdapter(mContext, list);
         mBinding.listReinforce.setAdapter(reinforceAdapter);
 
     }
 
+    /*initialization of Practice Adapter and Recycler view  */
     private void initializeRecyclerViewPractice(ArrayList<AboutCourseMinimal> list) {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mBinding.listPractice.setLayoutManager(layoutManager);
-        mBinding.listPractice.setAdapter(new PracticeAdapter(mContext, list));
+
+        OnStartPracticeActivityListener startPracticeActivityListener = new OnStartPracticeActivityListener() {
+            @Override
+            public void OnStartPracticeActivity(AboutCourseMinimal aboutCourseMinimal) {
+                startPracticeActivity(aboutCourseMinimal);
+            }
+        };
+        mBinding.listPractice.setAdapter(new PracticeAdapter(mContext, list, mSubjectName, startPracticeActivityListener));
 
     }
 
+    /*initialization of Apply Adapter and Recycler view  */
     private void initializeRecyclerViewApply(ArrayList<AboutCourseMinimal> list) {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         mBinding.listApply.setLayoutManager(layoutManager);
-        ApplyAdapter applyAdapter = new ApplyAdapter(mContext, list);
+        LRAAdapter applyAdapter = new LRAAdapter(mContext, list);
         mBinding.listApply.setAdapter(applyAdapter);
 
-    }
-
-    private ArrayList<String> getSkillIds(List<Skill> skillIdList) {
-        if (skillIdList != null) {
-            ArrayList<String> skillIds = new ArrayList<>();
-            if (!skillIdList.isEmpty()) {
-                for (int i = 0; i < skillIdList.size(); i++) {
-                    skillIds.add(skillIdList.get(i).getId());
-                }
-                return skillIds;
-            } else {
-                return null;
-            }
-
-        } else {
-            return null;
-
-        }
     }
 
     /*get subjectId from course metaInformation*/
@@ -747,461 +698,51 @@ public class SubjectDetailHomeFragment extends Fragment {
 
     }
 
-    /*Adapter*/
-    private class LearnAdapter extends RecyclerView.Adapter<LearnAdapter.ViewHolder> {
-        private Context mContext;
-        private ArrayList<AboutCourseMinimal> mList;
+    /*To start practice activity from various events*/
+    private void startPracticeActivity(AboutCourseMinimal course) {
+        if (course != null && !TextUtils.isEmpty(course.getCourseType()) && mContext != null) {
 
-        LearnAdapter(Context context, ArrayList<AboutCourseMinimal> list) {
-            mContext = context;
-            this.mList = list;
-        }
+            if (course.getCourseType().equals(mContext.getString(R.string.freadom))) {
+                String jwt = AppPrefs.getIdToken(mContext);
+                String email = mAppUserModel.getApplicationUser().getEmail();
 
-        @NonNull
-        @Override
-        public LearnAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutCourseListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_course_list_item, parent, false);
-            return new LearnAdapter.ViewHolder(binding);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull final LearnAdapter.ViewHolder holder, int position) {
-            final AboutCourseMinimal course = mList.get(position);
-
-            setThumbnail(course.getThumbnail(), holder.mBinding.imageViewBackground);
-            setRewardPoint(course.getTotalMarks(), course.getCoverage(), course.getColorCode(), holder.mBinding.layoutReward, holder.mBinding.textViewRewardPoints, holder.mBinding.viewCourseStatus);
-            holder.mBinding.textViewTitle.setText(course.getTitle());
-            holder.mBinding.textViewType.setText(mFlavorHomeModel.getCourseType(course));
-
-            final Class finalObjectClass = mFlavorHomeModel.getCourseClass(course);
-            holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!TextUtils.isEmpty(course.getId())) {
-                        if (finalObjectClass.equals(MicroLearningCourse.class)) {
-                            startActivity(RapidLearningSectionListActivity.getStartIntent(mContext, course.getId()));
-                        } else {
-                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
-                        }
-                    } else {
-                        Toast.makeText(getContext(), getString(R.string.error_something_went_wrong), Toast.LENGTH_SHORT).show();
-                    }
-
+                try {
+                    CustomChromeTabHelper.loadCustomDataUsingColorResource(mContext, mContext.getString(R.string.freadom_url) + "?email=" + email + "&token=" + jwt, R.color.colorPrimary);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    GeneralUtils.showToastLong(mContext, getString(R.string.chrome_warning_message));
                 }
-            });
-        }
 
-        private void setThumbnail(Thumbnail thumbnail, ImageView imageView) {
-            if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getLocalUrl())) {
-                Picasso.with(mContext).load(thumbnail.getLocalUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
-                Picasso.with(mContext).load(thumbnail.getUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumb())) {
-                Picasso.with(mContext).load(thumbnail.getThumb()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumbXL())) {
-                Picasso.with(mContext).load(thumbnail.getThumbXL()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else {
-                Picasso.with(mContext).load(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            }
+            } else if (course.getCourseType().equals(mContext.getString(R.string.lightsail))) {
 
-        }
+                String jwt = AppPrefs.getIdToken(mContext);
 
-        @Override
-        public int getItemCount() {
-            return mList.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            LayoutCourseListItemBinding mBinding;
-
-            ViewHolder(LayoutCourseListItemBinding binding) {
-                super(binding.getRoot());
-                mBinding = binding;
-            }
-        }
-    }
-
-    private class ReinforceAdapter extends RecyclerView.Adapter<ReinforceAdapter.ViewHolder> {
-        private Context mContext;
-        private ArrayList<AboutCourseMinimal> mList;
-
-        ReinforceAdapter(Context context, ArrayList<AboutCourseMinimal> list) {
-            mContext = context;
-            this.mList = list;
-        }
-
-        @NonNull
-        @Override
-        public ReinforceAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutVideoListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_video_list_item, parent, false);
-            return new ReinforceAdapter.ViewHolder(binding);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull final ReinforceAdapter.ViewHolder holder, int position) {
-            final AboutCourseMinimal course = mList.get(position);
-
-            setThumbnail(course.getThumbnail(), holder.mBinding.imageViewBackground);
-            setRewardPoint(course.getTotalMarks(), course.getCoverage(), course.getColorCode(), holder.mBinding.layoutReward, holder.mBinding.textViewRewardPoints, holder.mBinding.viewCourseStatus);
-
-            holder.mBinding.textViewTitle.setText(course.getTitle());
-            holder.mBinding.textViewType.setText(mFlavorHomeModel.getCourseType(course));
-
-            final Class finalObjectClass = mFlavorHomeModel.getCourseClass(course);
-            holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!TextUtils.isEmpty(course.getId())) {
-                        if (finalObjectClass.equals(MicroLearningCourse.class)) {
-                            mContext.startActivity(RapidLearningSectionListActivity.getStartIntent(mContext, course.getId()));
-                        } else {
-                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
-
-                        }
-                    } else {
-                        Toast.makeText(getContext(), getString(R.string.error_something_went_wrong), Toast.LENGTH_SHORT).show();
-                    }
-
+                try {
+                    CustomChromeTabHelper.loadCustomDataUsingColorResource(mContext, mContext.getString(R.string.base_url_lightsail) + jwt, R.color.colorPrimary);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    GeneralUtils.showToastLong(mContext, getString(R.string.chrome_warning_message));
                 }
-            });
-        }
 
-        private void setThumbnail(Thumbnail thumbnail, ImageView imageView) {
-            if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getLocalUrl())) {
-                Picasso.with(mContext).load(thumbnail.getLocalUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
-                Picasso.with(mContext).load(thumbnail.getUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumb())) {
-                Picasso.with(mContext).load(thumbnail.getThumb()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumbXL())) {
-                Picasso.with(mContext).load(thumbnail.getThumbXL()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else {
-                Picasso.with(mContext).load(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            }
-
-        }
-
-
-        @Override
-        public int getItemCount() {
-            return mList.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            LayoutVideoListItemBinding mBinding;
-
-            public ViewHolder(LayoutVideoListItemBinding binding) {
-                super(binding.getRoot());
-                mBinding = binding;
-            }
-        }
-    }
-
-    private void setCoverage(float coverage, String colorCode, ProgressBar progressBar) {
-        if (coverage > 0) {
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.setProgress((int) coverage);
-            progressBar.setProgressTintList(ColorStateList.valueOf((Color.parseColor(colorCode))));
-        } else {
-            progressBar.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void setRewardPoint(int totalMarks, float coverage, String colorCode, LinearLayoutCompat layoutReward, AppCompatTextView textViewRewardPoints, AppCompatTextView viewCourseStatus) {
-        if (totalMarks > 0) {
-            layoutReward.setVisibility(View.VISIBLE);
-            textViewRewardPoints.setText(String.valueOf(totalMarks));
-            viewCourseStatus.setVisibility(View.VISIBLE);
-
-            if (coverage > 0) {
-                Drawable unwrappedDrawable = AppCompatResources.getDrawable(mContext, R.drawable.circle_solid_primary);
-                assert unwrappedDrawable != null;
-                Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
-                DrawableCompat.setTint(wrappedDrawable, Color.parseColor(colorCode));
-
-                viewCourseStatus.setBackgroundDrawable(unwrappedDrawable);
-            } else {
-                viewCourseStatus.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.circle_solid_primary_outlined));
-
-            }
-        } else {
-            layoutReward.setVisibility(View.GONE);
-        }
-    }
-
-    private class PracticeAdapter extends RecyclerView.Adapter<PracticeAdapter.ViewHolder> {
-        private Context mContext;
-        private ArrayList<AboutCourseMinimal> mList;
-
-        PracticeAdapter(Context context, ArrayList<AboutCourseMinimal> list) {
-            mContext = context;
-            this.mList = list;
-        }
-
-        @NonNull
-        @Override
-        public PracticeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutMicroCourseListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_micro_course_list_item, parent, false);
-            return new PracticeAdapter.ViewHolder(binding);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull final PracticeAdapter.ViewHolder holder, int position) {
-            final AboutCourseMinimal course = mList.get(position);
-            holder.mBinding.textViewTitle.setText(course.getTitle());
-
-            setThumbnail(course.getCourseType(), course.getThumbnail(), holder.mBinding.imageViewBackground);
-            setCourseType(course.getCourseType(), course.getColorCode(), holder.mBinding.layoutTextContents, holder.mBinding.textViewType);
-
-            holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (GeneralUtils.isNetworkAvailable(mContext)) {
-                        if (course.getCourseType().equals(mContext.getString(R.string.freadom))) {
-                            String jwt = AppPrefs.getIdToken(mContext);
-                            String email = mAppUserModel.getApplicationUser().getEmail();
-                            CustomChromeTabHelper.loadCustomDataUsingColorResource(mContext, mContext.getString(R.string.freadom_url) + "?email=" + email + "&token=" + jwt, R.color.colorPrimary);
-                            Log.e("Freadom---", mContext.getString(R.string.freadom_url) + "?email=" + email + "&token=" + jwt);
-                        } else if (course.getCourseType().equals(mContext.getString(R.string.lightsail))) {
-                            String jwt = AppPrefs.getIdToken(mContext);
-                            CustomChromeTabHelper.loadCustomDataUsingColorResource(mContext, mContext.getString(R.string.base_url_lightsail) + jwt, R.color.colorPrimary);
-                            Log.e("LightSail---", mContext.getString(R.string.base_url_lightsail) + jwt);
-                        } else if (course.getCourseType().equals(mContext.getString(R.string.mindspark))) {
-                            if (course.getTotalMarks() > 0) {
-                                startActivity(MindSparkPlayerActivity.getStartIntent(mContext, course.getId(), course.getTitle()));
-                            } else {
-                                mRxBus.send(new MindSparkNoUnitEvent());
-                            }
-                        } else if (course.getCourseType().equals(mContext.getString(R.string.labelPractice).toLowerCase())) {
-                            String subjectId = getSubjectId(course.getMetaInformation());
-                            String topicId = getTopicId(course.getMetaInformation());
-                            ArrayList<String> skillIds = getSkillIds(course.getMetaInformation().getSkills());
-
-                            /*removing duplicate entries if any*/
-                            HashSet<String> hashSet = new HashSet<String>(skillIds);
-                            skillIds.clear();
-                            skillIds.addAll(hashSet);
-
-                            startActivity(PracticeQuestionActivity.getStartIntent(mContext, course.getTitle(), skillIds, subjectId, topicId));
-                        } else {
-                            final Class finalObjectClass = mFlavorHomeModel.getCourseClass(course);
-                            WebPlayerCordovaLiveActivity.startWebPlayer(mContext, course.getId(), ConstantUtil.BLANK, ConstantUtil.BLANK, finalObjectClass, ConstantUtil.BLANK, false);
-                        }
-                    } else {
-                        GeneralUtils.showToastShort(mContext, getString(R.string.connect_internet));
-                    }
-
+            } else if (course.getCourseType().equals(mContext.getString(R.string.mindspark))) {
+                if (course.getTotalMarks() > 0) {
+                    mContext.startActivity(MindSparkPlayerActivity.getStartIntent(mContext, course.getId(), course.getTitle()));
+                } else {
+                    mRxBus.send(new MindSparkNoUnitEvent());
                 }
-            });
-        }
+            } else if (course.getCourseType().equals(mContext.getString(R.string.labelPractice).toLowerCase())) {
+                String subjectId = getSubjectId(course.getMetaInformation());
+                String topicId = getTopicId(course.getMetaInformation());
 
-        private void setCourseType(String courseType, String mindSparkUnitValue, RelativeLayout layoutTextContents, AppCompatTextView textView) {
-            if (courseType.equals(mContext.getString(R.string.freadom)) || courseType.equals(mContext.getString(R.string.lightsail))) {
-                layoutTextContents.setVisibility(View.GONE);
-            } else if (courseType.equals(mContext.getString(R.string.labelPractice).toLowerCase())) {
-                textView.setText(mContext.getString(R.string.labelPractice));
-                layoutTextContents.setVisibility(View.VISIBLE);
-            } else if (courseType.equals(mContext.getString(R.string.labelWorksheet).toLowerCase())) {
-                textView.setText(mContext.getString(R.string.labelWorksheet));
-                layoutTextContents.setVisibility(View.VISIBLE);
-            } else if (courseType.equals(mContext.getString(R.string.mindspark))) {
-                textView.setText(mindSparkUnitValue);
-                layoutTextContents.setVisibility(View.VISIBLE);
+                mContext.startActivity(PracticePlayerActivity.getStartIntent(mContext, course.getTitle(), subjectId, topicId));
             } else {
-                layoutTextContents.setVisibility(View.GONE);
-
-            }
-
-        }
-
-        private void setThumbnail(String courseType, Thumbnail thumbnail, ImageView imageView) {
-            if (courseType.equals(mContext.getString(R.string.freadom))) {
-                imageView.setColorFilter(R.color.colorPrimary);
-                Picasso.with(mContext).load(R.drawable.logo_freadom).placeholder(R.drawable.image_placeholder).into(imageView);
-            } else if (courseType.equals(mContext.getString(R.string.lightsail))) {
-                Picasso.with(mContext).load(R.drawable.logo_lightsail).placeholder(R.drawable.image_placeholder).into(imageView);
-            } else if (courseType.equals(mContext.getString(R.string.mindspark))) {
-                Picasso.with(mContext).load(R.drawable.background_thumb_mind_spark).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getLocalUrl())) {
-                Picasso.with(mContext).load(thumbnail.getLocalUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
-                Picasso.with(mContext).load(thumbnail.getUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumb())) {
-                Picasso.with(mContext).load(thumbnail.getThumb()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumbXL())) {
-                Picasso.with(mContext).load(thumbnail.getThumbXL()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else {
-                Picasso.with(mContext).load(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            }
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return mList.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            LayoutMicroCourseListItemBinding mBinding;
-
-            ViewHolder(LayoutMicroCourseListItemBinding binding) {
-                super(binding.getRoot());
-                mBinding = binding;
+                final Class finalObjectClass = mFlavorHomeModel.getCourseClass(course);
+                WebPlayerCordovaLiveActivity.startWebPlayer(mContext, course.getId(), ConstantUtil.BLANK, ConstantUtil.BLANK, finalObjectClass, ConstantUtil.BLANK, false);
             }
         }
+
     }
 
-    private class PracticeAdapterMS extends RecyclerView.Adapter<PracticeAdapterMS.ViewHolder> {
-        private Context mContext;
-        private ArrayList<MindSparkLoginResponse> mList;
-
-        PracticeAdapterMS(Context context, ArrayList<MindSparkLoginResponse> list) {
-            mContext = context;
-            this.mList = list;
-        }
-
-        @NonNull
-        @Override
-        public PracticeAdapterMS.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutPracticeListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_practice_list_item, parent, false);
-            return new PracticeAdapterMS.ViewHolder(binding);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull final PracticeAdapterMS.ViewHolder holder, int position) {
-            final MindSparkLoginResponse response = mList.get(position);
-            final MindSparkContentDetails mindSparkContentDetails = response.getMindSparkContentDetails();
-            MindSparkTopicData mindSparkTopicData = response.getMindSparkTopicData();
-            if (mindSparkTopicData.getMindSparkUnitList() != null && !mindSparkTopicData.getMindSparkUnitList().isEmpty()) {
-                MindSparkUnitData mindSparkUnitData = mindSparkTopicData.getMindSparkUnitList().get(0);
-                holder.mBinding.textViewSubTitle.setText(mindSparkUnitData.getUnitName());
-
-            }
-            setThumbnail(mindSparkContentDetails.getBackgroundThumb(), holder.mBinding.imageViewBackground);
-            setStatus(mindSparkContentDetails, holder.mBinding.textViewStatus);
-            holder.mBinding.textViewTitle.setText(mindSparkContentDetails.getContentName());
-            holder.mBinding.textViewRewardPoints.setVisibility(View.GONE);
-
-            holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (GeneralUtils.isNetworkAvailable(mContext)) {
-                        if (mindSparkContentDetails.getUnitsOverall() > 0) {
-                            startActivity(MindSparkPlayerActivity.getStartIntent(mContext, mindSparkContentDetails.getContentId(), mindSparkContentDetails.getContentName()));
-
-                        } else {
-                            mRxBus.send(new MindSparkNoUnitEvent());
-                        }
-                    }
-                }
-            });
-        }
-
-        private void setStatus(MindSparkContentDetails mindSparkContentDetails, AppCompatTextView textViewStatus) {
-            String value;
-            if (mindSparkContentDetails.getUnitsCleared() > 1) {
-                value = mindSparkContentDetails.getUnitsCleared() + " out of " + mindSparkContentDetails.getUnitsOverall() + " units covered";
-            } else {
-                value = mindSparkContentDetails.getUnitsCleared() + " out of " + mindSparkContentDetails.getUnitsOverall() + " unit covered";
-            }
-            textViewStatus.setText(value);
-        }
-
-        private void setThumbnail(int thumbnail, ImageView imageView) {
-            Picasso.with(mContext).load(thumbnail).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-        }
-
-
-        @Override
-        public int getItemCount() {
-            return mList.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            LayoutPracticeListItemBinding mBinding;
-
-            ViewHolder(LayoutPracticeListItemBinding binding) {
-                super(binding.getRoot());
-                mBinding = binding;
-            }
-        }
-    }
-
-    private class ApplyAdapter extends RecyclerView.Adapter<ApplyAdapter.ViewHolder> {
-        private Context mContext;
-        private ArrayList<AboutCourseMinimal> mList;
-
-        ApplyAdapter(Context context, ArrayList<AboutCourseMinimal> list) {
-            mContext = context;
-            this.mList = list;
-        }
-
-        @NonNull
-        @Override
-        public ApplyAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutVideoListItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_video_list_item, parent, false);
-            return new ApplyAdapter.ViewHolder(binding);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull final ApplyAdapter.ViewHolder holder, int position) {
-            final AboutCourseMinimal course = mList.get(position);
-
-            setThumbnail(course.getThumbnail(), holder.mBinding.imageViewBackground);
-            setRewardPoint(course.getTotalMarks(), course.getCoverage(), course.getColorCode(), holder.mBinding.layoutReward, holder.mBinding.textViewRewardPoints, holder.mBinding.viewCourseStatus);
-
-            //setCoverage(course.getCoverage(), course.getColorCode(), holder.mBinding.progressBar);
-            holder.mBinding.textViewTitle.setText(course.getTitle());
-            holder.mBinding.textViewType.setText(mFlavorHomeModel.getCourseType(course));
-
-            final Class finalObjectClass = mFlavorHomeModel.getCourseClass(course);
-            holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!TextUtils.isEmpty(course.getId())) {
-                        if (finalObjectClass.equals(MicroLearningCourse.class)) {
-                            mContext.startActivity(RapidLearningSectionListActivity.getStartIntent(mContext, course.getId()));
-                        } else {
-                            WebPlayerCordovaLiveActivity.startWebPlayer(getContext(), course.getId(), "", "", finalObjectClass, "", false);
-
-                        }
-                    } else {
-                        Toast.makeText(getContext(), getString(R.string.error_something_went_wrong), Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-            });
-        }
-
-
-        private void setThumbnail(Thumbnail thumbnail, ImageView imageView) {
-            if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getLocalUrl())) {
-                Picasso.with(mContext).load(thumbnail.getLocalUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
-                Picasso.with(mContext).load(thumbnail.getUrl()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumb())) {
-                Picasso.with(mContext).load(thumbnail.getThumb()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumbXL())) {
-                Picasso.with(mContext).load(thumbnail.getThumbXL()).placeholder(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            } else {
-                Picasso.with(mContext).load(R.drawable.image_placeholder).fit().centerCrop().into(imageView);
-            }
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return mList.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            LayoutVideoListItemBinding mBinding;
-
-            ViewHolder(LayoutVideoListItemBinding binding) {
-                super(binding.getRoot());
-                mBinding = binding;
-            }
-        }
-    }
 
 }
+

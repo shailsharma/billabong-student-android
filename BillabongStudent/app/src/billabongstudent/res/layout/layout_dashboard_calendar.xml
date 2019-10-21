@@ -14,8 +14,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_16dp"
-            android:layout_marginRight="@dimen/margin_16dp"
+            android:layout_marginLeft="@dimen/value_16dp"
+            android:layout_marginRight="@dimen/value_16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -38,7 +38,7 @@
                     android:id="@+id/textViewCurrentDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_4dp"
+                    android:layout_marginTop="@dimen/value_4dp"
                     android:textColor="@color/colorRyanGreyDescription"
                     android:textStyle="italic"
                     tools:text="11 March 2019, Wednesday"/>
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:gravity="end"
-                android:padding="@dimen/padding_8dp"
+                android:padding="@dimen/value_8dp"
                 android:src="@drawable/icon_dashboard_calendar"/>
 
         </LinearLayout>
@@ -59,8 +59,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_8dp"
-            android:layout_marginBottom="@dimen/margin_8dp"
+            android:layout_marginTop="@dimen/value_8dp"
+            android:layout_marginBottom="@dimen/value_8dp"
             android:orientation="vertical">
 
             <in.securelearning.lil.android.home.utils.RecyclerViewPager
@@ -68,8 +68,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
-                android:paddingLeft="@dimen/padding_48dp"
-                android:paddingRight="@dimen/padding_48dp"
+                android:paddingLeft="@dimen/value_48dp"
+                android:paddingRight="@dimen/value_48dp"
                 android:visibility="gone"
                 app:rvp_singlePageFling="true"
                 app:rvp_triggerOffset="0.1"></in.securelearning.lil.android.home.utils.RecyclerViewPager>

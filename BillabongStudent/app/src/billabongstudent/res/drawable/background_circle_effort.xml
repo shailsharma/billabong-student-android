@@ -7,6 +7,6 @@
         android:color="@color/color_brilliant"/>
 
     <size
-        android:width="@dimen/margin_48dp"
-        android:height="@dimen/margin_48dp"/>
+        android:width="@dimen/value_48dp"
+        android:height="@dimen/value_48dp"/>
 </shape>

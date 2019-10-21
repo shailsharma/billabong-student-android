@@ -8,7 +8,7 @@ on subject or on assignments or blank specify the only msg
 gamiing object associated with bonus object
 *** GmaificationEventObject will fire based on always criteria
 */
-public class GamificationEvent {
+public class GamificationEvent implements Serializable {
 
     private int eventId;
     private String eventType;
@@ -36,7 +36,19 @@ public class GamificationEvent {
     private String eventOccurrenceDate;
     private String eventCreateDate;
     private float gifXPosition;
+    private boolean isMascotSpeak = true;
+    private boolean isMascotShouldPlay = true;
+
+    public String getBonusCalculateDate() {
+        return bonusCalculateDate;
+    }
+
+    public void setBonusCalculateDate(String bonusCalculateDate) {
+        this.bonusCalculateDate = bonusCalculateDate;
+    }
+
     private float gifYPosition;
+    private String bonusCalculateDate;
 
     // it is *2 it specify action to be taken associated  with bonus object
     private GamificationBonus bonusObject;
@@ -232,5 +244,21 @@ public class GamificationEvent {
 
     public void setGifYPosition(float gifYPosition) {
         this.gifYPosition = gifYPosition;
+    }
+
+    public boolean isMascotSpeak() {
+        return isMascotSpeak;
+    }
+
+    public void setMascotSpeak(boolean mascotSpeak) {
+        isMascotSpeak = mascotSpeak;
+    }
+
+    public boolean isMascotShouldPlay() {
+        return isMascotShouldPlay;
+    }
+
+    public void setMascotShouldPlay(boolean mascotShouldPlay) {
+        isMascotShouldPlay = mascotShouldPlay;
     }
 }

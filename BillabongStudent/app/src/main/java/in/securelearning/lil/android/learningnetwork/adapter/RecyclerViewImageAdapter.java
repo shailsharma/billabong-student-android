@@ -59,7 +59,7 @@ public class RecyclerViewImageAdapter extends RecyclerView.Adapter<RecyclerViewI
             holder.mImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FullScreenImage.setUpFullImageView(mContext, position, true,true, mAttachResourcesList);
+                    FullScreenImage.setUpFullImageView(mContext, position, true,true, false, mAttachResourcesList);
 
                 }
             });

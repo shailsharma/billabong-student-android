@@ -44,6 +44,9 @@ public class LessonPlanSubject implements Serializable {
     @Expose
     private String mColorCode;
 
+    // To determine if subject is vocational
+    private boolean isVocationalSubject;
+
     public String getId() {
         return mId;
     }
@@ -114,5 +117,13 @@ public class LessonPlanSubject implements Serializable {
 
     public void setColorCode(String colorCode) {
         mColorCode = colorCode;
+    }
+
+    public boolean isVocationalSubject() {
+        return isVocationalSubject;
+    }
+
+    public void setVocationalSubject(boolean vocationalSubject) {
+        isVocationalSubject = vocationalSubject;
     }
 }

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_12dp"
+    android:layout_marginBottom="@dimen/value_12dp"
     android:background="@drawable/background_curved_white"
     android:drawableEnd="@drawable/icon_chevron_down_dark"
     android:elevation="2dp"
@@ -11,6 +11,6 @@
     android:focusableInTouchMode="false"
     android:cursorVisible="false"
     android:hint="@string/please_select_you_answer"
-    android:padding="@dimen/padding_16dp"
+    android:padding="@dimen/value_16dp"
     android:textAppearance="?android:attr/textAppearanceSmall"
     android:textColor="@color/colorBlack"/>

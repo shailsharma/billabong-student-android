@@ -1,60 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <android.support.v7.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_16dp"
-        android:orientation="vertical">
 
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:padding="@dimen/value_12dp">
 
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/imageViewThumbnail"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:visibility="visible"
-            android:padding="@dimen/padding_8dp"
-            />
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/textViewTopicName"
-            android:layout_width="0dp"
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1.2"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="@color/colorBlack"
-            tools:text="@string/error_something_went_wrong"/>
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/textViewScore"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".4"
-            android:gravity="center_horizontal"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/colorPrimary"
-            tools:text="+470"/>
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/imageViewThumbnail"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:padding="@dimen/value_8dp"
+                android:visibility="visible"
+                tools:src="@drawable/icon_book" />
 
-    </android.support.v7.widget.LinearLayoutCompat>
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/textViewTopicName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorBlack"
+                tools:text="@string/error_something_went_wrong" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/textViewScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/icon_coin_gold_24_vector"
+                android:drawablePadding="@dimen/value_4dp"
+                android:gravity="center"
+                android:padding="@dimen/value_8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                tools:text="470000" />
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_marginTop="@dimen/margin_4dp"
-            android:layout_marginBottom="@dimen/margin_4dp"
-            android:background="@color/itemDivider"
-            />
+            android:layout_marginTop="@dimen/value_4dp"
+            android:layout_marginBottom="@dimen/value_4dp"
+            android:background="@color/itemDivider" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerViewTopic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            tools:itemCount="3"
+            tools:listitem="@layout/layout_my_achievement_topic_item" />
+
     </android.support.v7.widget.LinearLayoutCompat>
+
 </layout>
 

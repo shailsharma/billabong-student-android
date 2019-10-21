@@ -16,6 +16,7 @@ import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.model.SyncServiceModel;
 import in.securelearning.lil.android.syncadapter.model.WebPlayerLiveModel;
 import in.securelearning.lil.android.syncadapter.utils.OgUtils;
+import in.securelearning.lil.android.syncadapter.utils.TextToSpeechUtils;
 
 /**
  * Created by Prabodh Dhabaria on 25-07-2016.
@@ -100,4 +101,5 @@ public class SyncAdapterModule {
     public OgUtils ogUtils() {
         return new OgUtils();
     }
+
 }

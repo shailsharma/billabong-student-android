@@ -24,7 +24,7 @@
                 android:layout_margin="5dp"
                 android:text="Recently Taken Test"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/black_de"
+                android:textColor="@color/colorBlack"
                 android:textStyle="bold" />
 
             <in.securelearning.lil.android.base.widget.TextViewCustom
@@ -33,7 +33,7 @@
                 android:layout_marginLeft="5dp"
                 android:text="Continue taking tests to improve your score"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/black_de"
+                android:textColor="@color/colorBlack"
                 android:textSize="12sp"
                  />
 
@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="20dp"
-                android:background="@color/black_de"></View>
+                android:background="@color/colorBlack"></View>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerViewTrainings"
@@ -77,7 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="20dp"
-                android:background="@color/black_de"></View>
+                android:background="@color/colorBlack"></View>
 
             <in.securelearning.lil.android.base.widget.TextViewCustom
                 android:layout_width="wrap_content"

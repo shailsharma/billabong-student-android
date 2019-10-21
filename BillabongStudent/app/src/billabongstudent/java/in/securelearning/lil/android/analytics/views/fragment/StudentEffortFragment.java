@@ -4,8 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -15,80 +15,85 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationData;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartData;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
-import in.securelearning.lil.android.analytics.helper.MyXAxisValueFormatter;
+import in.securelearning.lil.android.analytics.helper.EffortBarChartPercentFormatter;
 import in.securelearning.lil.android.analytics.helper.PiePercentFormatter;
 import in.securelearning.lil.android.analytics.model.AnalyticsModel;
 import in.securelearning.lil.android.analytics.views.adapter.StudentEffortAdapter;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.databinding.LayoutStudentAnalyticsEffotBinding;
+import in.securelearning.lil.android.app.databinding.LayoutStudentAnalyticsEffortBinding;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+
+import static java.lang.Float.NaN;
 
 public class StudentEffortFragment extends Fragment {
 
     @Inject
     AnalyticsModel mAnalyticsModel;
-    private LayoutStudentAnalyticsEffotBinding mBinding;
-    private Context mContext;
+    private LayoutStudentAnalyticsEffortBinding mBinding;
     private boolean fragmentResume = false;
     private boolean fragmentVisible = false;
     private boolean fragmentOnCreated = false;
+    private Context mContext;
+    private float mTotalTime = 0;
+    private ArrayList<ChartConfigurationData> mChartConfigurationData = null;
 
-
-    public static Fragment newInstance() {
+    public static Fragment newInstance(ArrayList<ChartConfigurationData> performanceConfiguration) {
         StudentEffortFragment fragment = new StudentEffortFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ConstantUtil.EFFORT, (Serializable) performanceConfiguration);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void setUserVisibleHint(boolean visible) {
-        super.setUserVisibleHint(visible);
-        if (visible && isResumed()) {   // only at fragment screen is resumed
-            fragmentResume = true;
-            fragmentVisible = false;
-            fragmentOnCreated = true;
-            fetchEffortData();
-        } else if (visible) {        // only at fragment onCreated
-            fragmentResume = false;
-            fragmentVisible = true;
-            fragmentOnCreated = true;
-        } else if (!visible && fragmentOnCreated) {// only when you go out of fragment screen
-            fragmentVisible = false;
-            fragmentResume = false;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null && getArguments().getSerializable(ConstantUtil.EFFORT) != null) {
+
+            this.mChartConfigurationData = (ArrayList<ChartConfigurationData>) getArguments().getSerializable(ConstantUtil.EFFORT);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         InjectorHome.INSTANCE.getComponent().inject(this);
-        mBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.layout_student_analytics_effot, container, false);
-        if (!fragmentResume && fragmentVisible) {   //only when first time fragment is created
+        mBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.layout_student_analytics_effort, container, false);
+
+        if (!fragmentResume && fragmentVisible) {   //only when first time activity is created
             fetchEffortData();
         }
 
@@ -96,16 +101,40 @@ public class StudentEffortFragment extends Fragment {
         return mBinding.getRoot();
     }
 
+    @Override
+    public void setUserVisibleHint(boolean visible) {
+        super.setUserVisibleHint(visible);
+        if (visible && isResumed()) {   // only at activity screen is resumed
+            fragmentResume = true;
+            fragmentVisible = false;
+            fragmentOnCreated = true;
+            fetchEffortData();
+        } else if (visible) {        // only at activity onCreated
+            fragmentResume = false;
+            fragmentVisible = true;
+            fragmentOnCreated = true;
+        } else if (!visible && fragmentOnCreated) {// only when you go out of activity screen
+            fragmentVisible = false;
+            fragmentResume = false;
+        }
+    }
+
     @SuppressLint("CheckResult")
     private void fetchEffortData() {
+
         if (GeneralUtils.isNetworkAvailable(mContext)) {
-            mAnalyticsModel.fetchEffortData().subscribeOn(Schedulers.io())
+
+            mBinding.progressBarEffort.setVisibility(View.VISIBLE);
+
+            mAnalyticsModel.fetchEffortData()
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<EffortChartDataParent>() {
                         @Override
                         public void accept(EffortChartDataParent effortChartDataParent) throws Exception {
+
                             mBinding.progressBarEffort.setVisibility(View.GONE);
-                            mBinding.progressBarTopicEffort.setVisibility(View.GONE);
+
                             if (!effortChartDataParent.getEffortChartDataList().isEmpty()) {
                                 mBinding.frameTime1.setVisibility(View.VISIBLE);
                                 mBinding.frameLayout2.setVisibility(View.VISIBLE);
@@ -115,6 +144,7 @@ public class StudentEffortFragment extends Fragment {
                                 mBinding.layoutRecyclerView.setVisibility(View.VISIBLE);
 
                                 drawPieChart(effortChartDataParent.getEffortChartDataList(), effortChartDataParent.getDaysCount());
+
                             } else {
                                 mBinding.frameLayout2.setVisibility(View.GONE);
                                 mBinding.frameTime1.setVisibility(View.GONE);
@@ -122,7 +152,6 @@ public class StudentEffortFragment extends Fragment {
                                 mBinding.chartEffort.setVisibility(View.GONE);
                                 mBinding.layoutDailyTimeSpent.setVisibility(View.GONE);
                                 mBinding.textViewNoEffortData.setVisibility(View.VISIBLE);
-
                             }
 
                         }
@@ -130,7 +159,6 @@ public class StudentEffortFragment extends Fragment {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
-                            mBinding.progressBarTopicEffort.setVisibility(View.GONE);
                             mBinding.progressBarEffort.setVisibility(View.GONE);
                             mBinding.frameLayout2.setVisibility(View.GONE);
                             mBinding.frameTime1.setVisibility(View.GONE);
@@ -138,7 +166,6 @@ public class StudentEffortFragment extends Fragment {
                             mBinding.chartEffort.setVisibility(View.GONE);
                             mBinding.layoutDailyTimeSpent.setVisibility(View.GONE);
                             mBinding.textViewNoEffortData.setVisibility(View.VISIBLE);
-
                         }
                     });
         } else {
@@ -179,6 +206,7 @@ public class StudentEffortFragment extends Fragment {
             totalVideoTime += effortChartData.get(i).getTotalVideoTimeSpent();
             totalPracticeTime += effortChartData.get(i).getTotalPracticeTimeSpent();
         }
+        mTotalTime = totalTimeSpent;
 
         /*Total time spent*/
         String formattedTotalTimeSpent = mAnalyticsModel.showSecondAndMinutesAndHours((long) totalTimeSpent);
@@ -188,13 +216,10 @@ public class StudentEffortFragment extends Fragment {
         final float finalTotalVideoTime = totalVideoTime;
         final float finalTotalPracticeTime = totalPracticeTime;
 
-        mBinding.textViewDailyTimeSpentLabel.setPaintFlags(mBinding.textViewDailyTimeSpentLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        mBinding.textViewTotalTimeSpentLabel.setPaintFlags(mBinding.textViewTotalTimeSpentLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-
         mBinding.layoutTotalTimeSpent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAnalyticsModel.showDetailedTotalTimeSpent(mContext, finalTotalTimeSpent, finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime);
+                mAnalyticsModel.showDetailedTotalTimeSpent(mContext, finalTotalTimeSpent, finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime, ConstantUtil.BLANK);
             }
         });
 
@@ -216,19 +241,8 @@ public class StudentEffortFragment extends Fragment {
 
         /*Pie chart*/
         PieDataSet dataSet = new PieDataSet(entryArrayList, "");
-        //int colorArray[] = new int[]{R.color.color_graph_green, R.color.color_graph_orange, R.color.colorPendingHomework};
-        int[] colors = new int[]{R.color.dot_dark_screen1,
-                R.color.dot_dark_screen2,
-                R.color.dot_dark_screen3,
-                R.color.dot_dark_screen4,
-                R.color.dot_dark_screen5,
-                R.color.dot_dark_screen6,
-                R.color.dot_dark_screen7,
-                R.color.dot_dark_screen8,
-                R.color.dot_dark_screen9,
-                R.color.dot_dark_screen10,
-                R.color.dot_dark_screen11};
-        dataSet.setColors(colors, mContext);
+
+        dataSet.setColors(pickColorAccording(), mContext);
         dataSet.setSliceSpace(2f);
 
         PieData data = new PieData(dataSet);
@@ -266,15 +280,15 @@ public class StudentEffortFragment extends Fragment {
             public void onValueSelected(Entry e, Highlight h) {
                 EffortChartData chartData = (EffortChartData) e.getData();
                 fetchSubjectWiseEffortData(chartData.getId());
+                setSubjectIcon(chartData.getSubject().get(0).getSubjectIcon());
                 mBinding.textViewPerformance.setText(chartData.getSubject().get(0).getName());
-                mBinding.textViewTimeCount.setText(String.format("%s\nHours", CommonUtils.getInstance().convertSecondToHourMinuteSecond((long) chartData.getTotalTimeSpent())));
-
+                int performance = Math.round((chartData.getTotalTimeSpent() / mTotalTime) * 100);
+                drawProgress(performance, (int) h.getX());
 
             }
 
             @Override
             public void onNothingSelected() {
-                /// mBinding.llPerformance.setVisibility(View.GONE);
             }
         });
     }
@@ -284,25 +298,96 @@ public class StudentEffortFragment extends Fragment {
             EffortChartData data = list.get(0);
             fetchSubjectWiseEffortData(data.getId());
             mBinding.llPerformance.setVisibility(View.VISIBLE);
+            setSubjectIcon(data.getSubject().get(0).getSubjectIcon());
             mBinding.textViewPerformance.setText(data.getSubject().get(0).getName());
-            mBinding.textViewTimeCount.setText(String.format("%s\nHours", CommonUtils.getInstance().convertSecondToHourMinuteSecond((long) data.getTotalTimeSpent())));
-
+            int performance = Math.round((data.getTotalTimeSpent() / mTotalTime) * 100);
+            drawProgress(performance, 0);
 
 
         }
     }
 
+
+    private void setSubjectIcon(String subjectIcon) {
+        if (!TextUtils.isEmpty(subjectIcon)) {
+            Picasso.with(getContext()).load(subjectIcon).placeholder(R.drawable.icon_book).fit().centerCrop().into(mBinding.imageViewSubjectIcon);
+        } else {
+            Picasso.with(getContext()).load(R.drawable.icon_book).fit().centerCrop().into(mBinding.imageViewSubjectIcon);
+
+        }
+    }
+
+    /*draw and set values for time spent pie chart*/
+    private void drawProgress(int performance, int dataSetIndex) {
+        List<Integer> colorList = new ArrayList<>();
+        float total = 100;
+        float remaining = total - performance;
+        ArrayList<PieEntry> fillValues = new ArrayList<>();
+        fillValues.add(new PieEntry(performance));
+        fillValues.add(new PieEntry(remaining));
+        PieDataSet dataSet = new PieDataSet(fillValues, "");
+        int[] color = pickColorAccording();
+
+        if (getActivity() != null && getActivity().getResources() != null) {
+            colorList.add(getActivity().getResources().getColor(color[dataSetIndex]));
+            colorList.add(getActivity().getResources().getColor(R.color.colorGrey400));
+        } else {
+            colorList.add(Color.GRAY);
+        }
+        dataSet.setColors(colorList);
+        dataSet.setValueTextSize(0f);
+        PieData data = new PieData(dataSet);
+        mBinding.pieChartPerformance.setData(data);
+        mBinding.pieChartPerformance.setHoleRadius(85f);
+        mBinding.pieChartPerformance.setDrawHoleEnabled(true);
+        mBinding.pieChartPerformance.setUsePercentValues(true);
+        mBinding.pieChartPerformance.getDescription().setEnabled(false);
+        mBinding.pieChartPerformance.setDrawCenterText(true);
+        String centerTextValue = performance + "%";
+        if (centerTextValue.contains("NaN")) {
+            mBinding.pieChartPerformance.setCenterText("0%");
+        } else {
+            mBinding.pieChartPerformance.setCenterText(centerTextValue);
+        }
+        mBinding.pieChartPerformance.setCenterTextSize(18f);
+        mBinding.pieChartPerformance.getLegend().setEnabled(false);
+        mBinding.pieChartPerformance.invalidate();
+        mBinding.pieChartPerformance.setClickable(false);
+        mBinding.pieChartPerformance.setTouchEnabled(false);
+    }
+
+    private int[] pickColorAccording() {
+        return new int[]{
+                R.color.dot_dark_screen1,
+                R.color.dot_dark_screen2,
+                R.color.dot_dark_screen3,
+                R.color.dot_dark_screen4,
+                R.color.dot_dark_screen5,
+                R.color.dot_dark_screen6,
+                R.color.dot_dark_screen7,
+                R.color.dot_dark_screen8,
+                R.color.dot_dark_screen9,
+                R.color.dot_dark_screen10,
+                R.color.dot_dark_screen11};
+    }
+
     @SuppressLint("CheckResult")
     private void fetchSubjectWiseEffortData(final String subjectId) {
+
+        mBinding.progressBarEffort.setVisibility(View.VISIBLE);
+
         if (GeneralUtils.isNetworkAvailable(mContext)) {
-            mAnalyticsModel.fetchSubjectWiseEffortData(subjectId).subscribeOn(Schedulers.io())
+            mAnalyticsModel.fetchSubjectWiseEffortData(subjectId)
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<EffortChartDataParent>() {
                         @Override
                         public void accept(EffortChartDataParent effortChartDataParent) throws Exception {
-                            mBinding.progressBarTopicEffort.setVisibility(View.GONE);
+
                             mBinding.progressBarEffort.setVisibility(View.GONE);
+
                             fetchWeeklyEffortData(subjectId);
+
                             if (!effortChartDataParent.getEffortChartDataList().isEmpty()) {
                                 mBinding.linearLayoutTopicTotalTime.setVisibility(View.VISIBLE);
                                 mBinding.linearLayoutDailyTimeSpent.setVisibility(View.VISIBLE);
@@ -322,17 +407,18 @@ public class StudentEffortFragment extends Fragment {
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
+
                             throwable.printStackTrace();
+
                             fetchWeeklyEffortData(subjectId);
                             mBinding.layoutTotalTimeSpent.setVisibility(View.GONE);
                             mBinding.layoutDailyTimeSpent.setVisibility(View.GONE);
                             mBinding.layoutRecyclerView.setVisibility(View.GONE);
-                            mBinding.progressBarTopicEffort.setVisibility(View.GONE);
                             mBinding.progressBarEffort.setVisibility(View.GONE);
-
 
                         }
                     });
+
         } else {
             showInternetSnackBar();
         }
@@ -341,22 +427,31 @@ public class StudentEffortFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void fetchWeeklyEffortData(String subjectId) {
+
         if (GeneralUtils.isNetworkAvailable(mContext)) {
-            mAnalyticsModel.fetchWeeklyEffortData(subjectId).subscribeOn(Schedulers.io())
+
+            mBinding.progressBarEffort.setVisibility(View.VISIBLE);
+
+            mAnalyticsModel.fetchWeeklyEffortData(subjectId)
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<ArrayList<EffortChartDataWeekly>>() {
+                    .subscribe(new Consumer<EffortChartDataParent>() {
                         @Override
-                        public void accept(ArrayList<EffortChartDataWeekly> effortChartDataWeeklies) throws Exception {
-                            mBinding.progressBarTopicEffort.setVisibility(View.GONE);
+                        public void accept(EffortChartDataParent effortChartDataParent) throws Exception {
+
                             mBinding.progressBarEffort.setVisibility(View.GONE);
-                            if (!effortChartDataWeeklies.isEmpty()) {
-                                Collections.sort(effortChartDataWeeklies);
-                                mBinding.topicChartEffort.setVisibility(View.VISIBLE);
+
+                            if (effortChartDataParent != null
+                                    && effortChartDataParent.getEffortChartDataList() != null
+                                    && !effortChartDataParent.getEffortChartDataList().isEmpty()) {
+
+                                mBinding.llBarChart.setVisibility(View.VISIBLE);
                                 mBinding.textViewTopicNoEffortData.setVisibility(View.GONE);
-                                drawEffortLineChart(effortChartDataWeeklies);
+                                //drawEffortLineChart(effortChartDataWeeklies);
+                                drawEffortBarChart(mChartConfigurationData, effortChartDataParent.getEffortChartDataList());
                             } else {
-                                mBinding.topicChartEffort.setVisibility(View.GONE);
-                                mBinding.textViewTopicNoEffortData.setVisibility(View.GONE);
+                                mBinding.llBarChart.setVisibility(View.GONE);
+                                mBinding.textViewTopicNoEffortData.setVisibility(View.VISIBLE);
                             }
 
                         }
@@ -365,71 +460,144 @@ public class StudentEffortFragment extends Fragment {
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
                             mBinding.progressBarEffort.setVisibility(View.GONE);
-                            mBinding.progressBarTopicEffort.setVisibility(View.GONE);
-                            mBinding.textViewTopicNoEffortData.setVisibility(View.GONE);
-
+                            mBinding.textViewTopicNoEffortData.setVisibility(View.VISIBLE);
                         }
                     });
+
         } else {
             showInternetSnackBar();
         }
+
     }
 
-    private void drawEffortLineChart(ArrayList<EffortChartDataWeekly> effortChartDataWeeklies) {
-        ArrayList<Entry> entries = new ArrayList<>();
+    /*Draw bar chart for performance*/
+    private void drawEffortBarChart(ArrayList<ChartConfigurationData> performanceConfiguration, ArrayList<EffortChartData> weeklyChartData) {
+        // Data is coming from 1 to n week , we have to get last 4 records
+        Collections.reverse(weeklyChartData);
+        ArrayList<EffortChartData> tempDataList = new ArrayList<>();
+
         final ArrayList<String> xAxisLabel = new ArrayList<>();
-        for (int i = 0; i < effortChartDataWeeklies.size(); i++) {
-            //entries.add(new Entry(i, mAnalyticsModel.longConvertSecondToMinute((long) effortChartDataWeeklies.get(i).getTime())));
-            if (effortChartDataWeeklies.get(i).getTime() == 0f) {
-                entries.add(new Entry(i, (effortChartDataWeeklies.get(i).getTime())));
-            } else {
-                entries.add(new Entry(i, Math.round(effortChartDataWeeklies.get(i).getTime() / 60)));
+        ArrayList<BarEntry> values = new ArrayList<>();
+        final List<Integer> colors = new ArrayList<>();
+        List<LegendEntry> legendEntries = new ArrayList<>();
+
+        /*Add legend entries according to configuration*/
+        for (int i = 0; i < performanceConfiguration.size(); i++) {
+            ChartConfigurationData configurationData = performanceConfiguration.get(i);
+            legendEntries.add(new LegendEntry(configurationData.getLabel(), Legend.LegendForm.SQUARE, NaN, NaN, null, Color.parseColor(configurationData.getColorCode())));
+
+        }
+        for (int i = 0; i < weeklyChartData.size(); i++) {
+            if (i <= 3) {
+
+                tempDataList.add(weeklyChartData.get(i));
             }
-            xAxisLabel.add(mAnalyticsModel.getFormattedDateForWeeklyEffortChart(effortChartDataWeeklies.get(i).getDate()));
         }
 
-        LineDataSet lineDataSet = new LineDataSet(entries, "");
-        lineDataSet.setLineWidth(1.5f);
-        lineDataSet.setCircleRadius(6f);
-        lineDataSet.setDrawFilled(false);
-        lineDataSet.setCircleColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
-        lineDataSet.setCircleColorHole(ContextCompat.getColor(mContext, R.color.colorPrimary));
+        // Last week data to be right most
+        Collections.reverse(tempDataList);
 
 
-        LineData lineData = new LineData(lineDataSet);
-        mBinding.topicChartEffort.setData(lineData);
+        /*Adding chart data for Y and X axis*/
 
-        mBinding.topicChartEffort.setDrawGridBackground(false);
-        mBinding.topicChartEffort.getDescription().setEnabled(false);
-        mBinding.topicChartEffort.setTouchEnabled(true);
-        mBinding.topicChartEffort.setDragEnabled(false);
-        mBinding.topicChartEffort.setScaleEnabled(false);
-        mBinding.topicChartEffort.setPinchZoom(false);
+        for (int i = 0; i < tempDataList.size(); i++) {
 
-        XAxis xAxis = mBinding.topicChartEffort.getXAxis();
-        xAxis.setAvoidFirstLastClipping(true);
-        //  xAxis.setAxisMinimum(0f);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        //xAxis.setGranularityEnabled(true);
-        xAxis.setGranularity(1f);
-        xAxis.setDrawGridLines(false);
-        xAxis.setValueFormatter(new MyXAxisValueFormatter(xAxisLabel));
+            EffortChartData data = tempDataList.get(i);
+            float totalMin = Math.round(data.getTotalTimeSpent() / 60);
+            values.add(new BarEntry(i, totalMin, data));
 
+            xAxisLabel.add(CommonUtils.getInstance().getChartWeekLabel(data.getWeekNo()));
 
-        YAxis leftAxis = mBinding.topicChartEffort.getAxisLeft();
-        leftAxis.setInverted(false);
-        leftAxis.setAxisMinimum(0f);
-        leftAxis.setGridColor(ContextCompat.getColor(mContext, R.color.colorTransparent));
-        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+            for (int j = 0; j < performanceConfiguration.size(); j++) {
+                ChartConfigurationData chartConfigurationData = performanceConfiguration.get(j);
+                if (totalMin >= chartConfigurationData.getFrom() && totalMin <= chartConfigurationData.getTo()) {
+                    colors.add(Color.parseColor(chartConfigurationData.getColorCode()));
+                }
+            }
+
+        }
+
         YAxis rightAxis = mBinding.topicChartEffort.getAxisRight();
         rightAxis.setEnabled(false);
         rightAxis.setDrawAxisLine(false);
-        Legend l = mBinding.topicChartEffort.getLegend();
-        l.setForm(Legend.LegendForm.LINE);
-        l.setEnabled(false);
 
+        YAxis leftAxis = mBinding.topicChartEffort.getAxisLeft();
+        leftAxis.setAxisMinimum(0);
+        //Need to dynamic Y axis
+        //leftAxis.setAxisMaximum(100);
+        leftAxis.setGridColor(ContextCompat.getColor(mContext, R.color.colorTransparent));
+
+        Legend legend = mBinding.topicChartEffort.getLegend();
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        legend.setDrawInside(false);
+        legend.setCustom(legendEntries);
+        legend.setFormSize(8f);
+        legend.setFormToTextSpace(8f);
+        legend.setXEntrySpace(12f);
+        legend.setEnabled(true);
+
+        XAxis xAxis = mBinding.topicChartEffort.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularityEnabled(true);
+
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                if (value >= 0 && !xAxisLabel.isEmpty()) {
+                    if (value <= xAxisLabel.size() - 1) {
+                        return xAxisLabel.get((int) value);
+                    } else
+                        return ConstantUtil.BLANK;
+                } else
+                    return ConstantUtil.BLANK;
+
+            }
+        });
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+        BarDataSet barDataSet = new BarDataSet(values, "");
+        barDataSet.setDrawValues(false);
+        if (!colors.isEmpty()) {
+            barDataSet.setColors(colors);
+        }
+        barDataSet.setDrawIcons(false);
+        barDataSet.setHighLightAlpha(0);
+        barDataSet.setDrawValues(true);
+        dataSets.add(barDataSet);
+        BarData barData = new BarData(dataSets);
+        barData.setValueTextColor(Color.BLACK);
+        barData.setValueFormatter(new EffortBarChartPercentFormatter());
+        barData.setValueTextSize(mAnalyticsModel.barTextSize());
+        barData.setBarWidth(mAnalyticsModel.effortBarWidth());
+//        mBinding.topicChartEffort.setXAxisRenderer
+//                (new ChartXAxisRenderer(mBinding.topicChartEffort.getViewPortHandler(),
+//                        mBinding.topicChartEffort.getXAxis(),
+//                        mBinding.topicChartEffort.getTransformer(YAxis.AxisDependency.LEFT)));
+        mBinding.topicChartEffort.setExtraBottomOffset(10);
+        mBinding.topicChartEffort.getDescription().setEnabled(false);
+        //mBinding.topicChartEffort.setMaxVisibleValueCount(100);
+        mBinding.topicChartEffort.setPinchZoom(false);
+        mBinding.topicChartEffort.setDrawGridBackground(false);
+        mBinding.topicChartEffort.getXAxis().setDrawGridLines(false);
+        mBinding.topicChartEffort.setDrawBarShadow(false);
+        mBinding.topicChartEffort.setDrawValueAboveBar(true);
+        mBinding.topicChartEffort.setHighlightFullBarEnabled(false);
+        mBinding.topicChartEffort.getLegend().setWordWrapEnabled(true);
+        mBinding.topicChartEffort.setScaleXEnabled(false);
+        mBinding.topicChartEffort.setScaleYEnabled(false);
+        mBinding.topicChartEffort.setFitBars(true);
+        mBinding.topicChartEffort.animateY(1400);
+        mBinding.topicChartEffort.clear();
+        mBinding.topicChartEffort.setData(barData);
         mBinding.topicChartEffort.invalidate();
+
+        //Need to show highest value
+
+
     }
+
 
     private void setTimeSpentTopicList(ArrayList<EffortChartData> effortChartDataList) {
 
@@ -456,13 +624,19 @@ public class StudentEffortFragment extends Fragment {
         final float finalTotalVideoTime = totalVideoTime;
         final float finalTotalPracticeTime = totalPracticeTime;
 
-        mBinding.textViewTopicDailyTimeSpentLabel.setPaintFlags(mBinding.textViewDailyTimeSpentLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        mBinding.textViewTopicTotalTimeSpentLabel.setPaintFlags(mBinding.textViewTotalTimeSpentLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        //mBinding.textViewTopicDailyTimeSpentLabel.setPaintFlags(mBinding.textViewDailyTimeSpentLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        //mBinding.textViewTopicTotalTimeSpentLabel.setPaintFlags(mBinding.textViewTotalTimeSpentLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         mBinding.linearLayoutTopicTotalTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAnalyticsModel.showDetailedTotalTimeSpent(mContext, finalTotalTimeSpent, finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime);
+                if (!TextUtils.isEmpty(mBinding.textViewPerformance.getText())) {
+                    String subjectName = mBinding.textViewPerformance.getText().toString();
+                    mAnalyticsModel.showDetailedTotalTimeSpent(mContext, finalTotalTimeSpent, finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime, subjectName);
+                } else {
+                    mAnalyticsModel.showDetailedTotalTimeSpent(mContext, finalTotalTimeSpent, finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime, ConstantUtil.BLANK);
+                }
+
             }
         });
 
@@ -486,7 +660,7 @@ public class StudentEffortFragment extends Fragment {
 
     private void showTopicInternetSnackBar(final String subjectId) {
 
-        Snackbar.make(mBinding.getRoot(), getString(R.string.error_message_no_internet), Snackbar.LENGTH_INDEFINITE)
+    /*    Snackbar.make(mBinding.getRoot(), getString(R.string.error_message_no_internet), Snackbar.LENGTH_INDEFINITE)
                 .setAction((R.string.labelRetry), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -499,26 +673,22 @@ public class StudentEffortFragment extends Fragment {
                     }
                 })
                 .show();
-
+*/
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (getActivity() != null) {
-            mContext = getActivity();
-        } else {
-            mContext = context;
-        }
+        mContext = context;
 
     }
 
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mContext = null;
-
-    }
+//    @Override
+//    public void onDetach() {
+//        super.onDetach();
+//        mContext = null;
+//
+//    }
 }
 

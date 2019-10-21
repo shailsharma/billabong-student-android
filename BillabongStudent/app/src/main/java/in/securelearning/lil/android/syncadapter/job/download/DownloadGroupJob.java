@@ -112,7 +112,9 @@ public class DownloadGroupJob extends BaseDownloadJob<Group> {
 //            group.setNetworkDataDownloaded(localGroup.isNetworkDataDownloaded());
 //        }
 
-        return mJobModel.saveGroup(group);
+        mJobModel.saveGroup(group);
+
+        return group;
     }
 
     /**

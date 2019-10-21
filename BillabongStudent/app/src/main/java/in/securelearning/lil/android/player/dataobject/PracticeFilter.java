@@ -4,17 +4,16 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class PracticeFilter implements Serializable {
-
-    @SerializedName("skillIds")
-    @Expose
-    private ArrayList<String> mSkillIdList;
 
     @SerializedName("subjectId")
     @Expose
     private String mSubjectId;
+
+    @SerializedName("lessonPlanId")
+    @Expose
+    private String mLessonPlanId;
 
     @SerializedName("topicId")
     @Expose
@@ -35,14 +34,6 @@ public class PracticeFilter implements Serializable {
     @SerializedName("practiceResponse")
     @Expose
     private PracticeResponse mPracticeResponse;
-
-    public ArrayList<String> getSkillIdList() {
-        return mSkillIdList;
-    }
-
-    public void setSkillIdList(ArrayList<String> skillIdList) {
-        mSkillIdList = skillIdList;
-    }
 
     public String getSubjectId() {
         return mSubjectId;

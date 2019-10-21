@@ -29,6 +29,10 @@ public class CoverageChartData implements Serializable, Comparable<CoverageChart
     @Expose
     private String mName;
 
+    @SerializedName("thumbnail")
+    @Expose
+    private String mSubjectIcon;
+
     public void setCoverage(float coverage) {
         mCoverage = coverage;
     }
@@ -67,6 +71,14 @@ public class CoverageChartData implements Serializable, Comparable<CoverageChart
 
     public void setName(String name) {
         mName = name;
+    }
+
+    public String getSubjectIcon() {
+        return mSubjectIcon;
+    }
+
+    public void setSubjectIcon(String subjectIcon) {
+        mSubjectIcon = subjectIcon;
     }
 
     @Override

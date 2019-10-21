@@ -1,6 +1,7 @@
 package in.securelearning.lil.android.home.views.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -83,17 +84,22 @@ import static in.securelearning.lil.android.base.utils.FileUtils.copyFiles;
  */
 
 public class UserProfileEditActivity extends AppCompatActivity {
+
     @Inject
     AppUserModel mAppUserModel;
     @Inject
     NetworkModel mNetworkModel;
     @Inject
     RxBus mRxBus;
+
     public static String USER_ID = "userId";
+
     private static final int IMAGE_PICK = 104;
     private final static int IMAGE_CAPTURE = 105;
+
     public static final String THUMB_FILE_DIRECTORY = File.separator + "tempUserProfile";
     public static final String THUMB_FILE_PATH = File.separator + "tempUserImage" + File.separator + "tempImage";
+
     private LayoutUserProfileEditActivityBinding mBinding;
     private String mUserObjectId;
     private boolean mCanFullView = false;
@@ -102,6 +108,7 @@ public class UserProfileEditActivity extends AppCompatActivity {
     private int mPrimaryColor;
     private UserProfile mUserProfile;
     private Disposable mSubscription;
+
     private boolean isThumbnailChanged = false;
     private boolean isThumbnailUploaded = false;
     private MenuItem menuItemUpdate;
@@ -139,6 +146,7 @@ public class UserProfileEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_user_profile_edit_activity);
+
         mPrimaryColor = ContextCompat.getColor(getBaseContext(), R.color.colorPrimary);
         mUserFolder = getString(R.string.pathUserProfile);
         mBaseFolder = getFilesDir().getAbsolutePath();
@@ -155,6 +163,7 @@ public class UserProfileEditActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
@@ -342,6 +351,7 @@ public class UserProfileEditActivity extends AppCompatActivity {
      *
      * @param imagePath
      */
+    @SuppressLint("CheckResult")
     private void uploadUserThumbnail(final String imagePath) {
         final Resource resource = new Resource();
         resource.setDeviceURL(imagePath);
@@ -379,28 +389,30 @@ public class UserProfileEditActivity extends AppCompatActivity {
                         b.onNext(false);
                     }
                 }
-            }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<Boolean>() {
-                @Override
-                public void accept(Boolean b) throws Exception {
-                    updateVisibility(true);
+            }).observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean b) throws Exception {
+                            updateVisibility(true);
 
-                    if (b) {
-                        // setUserThumbnail(mUserProfile);
-                        Picasso.with(getBaseContext()).load(imagePath).transform(new CircleTransform()).resize(300, 300).centerCrop().into(mBinding.imageViewUserProfile);
-                        mCanFullView = true;
-                        mUserProfilePath = imagePath;
-                        mBinding.progressBar.setVisibility(View.GONE);
-                        showSuccessMessage(getString(R.string.update_profile_thumb_successful));
-                    } else {
-                        setUserThumbnail(mUserProfile);
-                        mBinding.progressBar.setVisibility(View.GONE);
-                        showAlertMessage(getString(R.string.update_profile_thumb_failed));
-                    }
-                    mBinding.buttonImagePick.setVisibility(View.VISIBLE);
-                    AnimationUtils.zoomInFast(getBaseContext(), mBinding.buttonImagePick);
+                            if (b) {
+                                // setUserThumbnail(mUserProfile);
+                                Picasso.with(getBaseContext()).load(imagePath).transform(new CircleTransform()).resize(300, 300).centerCrop().into(mBinding.imageViewUserProfile);
+                                mCanFullView = true;
+                                mUserProfilePath = imagePath;
+                                mBinding.progressBar.setVisibility(View.GONE);
+                                showSuccessMessage(getString(R.string.update_profile_thumb_successful));
+                            } else {
+                                setUserThumbnail(mUserProfile);
+                                mBinding.progressBar.setVisibility(View.GONE);
+                                showAlertMessage(getString(R.string.update_profile_thumb_failed));
+                            }
+                            mBinding.buttonImagePick.setVisibility(View.VISIBLE);
+                            AnimationUtils.zoomInFast(getBaseContext(), mBinding.buttonImagePick);
 
-                }
-            });
+                        }
+                    });
 
 
         }
@@ -419,6 +431,7 @@ public class UserProfileEditActivity extends AppCompatActivity {
      * @param lastName
      * @param aboutMe
      */
+    @SuppressLint("CheckResult")
     private void updateUserProfile(final String firstName, final String middleName, final String lastName, final String aboutMe) {
         final UserProfile userProfile = new UserProfile();
         userProfile.setFirstName(firstName);
@@ -699,12 +712,12 @@ public class UserProfileEditActivity extends AppCompatActivity {
             Uri destinationUri = Uri.fromFile(tempFile);
             UCrop.of(uri, destinationUri)
                     .withAspectRatio(1, 1)
-                    .withMaxResultSize(300, 300)
+                    .withMaxResultSize(1024, 1024)
                     .withOptions(options)
                     .start(this);
 
         } else {
-            ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit));
+            ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit_10MB));
         }
     }
 

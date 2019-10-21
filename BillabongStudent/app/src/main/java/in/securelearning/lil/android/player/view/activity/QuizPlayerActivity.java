@@ -1,1758 +1,2170 @@
 package in.securelearning.lil.android.player.view.activity;
 
-import android.annotation.TargetApi;
+import android.animation.Animator;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.text.Html;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
+import android.text.util.Linkify;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
+import android.util.SparseBooleanArray;
+import android.view.Display;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.SlidingDrawer;
 import android.widget.TextView;
 
-import java.io.File;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.robinhood.ticker.TickerUtils;
+import com.squareup.picasso.Picasso;
+
 import java.net.URLConnection;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
+import java.util.Random;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationData;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
-import in.securelearning.lil.android.app.databinding.ActivityQuizPreviewBinding;
-import in.securelearning.lil.android.base.constants.AssignmentStage;
-import in.securelearning.lil.android.base.constants.QuizTypeEnum;
-import in.securelearning.lil.android.base.constants.SyncStatus;
-import in.securelearning.lil.android.base.dataobjects.AssignmentResponse;
+import in.securelearning.lil.android.app.Widgets.CheckBoxCustom;
+import in.securelearning.lil.android.app.Widgets.RadioButtonCustom;
+import in.securelearning.lil.android.app.databinding.LayoutMatchTheFollowingItemBinding;
+import in.securelearning.lil.android.app.databinding.LayoutQuizEndBinding;
+import in.securelearning.lil.android.app.databinding.LayoutQuizPlayerBinding;
 import in.securelearning.lil.android.base.dataobjects.Attempt;
 import in.securelearning.lil.android.base.dataobjects.Question;
 import in.securelearning.lil.android.base.dataobjects.QuestionChoice;
-import in.securelearning.lil.android.base.dataobjects.QuestionExplanation;
 import in.securelearning.lil.android.base.dataobjects.QuestionHint;
+import in.securelearning.lil.android.base.dataobjects.QuestionPart;
 import in.securelearning.lil.android.base.dataobjects.QuestionResponse;
-import in.securelearning.lil.android.base.dataobjects.Quiz;
 import in.securelearning.lil.android.base.dataobjects.Resource;
-import in.securelearning.lil.android.base.events.ErrorEvent;
-import in.securelearning.lil.android.base.events.LoadAssignmentResponseQuizPreview;
+import in.securelearning.lil.android.base.events.QuizCompletedEvent;
+import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.DateUtils;
-import in.securelearning.lil.android.base.utils.ImageUtils;
-import in.securelearning.lil.android.base.utils.KeyBoardUtil;
-import in.securelearning.lil.android.base.utils.ToastUtils;
-import in.securelearning.lil.android.base.widget.ScratchPadView;
+import in.securelearning.lil.android.base.utils.GeneralUtils;
+import in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity;
 import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
-import in.securelearning.lil.android.learningnetwork.adapter.FullScreenImage;
-import in.securelearning.lil.android.quizpreview.activity.BaseActivityQuizPreview;
-import in.securelearning.lil.android.quizpreview.activity.QuizPreviewInterface;
-import in.securelearning.lil.android.quizpreview.events.AssignmentSubmittedEvent;
-import in.securelearning.lil.android.quizpreview.model.QuizPreviewModel;
-import in.securelearning.lil.android.syncadapter.service.SyncService;
+import in.securelearning.lil.android.player.InjectorPlayer;
+import in.securelearning.lil.android.player.dataobject.KhanAcademyVideo;
+import in.securelearning.lil.android.player.dataobject.MatchingContent;
+import in.securelearning.lil.android.player.dataobject.ModuleDetail;
+import in.securelearning.lil.android.player.dataobject.QuestionTypeMatchTheFollowing;
+import in.securelearning.lil.android.player.dataobject.QuizConfigurationResponse;
+import in.securelearning.lil.android.player.dataobject.QuizQuestionResponse;
+import in.securelearning.lil.android.player.dataobject.QuizResponsePost;
+import in.securelearning.lil.android.player.model.PlayerModel;
+import in.securelearning.lil.android.player.view.adapter.DropdownAdapter;
+import in.securelearning.lil.android.player.view.adapter.ExplanationVideoAdapter;
+import in.securelearning.lil.android.player.view.adapter.QuestionResourceAdapter;
+import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
+import in.securelearning.lil.android.syncadapter.dataobject.QuizResponse;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
+import in.securelearning.lil.android.syncadapter.utils.FlyObjectAnimationUtil;
+import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import in.securelearning.lil.android.syncadapter.utils.SoundUtils;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import me.saket.bettermovementmethod.BetterLinkMovementMethod;
 
-import static in.securelearning.lil.android.base.utils.ImageUtils.getDrawableFromPath;
-import static in.securelearning.lil.android.base.utils.ImageUtils.getScaledBitmapFromPath;
+public class QuizPlayerActivity extends AppCompatActivity {
 
-public class QuizPlayerActivity extends BaseActivityQuizPreview implements QuizPreviewInterface {
     @Inject
-    QuizPreviewModel mQuizPreviewModel;
+    PlayerModel mPlayerModel;
+
     @Inject
     RxBus mRxBus;
 
-    private ActivityQuizPreviewBinding mBinding;
-    private Html.ImageGetter mImageGetter;
-    private String mQuizDocumentId;
-    private String mAssignmentResponseDocumentId;
-    private Disposable mSubscription;
-    private String mBaseFolder;
-    private String mQuizResourceImageFolder;
-    private String mQuizResourceVideoFolder;
-    private String mQuizResourceAudioFolder;
-    private String mQuizResourceDocumentFolder;
-    private int mHintSize;
-    private TextView mQuestionText;
-    private TextView mQuizTitleTextView;
-    private TextView mExplanationTextView;
-    private TextView mExplanationlabelTextView;
-    private RelativeLayout mExplanationImageLayout;
-    private RelativeLayout mExplanationVideoLayout;
-    private LinearLayout mExplanationLayout;
-    private ImageButton mBackButton;
-    private ImageButton mNextButton;
-    private ImageButton mSkipButton;
-    private View mPreviousButton;
-    private ImageButton mSubmitButton;
-    private Button mHintCountButton;
-    private ViewGroup mResponseLayout;
-    private ViewGroup mQuestionList;
-    private View mHintLayoutView;
-    private SlidingDrawer mScratchPadDrawer;
-    private ViewGroup mHintGroupLayout;
-    private ViewGroup mQuestionResourcesGroup;
-    private RelativeLayout mHintIconImageView;
-    private RelativeLayout mHintButtonLayout;
-    private ImageView mQuestionImageView;
-    private ImageView mQuestionVideoImageView;
-    private ImageView mExplanationImageThumbnail;
-    private ImageView mExplanationVideoThumbnail;
-    private View mIncorrectSubmit;
-    private View mCorrectSubmit;
-    private Quiz mQuiz;
-    private int mCounterQuestion = 0;
-    private int mCounterHint = 0;
-    private long mCurrentQuestionStartTime = 0L;
-    private boolean mIsCorrectResponse = false;
-    private int mResourceGroupVisibility = View.VISIBLE;
-    private boolean mIsAttempt = true;
-    private AssignmentResponse mAssignmentResponse;
-    private String mAssignmentStudentDocId = "";
-    private View.OnClickListener mShowResourceAction;
-    private RelativeLayout res_type_image_layout;
-    private RelativeLayout res_type_video_layout;
-    private ScrollView mMainScrollView;
-    private ImageButton clearScratchPad;
-    private int SUBMIT_CLICKED = 1;
-    private boolean mIsResponseSubmitted = false;
+    @Inject
+    AppUserModel mAppUserModel;
 
-    public static void startQuizPreview(Context context, String assignmentResponseDocId, String assignmentStudentDocId, boolean isAttempt) {
-        Intent intent = new Intent(context, QuizPlayerActivity.class);
-        intent.putExtra("docIdAssignmentResponse", assignmentResponseDocId);
-        intent.putExtra("docIdAssignmentStudent", assignmentStudentDocId);
-        intent.putExtra("isAttempt", isAttempt);
-        context.startActivity(intent);
-    }
+    LayoutQuizPlayerBinding mBinding;
+
+    private static final String QUIZ_ID = "quizId";
+    private static final String COURSE_ID = "courseId";
+    private static final String COURSE_TYPE = "courseType";
+    private static final String CARD_ID = "cardId";
+    private static final String SECTION_ID = "sectionId";
+
+    /*Learning type*/
+    public static final String TYPE_ASSESSMENT_FOR_LEARNING = "assessmentForLearning";
+    public static final String TYPE_ASSESSMENT_OF_LEARNING = "assessmentOfLearning";
+
+
+    private ArrayList<QuestionResponse> mQuestionResponses = new ArrayList<>();
+    private ArrayList<Question> mQuestionList = new ArrayList<>();
+    private ArrayList<Attempt> mAttemptList = new ArrayList<>();
+
+    private int mTotalCorrect = 0;
+    private int mTotalInCorrect = 0;
+    private int mHintCounter = 0;
+    private int mQuestionCounter;
+    private int mUiQuestionCounter = 1;
+    private int mTotalScore = 0;
+    private int mStreak = 0;
+    private String mQuizId, mCourseId, mCardId, mSectionId, mTypeOfLearning, mCourseType;
+    private int mPointsPerQuestion, mMaxAttemptLimitPerQuestion, mUserAttemptPerQuestion;
+    private long mTotalTimeAttempted = 0L;
+
+    private int mScrollTop, mScrollBottom, mScrollDistance;
+    private int mMTFMatchCount;
+    private MatchTheFollowingChoiceAdapter mMatchTheFollowingChoiceAdapter;
+    private String[] mCorrectMessages;
+    private String[] mInCorrectMessages;
+    private DropdownAdapter mDropdownAdapter;
+    private ProgressDialog mProgressDialog;
+
 
     @Override
     public void onBackPressed() {
+        showBackAlertDialog();
+    }
 
-        if (mIsAttempt && mAssignmentResponse.getQuizResponses().size() > 0) {
-            if (mIsResponseSubmitted) {
-                finish();
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        InjectorPlayer.INSTANCE.getComponent().inject(this);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.layout_quiz_player);
+        handleIntent();
+        setUpResponseMessages();
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * @param context context
+     * @param quizId  quizId
+     * @return intent
+     */
+    public static Intent getStartIntent(Context context, String quizId, String courseId, String courseType) {
+        Intent intent = new Intent(context, QuizPlayerActivity.class);
+        intent.putExtra(QUIZ_ID, quizId);
+        intent.putExtra(COURSE_ID, courseId);
+        intent.putExtra(COURSE_TYPE, courseType);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
+    }
+
+    /**
+     * @param context   context
+     * @param quizId    quizId
+     * @param courseId  courseId of course
+     * @param cardId    only came with rapid learning
+     * @param sectionId sectionId of section
+     * @return intent
+     */
+    public static Intent getStartIntentFromRapidLearning(Context context, String quizId,
+                                                         String courseId, String courseType, String cardId,
+                                                         String sectionId) {
+        Intent intent = new Intent(context, QuizPlayerActivity.class);
+        intent.putExtra(QUIZ_ID, quizId);
+        intent.putExtra(COURSE_ID, courseId);
+        intent.putExtra(COURSE_TYPE, courseType);
+        intent.putExtra(CARD_ID, cardId);
+        intent.putExtra(SECTION_ID, sectionId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
+    }
+
+    /*Handle intent and get bundle data from intent*/
+    private void handleIntent() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            mQuizId = getIntent().getStringExtra(QUIZ_ID);
+            mCourseId = getIntent().getStringExtra(COURSE_ID);
+            mCourseType = getIntent().getStringExtra(COURSE_TYPE);
+
+            /*since 'CARD_ID' only came with rapid learning*/
+            if (!TextUtils.isEmpty(getIntent().getStringExtra(CARD_ID))) {
+                mCardId = getIntent().getStringExtra(CARD_ID);
+                mSectionId = getIntent().getStringExtra(SECTION_ID);
+            }
+
+            if (mCourseType.equalsIgnoreCase(getString(R.string.assignment).toLowerCase())) {
+                // TODO: 12/8/19 hardcoded points and assessment type for homework/assignment
+                mPointsPerQuestion = 20;
+                mTypeOfLearning = TYPE_ASSESSMENT_OF_LEARNING;
+                fetchQuestions();
             } else {
-                String message = "You have attempted " + String.valueOf(mAssignmentResponse.getQuizResponses().size()) + " out of " + String.valueOf(mQuiz.getQuestions().size()) + " questions.\nFor final submission, complete the assignment before " + DateUtils.getDayMonthStringFromDate(DateUtils.convertrIsoDate(mAssignmentResponse.getAssignmentDueDate()));
-                new android.app.AlertDialog.Builder(QuizPlayerActivity.this)
-                        .setTitle(getString(R.string.close_alert_title))
-                        .setMessage(message)
-                        .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                QuizPlayerActivity.super.onBackPressed();
-                            }
-                        }).setNegativeButton("Continue", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).show();
+                fetchQuizConfiguration();
             }
 
         } else {
+            GeneralUtils.showToastShort(getBaseContext(), getString(R.string.error_something_went_wrong));
             finish();
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quiz_preview);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_quiz_preview);
-        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimary));
-        mBaseFolder = getFilesDir().getAbsolutePath();
-        mQuizDocumentId = "";
-        mAssignmentResponseDocumentId = "";
-        Bundle bundle = getIntent().getExtras();
-
-        if (bundle != null) {
-            mAssignmentResponseDocumentId = bundle.getString("docIdAssignmentResponse");
-            mAssignmentStudentDocId = bundle.getString("docIdAssignmentStudent");
-            mIsAttempt = bundle.getBoolean("isAttempt");
-            Log.e("Preview", mAssignmentResponseDocumentId + " " + mIsAttempt);
+    /*Setup custom toolbar*/
+    private void setUpToolbar(String quizTitle) {
+        if (!TextUtils.isEmpty(quizTitle)) {
+            mBinding.textViewToolbarTitle.setText(quizTitle);
+        } else {
+            mBinding.textViewToolbarTitle.setText(getString(R.string.quiz));
         }
+        mBinding.back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
 
+            }
+        });
 
-        initializeImageGetter();
-        initializeViews();
-        initializeUi();
-        setupSubscription();
+        mBinding.textViewPoint.setCharacterLists(TickerUtils.provideNumberList());
+        setTotalScore(mTotalScore);
+        Typeface typeface = ResourcesCompat.getFont(getBaseContext(), R.font.digital);
+        mBinding.textViewPoint.setTypeface(typeface);
 
-        if (!getResources().getBoolean(R.bool.isTablet)) {
-            //ImageButton mSkipButton = (ImageButton) this.findViewById(R.id.imagebutton_show_explanation);
-        }
+        mBinding.textViewStreak.setCharacterLists(TickerUtils.provideNumberList());
+        mBinding.textViewStreak.setText(String.valueOf(0));
 
-        mQuizPreviewModel.fetchAssignmentResponseAndQuiz(mAssignmentResponseDocumentId);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mSubscription != null) mSubscription.dispose();
+    /*Set total points/score on the ui*/
+    private void setTotalScore(int totalScore) {
+        mBinding.textViewPoint.setText(ConstantUtil.BLANK_SPACE + totalScore + ConstantUtil.BLANK_SPACE);
+    }
+
+    /*Setting up messages while correct and incorrect response*/
+    private void setUpResponseMessages() {
+        mCorrectMessages = getResources().getStringArray(R.array.correct_response_messages);
+        mInCorrectMessages = getResources().getStringArray(R.array.incorrect_response_messages);
+    }
+
+    /*Method to initialize question ui*/
+    private void initializeQuestionUi() {
+
+        if (!mQuestionList.isEmpty()) {
+
+            Question question = mQuestionList.get(mQuestionCounter);
+            setDefaultsForNewQuestion();
+            setQuestionCounter(mUiQuestionCounter);
+            setQuestionText(question);
+            setHintView(question);
+            setChoicesView(question);
+            startTimer();
+            setQuestionResource(question);
+            initializeClickListeners(question);
+            setMaxAttemptByQuestionAndLearningType(question);
+            fetchExplanationVideos(mPlayerModel.getSkillIdList(question.getSkills()));
+            mQuestionCounter++;
+            mUiQuestionCounter++;
+
+        }
+
+    }
+
+    /*To fetch explanation videos*/
+    @SuppressLint("CheckResult")
+    private void fetchExplanationVideos(ArrayList<String> skillIdList) {
+        mBinding.layoutExplanationKhanAcademyVideo.getRoot().setVisibility(View.VISIBLE);
+        mBinding.layoutExplanationKhanAcademyVideo.progressBar.setVisibility(View.VISIBLE);
+        mBinding.layoutExplanationKhanAcademyVideo.recyclerViewExplanationVideos.setVisibility(View.GONE);
+        mPlayerModel.fetchExplanationVideos(skillIdList)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ArrayList<KhanAcademyVideo>>() {
+                    @Override
+                    public void accept(ArrayList<KhanAcademyVideo> khanAcademyVideos) throws Exception {
+                        mBinding.layoutExplanationKhanAcademyVideo.progressBar.setVisibility(View.GONE);
+
+                        if (khanAcademyVideos != null && !khanAcademyVideos.isEmpty()) {
+                            mBinding.layoutExplanationKhanAcademyVideo.getRoot().setVisibility(View.VISIBLE);
+                            mBinding.layoutExplanationKhanAcademyVideo.recyclerViewExplanationVideos.setVisibility(View.VISIBLE);
+                            mBinding.layoutExplanationKhanAcademyVideo.recyclerViewExplanationVideos.setAdapter(new ExplanationVideoAdapter(getBaseContext(), khanAcademyVideos));
+                        } else {
+                            mBinding.layoutExplanationKhanAcademyVideo.getRoot().setVisibility(View.GONE);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                        mBinding.layoutExplanationKhanAcademyVideo.getRoot().setVisibility(View.GONE);
+
+                    }
+                });
     }
 
     /**
-     * initializes the views of the activity
+     * Multiple attempt - AFL - From Digital Book
+     * Single attempt - AOL - From Homework, Recap/Lesson Plan.
      */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    public void initializeViews() {
-        mQuestionText = (TextView) this.findViewById(R.id.text_view_question);
-        mQuizTitleTextView = (TextView) this.findViewById(R.id.textview_quiz_title_header);
-        mExplanationTextView = (TextView) this.findViewById(R.id.textview_explanation);
-        mSkipButton = (ImageButton) this.findViewById(R.id.imagebutton_skip);
-        mExplanationlabelTextView = (TextView) this.findViewById(R.id.textview_explanation_label);
-        mBackButton = (ImageButton) this.findViewById(R.id.imagebutton_exit_quiz);
-        mNextButton = (ImageButton) this.findViewById(R.id.button_next);
-        mPreviousButton = this.findViewById(R.id.button_previous);
-        mSubmitButton = (ImageButton) this.findViewById(R.id.button_submit);
-        mHintIconImageView = (RelativeLayout) this.findViewById(R.id.image_view_hint);
-        mHintButtonLayout = (RelativeLayout) this.findViewById(R.id.layout_hint_button);
-        mResponseLayout = (LinearLayout) this.findViewById(R.id.group_response);
-        mQuestionList = (LinearLayout) this.findViewById(R.id.group_response_question_list);
-        mExplanationVideoLayout = (RelativeLayout) this.findViewById(R.id.videothumbnail_explanation);
-        mExplanationLayout = (LinearLayout) this.findViewById(R.id.layout_explanation);
-        res_type_image_layout = (RelativeLayout) this.findViewById(R.id.res_type_image_layout);
-        res_type_video_layout = (RelativeLayout) this.findViewById(R.id.res_type_video_layout);
-        mQuestionImageView = (ImageView) this.findViewById(R.id.image_view_question_image);
-        mHintGroupLayout = (ViewGroup) this.findViewById(R.id.group_response_hint);
-        mHintLayoutView = this.findViewById(R.id.hintLayoutView);
-        mQuestionVideoImageView = (ImageView) this.findViewById(R.id.image_view_question_video);
-        mExplanationImageThumbnail = (ImageView) this.findViewById(R.id.imageview_explanation_image);
-        mExplanationVideoThumbnail = (ImageView) this.findViewById(R.id.imageview_explanation_video);
-        mExplanationImageLayout = (RelativeLayout) this.findViewById(R.id.imagethumbnail_explanation);
-        mMainScrollView = (ScrollView) this.findViewById(R.id.scrollview_main_view);
-        mHintCountButton = (Button) this.findViewById(R.id.button_hint_count);
-        mCorrectSubmit = this.findViewById(R.id.group_correct_response);
-        mIncorrectSubmit = this.findViewById(R.id.group_incorrect_response);
-        mQuestionResourcesGroup = (ViewGroup) this.findViewById(R.id.group_question_resources);
-        mScratchPadDrawer = (SlidingDrawer) this.findViewById(R.id.sliding_drawer_scratchpad);
-        clearScratchPad = (ImageButton) mScratchPadDrawer.findViewById(R.id.image_view_clear_scratchpad);
+    private void setMaxAttemptByQuestionAndLearningType(Question question) {
+        mMaxAttemptLimitPerQuestion = 0;
+        String questionType = question.getQuestionType();
+        if (mTypeOfLearning.equalsIgnoreCase(TYPE_ASSESSMENT_FOR_LEARNING)) {
+            switch (questionType) {
+                case Question.TYPE_DISPLAY_RADIO:
+                case Question.TYPE_DISPLAY_CHECKBOX:
+                case Question.TYPE_DISPLAY_TRUE_FALSE:
+                    mMaxAttemptLimitPerQuestion = (question.getQuestionChoices().size() - 1);
+                    break;
+                case Question.TYPE_DISPLAY_FILL_IN_THE_BLANKS:
+                    mMaxAttemptLimitPerQuestion = 1;
+                    break;
+                case Question.TYPE_DISPLAY_DROPDOWN:
+                    mMaxAttemptLimitPerQuestion = mPlayerModel.getDropdownAttemptLimit(question) - 1;
+                    break;
+            }
+        } else {
+            mMaxAttemptLimitPerQuestion = 1;
+        }
+    }
+
+    /*To enable click on link and identify link from click*/
+    private void setMovementMethod() {
+        BetterLinkMovementMethod.linkify(Linkify.ALL, this)
+                .setOnLinkClickListener(new BetterLinkMovementMethod.OnLinkClickListener() {
+                    @Override
+                    public boolean onClick(TextView textView, String url) {
+                        if (url.contains("youtube")) {
+                            mPlayerModel.startYoutubePlayer(getBaseContext(), url);
+                            return true;
+                        } else if (url.contains("vimeo")) {
+                            mPlayerModel.startVimeoPlayer(getBaseContext(), url);
+                            return true;
+                        } else if (url.endsWith(".mp4") || url.endsWith(".MP4") ||
+                                url.endsWith("wmv") || url.endsWith("WMV") ||
+                                url.endsWith("flv") || url.endsWith("FLV")) {
+                            mPlayerModel.startVideoPlayer(getBaseContext(), url);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+    }
+
+    /*Set/Reset views of player when new question initialized*/
+    private void setDefaultsForNewQuestion() {
+        mBinding.buttonDone.setText(getString(R.string.submit));
+        mBinding.buttonDone.setVisibility(View.VISIBLE);
+
+        mBinding.layoutChoices.removeAllViews();
+
+        mBinding.layoutMatchTheFollowingContainer.layoutMTF.setVisibility(View.GONE);
+
+        mBinding.layoutExplanation.setVisibility(View.GONE);
+
+        mBinding.layoutTimer.setVisibility(View.VISIBLE);
+        mBinding.chronometerQuestionTimer.stop();
+        mBinding.chronometerQuestionTimer.setBase(SystemClock.elapsedRealtime());
+
+        mHintCounter = 0;
+        mBinding.layoutHints.removeAllViews();
+        mBinding.cardViewHints.setVisibility(View.GONE);
+
+        mUserAttemptPerQuestion = 0;
+        mAttemptList.clear();
+
+        mMTFMatchCount = 0;
+
+        mBinding.scrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                int[] originalPos = new int[2];
+                mBinding.scrollView.getLocationOnScreen(originalPos);
+                mScrollTop = originalPos[1];
+                mScrollBottom = mScrollTop + mBinding.scrollView.getMeasuredHeight();
+            }
+        });
+
+        mBinding.scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                mScrollDistance = scrollY;
+
+            }
+
+
+        });
 
     }
 
-    private void initializeUi() {
+    /*Set/Reset views of player after question attempt.*/
+    private void setViewAfterQuestionAttempt(boolean isCorrectResponse) {
 
-        mShowResourceAction = new View.OnClickListener() {
+        if (isCorrectResponse) {
+            mBinding.chronometerQuestionTimer.stop();
+            if (mQuestionList.size() == mQuestionCounter) {
+                mBinding.buttonDone.setText(getString(R.string.finish));
+            } else {
+                mBinding.buttonDone.setText(getString(R.string.next));
+            }
+            hideHintLayouts();
+        } else {
+            if (mUserAttemptPerQuestion < mMaxAttemptLimitPerQuestion) {
+                mBinding.buttonDone.setText(getString(R.string.submit));
+                Question question = mQuestionList.get(mQuestionCounter - 1);
+                mBinding.layoutChoices.removeAllViews();
+                setChoicesView(question);
+            } else if (mQuestionList.size() == mQuestionCounter) {
+                mBinding.chronometerQuestionTimer.stop();
+                mBinding.buttonDone.setText(getString(R.string.finish));
+                hideHintLayouts();
+            } else {
+                mBinding.chronometerQuestionTimer.stop();
+                mBinding.buttonDone.setText(getString(R.string.next));
+                hideHintLayouts();
+            }
+        }
+
+    }
+
+    private void hideHintLayouts() {
+        mBinding.cardViewHints.setVisibility(View.GONE);
+        mBinding.layoutHintButton.setVisibility(View.GONE);
+    }
+
+    private void initializeClickListeners(final Question question) {
+        mBinding.layoutHintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showResource(v.getTag().toString());
-            }
-        };
 
-        hideHintLayout();
+                showNextHint(mHintCounter, question);
 
-        mBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
+                mBinding.scrollView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_DOWN);
+
+                    }
+                });
             }
         });
 
-        mNextButton.setOnClickListener(new View.OnClickListener() {
+        mBinding.buttonDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mIsResponseSubmitted) {
-                    finish();
+                if (mBinding.buttonDone.getText().toString().equals(getString(R.string.submit))) {
+                    submitClickAction(question);
+                } else if (mBinding.buttonDone.getText().toString().equals(getString(R.string.next))) {
+                    nextClickAction();
                 } else {
-                    clickNextAction();
+                    //i.e. on finish
+                    finishClickAction();
                 }
             }
         });
+    }
 
-        if (!mIsAttempt) {
-            mNextButton.setVisibility(View.VISIBLE);
+    /*Prepare quiz post data to send question responses to server*/
+    private QuizResponsePost prepareQuizResponsePostData() {
+        QuizResponsePost quizResponsePost = new QuizResponsePost();
+        quizResponsePost.setQuizId(mQuizId);
+        quizResponsePost.setType(mTypeOfLearning);
+        quizResponsePost.setQuestionResponseList(mQuestionResponses);
+
+        /*If quiz started from rapidLearning/featureCard*/
+        if (!TextUtils.isEmpty(mCardId)) {
+            quizResponsePost.setCardId(mCardId);
+            quizResponsePost.setCourseId(mCourseId);
+            quizResponsePost.setSectionId(mSectionId);
         }
 
-        if (mIsAttempt) {
-            mSubmitButton.setOnClickListener(new View.OnClickListener() {
+        ModuleDetail moduleDetail = new ModuleDetail();
+        moduleDetail.setId(mCourseId);
+        moduleDetail.setCourseType(mCourseType);
+        quizResponsePost.setModuleDetail(moduleDetail);
+
+
+        return quizResponsePost;
+    }
+
+
+    @SuppressLint("CheckResult")
+    private void fetchQuizConfiguration() {
+        if (GeneralUtils.isNetworkAvailable(this)) {
+
+            mProgressDialog = ProgressDialog.show(this, ConstantUtil.BLANK, getString(R.string.messagePleaseWait), false);
+            mProgressDialog.setCancelable(true);
+            mProgressDialog.setCanceledOnTouchOutside(false);
+            mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
-                public void onClick(View v) {
-
-                    clickSubmitAction();
-
+                public void onCancel(DialogInterface dialog) {
+                    onBackPressed();
                 }
             });
-        } else {
-            mSubmitButton.setEnabled(false);
-            mSubmitButton.setVisibility(View.GONE);
-        }
 
-        mPreviousButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickPreviousAction();
-            }
-        });
+            if (!TextUtils.isEmpty(mCourseId) && !TextUtils.isEmpty(mCourseType)) {
+                mPlayerModel.fetchQuizConfiguration(mCourseId, mCourseType)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<QuizConfigurationResponse>() {
+                            @Override
+                            public void accept(QuizConfigurationResponse quizConfigurationResponse) {
 
-        if (mIsAttempt) {
-            mPreviousButton.setVisibility(View.GONE);
-        } else {
-            mPreviousButton.setVisibility(View.VISIBLE);
-        }
-        mPreviousButton.setEnabled(false);
+                                if (quizConfigurationResponse.isAFL() && quizConfigurationResponse.getAFLPoints() > 0) {
+                                    mPointsPerQuestion = quizConfigurationResponse.getAFLPoints();
+                                    mTypeOfLearning = TYPE_ASSESSMENT_FOR_LEARNING;
+                                    fetchQuestions();
+                                } else if (quizConfigurationResponse.isAOL() && quizConfigurationResponse.getAOLPoints() > 0) {
+                                    mPointsPerQuestion = quizConfigurationResponse.getAOLPoints();
+                                    mTypeOfLearning = TYPE_ASSESSMENT_OF_LEARNING;
+                                    fetchQuestions();
+                                } else {
+                                    showAlertDialog(getString(R.string.messageQuizConfigurationNotAvailable));
+                                }
 
-        mHintButtonLayout.setVisibility(View.VISIBLE);
-        mHintButtonLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showNextHint(true);
-            }
-        });
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) {
+                                throwable.printStackTrace();
+                                mProgressDialog.dismiss();
+                                showAlertDialog(getString(R.string.messageQuizConfigurationNotAvailable));
 
-        mQuestionImageView.setOnClickListener(mShowResourceAction);
-
-        mQuestionVideoImageView.setOnClickListener(mShowResourceAction);
-
-
-        mScratchPadDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener() {
-            @Override
-            public void onDrawerOpened() {
-                //  mScratchPadDrawer.findViewById(R.id.content_scratchpad).setVisibility(View.VISIBLE);
-                //mScratchPadDrawer.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-                // mQuestionResourcesGroup.setVisibility(View.INVISIBLE);
-            }
-        });
-        mScratchPadDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener() {
-            @Override
-            public void onDrawerClosed() {
-                // mScratchPadDrawer.findViewById(R.id.content_scratchpad).setVisibility(View.INVISIBLE);
-                //mScratchPadDrawer.setBackground(null);
-                //hideSoftKeyboard();
-                //  mQuestionResourcesGroup.setVisibility(mResourceGroupVisibility);
-            }
-        });
-
-        clearScratchPad.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ScratchPadView scratchPadView = (ScratchPadView) mScratchPadDrawer.findViewById(R.id.scratchpad_view_canvas);
-                scratchPadView.clear();
-            }
-        });
-
-
-    }
-
-    private void initializeImageGetter() {
-
-        mImageGetter = new Html.ImageGetter() {
-            @Override
-            public Drawable getDrawable(String source) {
-                try {
-                    if (!TextUtils.isEmpty(source)) {
-                        return ImageUtils.getDrawableFromPath(getBaseContext().getResources(), source);
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-        };
-
-
-    }
-
-    /**
-     * starts intialization of the quiz
-     *
-     * @param quiz
-     */
-    @Override
-    public void initializeQuiz(Quiz quiz) {
-
-        if (quiz != null && quiz.getQuestions() != null && quiz.getQuestions().size() > 0) {
-            this.initializeResourceFolders(quiz.getMetaInformation().getSubject().getId());
-            mQuiz = quiz;
-            if (mIsAttempt && mAssignmentResponse != null && mAssignmentResponse.getQuizResponses() != null && mAssignmentResponse.getQuizResponses().size() > 0) {
-                mCounterQuestion = mAssignmentResponse.getQuizResponses().size();
-                if (TextUtils.isEmpty(mAssignmentResponse.getQuizResponses().get(mCounterQuestion - 1).getResponse())) {
-                    mCounterQuestion = mCounterQuestion - 1;
-                }
-                if (mCounterQuestion <= 0) {
-                    mCounterQuestion = 0;
-                    loadQuestionList(0);
-
-                } else {
-                    loadQuestionList(mCounterQuestion - 1);
-
-                }
-
+                            }
+                        });
             } else {
-                mCounterQuestion = 0;
-                loadQuestionList(0);
+                showAlertDialog(getString(R.string.messageQuizConfigurationNotAvailable));
             }
 
-            loadQuestion(mCounterQuestion);
-            mQuizTitleTextView.setText(mQuiz.getTitle());
 
-        }
-    }
-
-    /**
-     * loads the number list of the questions at the bottom of the screen
-     */
-    @Override
-    public void loadQuestionList(int size) {
-
-        LayoutInflater layoutInflater = this.getLayoutInflater();
-        int noOfQuestions = mQuiz.getQuestions().size();
-        if (mIsAttempt) {
-            for (int i = 0; i <= size; i++) {
-                int status = 0;
-                try {
-                    status = mAssignmentResponse.getQuizResponses().get(i).getAttempts().get(0).getStatusCode();
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                }
-
-                layoutInflater.inflate(R.layout.layout_response_question_list_item, mQuestionList);
-                TextView textView = (TextView) mQuestionList.getChildAt(i);
-                textView.setText(Integer.toString(i + 1));
-                if (status == 0) {
-                    textView.setBackgroundResource(R.drawable.background_correct_question);
-                } else if (status == 1) {
-                    textView.setBackgroundResource(R.drawable.background_incorrect_question);
-                } else {
-                    textView.setBackgroundResource(R.drawable.background_unanswered_question);
-                }
-                textView.setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
-            }
-
-            for (int i = size + 1; i < noOfQuestions; i++) {
-                layoutInflater.inflate(R.layout.layout_response_question_list_item, mQuestionList);
-                TextView textView = (TextView) mQuestionList.getChildAt(i);
-                textView.setText(Integer.toString(i + 1));
-                textView.setBackgroundResource(R.drawable.background_yet_to_view_question);
-                textView.setTextColor(ContextCompat.getColor(this, R.color.colorGreyDark));
-            }
         } else {
-            if (mQuiz.getQuizType().equals(QuizTypeEnum.SUBJECTIVE.toString())) {
-                for (int i = 0; i < noOfQuestions; i++) {
-                    layoutInflater.inflate(R.layout.layout_response_question_list_item, mQuestionList);
-                    TextView textView = (TextView) mQuestionList.getChildAt(i);
-                    textView.setText(Integer.toString(i + 1));
-                    textView.setBackgroundResource(R.drawable.background_unanswered_question);
-                    textView.setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
-                }
-            } else {
-                for (int i = 0; i < noOfQuestions; i++) {
-                    int status = 0;
-                    try {
-                        status = mAssignmentResponse.getQuizResponses().get(i).getAttempts().get(0).getStatusCode();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                    }
-
-                    layoutInflater.inflate(R.layout.layout_response_question_list_item, mQuestionList);
-                    TextView textView = (TextView) mQuestionList.getChildAt(i);
-                    textView.setText(Integer.toString(i + 1));
-                    if (status == 0) {
-                        textView.setBackgroundResource(R.drawable.background_correct_question);
-                    } else if (status == 1) {
-                        textView.setBackgroundResource(R.drawable.background_incorrect_question);
-                    } else {
-                        textView.setBackgroundResource(R.drawable.background_unanswered_question);
-                    }
-                    textView.setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
-                }
-            }
+            showInternetAlertDialog(ConstantUtil.BLANK);
         }
 
     }
 
+    /*Fetch list of questions for quiz*/
+    @SuppressLint("CheckResult")
+    private void fetchQuestions() {
+        if (GeneralUtils.isNetworkAvailable(this)) {
+            if (mProgressDialog == null) {
+                mProgressDialog = ProgressDialog.show(this, ConstantUtil.BLANK, getString(R.string.messagePleaseWait), false);
+                mProgressDialog.setCancelable(true);
+                mProgressDialog.setCanceledOnTouchOutside(false);
+                mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        onBackPressed();
+                    }
+                });
+            }
+            mPlayerModel.fetchQuestionsForQuiz(mQuizId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<QuizQuestionResponse>() {
+                        @Override
+                        public void accept(QuizQuestionResponse quizQuestionResponse) {
+                            mProgressDialog.dismiss();
 
-    /**
-     * loads the question and its resource thumbnails
-     *
-     * @param counter = question number being shown
-     */
-    @Override
-    public void loadQuestion(int counter) {
-        mMainScrollView.fullScroll(HorizontalScrollView.FOCUS_UP);
-        mCounterHint = 0;
-        mHintSize = mQuiz.getQuestions().get(mCounterQuestion).getQuestionHints().size();
-        mHintCountButton.setText(Integer.toString(mHintSize).trim());
+                            if (quizQuestionResponse != null) {
 
-        if (mHintSize == 0) {
-            mHintButtonLayout.setVisibility(View.GONE);
+                                setValueDefault();
+                                setUpToolbar(quizQuestionResponse.getQuizTitle());
+                                mQuestionList = quizQuestionResponse.getQuestionList();
+                                initializeQuestionUi();
+                            } else {
+                                showAlertDialog(getString(R.string.error_something_went_wrong));
+                            }
+
+
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) {
+                            throwable.printStackTrace();
+                            mProgressDialog.dismiss();
+
+                            showAlertDialog(getString(R.string.error_something_went_wrong));
+                        }
+                    });
+
         } else {
-            mHintButtonLayout.setVisibility(View.VISIBLE);
+            showInternetAlertDialog(ConstantUtil.BLANK);
         }
 
-        if (!mIsAttempt && mCounterQuestion == 0 && mQuiz.getQuizType().equalsIgnoreCase(QuizTypeEnum.OBJECTIVE.toString())) {
-            final int mExplanationType = mQuiz.getQuestions().get(0).getChoiceConfiguration().getQuestionExplanation().getExplanationType();
-            showExplanationView(mExplanationType);
+    }
 
-        } else if (!mIsAttempt && mCounterQuestion > 0 && mQuiz.getQuizType().equalsIgnoreCase(QuizTypeEnum.OBJECTIVE.toString())) {
-            final int mExplanationType = mQuiz.getQuestions().get(mCounterQuestion).getChoiceConfiguration().getQuestionExplanation().getExplanationType();
-            showExplanationView(mExplanationType);
+    /*To submit quiz responses*/
+    @SuppressLint("CheckResult")
+    private void submitQuizResponse() {
+        if (GeneralUtils.isNetworkAvailable(this)) {
+            final ProgressDialog progressDialog = ProgressDialog.show(this, ConstantUtil.BLANK, getString(R.string.message_uploading_response), false);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
+
+            mPlayerModel.submitResponseOfQuiz(prepareQuizResponsePostData())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<QuizResponse>() {
+                        @Override
+                        public void accept(QuizResponse quizResponse) {
+                            progressDialog.dismiss();
+                            if (quizResponse != null) {
+                                mRxBus.send(new QuizCompletedEvent(mQuizId));
+                                // showPracticeEndDialog(quizResponse);
+                                fetchQuizAnalyticsConfiguration(quizResponse);
+                            } else {
+                                showAlertDialog(getString(R.string.error_something_went_wrong));
+                            }
+
+
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) {
+                            throwable.printStackTrace();
+                            progressDialog.dismiss();
+                            showAlertDialog(getString(R.string.error_something_went_wrong));
+                        }
+                    });
+
+        } else {
+            showInternetAlertDialog("submitQuizResponse");
+        }
+    }
+
+
+    /*Show point and streak animation.*/
+    private void addPoints() {
+
+        mTotalScore = mTotalScore + mPointsPerQuestion;
+        mBinding.textViewAddedPoint.setVisibility(View.VISIBLE);
+        mBinding.textViewAddedPoint.setText(String.valueOf(mPointsPerQuestion));
+        SoundUtils.playSound(getBaseContext(), SoundUtils.STREAK);
+
+
+        new FlyObjectAnimationUtil().setAnimationListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                setTotalScore(mTotalScore);
+                AnimationUtils.zoomIn(getBaseContext(), mBinding.imageViewCoin);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        }).startAnimation(mBinding.textViewAddedPoint, mBinding.layoutPoint);
+    }
+
+    /*Set/Reset variables values when new list of questions fetched.*/
+    private void setValueDefault() {
+        mQuestionCounter = 0;
+        if (mStreak > 2) {
+            mStreak = 0;
+        }
+        ArrayList<Integer> streakList = new ArrayList<>();
+    }
+
+    /*Start question timer when question initialize*/
+    private void startTimer() {
+        mBinding.chronometerQuestionTimer.start();
+    }
+
+    /*Setup question counter view when question initialize*/
+    private void setQuestionCounter(int questionCounter) {
+        AnimationUtils.fadeInFast(getBaseContext(), mBinding.scrollView);
+        String counterText = "Question " + questionCounter + "/" + mQuestionList.size();
+        mBinding.textViewQuestionCounter.setText(counterText);
+    }
+
+
+    /*Setup question text view when question initialize*/
+    private void setQuestionText(Question question) {
+
+        mBinding.textViewQuestion.setVisibility(View.VISIBLE);
+
+        ArrayList<Resource> questionResourceList = mPlayerModel.extractResourceListFromText(question.getQuestionText());
+
+        initializeQuestionResourceRecyclerView(questionResourceList);
+
+        setMovementMethod();
+        String questionText;
+
+        if (!TextUtils.isEmpty(question.getQuestionText())) {
+            questionText = question.getQuestionText();
+
+            if (question.getQuestionType().equals(Question.TYPE_DISPLAY_FILL_IN_THE_BLANKS)) {
+                questionText = mPlayerModel.replaceAllCharacter(question.getQuestionText(), ConstantUtil.HTML_INPUT_START_TAG_WITH_SPACE, ConstantUtil.HTML_INPUT_START_TAG_WITH_SPACE_REPLACEMENT);
+            }
+
+            String questionTextFinal = mPlayerModel.cleanHtmlTextForPlayer(questionText);
+            mBinding.textViewQuestion.setText(mPlayerModel.removeTrailingSpace(questionTextFinal));
+
         }
 
-        Question question = mQuiz.getQuestions().get(counter);
-        String questionText = TextViewMore.stripHtml((mCounterQuestion + 1) + ". " + question.getQuestionText());
-        mQuestionText.setText(questionText);
-        mQuestionText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorGreyDark));
-        String resourcePathImage = question.fetchQuestionImage().getDeviceURL();
+    }
+
+    /*Setup question resource view when question initialize*/
+    private void setQuestionResource(Question question) {
+        String resourcePathImage = question.fetchQuestionImage().getUrlMain();
+        String resourcePathVideo = question.fetchQuestionVideo().getUrlMain();
         if (!TextUtils.isEmpty(resourcePathImage)) {
-//            resourcePathImage = mBaseFolder + File.separator + resourcePathImage;
-            mQuestionImageView.setImageBitmap(getScaledBitmapFromPath(this.getResources(), resourcePathImage));
-            mQuestionImageView.setTag(resourcePathImage);
-            mQuestionImageView.setVisibility(View.VISIBLE);
-            res_type_image_layout.setVisibility(View.VISIBLE);
-
+            mBinding.layoutQuestionResource.setVisibility(View.VISIBLE);
+            Picasso.with(getBaseContext()).load(resourcePathImage).into(mBinding.imageViewResourceThumbnail);
+            mBinding.imageViewResourceThumbnail.setTag(question.fetchQuestionImage().getUrlMain());
+            mBinding.imageViewResourceType.setImageResource(R.drawable.action_image_w);
+        } else if (!TextUtils.isEmpty(resourcePathVideo)) {
+            mBinding.layoutQuestionResource.setVisibility(View.VISIBLE);
+            Picasso.with(getBaseContext()).load(resourcePathVideo).into(mBinding.imageViewResourceThumbnail);
+            mBinding.imageViewResourceThumbnail.setTag(question.fetchQuestionImage().getUrlMain());
+            mBinding.imageViewResourceType.setImageResource(R.drawable.action_video_w);
         } else {
-            mQuestionImageView.setVisibility(View.GONE);
-            res_type_image_layout.setVisibility(View.GONE);
+            mBinding.layoutQuestionResource.setVisibility(View.GONE);
         }
 
-        String resourcePathVideo = question.fetchQuestionVideo().getDeviceURL();
+        mBinding.imageViewResourceThumbnail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showResource(mBinding.imageViewResourceThumbnail.getTag().toString());
+            }
+        });
 
-        if (!TextUtils.isEmpty(resourcePathVideo)) {
-//            resourcePathVideo = mBaseFolder + File.separator + resourcePathVideo;
-            mQuestionVideoImageView.setImageBitmap(getScaledBitmapFromPath(this.getResources(), resourcePathVideo));
-            mQuestionVideoImageView.setTag(resourcePathVideo);
-            mQuestionVideoImageView.setVisibility(View.VISIBLE);
-            res_type_video_layout.setVisibility(View.VISIBLE);
+    }
+
+    /*Question Resource Recycler View*/
+    private void initializeQuestionResourceRecyclerView(ArrayList<Resource> questionResourceList) {
+        if (!questionResourceList.isEmpty()) {
+            mBinding.listQuestionResource.setLayoutManager(null);
+            mBinding.listQuestionResource.setAdapter(null);
+            mBinding.listQuestionResource.setVisibility(View.VISIBLE);
+            FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getBaseContext());
+            mBinding.listQuestionResource.setLayoutManager(layoutManager);
+            mBinding.listQuestionResource.setAdapter(new QuestionResourceAdapter(getBaseContext(), questionResourceList));
         } else {
-            mQuestionVideoImageView.setVisibility(View.GONE);
-            res_type_video_layout.setVisibility(View.GONE);
-
+            mBinding.listQuestionResource.setVisibility(View.GONE);
         }
+    }
 
-        if (mQuestionVideoImageView.getVisibility() != View.VISIBLE && mQuestionImageView.getVisibility() != View.VISIBLE) {
-            mResourceGroupVisibility = View.INVISIBLE;
+    /*Explanation Resource Recycler View*/
+    private void initializeExplanationResourceRecyclerView(ArrayList<Resource> explanationResourceList) {
+        if (!explanationResourceList.isEmpty()) {
+            mBinding.listExplanationResource.setLayoutManager(null);
+            mBinding.listExplanationResource.setAdapter(null);
+            mBinding.listExplanationResource.setVisibility(View.VISIBLE);
+            FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getBaseContext());
+            mBinding.listExplanationResource.setLayoutManager(layoutManager);
+            mBinding.listExplanationResource.setAdapter(new QuestionResourceAdapter(getBaseContext(), explanationResourceList));
         } else {
-            mResourceGroupVisibility = View.VISIBLE;
-        }
-        mQuestionResourcesGroup.setVisibility(mResourceGroupVisibility);
-
-        loadResponseView();
-
-        if (mIsAttempt) {
-
-            //resetCurrentQuestionStartTime();
-        }
-
-        if (!mIsAttempt) {
-            if (mQuiz.getQuestions().size() == 1) {
-                mNextButton.setImageResource(R.drawable.next_g);
-                mSubmitButton.setVisibility(View.GONE);
-                mPreviousButton.setVisibility(View.GONE);
-            }
-            if (mQuiz.getQuestions().size() > 1) {
-                if (counter == 0) {
-                    mPreviousButton.setVisibility(View.GONE);
-                } else {
-                    mPreviousButton.setVisibility(View.VISIBLE);
-                }
-            }
-
-            if (mAssignmentResponse != null && mAssignmentResponse.getQuizResponses() != null
-                    && mAssignmentResponse.getQuizResponses().size() > counter
-                    && mAssignmentResponse.getQuizResponses().get(counter) != null
-                    && mAssignmentResponse.getQuizResponses().get(counter).getAttempts().size() > 0) {
-                Attempt attempt = mAssignmentResponse.getQuizResponses().get(counter).getAttempts().get(0);
-                mHintButtonLayout.setVisibility(View.GONE);
-                int totalHints = question.getQuestionHints().size();
-                int usedHints = mAssignmentResponse.getQuizResponses().get(counter).getHintUsed();
-                int unusedHints = totalHints - usedHints;
-                long timeTaken = attempt.getTimeTaken();
-
-                mBinding.textViewTimeTaken.setText(DateUtils.convertSecondToHourMinuteSecond(timeTaken));
-
-                if (usedHints == 0) {
-                    mBinding.layoutHintUsed.setVisibility(View.GONE);
-                } else {
-                    mBinding.layoutHintUsed.setVisibility(View.VISIBLE);
-                    mBinding.layoutAllHint.setVisibility(View.GONE);
-                    showUsedHints(usedHints, question);
-                }
-                if (unusedHints == 0) {
-                    mBinding.layoutHintUnused.setVisibility(View.GONE);
-                } else {
-                    mBinding.layoutHintUnused.setVisibility(View.VISIBLE);
-                    mBinding.layoutAllHint.setVisibility(View.GONE);
-                    showUnusedHints(usedHints, question);
-                }
-
-            } else {
-                mBinding.textViewTimeTaken.setVisibility(View.GONE);
-                mBinding.layoutHintUsed.setVisibility(View.GONE);
-                mBinding.layoutHintUnused.setVisibility(View.GONE);
-                mHintButtonLayout.setVisibility(View.GONE);
-                mBinding.layoutAllHint.setVisibility(View.VISIBLE);
-                showAllHints(0, question);
-
-            }
-
-        } else {
-            mQuestionList.getChildAt(mCounterQuestion).setBackgroundResource(R.drawable.background_unanswered_question);
-            ((TextView) mQuestionList.getChildAt(mCounterQuestion)).setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
-            if (mAssignmentResponse != null && mAssignmentResponse.getQuizResponses().size() > mCounterQuestion && TextUtils.isEmpty(mAssignmentResponse.getQuizResponses().get(counter).getResponse())) {
-                Attempt attempt = mAssignmentResponse.getQuizResponses().get(counter).getAttempts().get(0);
-                int usedHints = mAssignmentResponse.getQuizResponses().get(counter).getHintUsed();
-                long timeTaken = attempt.getTimeTaken();
-                resetCurrentQuestionStartTime(timeTaken);
-                for (int i = 0; i < usedHints; i++) {
-                    showNextHint(false);
-                }
-
-//                if (usedHints == 0) {
-//                    mBinding.layoutAllHint.setVisibility(View.GONE);
-//                } else if (usedHints == totalHints) {
-//                    mBinding.layoutAllHint.setVisibility(View.VISIBLE);
-//                    mHintButtonLayout.setVisibility(View.GONE);
-//                    showAllHints(usedHints, question);
-//                } else {
-//                    mBinding.layoutHintUsed.setVisibility(View.GONE);
-//                    mBinding.layoutHintUnused.setVisibility(View.GONE);
-//                    mBinding.layoutAllHint.setVisibility(View.VISIBLE);
-//                    showAllHints(usedHints, question);
-//                    mHintCountButton.setText(String.valueOf(unusedHints));
-//                }
-//                if (unusedHints == 0) {
-//                    mBinding.layoutHintUnused.setVisibility(View.GONE);
-//                } else {
-//                    mBinding.layoutHintUnused.setVisibility(View.VISIBLE);
-//                    mBinding.layoutAllHint.setVisibility(View.GONE);
-//                    showUnusedHints(usedHints, question);
-//                }
-            } else {
-                resetCurrentQuestionStartTime(0);
-            }
-
+            mBinding.listExplanationResource.setVisibility(View.GONE);
         }
     }
 
-    private void showUsedHints(int usedHints, Question question) {
-        int totalHints = question.getQuestionHints().size();
-        if (usedHints <= totalHints) {
-            for (int i = 0; i < usedHints; i++) {
-                QuestionHint questionHint = question.getQuestionHints().get(i);
-                String mTotalHint = String.valueOf(totalHints);
-                int mFinalCounterHint = i + 1;
-                String mCurrentHint = String.valueOf(mFinalCounterHint);
-                if (!questionHint.getHintText().isEmpty()) {
-                    this.getLayoutInflater().inflate(R.layout.layout_response_hint_text, mBinding.layoutDrawUsedHints);
-                    LinearLayout mLayout = (LinearLayout) mBinding.layoutDrawUsedHints.getChildAt(mBinding.layoutDrawUsedHints.getChildCount() - 1);
-                    TextView mHintTextView = (TextView) mLayout.findViewById(R.id.text_view_hint);
 
-                    final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                    if (mFinalCounterHint >= 10) {
-                        mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                    } else {
-                        mHintCounterTextView.setPadding(8, 0, 8, 0);
-                    }
-                    mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                    String hintSpanned = TextViewMore.stripHtml(questionHint.getHintText());
-                    mHintTextView.setText(hintSpanned);
-                    mHintTextView.setMaxLines(Integer.MAX_VALUE);
-                    mHintTextView.setVerticalScrollBarEnabled(true);
-                    mHintTextView.setMovementMethod(new ScrollingMovementMethod());
-                } else {
-                    String resourcePath = /*mBaseFolder + File.separator + */questionHint.getHintResource().getDeviceURL();
-                    String mimeType = URLConnection.guessContentTypeFromName(resourcePath);
-                    if (!TextUtils.isEmpty(mimeType) && mimeType.contains("image")) {
-                        this.getLayoutInflater().inflate(R.layout.layout_response_hint_image_thumbnail, mBinding.layoutDrawUsedHints);
-                        LinearLayout mLayout = (LinearLayout) mBinding.layoutDrawUsedHints.getChildAt(mBinding.layoutDrawUsedHints.getChildCount() - 1);
-                        final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                        if (mFinalCounterHint >= 10) {
-                            mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                        } else {
-                            mHintCounterTextView.setPadding(8, 0, 8, 0);
-                        }
-                        mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                        RelativeLayout mImageThumbnailLayout = (RelativeLayout) mLayout.getChildAt(mLayout.getChildCount() - 1);
-                        ImageView imageView = ((ImageView) mImageThumbnailLayout.findViewById(R.id.imageview_hint_image));
-                        imageView.setImageBitmap(getScaledBitmapFromPath(this.getResources(), resourcePath));
-                        imageView.setOnClickListener(mShowResourceAction);
-                        imageView.setTag(resourcePath);
+    /*Setup choice view when question initialize*/
+    @SuppressLint("ClickableViewAccessibility")
+    private void setChoicesView(final Question question) {
 
-                    } else if (!TextUtils.isEmpty(mimeType) && mimeType.contains("video")) {
-                        this.getLayoutInflater().inflate(R.layout.layout_response_hint_video_thumbnail, mBinding.layoutDrawUsedHints);
-                        LinearLayout mLayout = (LinearLayout) mBinding.layoutDrawUsedHints.getChildAt(mBinding.layoutDrawUsedHints.getChildCount() - 1);
-                        final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                        if (mFinalCounterHint >= 10) {
-                            mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                        } else {
-                            mHintCounterTextView.setPadding(8, 0, 8, 0);
-                        }
-                        mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                        RelativeLayout mVideoThumbnailLayout = (RelativeLayout) mLayout.getChildAt(mLayout.getChildCount() - 1);
-                        ImageView imageView = ((ImageView) mVideoThumbnailLayout.findViewById(R.id.imageview_hint_video));
-                        imageView.setImageBitmap(getScaledBitmapFromPath(this.getResources(), resourcePath));
-                        imageView.setOnClickListener(mShowResourceAction);
-                        imageView.setTag(resourcePath);
-
-                    }
-
-                }
-            }
-        }
-    }
-
-    private void showUnusedHints(int usedHints, Question question) {
-        int totalHints = question.getQuestionHints().size();
-        if (usedHints <= totalHints) {
-            for (int i = usedHints; i < totalHints; i++) {
-                QuestionHint questionHint = question.getQuestionHints().get(i);
-                String mTotalHint = String.valueOf(totalHints);
-                int mFinalCounterHint = i + 1;
-                String mCurrentHint = String.valueOf(mFinalCounterHint);
-                if (!questionHint.getHintText().isEmpty()) {
-                    this.getLayoutInflater().inflate(R.layout.layout_response_hint_text, mBinding.layoutDrawUnusedHints);
-                    LinearLayout mLayout = (LinearLayout) mBinding.layoutDrawUnusedHints.getChildAt(mBinding.layoutDrawUnusedHints.getChildCount() - 1);
-                    TextView mHintTextView = (TextView) mLayout.findViewById(R.id.text_view_hint);
-
-                    final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                    if (mFinalCounterHint >= 10) {
-                        mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                    } else {
-                        mHintCounterTextView.setPadding(8, 0, 8, 0);
-                    }
-                    mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                    String hintSpanned = TextViewMore.stripHtml(questionHint.getHintText());
-                    mHintTextView.setText(hintSpanned);
-                    mHintTextView.setMaxLines(Integer.MAX_VALUE);
-                    mHintTextView.setVerticalScrollBarEnabled(true);
-                    mHintTextView.setMovementMethod(new ScrollingMovementMethod());
-                } else {
-                    String resourcePath = /*mBaseFolder + File.separator + */questionHint.getHintResource().getDeviceURL();
-                    String mimeType = URLConnection.guessContentTypeFromName(resourcePath);
-                    if (!TextUtils.isEmpty(mimeType) && mimeType.contains("image")) {
-                        this.getLayoutInflater().inflate(R.layout.layout_response_hint_image_thumbnail, mBinding.layoutDrawUnusedHints);
-                        LinearLayout mLayout = (LinearLayout) mBinding.layoutDrawUnusedHints.getChildAt(mBinding.layoutDrawUnusedHints.getChildCount() - 1);
-                        final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                        if (mFinalCounterHint >= 10) {
-                            mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                        } else {
-                            mHintCounterTextView.setPadding(8, 0, 8, 0);
-                        }
-                        mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                        RelativeLayout mImageThumbnailLayout = (RelativeLayout) mLayout.getChildAt(mLayout.getChildCount() - 1);
-                        ImageView imageView = ((ImageView) mImageThumbnailLayout.findViewById(R.id.imageview_hint_image));
-                        imageView.setImageBitmap(getScaledBitmapFromPath(this.getResources(), resourcePath));
-                        imageView.setOnClickListener(mShowResourceAction);
-                        imageView.setTag(resourcePath);
-
-                    } else if (!TextUtils.isEmpty(mimeType) && mimeType.contains("video")) {
-                        this.getLayoutInflater().inflate(R.layout.layout_response_hint_video_thumbnail, mBinding.layoutDrawUnusedHints);
-                        LinearLayout mLayout = (LinearLayout) mBinding.layoutDrawUnusedHints.getChildAt(mBinding.layoutDrawUnusedHints.getChildCount() - 1);
-                        final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                        if (mFinalCounterHint >= 10) {
-                            mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                        } else {
-                            mHintCounterTextView.setPadding(8, 0, 8, 0);
-                        }
-                        mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                        RelativeLayout mVideoThumbnailLayout = (RelativeLayout) mLayout.getChildAt(mLayout.getChildCount() - 1);
-                        ImageView imageView = ((ImageView) mVideoThumbnailLayout.findViewById(R.id.imageview_hint_video));
-                        imageView.setImageBitmap(getScaledBitmapFromPath(this.getResources(), resourcePath));
-                        imageView.setOnClickListener(mShowResourceAction);
-                        imageView.setTag(resourcePath);
-
-                    }
-
-                }
-            }
-        }
-
-    }
-
-    private void showAllHints(int usedHints, Question question) {
-        int totalHints = question.getQuestionHints().size();
-        if (usedHints <= totalHints) {
-            for (int i = 0; i < usedHints; i++) {
-                QuestionHint questionHint = question.getQuestionHints().get(i);
-                String mTotalHint = String.valueOf(totalHints);
-                int mFinalCounterHint = i + 1;
-                String mCurrentHint = String.valueOf(mFinalCounterHint);
-                if (!questionHint.getHintText().isEmpty()) {
-                    this.getLayoutInflater().inflate(R.layout.layout_response_hint_text, mBinding.layoutDrawAllHints);
-                    LinearLayout mLayout = (LinearLayout) mBinding.layoutDrawAllHints.getChildAt(mBinding.layoutDrawAllHints.getChildCount() - 1);
-                    TextView mHintTextView = (TextView) mLayout.findViewById(R.id.text_view_hint);
-
-                    final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                    if (mFinalCounterHint >= 10) {
-                        mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                    } else {
-                        mHintCounterTextView.setPadding(8, 0, 8, 0);
-                    }
-                    mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                    String hintSpanned = TextViewMore.stripHtml(questionHint.getHintText());
-                    mHintTextView.setText(hintSpanned);
-                    mHintTextView.setMaxLines(Integer.MAX_VALUE);
-                    mHintTextView.setVerticalScrollBarEnabled(true);
-                    mHintTextView.setMovementMethod(new ScrollingMovementMethod());
-                } else {
-                    String resourcePath = /*mBaseFolder + File.separator + */questionHint.getHintResource().getDeviceURL();
-                    String mimeType = URLConnection.guessContentTypeFromName(resourcePath);
-                    if (!TextUtils.isEmpty(mimeType) && mimeType.contains("image")) {
-                        this.getLayoutInflater().inflate(R.layout.layout_response_hint_image_thumbnail, mBinding.layoutDrawAllHints);
-                        LinearLayout mLayout = (LinearLayout) mBinding.layoutDrawAllHints.getChildAt(mBinding.layoutDrawAllHints.getChildCount() - 1);
-                        final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                        if (mFinalCounterHint >= 10) {
-                            mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                        } else {
-                            mHintCounterTextView.setPadding(8, 0, 8, 0);
-                        }
-                        mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                        RelativeLayout mImageThumbnailLayout = (RelativeLayout) mLayout.getChildAt(mLayout.getChildCount() - 1);
-                        ImageView imageView = ((ImageView) mImageThumbnailLayout.findViewById(R.id.imageview_hint_image));
-                        imageView.setImageBitmap(getScaledBitmapFromPath(this.getResources(), resourcePath));
-                        imageView.setOnClickListener(mShowResourceAction);
-                        imageView.setTag(resourcePath);
-
-                    } else if (!TextUtils.isEmpty(mimeType) && mimeType.contains("video")) {
-                        this.getLayoutInflater().inflate(R.layout.layout_response_hint_video_thumbnail, mBinding.layoutDrawAllHints);
-                        LinearLayout mLayout = (LinearLayout) mBinding.layoutDrawAllHints.getChildAt(mBinding.layoutDrawAllHints.getChildCount() - 1);
-                        final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                        if (mFinalCounterHint >= 10) {
-                            mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                        } else {
-                            mHintCounterTextView.setPadding(8, 0, 8, 0);
-                        }
-                        mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                        RelativeLayout mVideoThumbnailLayout = (RelativeLayout) mLayout.getChildAt(mLayout.getChildCount() - 1);
-                        ImageView imageView = ((ImageView) mVideoThumbnailLayout.findViewById(R.id.imageview_hint_video));
-                        imageView.setImageBitmap(getScaledBitmapFromPath(this.getResources(), resourcePath));
-                        imageView.setOnClickListener(mShowResourceAction);
-                        imageView.setTag(resourcePath);
-
-                    }
-
-                }
-            }
-        } else if (usedHints == 0) {
-            for (int i = 0; i < totalHints; i++) {
-                QuestionHint questionHint = question.getQuestionHints().get(i);
-                String mTotalHint = String.valueOf(totalHints);
-                int mFinalCounterHint = i + 1;
-                String mCurrentHint = String.valueOf(mFinalCounterHint);
-                if (!questionHint.getHintText().isEmpty()) {
-                    this.getLayoutInflater().inflate(R.layout.layout_response_hint_text, mBinding.layoutDrawAllHints);
-                    LinearLayout mLayout = (LinearLayout) mBinding.layoutDrawAllHints.getChildAt(mBinding.layoutDrawAllHints.getChildCount() - 1);
-                    TextView mHintTextView = (TextView) mLayout.findViewById(R.id.text_view_hint);
-
-                    final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                    if (mFinalCounterHint >= 10) {
-                        mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                    } else {
-                        mHintCounterTextView.setPadding(8, 0, 8, 0);
-                    }
-                    mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                    String hintSpanned = TextViewMore.stripHtml(questionHint.getHintText());
-                    mHintTextView.setText(hintSpanned);
-                    mHintTextView.setMaxLines(Integer.MAX_VALUE);
-                    mHintTextView.setVerticalScrollBarEnabled(true);
-                    mHintTextView.setMovementMethod(new ScrollingMovementMethod());
-                } else {
-                    String resourcePath = /*mBaseFolder + File.separator + */questionHint.getHintResource().getDeviceURL();
-                    String mimeType = URLConnection.guessContentTypeFromName(resourcePath);
-                    if (!TextUtils.isEmpty(mimeType) && mimeType.contains("image")) {
-                        this.getLayoutInflater().inflate(R.layout.layout_response_hint_image_thumbnail, mBinding.layoutDrawAllHints);
-                        LinearLayout mLayout = (LinearLayout) mBinding.layoutDrawAllHints.getChildAt(mBinding.layoutDrawAllHints.getChildCount() - 1);
-                        final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                        if (mFinalCounterHint >= 10) {
-                            mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                        } else {
-                            mHintCounterTextView.setPadding(8, 0, 8, 0);
-                        }
-                        mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                        RelativeLayout mImageThumbnailLayout = (RelativeLayout) mLayout.getChildAt(mLayout.getChildCount() - 1);
-                        ImageView imageView = ((ImageView) mImageThumbnailLayout.findViewById(R.id.imageview_hint_image));
-                        imageView.setImageBitmap(getScaledBitmapFromPath(this.getResources(), resourcePath));
-                        imageView.setOnClickListener(mShowResourceAction);
-                        imageView.setTag(resourcePath);
-
-                    } else if (!TextUtils.isEmpty(mimeType) && mimeType.contains("video")) {
-                        this.getLayoutInflater().inflate(R.layout.layout_response_hint_video_thumbnail, mBinding.layoutDrawAllHints);
-                        LinearLayout mLayout = (LinearLayout) mBinding.layoutDrawAllHints.getChildAt(mBinding.layoutDrawAllHints.getChildCount() - 1);
-                        final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                        if (mFinalCounterHint >= 10) {
-                            mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                        } else {
-                            mHintCounterTextView.setPadding(8, 0, 8, 0);
-                        }
-                        mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                        RelativeLayout mVideoThumbnailLayout = (RelativeLayout) mLayout.getChildAt(mLayout.getChildCount() - 1);
-                        ImageView imageView = ((ImageView) mVideoThumbnailLayout.findViewById(R.id.imageview_hint_video));
-                        imageView.setImageBitmap(getScaledBitmapFromPath(this.getResources(), resourcePath));
-                        imageView.setOnClickListener(mShowResourceAction);
-                        imageView.setTag(resourcePath);
-
-                    }
-
-                }
-            }
-        }
-
-
-    }
-
-    /**
-     * reset question time
-     */
-    private void resetCurrentQuestionStartTime(long offsetSeconds) {
-        mCurrentQuestionStartTime = DateUtils.getCurrentTimeInSeconds() - offsetSeconds;
-    }
-
-    /**
-     * populates the response section with appropriate choices
-     */
-    @Override
-    public void loadResponseView() {
-
-        Question question = mQuiz.getQuestions().get(mCounterQuestion);
         String questionType = question.getQuestionType();
-        boolean isChoiceTypeImage = question.getChoiceTypeImage();
-
-        mResponseLayout.removeAllViews();
+        ArrayList<QuestionChoice> questionChoices = question.getQuestionChoices();
 
         LayoutInflater layoutInflater = this.getLayoutInflater();
+        mBinding.textViewQuestionType.setVisibility(View.VISIBLE);
+        mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_UP);
 
-        if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_RADIO)) {
-            ArrayList<QuestionChoice> questionChoices = question.getQuestionChoices();
-            layoutInflater.inflate(R.layout.layout_response_mcq_single_correct, mResponseLayout);
-            RadioGroup radioGroup = (RadioGroup) mResponseLayout.findViewById(R.id.radio_group_response);
+        if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_RADIO) || questionType.equalsIgnoreCase("trueFalse")) {
 
-            if (isChoiceTypeImage) {
-                char choiceNumber = 'A';
-                for (final QuestionChoice questionChoice : questionChoices) {
-                    layoutInflater.inflate(R.layout.layout_response_item_mcq_single_correct, radioGroup);
-                    RadioButton choice = (RadioButton) radioGroup.getChildAt(radioGroup.getChildCount() - 1);
-                    choice.setClickable(mIsAttempt);
-                    choice.setAlpha(1f);
-                    choice.setText(choiceNumber + ". ");
-                    if (!mIsAttempt && questionChoice.isChoiceCorrect()) {
-                        choice.setTextColor(ContextCompat.getColor(this, R.color.colorGreenDark));
+            layoutInflater.inflate(R.layout.layout_response_mcq_single_correct, mBinding.layoutChoices);
+            RadioGroup radioGroup = mBinding.layoutChoices.findViewById(R.id.radio_group_response);
 
-                    } else {
-                        choice.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorGreyDark));
+            mBinding.layoutChoices.setVisibility(View.VISIBLE);
+            mBinding.recyclerView.setVisibility(View.GONE);
+            mBinding.textViewQuestionType.setText(getString(R.string.single_correct));
 
-                    }
-                    choice.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, getDrawableFromPath(this.getResources(), /*mBaseFolder + File.separator*/ questionChoice.getChoiceResource().getDeviceURL()), null);
-                    choice.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-                            String path = /*mBaseFolder + File.separator*/ questionChoice.getChoiceResource().getDeviceURL();
-                            showResource(path);
-                            return false;
-                        }
-                    });
-                    choice.setTag(questionChoice.isChoiceCorrect());
-                    choiceNumber++;
+            for (final QuestionChoice questionChoice : questionChoices) {
+
+                layoutInflater.inflate(R.layout.layout_practice_response_item_mcq_single_correct, radioGroup);
+                final RadioButtonCustom choice = (RadioButtonCustom) radioGroup.getChildAt(radioGroup.getChildCount() - 1);
+
+                final String thumbUrl, mainUrl;
+
+                if (!TextUtils.isEmpty(questionChoice.getChoiceText())
+                        && questionChoice.getChoiceText().contains(ConstantUtil.HTML_IMAGE_START_TAG)
+                        && questionChoice.getChoiceText().contains(ConstantUtil.HTML_IMAGE_SRC_TAG)) {
+
+                    String choiceImageUrl = mPlayerModel.getStringFromHtmlTextAfterTagRemoval(questionChoice.getChoiceText(),
+                            ConstantUtil.HTML_IMAGE_SRC_TAG, ConstantUtil.HTML_DOUBLE_QUOTE);
+
+                    thumbUrl = choiceImageUrl;
+                    mainUrl = choiceImageUrl;
+
+
+                } else {
+                    thumbUrl = questionChoice.getChoiceResource().getUrlMain();
+                    mainUrl = questionChoice.getChoiceResource().getUrlMain();
                 }
-            } else {
-                char choiceNumber = 'A';
-                for (QuestionChoice questionChoice : questionChoices) {
-                    layoutInflater.inflate(R.layout.layout_response_item_mcq_single_correct, radioGroup);
-                    RadioButton choice = (RadioButton) radioGroup.getChildAt(radioGroup.getChildCount() - 1);
-                    choice.setClickable(mIsAttempt);
-                    choice.setAlpha(1f);
-                    String choiceText = TextViewMore.stripHtml(choiceNumber + ". " + questionChoice.getChoiceText());
-                    choice.setText(choiceText);
-                    if (!mIsAttempt && questionChoice.isChoiceCorrect()) {
-                        choice.setTextColor(ContextCompat.getColor(this, R.color.colorGreenDark));
-                        choice.setTextSize(18);
-                        choice.setTypeface(null, Typeface.BOLD);
-                    } else {
-                        choice.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorGreyDark));
-                    }
-                    choice.setTag(questionChoice.isChoiceCorrect());
-                    choiceNumber++;
+
+
+                if (!TextUtils.isEmpty(questionChoice.getChoiceText())) {
+
+                    String choiceTextFinal = mPlayerModel.cleanHtmlTextForPlayer(questionChoice.getChoiceText());
+                    choice.setText(mPlayerModel.removeTrailingSpace(choiceTextFinal));
+
                 }
+
+                choice.setClickable(true);
+                choice.setAlpha(1f);
+                choice.setTag(questionChoice.isChoiceCorrect());
+
+                if (!TextUtils.isEmpty(thumbUrl) && !TextUtils.isEmpty(mainUrl)) {
+                    Picasso.with(getBaseContext())
+                            .load(thumbUrl)
+                            .resize(ConstantUtil.CHOICE_IMAGE_MAX_WIDTH, 0)
+                            .into(choice);
+                }
+
             }
-            if (!mIsAttempt) {
-                int i = 0;
-                try {
-                    i = Integer.valueOf(mAssignmentResponse.getQuizResponses().get(mCounterQuestion).getAttempts().get(0).getSubmittedAnswer().get(0));
-                    RadioButton radioButton = (RadioButton) radioGroup.getChildAt(i);
-                    radioButton.setChecked(true);
-                    if (mAssignmentResponse.getQuizResponses().get(mCounterQuestion).getAttempts().get(0).getStatusCode() == 1) {
-                        radioButton.setTextColor(ContextCompat.getColor(this, R.color.colorRed));
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+
+
         } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_CHECKBOX)) {
-            ArrayList<QuestionChoice> questionChoices = question.getQuestionChoices();
 
-            if (isChoiceTypeImage) {
-                char choiceNumber = 'A';
-                for (final QuestionChoice questionChoice : questionChoices) {
-                    layoutInflater.inflate(R.layout.layout_response_item_mcq_multiple_correct, mResponseLayout);
-                    CheckBox choice = (CheckBox) mResponseLayout.getChildAt(mResponseLayout.getChildCount() - 1);
-                    choice.setClickable(mIsAttempt);
-                    choice.setAlpha(1f);
-                    choice.setText(choiceNumber + ". ");
-                    if (!mIsAttempt && questionChoice.isChoiceCorrect()) {
-                        choice.setTextColor(ContextCompat.getColor(this, R.color.colorGreenDark));
-                    } else {
-                        choice.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorGreyDark));
-                    }
-                    choice.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, getDrawableFromPath(this.getResources(), /*mBaseFolder + File.separator*/ questionChoice.getChoiceResource().getDeviceURL()), null);
-                    choice.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-                            String path = /*mBaseFolder + File.separator*/ questionChoice.getChoiceResource().getDeviceURL();
-                            showResource(path);
-                            return false;
-                        }
-                    });
-                    choice.setTag(questionChoice.isChoiceCorrect());
-                    choiceNumber++;
+            mBinding.layoutChoices.setVisibility(View.VISIBLE);
+            mBinding.recyclerView.setVisibility(View.GONE);
+            mBinding.textViewQuestionType.setText(getString(R.string.multiple_correct));
+
+            for (final QuestionChoice questionChoice : questionChoices) {
+
+                layoutInflater.inflate(R.layout.layout_practice_response_item_mcq_multiple_correct, mBinding.layoutChoices);
+                CheckBoxCustom choice = (CheckBoxCustom) mBinding.layoutChoices.getChildAt(mBinding.layoutChoices.getChildCount() - 1);
+
+                final String thumbUrl, mainUrl;
+
+                if (!TextUtils.isEmpty(questionChoice.getChoiceText())
+                        && questionChoice.getChoiceText().contains(ConstantUtil.HTML_IMAGE_START_TAG)
+                        && questionChoice.getChoiceText().contains(ConstantUtil.HTML_IMAGE_SRC_TAG)) {
+
+                    String choiceImageUrl = mPlayerModel.getStringFromHtmlTextAfterTagRemoval(questionChoice.getChoiceText(),
+                            ConstantUtil.HTML_IMAGE_SRC_TAG, ConstantUtil.HTML_DOUBLE_QUOTE);
+
+                    thumbUrl = choiceImageUrl;
+                    mainUrl = choiceImageUrl;
+
+
+                } else {
+                    thumbUrl = questionChoice.getChoiceResource().getUrlMain();
+                    mainUrl = questionChoice.getChoiceResource().getUrlMain();
                 }
-            } else {
-                char choiceNumber = 'A';
-                for (QuestionChoice questionChoice : questionChoices) {
-                    layoutInflater.inflate(R.layout.layout_response_item_mcq_multiple_correct, mResponseLayout);
-                    CheckBox choice = (CheckBox) mResponseLayout.getChildAt(mResponseLayout.getChildCount() - 1);
-                    choice.setClickable(mIsAttempt);
-                    choice.setAlpha(1f);
-                    String choiceText = TextViewMore.stripHtml(choiceNumber + ". " + questionChoice.getChoiceText());
-                    choice.setText(choiceText);
-                    if (!mIsAttempt && questionChoice.isChoiceCorrect()) {
-                        choice.setTextColor(ContextCompat.getColor(this, R.color.colorGreenDark));
-                        choice.setTextSize(18);
-                        choice.setTypeface(null, Typeface.BOLD);
-                    } else {
-                        choice.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorGreyDark));
-                    }
-                    choice.setTag(questionChoice.isChoiceCorrect());
-                    choiceNumber++;
+
+
+                if (!TextUtils.isEmpty(questionChoice.getChoiceText())) {
+                    String choiceTextFinal = mPlayerModel.cleanHtmlTextForPlayer(questionChoice.getChoiceText());
+                    choice.setText(mPlayerModel.removeTrailingSpace(choiceTextFinal));
+
+
                 }
+
+                choice.setClickable(true);
+                choice.setAlpha(1f);
+                choice.setTag(questionChoice.isChoiceCorrect());
+
+                if (!TextUtils.isEmpty(thumbUrl) && !TextUtils.isEmpty(mainUrl)) {
+                    Picasso.with(getBaseContext())
+                            .load(thumbUrl)
+                            .resize(ConstantUtil.CHOICE_IMAGE_MAX_WIDTH, 0)
+                            .into(choice);
+                }
+
+
             }
-            if (!mIsAttempt) {
-                for (String s : mAssignmentResponse.getQuizResponses().get(mCounterQuestion).getAttempts().get(0).getSubmittedAnswer()) {
-                    int i = 0;
-                    try {
-                        i = Integer.valueOf(s);
-                        CheckBox checkBox = (CheckBox) mResponseLayout.getChildAt(i);
-                        checkBox.setChecked(true);
-                        checkBox.setClickable(false);
-                        checkBox.setEnabled(false);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+
+        } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_FILL_IN_THE_BLANKS)) {
+
+            mBinding.layoutChoices.setVisibility(View.VISIBLE);
+            mBinding.recyclerView.setVisibility(View.GONE);
+
+            mBinding.textViewQuestionType.setText(getString(R.string.fill_the_blanks));
+            ArrayList<String> inputTypeList = mPlayerModel.getStringListFromHtmlText(question.getQuestionText(), "<input ", "/>");
+            ArrayList<String> fillTheBlankChoiceList = new ArrayList<>();
+
+            for (int i = 0; i < inputTypeList.size(); i++) {
+                fillTheBlankChoiceList.add(mPlayerModel.getStringFromHtmlTextAfterTagRemoval(inputTypeList.get(i),
+                        ConstantUtil.HTML_VALUE_TAG, ConstantUtil.HTML_DOUBLE_QUOTE));
+            }
+
+            for (String questionChoice : fillTheBlankChoiceList) {
+                layoutInflater.inflate(R.layout.layout_fill_the_blanks, mBinding.layoutChoices);
+                final EditText choice = (EditText) mBinding.layoutChoices.getChildAt(mBinding.layoutChoices.getChildCount() - 1);
+                choice.setTag(questionChoice);
+                choice.setOnTouchListener(new View.OnTouchListener() {
+
+                    public boolean onTouch(View v, MotionEvent event) {
+                        choice.setSelection(choice.getText().toString().length());
+                        choice.requestFocus();
+                        choice.requestFocusFromTouch();
+                        return false;
                     }
-
-                }
+                });
             }
-        } else if (questionType.equalsIgnoreCase(Question.TYPE_QUESTION_SUBJECTIVE)) {
-            layoutInflater.inflate(R.layout.layout_response_subjective, mResponseLayout);
-            EditText editText = (EditText) mResponseLayout.findViewById(R.id.edit_text_response_subjective);
 
-            if (!mIsAttempt) {
-                String response = "";
-                try {
-                    response = mAssignmentResponse.getQuizResponses().get(mCounterQuestion).getAttempts().get(0).getSubmittedAnswer().get(0);
-                } catch (Exception e) {
+        } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_MATCH_THE_FOLLOWING)) {
 
-                }
-                editText.setText(response);
-                editText.setEnabled(false);
-                editText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorGreyDark));
-                editText.setAlpha(1.0f);
-            }
+            setMatchTheFollowingView(question.getQuestionObject());
+
+        } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_DROPDOWN)) {
+
+            setDropdownQuestionView(question, true);
+
+        } else {
+            mBinding.textViewQuestionType.setVisibility(View.INVISIBLE);
+        }
+
+
+    }
+
+
+    private void setDropdownQuestionView(Question question, boolean isAttempt) {
+
+        if (question.getQuestionPartList() != null && !question.getQuestionPartList().isEmpty()) {
+            mBinding.textViewQuestionType.setText(getString(R.string.fill_the_dropdown));
+            mBinding.textViewQuestion.setVisibility(View.GONE);
+            mBinding.layoutMatchTheFollowingContainer.layoutMTF.setVisibility(View.GONE);
+            mBinding.recyclerView.setVisibility(View.VISIBLE);
+            mBinding.layoutChoices.setVisibility(View.GONE);
+
+            mBinding.recyclerView.setLayoutManager(new FlexboxLayoutManager(getBaseContext()));
+            mBinding.recyclerView.setNestedScrollingEnabled(false);
+            mDropdownAdapter = new DropdownAdapter(getBaseContext(), question.getQuestionPartList(), isAttempt);
+            mBinding.recyclerView.setAdapter(mDropdownAdapter);
+
+        } else {
+            showAlertDialog(getString(R.string.quiz_force_close));
         }
     }
 
+    @SuppressLint("CheckResult")
+    private void setMatchTheFollowingView(final Object questionObject) {
+
+        mBinding.textViewQuestionType.setText(getString(R.string.match_the_following));
+        mBinding.textViewQuestion.setVisibility(View.GONE);
+        mBinding.layoutChoices.setVisibility(View.GONE);
+        mBinding.recyclerView.setVisibility(View.GONE);
+        mBinding.layoutMatchTheFollowingContainer.layoutMTF.setVisibility(View.VISIBLE);
+
+        Observable.create(new ObservableOnSubscribe<QuestionTypeMatchTheFollowing>() {
+            @Override
+            public void subscribe(ObservableEmitter<QuestionTypeMatchTheFollowing> emitter) throws Exception {
+
+                Gson gson = new Gson();
+                JsonObject jsonObject = gson.toJsonTree(questionObject).getAsJsonObject();
+                String json = jsonObject.toString();
+                QuestionTypeMatchTheFollowing matchTheFollowing = gson.fromJson(json, QuestionTypeMatchTheFollowing.class);
+
+                emitter.onNext(matchTheFollowing);
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<QuestionTypeMatchTheFollowing>() {
+                    @Override
+                    public void accept(QuestionTypeMatchTheFollowing matchTheFollowing) throws Exception {
+                        mBinding.layoutMatchTheFollowingContainer.textViewA.setText(matchTheFollowing.getEntityName());
+                        mBinding.layoutMatchTheFollowingContainer.textViewB.setText(matchTheFollowing.getPlaceHolderName());
+
+                        ArrayList<MatchingContent> matchingContentList = matchTheFollowing.getMatchingContentList();
+                        for (int i = 0; i < matchingContentList.size(); i++) {
+                            matchingContentList.get(i).setId(i);
+                            matchingContentList.get(i).setColor(CommonUtils.getInstance().generateRandomColor());
+                        }
+
+                        ArrayList<MatchingContent> questionChoicesA = matchTheFollowing.getMatchingContentList();
+                        ArrayList<MatchingContent> questionChoicesB = new ArrayList<>(matchingContentList);
+                        Collections.shuffle(questionChoicesB);
+                        mBinding.layoutMatchTheFollowingContainer.recyclerViewMTF.setLayoutManager(new GridLayoutManager(getBaseContext(), 2));
+                        mMatchTheFollowingChoiceAdapter = new MatchTheFollowingChoiceAdapter(getBaseContext(), questionChoicesA, questionChoicesB, true);
+                        mBinding.layoutMatchTheFollowingContainer.recyclerViewMTF.setAdapter(mMatchTheFollowingChoiceAdapter);
+                        mBinding.layoutMatchTheFollowingContainer.recyclerViewMTF.setNestedScrollingEnabled(false);
+                        mBinding.layoutMatchTheFollowingContainer.recyclerViewMTF.setOnDragListener(new ChoiceDragListener());
+                        mBinding.layoutMatchTheFollowingContainer.recyclerViewMTF.setTag(matchTheFollowing.getMatchingContentList().size());
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
+                });
+    }
+
+    /*Setup hint view when question initialize*/
+    private void setHintView(Question question) {
+
+        if (mTypeOfLearning.equalsIgnoreCase(TYPE_ASSESSMENT_FOR_LEARNING)) {
+            if (question.getQuestionHints() != null && !question.getQuestionHints().isEmpty()) {
+                int hintSize = question.getQuestionHints().size();
+
+                String hintCounterText = "0/" + hintSize;
+                mBinding.textHintCounter.setText(hintCounterText);
+                mBinding.layoutHintButton.setVisibility(View.VISIBLE);
+            } else {
+                mBinding.layoutHintButton.setVisibility(View.GONE);
+            }
+        } else {
+            mBinding.layoutHintButton.setVisibility(View.GONE);
+        }
+
+
+    }
+
+    /*Show next hint in hint layout, if hint available else show message.*/
+    private void showNextHint(int hintCounter, Question question) {
+        int hintSize = question.getQuestionHints().size();
+        if (hintCounter == hintSize) {
+            showSnackBar(getString(R.string.no_more_hints));
+        } else {
+            final QuestionHint questionHint = question.getQuestionHints().get(hintCounter);
+            int finalCounterHint = hintCounter + 1;
+            String currentHint = String.valueOf(finalCounterHint);
+            String totalHints = String.valueOf(hintSize);
+
+            if (mBinding.cardViewHints.getVisibility() == View.GONE) {
+                AnimationUtils.pushUpEnter(getBaseContext(), mBinding.cardViewHints);
+                mBinding.cardViewHints.setVisibility(View.VISIBLE);
+            }
+
+            if (!TextUtils.isEmpty(questionHint.getHintText())) {
+                this.getLayoutInflater().inflate(R.layout.layout_practice_response_hint_text, mBinding.layoutHints);
+                LinearLayout layout = (LinearLayout) mBinding.layoutHints.getChildAt(mBinding.layoutHints.getChildCount() - 1);
+                TextView hintTextView = layout.findViewById(R.id.text_view_hint);
+                RecyclerView hintResourceRecyclerView = layout.findViewById(R.id.listHintResource);
+
+                final TextView hintCounterTextView = layout.findViewById(R.id.text_view_hint_counter);
+                String hintCounterText = currentHint + "/" + totalHints;
+                hintCounterTextView.setText(hintCounterText);
+
+                ArrayList<Resource> hintResourceList = mPlayerModel.extractResourceListFromText(questionHint.getHintText());
+
+                initializeHintResourceRecyclerView(hintResourceRecyclerView, hintResourceList);
+
+                String hintTextFinal = mPlayerModel.cleanHtmlTextForPlayer(questionHint.getHintText());
+
+                CharSequence hintCharSequence = mPlayerModel.removeTrailingSpace(hintTextFinal);
+                if (!TextUtils.isEmpty(hintCharSequence)) {
+                    hintTextView.setVisibility(View.VISIBLE);
+                    hintTextView.setText(hintCharSequence);
+                } else {
+                    hintTextView.setVisibility(View.GONE);
+                }
+
+
+                hintTextView.setMaxLines(Integer.MAX_VALUE);
+                hintTextView.setVerticalScrollBarEnabled(true);
+                hintTextView.setMovementMethod(new ScrollingMovementMethod());
+                setMovementMethod();
+
+            } else {
+
+                final String resourcePath = questionHint.getHintResource().getUrlMain();
+                String mimeType = URLConnection.guessContentTypeFromName(resourcePath);
+
+                if (!TextUtils.isEmpty(mimeType) && mimeType.contains("image")) {
+                    this.getLayoutInflater().inflate(R.layout.layout_practice_response_hint_image_thumbnail, mBinding.layoutHints);
+                    LinearLayout mLayout = (LinearLayout) mBinding.layoutHints.getChildAt(mBinding.layoutHints.getChildCount() - 1);
+                    final TextView hintCounterTextView = mLayout.findViewById(R.id.text_view_hint_counter);
+                    String hintCounterText = currentHint + "/" + totalHints;
+                    hintCounterTextView.setText(hintCounterText);
+                    RelativeLayout layout = (RelativeLayout) mLayout.getChildAt(mLayout.getChildCount() - 1);
+                    ImageView imageView = layout.findViewById(R.id.imageview_hint_image);
+                    Picasso.with(getBaseContext()).load(resourcePath).into(imageView);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showResource(questionHint.getHintResource().getUrlMain());
+                        }
+                    });
+
+                } else if (!TextUtils.isEmpty(mimeType) && mimeType.contains("video")) {
+
+                    this.getLayoutInflater().inflate(R.layout.layout_practice_response_hint_video_thumbnail, mBinding.layoutHints);
+                    LinearLayout mLayout = (LinearLayout) mBinding.layoutHints.getChildAt(mBinding.layoutHints.getChildCount() - 1);
+                    final TextView hintCounterTextView = mLayout.findViewById(R.id.text_view_hint_counter);
+                    String hintCounterText = currentHint + "/" + totalHints;
+                    hintCounterTextView.setText(hintCounterText);
+                    RelativeLayout layout = (RelativeLayout) mLayout.getChildAt(mLayout.getChildCount() - 1);
+                    ImageView imageView = layout.findViewById(R.id.imageview_hint_video);
+                    Picasso.with(getBaseContext()).load(resourcePath).into(imageView);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showResource(questionHint.getHintResource().getUrlMain());
+                        }
+                    });
+
+                }
+
+
+            }
+            mHintCounter++;
+            String hintCounterText = mHintCounter + "/" + hintSize;
+            mBinding.textHintCounter.setText(hintCounterText);
+        }
+    }
+
+    private void initializeHintResourceRecyclerView(RecyclerView hintResourceRecyclerView, ArrayList<Resource> resourceList) {
+        if (!resourceList.isEmpty()) {
+            hintResourceRecyclerView.setLayoutManager(null);
+            hintResourceRecyclerView.setAdapter(null);
+            hintResourceRecyclerView.setVisibility(View.VISIBLE);
+            FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getBaseContext());
+            hintResourceRecyclerView.setLayoutManager(layoutManager);
+            hintResourceRecyclerView.setAdapter(new QuestionResourceAdapter(getBaseContext(), resourceList));
+        } else {
+            hintResourceRecyclerView.setVisibility(View.GONE);
+        }
+    }
+
+    /*Show explanation view if question contains, after submitting the current question response.*/
+    private void showExplanation(final Question question) {
+
+        if ((question.getChoiceConfiguration().getQuestionExplanation() != null
+                && !TextUtils.isEmpty(question.getChoiceConfiguration().getQuestionExplanation().getExplanationText()))
+                || !TextUtils.isEmpty(question.getExplanation())) {
+
+            String explanationText = question.getChoiceConfiguration().getQuestionExplanation().getExplanationText();
+
+            if (TextUtils.isEmpty(explanationText)) {
+                explanationText = question.getExplanation();
+            }
+
+            if (!TextUtils.isEmpty(explanationText)) {
+
+                ArrayList<Resource> explanationResourceList = mPlayerModel.extractResourceListFromText(explanationText);
+                initializeExplanationResourceRecyclerView(explanationResourceList);
+
+                mBinding.layoutExplanation.setVisibility(View.VISIBLE);
+                mBinding.textViewExplanationText.setVisibility(View.VISIBLE);
+
+                AnimationUtils.pushUpEnter(getBaseContext(), mBinding.layoutExplanation);
+
+
+                String explanationTextFinal = mPlayerModel.cleanHtmlTextForPlayer(explanationText);
+                mBinding.textViewExplanationText.setText(mPlayerModel.removeTrailingSpace(explanationTextFinal));
+
+
+                mBinding.scrollView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_DOWN);
+                    }
+                });
+
+            } else {
+                mBinding.layoutExplanation.setVisibility(View.GONE);
+            }
+
+        } else {
+            String resourcePath = question.getChoiceConfiguration().getQuestionExplanation().getExplanationResource().getThumb();
+            if (TextUtils.isEmpty(resourcePath)) {
+                resourcePath = question.getChoiceConfiguration().getQuestionExplanation().getExplanationResource().getUrlMain();
+            }
+            if (!TextUtils.isEmpty(resourcePath)) {
+                mBinding.layoutExplanation.setVisibility(View.VISIBLE);
+                mBinding.layoutExplanationResource.setVisibility(View.VISIBLE);
+                AnimationUtils.pushUpEnter(getBaseContext(), mBinding.layoutExplanation);
+                String mimeType = URLConnection.guessContentTypeFromName(resourcePath);
+                Picasso.with(getBaseContext()).load(resourcePath).into(mBinding.imageViewExplanationThumbnail);
+                if (!TextUtils.isEmpty(mimeType) && mimeType.contains("image")) {
+                    mBinding.imageViewExplanationType.setImageResource(R.drawable.action_image_w);
+                } else if (!TextUtils.isEmpty(mimeType) && mimeType.contains("video")) {
+                    mBinding.imageViewExplanationType.setImageResource(R.drawable.action_video_w);
+                }
+
+                mBinding.scrollView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_DOWN);
+
+                    }
+                });
+
+                mBinding.imageViewExplanationThumbnail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showResource(question.getChoiceConfiguration().getQuestionExplanation().getExplanationResource().getUrlMain());
+                    }
+                });
+
+
+            } else {
+                mBinding.layoutExplanation.setVisibility(View.GONE);
+
+            }
+        }
+
+        setMovementMethod();
+    }
+
+    /*Submit click action*/
+    private void submitClickAction(Question question) {
+
+        if (question.getQuestionType().equalsIgnoreCase(Question.TYPE_DISPLAY_RADIO)
+                || question.getQuestionType().equalsIgnoreCase(Question.TYPE_DISPLAY_TRUE_FALSE)
+                || question.getQuestionType().equalsIgnoreCase(Question.TYPE_DISPLAY_CHECKBOX)) {
+
+            if (getSubmittedAnswerFromView(false, question).size() > 0) {
+                mUserAttemptPerQuestion++;
+                Attempt attempt = new Attempt();
+                attempt.setSubmittedAnswer(getSubmittedAnswerFromView(true, question));
+                boolean isCorrectResponse = mPlayerModel.checkCorrectness(question, attempt);
+
+                if (isCorrectResponse) {
+
+                    mTotalCorrect++;
+                    mStreak++;
+                    resetTotalInCorrectCounter();
+                    setStreakView(mTotalCorrect);
+                    addAttemptToList(attempt, true);
+                    setResponseView(true);
+                    showExplanation(question);
+
+                    generateQuestionResponse(Boolean.toString(true), question, mHintCounter, mAttemptList);
+
+                } else {
+
+                    if (mUserAttemptPerQuestion < mMaxAttemptLimitPerQuestion) {
+
+                        addAttemptToList(attempt, false);
+
+                    } else {
+
+                        mTotalInCorrect++;
+
+                        setStreakView(mTotalCorrect);
+                        showExplanation(question);
+
+                        addAttemptToList(attempt, false);
+
+                        generateQuestionResponse(Boolean.toString(false), question, mHintCounter, mAttemptList);
+
+                    }
+                    setResponseView(false);
+                    resetTotalCorrectCounter();
+
+                }
+
+                setViewAfterQuestionAttempt(isCorrectResponse);
+
+            } else {
+                mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_UP);
+                showSnackBar(getString(R.string.enter_response));
+            }
+
+        } else if (question.getQuestionType().equalsIgnoreCase(Question.TYPE_DISPLAY_FILL_IN_THE_BLANKS)) {
+            if (!getSubmittedAnswerFromView(false, question).isEmpty()) {
+                Attempt attempt = new Attempt();
+                attempt.setSubmittedAnswer(getSubmittedAnswerFromView(true, question));
+                mUserAttemptPerQuestion++;
+
+                boolean isCorrectResponse = mPlayerModel.checkBlankCorrectness(mBinding.layoutChoices);
+
+                if (isCorrectResponse) {
+                    mTotalCorrect++;
+                    resetTotalInCorrectCounter();
+                    attempt.setStatusCode(Attempt.TYPE_STATUS_CODE_CORRECT);
+                    setResponseView(true);
+                    setStreakView(mTotalCorrect);
+                    addAttemptToList(attempt, true);
+                } else {
+                    mTotalInCorrect++;
+                    resetTotalCorrectCounter();
+                    attempt.setStatusCode(Attempt.TYPE_STATUS_CODE_INCORRECT);
+                    setResponseView(false);
+                    setStreakView(mTotalCorrect);
+                    addAttemptToList(attempt, false);
+                }
+
+                setViewAfterQuestionAttempt(isCorrectResponse);
+                showExplanation(question);
+
+                attempt.setSubmissionDateTime(DateUtils.getISO8601DateStringFromSeconds(DateUtils.getCurrentTimeInSeconds()));
+                attempt.setHintsAvailed(mHintCounter);
+                attempt.setTimeTaken(SystemClock.elapsedRealtime() - mBinding.chronometerQuestionTimer.getBase());
+                generateQuestionResponse(Boolean.toString(isCorrectResponse), question, mHintCounter, mAttemptList);
+            } else {
+                mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_UP);
+                showSnackBar(getString(R.string.please_fill_all_the_blanks));
+            }
+        } else if (question.getQuestionType().equalsIgnoreCase(Question.TYPE_DISPLAY_MATCH_THE_FOLLOWING)) {
+            if (!getSubmittedAnswerFromView(false, question).isEmpty()) {
+
+                mTotalCorrect++;
+                resetTotalInCorrectCounter();
+                setResponseView(true);
+                setStreakView(mTotalCorrect);
+
+                setViewAfterQuestionAttempt(true);
+                showExplanation(question);
+                generateQuestionResponse(Boolean.toString(true), question, mHintCounter, mAttemptList);
+            } else {
+                mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_UP);
+                showSnackBar(getString(R.string.please_match_all_entities));
+            }
+        } else if (question.getQuestionType().equalsIgnoreCase(Question.TYPE_DISPLAY_DROPDOWN)) {
+            if (!getSubmittedAnswerFromView(false, question).isEmpty()) {
+                mUserAttemptPerQuestion++;
+                Attempt attempt = new Attempt();
+                attempt.setSubmittedAnswer(getSubmittedAnswerFromView(true, question));
+
+                if (mDropdownAdapter != null) {
+                    boolean isCorrectResponse = mPlayerModel.checkDropdownCorrectness(mDropdownAdapter.getResponseList());
+                    if (isCorrectResponse) {
+
+                        mTotalCorrect++;
+                        mStreak++;
+                        resetTotalInCorrectCounter();
+                        setStreakView(mTotalCorrect);
+                        addAttemptToList(attempt, true);
+                        setResponseView(true);
+                        showExplanation(question);
+                        setDropdownQuestionView(question, false);
+
+                        generateQuestionResponse(Boolean.toString(true), question, mHintCounter, mAttemptList);
+
+                    } else {
+
+                        if (mUserAttemptPerQuestion < mMaxAttemptLimitPerQuestion) {
+
+                            addAttemptToList(attempt, false);
+
+                        } else {
+
+                            mTotalInCorrect++;
+
+                            setStreakView(mTotalCorrect);
+
+                            showExplanation(question);
+
+                            addAttemptToList(attempt, false);
+
+                            setDropdownQuestionView(question, false);
+
+                            generateQuestionResponse(Boolean.toString(false), question, mHintCounter, mAttemptList);
+
+                        }
+                        setResponseView(false);
+                        resetTotalCorrectCounter();
+
+                    }
+                    setViewAfterQuestionAttempt(isCorrectResponse);
+
+                } else {
+                    showSnackBar(getString(R.string.practice_force_close));
+                }
+
+            } else {
+                mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_UP);
+                showSnackBar(getString(R.string.please_fill_all_the_dropdown));
+            }
+        }
+
+
+    }
+
+    /*To add each attempt in attempt list*/
+    private void addAttemptToList(Attempt attempt, boolean isCorrectResponse) {
+        if (isCorrectResponse) {
+            attempt.setStatusCode(Attempt.TYPE_STATUS_CODE_CORRECT);
+        } else {
+            attempt.setStatusCode(Attempt.TYPE_STATUS_CODE_INCORRECT);
+        }
+        if (mUserAttemptPerQuestion == 1) {
+            mTotalTimeAttempted = SystemClock.elapsedRealtime() - mBinding.chronometerQuestionTimer.getBase();
+            attempt.setTimeTaken(SystemClock.elapsedRealtime() - mBinding.chronometerQuestionTimer.getBase());
+        } else {
+            long time = SystemClock.elapsedRealtime() - mBinding.chronometerQuestionTimer.getBase() - mTotalTimeAttempted;
+            mTotalTimeAttempted = mTotalTimeAttempted + time;
+            attempt.setTimeTaken(time);
+        }
+        attempt.setSubmissionDateTime(DateUtils.getISO8601DateStringFromSeconds(DateUtils.getCurrentTimeInSeconds()));
+        attempt.setHintsAvailed(mHintCounter);
+
+        mAttemptList.add(attempt);
+
+    }
+
+    /*Next button click action*/
+    private void nextClickAction() {
+
+        if (mQuestionList.size() > mQuestionCounter) {
+            initializeQuestionUi();
+            mBinding.scrollView.fullScroll(NestedScrollView.FOCUS_UP);
+        }
+    }
+
+    /*Get streak size*/
+    private int getStreakSize() {
+        if (mTotalCorrect != 0) {
+            return mTotalCorrect;
+        } else {
+            return mTotalInCorrect;
+        }
+    }
+
+    /*Click action of done button*/
+    private void finishClickAction() {
+
+        submitQuizResponse();
+
+    }
+
+    /*Reset correct question counter and streak counter, when a total incorrect question is greater then 0*/
+    private void resetTotalCorrectCounter() {
+        mTotalCorrect = 0;
+        mStreak = 0;
+    }
+
+    /*Reset incorrect question counter, when a total correct question is greater then 0*/
+    private void resetTotalInCorrectCounter() {
+        mTotalInCorrect = 0;
+    }
+
     /**
-     * prepares the dialog box to show the resource
-     *
-     * @param resourcePath
+     * send true if response is correct
+     * send false if response is incorrect
      */
-    @Override
+    private void setResponseView(boolean response) {
+
+        mBinding.layoutPlayerResponseForUser.layoutQuestionResponse.setVisibility(View.VISIBLE);
+        AnimationUtils.pushUpEnter(getBaseContext(), mBinding.layoutPlayerResponseForUser.layoutQuestionResponse);
+
+        if (response) {
+
+            int randomIndex = new Random().nextInt(mCorrectMessages.length);
+            String message = mCorrectMessages[randomIndex];
+            mBinding.layoutPlayerResponseForUser.textViewQuestionResponse.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorGreenDark));
+            mBinding.layoutPlayerResponseForUser.textViewQuestionResponse.setText(message);
+            mBinding.layoutPlayerResponseForUser.imageViewMascotCorrectResponse.setVisibility(View.VISIBLE);
+            mBinding.layoutPlayerResponseForUser.imageViewMascotWrongResponse.setVisibility(View.GONE);
+//            mBinding.lottie.setAnimation("lottie_success.json");
+            SoundUtils.playSound(getBaseContext(), SoundUtils.QUIZ_CORRECT_ANSWER);
+            addPoints();
+
+
+        } else {
+
+            int randomIndex = new Random().nextInt(mInCorrectMessages.length);
+            String message = mInCorrectMessages[randomIndex];
+            mBinding.layoutPlayerResponseForUser.textViewQuestionResponse.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorLNRed));
+            mBinding.layoutPlayerResponseForUser.textViewQuestionResponse.setText(message);
+            mBinding.layoutPlayerResponseForUser.imageViewMascotCorrectResponse.setVisibility(View.GONE);
+            mBinding.layoutPlayerResponseForUser.imageViewMascotWrongResponse.setVisibility(View.VISIBLE);
+            SoundUtils.playSound(getBaseContext(), SoundUtils.QUIZ_INCORRECT_ANSWER);
+//            mBinding.lottie.setAnimation("lottie_failed.json");
+
+        }
+
+//        mBinding.lottie.playAnimation();
+
+        Handler hold = new Handler();
+        hold.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+
+                AnimationUtils.pushDownExit(getBaseContext(), mBinding.layoutPlayerResponseForUser.layoutQuestionResponse);
+                mBinding.layoutPlayerResponseForUser.layoutQuestionResponse.setVisibility(View.GONE);
+
+            }
+        }, ConstantUtil.PLAYER_RESPONSE_DURATION);
+    }
+
+    /*Set streak count, for ui it a continuously correct answer count.*/
+    private void setStreakView(int streak) {
+
+        mBinding.textViewStreak.setText(String.valueOf(streak));
+
+
+    }
+
+    /*Show question resource in full view.*/
     public void showResource(String resourcePath) {
 
         String mimeType = URLConnection.guessContentTypeFromName(resourcePath);
         if (mimeType != null) {
             if (mimeType.contains("image")) {
-                ArrayList<String> pathArrayList = new ArrayList<>();
-                pathArrayList.add("file://" + resourcePath);
-                FullScreenImage.setUpFullImageView(this, 0, false, false, FullScreenImage.getResourceArrayList(pathArrayList));
+                startActivity(PlayFullScreenImageActivity.getStartIntent(getBaseContext(), resourcePath, true));
 
             } else if (mimeType.contains("video")) {
-
                 Resource item = new Resource();
                 item.setType("video");
                 item.setUrlMain(resourcePath);
-                startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(getBaseContext(), PlayVideoFullScreenActivity.NETWORK_TYPE_LOCAL, (Resource) item));
+                startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(getBaseContext(), PlayVideoFullScreenActivity.NETWORK_TYPE_LOCAL, item));
             }
         }
 
 
     }
 
-    /**
-     * shows the next_white hint
-     *
-     * @param save
-     */
-    @Override
-    public void showNextHint(boolean save) {
-        KeyBoardUtil.hideSoftKeyboard(getCurrentFocus(), this);
-        showHintLayout();
+    /*Method to get list of submitted answer from the dynamically created choice views*/
+    private ArrayList<String> getSubmittedAnswerFromView(boolean isSubmission, Question question) {
 
-        if (mHintCountButton.getText().toString().trim().equals("0")) {
-            ToastUtils.showToastAlert(QuizPlayerActivity.this, getResources().getString(R.string.no_hint));
-            mHintCountButton.setEnabled(false);
-            mHintCountButton.setClickable(false);
-        } else {
-
-            int remainingHints = mHintSize - mCounterHint;
-            mHintCountButton.setText(String.valueOf(remainingHints - 1));
-            mHintCountButton.setEnabled(true);
-            mHintCountButton.setClickable(true);
-        }
-
-        if (mCounterHint < mQuiz.getQuestions().get(mCounterQuestion).getQuestionHints().size()) {
-            QuestionHint questionHint = mQuiz.getQuestions().get(mCounterQuestion).getQuestionHints().get(mCounterHint);
-            String mTotalHint = String.valueOf(mHintSize);
-            int mFinalCounterHint = mCounterHint + 1;
-            String mCurrentHint = String.valueOf(mFinalCounterHint);
-            if (!questionHint.getHintText().isEmpty()) {
-                this.getLayoutInflater().inflate(R.layout.layout_response_hint_text, mHintGroupLayout);
-                LinearLayout mLayout = (LinearLayout) mHintGroupLayout.getChildAt(mHintGroupLayout.getChildCount() - 1);
-                TextView mHintTextView = (TextView) mLayout.findViewById(R.id.text_view_hint);
-
-                final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                if (mFinalCounterHint >= 10) {
-                    mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                } else {
-                    mHintCounterTextView.setPadding(8, 0, 8, 0);
-                }
-                mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                String hintSpanned = TextViewMore.stripHtml(questionHint.getHintText());
-                mHintTextView.setText(hintSpanned);
-                mHintTextView.setMaxLines(Integer.MAX_VALUE);
-                mHintTextView.setVerticalScrollBarEnabled(true);
-                mHintTextView.setMovementMethod(new ScrollingMovementMethod());
-            } else {
-                String resourcePath = /*mBaseFolder + File.separator*/ questionHint.getHintResource().getDeviceURL();
-                String mimeType = URLConnection.guessContentTypeFromName(resourcePath);
-                if (!TextUtils.isEmpty(mimeType) && mimeType.contains("image")) {
-                    this.getLayoutInflater().inflate(R.layout.layout_response_hint_image_thumbnail, mHintGroupLayout);
-                    LinearLayout mLayout = (LinearLayout) mHintGroupLayout.getChildAt(mHintGroupLayout.getChildCount() - 1);
-                    final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                    if (mFinalCounterHint >= 10) {
-                        mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                    } else {
-                        mHintCounterTextView.setPadding(8, 0, 8, 0);
-                    }
-                    mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                    RelativeLayout mImageThumbnailLayout = (RelativeLayout) mLayout.getChildAt(mLayout.getChildCount() - 1);
-                    ImageView imageView = ((ImageView) mImageThumbnailLayout.findViewById(R.id.imageview_hint_image));
-                    imageView.setImageBitmap(getScaledBitmapFromPath(this.getResources(), resourcePath));
-                    imageView.setOnClickListener(mShowResourceAction);
-                    imageView.setTag(resourcePath);
-
-                } else if (!TextUtils.isEmpty(mimeType) && mimeType.contains("video")) {
-                    this.getLayoutInflater().inflate(R.layout.layout_response_hint_video_thumbnail, mHintGroupLayout);
-                    LinearLayout mLayout = (LinearLayout) mHintGroupLayout.getChildAt(mHintGroupLayout.getChildCount() - 1);
-                    final TextView mHintCounterTextView = (TextView) mLayout.findViewById(R.id.text_view_hint_counter);
-                    if (mFinalCounterHint >= 10) {
-                        mHintCounterTextView.setPadding(0 - 4, 0, 8, 0);
-                    } else {
-                        mHintCounterTextView.setPadding(8, 0, 8, 0);
-                    }
-                    mHintCounterTextView.setText(mCurrentHint + "/" + mTotalHint);
-                    RelativeLayout mVideoThumbnailLayout = (RelativeLayout) mLayout.getChildAt(mLayout.getChildCount() - 1);
-                    ImageView imageView = ((ImageView) mVideoThumbnailLayout.findViewById(R.id.imageview_hint_video));
-                    imageView.setImageBitmap(getScaledBitmapFromPath(this.getResources(), resourcePath));
-                    imageView.setOnClickListener(mShowResourceAction);
-                    imageView.setTag(resourcePath);
-
-                }
-
-            }
-            mCounterHint++;
-            if (save) {
-                Attempt attempt = new Attempt();
-                attempt.setTimeTaken(DateUtils.getCurrentTimeInSeconds() - mCurrentQuestionStartTime);
-                updateCurrentQuestionResponse(attempt, "", mCounterHint);
-            }
-        }
-    }
-
-    private void updateCurrentQuestionResponse(Attempt attempt, String response, int counterHint) {
-        Question question = mQuiz.getQuestions().get(mCounterQuestion);
-        if (mAssignmentResponse.getQuizResponses().size() <= mCounterQuestion) {
-            QuestionResponse quizResponse = new QuestionResponse();
-            quizResponse.setOrder(mCounterQuestion);
-            quizResponse.setQid(question.getUidQuestion());
-            mAssignmentResponse.getQuizResponses().add(mCounterQuestion, quizResponse);
-        }
-
-        QuestionResponse quizResponse = mAssignmentResponse.getQuizResponses().get(mCounterQuestion);
-        quizResponse.setHintUsed(counterHint);
-        attempt.setHintsAvailed(counterHint);
-        if (quizResponse.getAttempts().size() <= 0) {
-            quizResponse.addAttempt(attempt);
-        } else {
-            quizResponse.getAttempts().set(0, attempt);
-        }
-
-        if (!TextUtils.isEmpty(response)) {
-            quizResponse.setResponse(response);
-        }
-        mQuizPreviewModel.saveAssignmentResponseLocally(mAssignmentResponse);
-    }
-
-
-    /**
-     * get response object from view data
-     *
-     * @return
-     */
-    @Override
-    public ArrayList<String> getSubmittedAnswerFromView() {
-
-        String questionType = mQuiz.getQuestions().get(mCounterQuestion).getQuestionType();
-        ArrayList<String> responseString = new ArrayList<>();
-
-        if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_RADIO)) {
-            RadioGroup radioGroup = (RadioGroup) mResponseLayout.findViewById(R.id.radio_group_response);
+        String questionType = question.getQuestionType();
+        ArrayList<String> choiceResponses = new ArrayList<>();
+        if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_RADIO) || questionType.equalsIgnoreCase("trueFalse")) {
+            RadioGroup radioGroup = mBinding.layoutChoices.findViewById(R.id.radio_group_response);
             int count = radioGroup.getChildCount();
             for (int i = 0; i < count; i++) {
-                if (((RadioButton) radioGroup.getChildAt(i)).isChecked()) {
-                    responseString.add(String.valueOf(i));
+                RadioButton view = ((RadioButton) radioGroup.getChildAt(i));
+                if (view.isChecked()) {
+                    choiceResponses.add(String.valueOf(i));
+                }
+                if (isSubmission) {
+
+                    Drawable drawable;
+
+                    if (view.isChecked() && !(boolean) view.getTag()) {
+                        drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_selected_incorrect);
+
+                    } else {
+                        if ((boolean) view.getTag()) {
+                            drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_selected_correct);
+                        } else {
+                            drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_unselected);
+                        }
+                    }
+
+                    view.setBackground(drawable);
+                    view.setEnabled(false);
                 }
             }
         } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_CHECKBOX)) {
-            int count = mResponseLayout.getChildCount();
+            int count = mBinding.layoutChoices.getChildCount();
 
             for (int i = 0; i < count; i++) {
-                if (((CheckBox) mResponseLayout.getChildAt(i)).isChecked()) {
-                    responseString.add(String.valueOf(i));
+                CheckBox view = ((CheckBox) mBinding.layoutChoices.getChildAt(i));
+                if (view.isChecked()) {
+                    choiceResponses.add(String.valueOf(i));
+                }
+
+                if (isSubmission) {
+
+                    Drawable drawable;
+
+                    if (view.isChecked() && !(boolean) view.getTag()) {
+                        drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_selected_incorrect);
+
+                    } else {
+                        if ((boolean) view.getTag()) {
+                            drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_selected_correct);
+                        } else {
+                            drawable = ContextCompat.getDrawable(getBaseContext(), R.drawable.background_choice_unselected);
+                        }
+                    }
+
+                    view.setBackground(drawable);
+                    view.setEnabled(false);
                 }
             }
 
+        } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_FILL_IN_THE_BLANKS)) {
+            int count = mBinding.layoutChoices.getChildCount();
 
-        } else if (questionType.equalsIgnoreCase(Question.TYPE_QUESTION_SUBJECTIVE)) {
-            EditText editText = (EditText) mResponseLayout.findViewById(R.id.edit_text_response_subjective);
-            if (editText.getText() != null && !editText.getText().toString().isEmpty()) {
-                responseString.add(editText.getText().toString());
-            }
-
-        }
-
-        return responseString;
-    }
-
-    /**
-     * action for submit click
-     */
-    @Override
-    public void clickSubmitAction() {
-        KeyBoardUtil.hideSoftKeyboard(getCurrentFocus(), this);
-        if (mIsAttempt) {
-
-            Attempt attempt = new Attempt();
-            attempt.setSubmittedAnswer(getSubmittedAnswerFromView());
-            int errorType = mQuizPreviewModel.validateAttempt(attempt);
-
-            if (errorType == QuizPreviewModel.VALIDATION_NO_ERROR) {
-                long currentQuestionEndTime = DateUtils.getCurrentTimeInSeconds();
-                mSubmitButton.setVisibility(View.GONE);
-                mNextButton.setVisibility(View.VISIBLE);
-
-                final int mExplanationType = mQuiz.getQuestions().get(0).getChoiceConfiguration().getQuestionExplanation().getExplanationType();
-
-                showExplanationView(mExplanationType);
-
-                if (mCounterQuestion == mQuiz.getQuestions().size() - 1) {
-                    mNextButton.setImageResource(R.drawable.exit_g);
-
+            for (int i = 0; i < count; i++) {
+                EditText view = ((EditText) mBinding.layoutChoices.getChildAt(i));
+                if (!view.getText().toString().trim().isEmpty()) {
+                    choiceResponses.add(view.getText().toString().trim());
                 } else {
-                    mNextButton.setImageResource(R.drawable.next_g);
-                }
-                Question question = mQuiz.getQuestions().get(mCounterQuestion);
-                if (!question.getQuestionType().equalsIgnoreCase(Question.TYPE_QUESTION_SUBJECTIVE)) {
-                    mIsCorrectResponse = mQuizPreviewModel.checkCorrectness(question, attempt);
-
-                    if (mIsCorrectResponse) {
-                        attempt.setStatusCode(Attempt.TYPE_STATUS_CODE_CORRECT);
-                        mCorrectSubmit.setVisibility(View.VISIBLE);
-                        AnimationUtils.zoomIn(getBaseContext(), mCorrectSubmit);
-                        SoundUtils.playSound(getBaseContext(), SoundUtils.QUIZ_CORRECT_ANSWER);
-                        Handler h = new Handler();
-                        h.postDelayed(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                mCorrectSubmit.setVisibility(View.GONE);
-                            }
-                        }, 2000);
-
-                        mIncorrectSubmit.setVisibility(View.GONE);
-                        mQuestionList.getChildAt(mCounterQuestion).setBackgroundResource(R.drawable.background_correct_question);
-
-                        if (!mIsAttempt && mCounterQuestion == 0 && mQuiz.getQuizType().equalsIgnoreCase(QuizTypeEnum.OBJECTIVE.toString())) {
-
-                            showExplanationView(mExplanationType);
-
-                        } else if (!mIsAttempt && mCounterQuestion > 0 && mQuiz.getQuizType().equalsIgnoreCase(QuizTypeEnum.OBJECTIVE.toString())) {
-
-                            showExplanationView(mExplanationType);
-
-                        }
-
-                    } else {
-                        attempt.setStatusCode(Attempt.TYPE_STATUS_CODE_INCORRECT);
-                        mCorrectSubmit.setVisibility(View.GONE);
-                        mIncorrectSubmit.setVisibility(View.VISIBLE);
-                        AnimationUtils.zoomIn(getBaseContext(), mIncorrectSubmit);
-                        SoundUtils.playSound(getBaseContext(), SoundUtils.QUIZ_INCORRECT_ANSWER);
-                        Handler h = new Handler();
-
-                        h.postDelayed(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                mIncorrectSubmit.setVisibility(View.GONE);
-                            }
-                        }, 2000);
-                        mQuestionList.getChildAt(mCounterQuestion).setBackgroundResource(R.drawable.background_incorrect_question);
-
-                        showExplanationView(mExplanationType);
-
-
-                    }
-
-                    View choiceView = mResponseLayout.getChildAt(0);
-                    if (choiceView instanceof RadioGroup) {
-                        for (int i = 0; i < ((RadioGroup) choiceView).getChildCount(); i++) {
-                            RadioButton radioButton = (RadioButton) ((RadioGroup) choiceView).getChildAt(i);
-                            if (!radioButton.isChecked())
-                                radioButton.setEnabled(false);
-                        }
-                    } else {
-                        for (int i = 0; i < mResponseLayout.getChildCount(); i++) {
-                            CheckBox checkBox = (CheckBox) mResponseLayout.getChildAt(i);
-                            checkBox.setClickable(false);
-                        }
-                    }
-
+                    choiceResponses.clear();
+                    break;
                 }
 
-                attempt.setSubmissionDateTime(DateUtils.getISO8601DateStringFromSeconds(currentQuestionEndTime));
-                attempt.setHintsAvailed(mCounterHint);
-                attempt.setTimeTaken(currentQuestionEndTime - mCurrentQuestionStartTime);
-                updateCurrentQuestionResponse(attempt, Boolean.toString(mIsCorrectResponse), mCounterHint);
-
-                if (mCounterQuestion == mQuiz.getQuestions().size() - 1) {
-                    submitResponse();
+                if (isSubmission) {
+                    view.setEnabled(false);
                 }
+            }
 
+        } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_MATCH_THE_FOLLOWING)) {
+            int count = (int) mBinding.layoutMatchTheFollowingContainer.recyclerViewMTF.getTag();
+            if (count == mMTFMatchCount) {
+                choiceResponses.add(String.valueOf(mMTFMatchCount));
             } else {
-                showErrorMessage(errorType);
+                new ArrayList<>();
             }
-        } else {
 
+        } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_DROPDOWN)) {
+            if (mDropdownAdapter != null) {
+                ArrayList<QuestionPart> questionParts = mDropdownAdapter.getResponseList();
+                for (int i = 0; i < questionParts.size(); i++) {
+                    if (!TextUtils.isEmpty(questionParts.get(i).getQuestion())) {
+                        choiceResponses.add(questionParts.get(i).getQuestion());
+                    } else {
+                        choiceResponses.clear();
+                        break;
+                    }
+                }
+
+
+            }
         }
+
+
+        return choiceResponses;
     }
 
-    /**
-     * shows error message according to the error code
-     *
-     * @param errorType
-     */
-    @Override
-    public void showErrorMessage(int errorType) {
-        switch (errorType) {
-            case QuizPreviewModel.VALIDATION_ERROR1:
-                ToastUtils.showToastAlert(getApplicationContext(), getString(R.string.enter_response));
-                mMainScrollView.fullScroll(HorizontalScrollView.FOCUS_UP);
-                break;
+    /*Generate questionResponse object and add to question response array.*/
+    private void generateQuestionResponse(String response, Question question, int counterHint, ArrayList<Attempt> attemptList) {
+
+        QuestionResponse questionResponse = new QuestionResponse();
+        questionResponse.setOrder(question.getOrder());//set question order
+        questionResponse.setQid(question.getUidQuestion());
+        questionResponse.setHintUsed(counterHint);
+        if (!TextUtils.isEmpty(response)) {
+            questionResponse.setResponse(response);
         }
-    }
 
-    /**
-     * show explanations if device type is tablet
-     *
-     * @param mExplanationType
-     */
-
-    private void showExplanationView(int mExplanationType) {
-
-        if (mExplanationType == QuestionExplanation.TYPE_EXPLANATION_TEXT) {
-            String mExplanationText = mQuiz.getQuestions().get(mCounterQuestion).getChoiceConfiguration().getQuestionExplanation().getExplanationText();
-            if (!TextUtils.isEmpty(mExplanationText)) {
-                mExplanationlabelTextView.setVisibility(View.VISIBLE);
-                mExplanationLayout.setVisibility(View.VISIBLE);
-                mExplanationTextView.setVisibility(View.VISIBLE);
-                mExplanationImageLayout.setVisibility(View.GONE);
-                mExplanationVideoLayout.setVisibility(View.GONE);
-                String explanationText = TextViewMore.stripHtml(mExplanationText);
-                mExplanationTextView.setText(explanationText);
-                mExplanationTextView.setVerticalScrollBarEnabled(true);
-                mExplanationTextView.setMovementMethod(new ScrollingMovementMethod());
-            }
-
-        } else if (mExplanationType == QuestionExplanation.TYPE_EXPLANATION_RESOURCE) {
-            mExplanationLayout.setVisibility(View.VISIBLE);
-            mExplanationTextView.setVisibility(View.GONE);
-            String mResourcePath = /*mBaseFolder + File.separator*/ mQuiz.getQuestions().get(mCounterQuestion).getChoiceConfiguration().getQuestionExplanation().getExplanationResource().getDeviceURL();
-            String mimeType = URLConnection.guessContentTypeFromName(mResourcePath);
-            if (!TextUtils.isEmpty(mimeType) && mimeType.contains("image")) {
-                mExplanationlabelTextView.setVisibility(View.VISIBLE);
-                mExplanationImageLayout.setVisibility(View.VISIBLE);
-                mExplanationVideoLayout.setVisibility(View.GONE);
-                Bitmap mBitmap = getScaledBitmapFromPath(this.getResources(), mResourcePath);
-                Drawable mDrawable = new BitmapDrawable(getResources(), mBitmap);
-                mExplanationImageThumbnail.setBackground(mDrawable);
-                mExplanationImageThumbnail.setOnClickListener(mShowResourceAction);
-                mExplanationImageThumbnail.setTag(mResourcePath);
-            } else if (!TextUtils.isEmpty(mimeType) && mimeType.contains("video")) {
-                mExplanationlabelTextView.setVisibility(View.VISIBLE);
-                mExplanationVideoLayout.setVisibility(View.VISIBLE);
-                mExplanationImageLayout.setVisibility(View.GONE);
-                Bitmap mBitmap = getScaledBitmapFromPath(this.getResources(), mResourcePath);
-                Drawable mDrawable = new BitmapDrawable(getResources(), mBitmap);
-                mExplanationVideoThumbnail.setBackground(mDrawable);
-                mExplanationVideoThumbnail.setOnClickListener(mShowResourceAction);
-                mExplanationVideoThumbnail.setTag(mResourcePath);
-            }
-        } else {
-
-            mExplanationlabelTextView.setVisibility(View.GONE);
+        for (int i = 0; i < attemptList.size(); i++) {
+            questionResponse.addAttempt(attemptList.get(i));
         }
+
+        mQuestionResponses.add(questionResponse);
 
     }
 
-    /**
-     * show explanation of the question if screen type is phone in popup
-     *
-     * @param mExplanationType
-     */
-    private void showExplanationInPopup(int mExplanationType) {
-        LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    /*Show this alert dialog in case of finish activity*/
+    private void showAlertDialog(String message) {
+        new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setMessage(message)
+                .setNeutralButton(R.string.go_back, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
-        View layout = layoutInflater.inflate(R.layout.layout_show_explanation_popup_phone, null);
-        TextView mPopupExplanationText = (TextView) layout.findViewById(R.id.textview_explanation);
-        RelativeLayout mPopupExplanationImageThumbnailLayout = (RelativeLayout) layout.findViewById(R.id.imagethumbnail_explanation);
-        RelativeLayout mPopupExplanationVideoThumbnailLayout = (RelativeLayout) layout.findViewById(R.id.videothumbnail_explanation);
-        ImageView mPopupExplanantionImageThumbnail = (ImageView) layout.findViewById(R.id.imageview_explanation_image);
-        ImageView mPopupExplanantionVideoThumbnail = (ImageView) layout.findViewById(R.id.imageview_explanation_video);
-        ImageButton mPopupExplanantionClose = (ImageButton) layout.findViewById(R.id.imagebutton_close_explanation_popup);
+                        finish();
+                    }
+                }).show();
+    }
 
-        if (mExplanationType == QuestionExplanation.TYPE_EXPLANATION_TEXT) {
-            mPopupExplanationText.setVisibility(View.VISIBLE);
-            layout.setVisibility(View.VISIBLE);
-            mPopupExplanationText.setVisibility(View.VISIBLE);
-            mPopupExplanationImageThumbnailLayout.setVisibility(View.GONE);
-            mPopupExplanationVideoThumbnailLayout.setVisibility(View.GONE);
-            String mExplanationText = mQuiz.getQuestions().get(mCounterQuestion).getChoiceConfiguration().getQuestionExplanation().getExplanationText();
-            mPopupExplanationText.setText(mExplanationText);
-            mPopupExplanationText.setVerticalScrollBarEnabled(true);
-            mPopupExplanationText.setMovementMethod(new ScrollingMovementMethod());
-        } else if (mExplanationType == QuestionExplanation.TYPE_EXPLANATION_RESOURCE) {
-            layout.setVisibility(View.VISIBLE);
-            mPopupExplanationText.setVisibility(View.GONE);
-            String mResourcePath = /*mBaseFolder + File.separator*/ mQuiz.getQuestions().get(mCounterQuestion).getChoiceConfiguration().getQuestionExplanation().getExplanationResource().getDeviceURL();
-            String mimeType = URLConnection.guessContentTypeFromName(mResourcePath);
-            if (!TextUtils.isEmpty(mimeType) && mimeType.contains("image")) {
-                mPopupExplanationText.setVisibility(View.VISIBLE);
-                mPopupExplanationImageThumbnailLayout.setVisibility(View.VISIBLE);
-                mPopupExplanationVideoThumbnailLayout.setVisibility(View.GONE);
-                Bitmap mBitmap = getScaledBitmapFromPath(this.getResources(), mResourcePath);
-                Drawable mDrawable = new BitmapDrawable(getResources(), mBitmap);
-                mPopupExplanantionImageThumbnail.setBackground(mDrawable);
-                mPopupExplanantionImageThumbnail.setOnClickListener(mShowResourceAction);
-                mPopupExplanantionImageThumbnail.setTag(mResourcePath);
-            } else if (!TextUtils.isEmpty(mimeType) && mimeType.contains("video")) {
-                mPopupExplanationText.setVisibility(View.VISIBLE);
-                mPopupExplanationVideoThumbnailLayout.setVisibility(View.VISIBLE);
-                mPopupExplanationImageThumbnailLayout.setVisibility(View.GONE);
-                Bitmap mBitmap = getScaledBitmapFromPath(this.getResources(), mResourcePath);
-                Drawable mDrawable = new BitmapDrawable(getResources(), mBitmap);
-                mPopupExplanantionVideoThumbnail.setBackground(mDrawable);
-                mPopupExplanantionVideoThumbnail.setOnClickListener(mShowResourceAction);
-                mPopupExplanantionVideoThumbnail.setTag(mResourcePath);
-            }
-        } else {
+    /*Show this alert dialog in case of practice ends.*/
+    private void showPracticeEndDialog(QuizResponse quizResponse, ArrayList<ChartConfigurationData> quizAnalyticsConfigData) {
+        LayoutQuizEndBinding view = DataBindingUtil.inflate(LayoutInflater.from(getBaseContext()), R.layout.layout_quiz_end, null, false);
+        final Dialog dialog = new Dialog(QuizPlayerActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(view.getRoot());
+        setQuizDataOnEndDialog(view, quizResponse, quizAnalyticsConfigData);
+        view.textViewGreetingMessage.setText(getString(R.string.quiz_end_response_submitted));
+        view.lottie.setVisibility(View.GONE);
 
-            mPopupExplanationText.setVisibility(View.GONE);
-        }
-
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        this.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-
-        int popupWidth = displayMetrics.widthPixels * 1 / 2;
-        int popupHeight = displayMetrics.heightPixels - 40;
-        final PopupWindow popup = new PopupWindow(QuizPlayerActivity.this);
-        popup.setContentView(layout);
-        popup.setWidth(popupWidth);
-        popup.setHeight(popupHeight);
-        popup.setFocusable(true);
-
-        int OFFSET_X = 0;
-        int OFFSET_Y = 0;
-        popup.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        popup.setOutsideTouchable(true);
-        popup.setAnimationStyle(android.R.style.Animation_Dialog);
-        popup.showAtLocation(layout, Gravity.RIGHT, OFFSET_X, OFFSET_Y);
-
-        mPopupExplanantionClose.setOnClickListener(new View.OnClickListener() {
+        view.buttonClose.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                popup.dismiss();
+            public void onClick(View v) {
+                //sendPointsToServer();
+                dialog.dismiss();
+                finish();
             }
         });
 
+
+        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics(metrics);
+        Double dialogWidth = metrics.widthPixels * 0.95;
+        Double dialogHeight = metrics.heightPixels * 0.85;
+        Window win = dialog.getWindow();
+        win.setLayout(dialogWidth.intValue(), ViewGroup.LayoutParams.WRAP_CONTENT);
+
+
+        dialog.show();
     }
 
-    /**
-     * action to take when next_white button is pressed
-     * if it is the last question then preview is closed
-     * else next_white question is shown
-     */
-    @Override
-    public void clickNextAction() {
-        KeyBoardUtil.hideSoftKeyboard(getCurrentFocus(), this);
+    private void setQuizDataOnEndDialog(LayoutQuizEndBinding endDialogBinding, QuizResponse quizResponse, ArrayList<ChartConfigurationData> quizAnalyticsConfigData) {
 
-        if (mIsAttempt) {
-            if (mCounterQuestion < mQuiz.getQuestions().size() - 1) {
-                mCounterQuestion++;
-                mSubmitButton.setVisibility(View.VISIBLE);
-                mNextButton.setVisibility(View.GONE);
-                mResponseLayout.removeAllViews();
-                hideHintLayout();
-                mHintGroupLayout.removeAllViews();
-
-                mCorrectSubmit.setVisibility(View.GONE);
-                mIncorrectSubmit.setVisibility(View.GONE);
-                mExplanationLayout.setVisibility(View.GONE);
-                loadQuestion(mCounterQuestion);
-
-            } else {
-                finish();
-                //   submitResponse();
-
-            }
+        if (!TextUtils.isEmpty(mAppUserModel.getApplicationUser().getName())) {
+            endDialogBinding.textViewUserName.setText(mAppUserModel.getApplicationUser().getName());
+            endDialogBinding.textViewUserName.setVisibility(View.VISIBLE);
         } else {
-            if (mCounterQuestion < mQuiz.getQuestions().size() - 1) {
-                mCounterQuestion++;
-                mPreviousButton.setEnabled(true);
-                mResponseLayout.removeAllViews();
-                mHintGroupLayout.removeAllViews();
-                mBinding.layoutDrawUsedHints.removeAllViews();
-                mBinding.layoutDrawUnusedHints.removeAllViews();
-                hideHintLayout();
-
-                mCorrectSubmit.setVisibility(View.GONE);
-                mIncorrectSubmit.setVisibility(View.GONE);
-                mExplanationLayout.setVisibility(View.GONE);
-                loadQuestion(mCounterQuestion);
-
-            } else {
-                finish();
-            }
+            endDialogBinding.textViewUserName.setVisibility(View.GONE);
         }
-    }
 
-    /**
-     * action to take when previous button is clicked
-     */
-    @Override
-    public void clickPreviousAction() {
-        if (!mIsAttempt) {
-            if (mCounterQuestion > 0) {
-                mCounterQuestion--;
-                if (mCounterQuestion == 0) mPreviousButton.setEnabled(false);
-                if (mCounterQuestion == mQuiz.getQuestions().size() - 1) {
-                    // mNextButton.setText(getResources().getString(R.string.close));
-                } else {
-                    //mNextButton.setText(getResources().getString(R.string.next));
+        String score = ConstantUtil.BLANK_SPACE + mTotalScore + ConstantUtil.BLANK_SPACE;
+        endDialogBinding.textViewScore.setText(score);
+
+        int totalCorrectAnswers = 0;
+
+        long totalTimeTaken = 0;
+        for (int i = 0; i < mQuestionResponses.size(); i++) {
+
+            if (mQuestionResponses.get(i).getResponse().equalsIgnoreCase(Boolean.toString(true))) {
+                totalCorrectAnswers++;
+            }
+
+            if (!mQuestionResponses.get(i).getAttempts().isEmpty()) {
+
+                for (int j = 0; j < mQuestionResponses.get(i).getAttempts().size(); j++) {
+                    totalTimeTaken = totalTimeTaken + mQuestionResponses.get(i).getAttempts().get(j).getTimeTaken();
                 }
-                mResponseLayout.removeAllViews();
-                mHintGroupLayout.removeAllViews();
-                mBinding.layoutDrawUsedHints.removeAllViews();
-                mBinding.layoutDrawUnusedHints.removeAllViews();
-                hideHintLayout();
-                mCorrectSubmit.setVisibility(View.GONE);
-                mIncorrectSubmit.setVisibility(View.GONE);
-                mExplanationLayout.setVisibility(View.GONE);
-                loadQuestion(mCounterQuestion);
 
             }
         }
-    }
 
-    /**
-     * hide hint layout
-     */
-    private void hideHintLayout() {
-        mHintLayoutView.setVisibility(View.GONE);
-    }
+        String questionCountString = totalCorrectAnswers + "/" + mQuestionList.size();
+        endDialogBinding.textViewQuestionsCount.setText(questionCountString);
+        endDialogBinding.textViewTotalTime.setText(CommonUtils.getInstance().showSecondAndMinutesFromLong(totalTimeTaken));
 
-    /**
-     * show hint layout
-     */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void showHintLayout() {
-        mMainScrollView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mMainScrollView.fullScroll(HorizontalScrollView.FOCUS_DOWN);
-            }
-        }, 50);
+        float correctAnsPercentage = (float) (totalCorrectAnswers * 100.00) / mQuestionList.size();
+        drawAccuracyChart(correctAnsPercentage, endDialogBinding, quizAnalyticsConfigData);
 
-        mHintLayoutView.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * submit question response
-     */
-    private void submitResponse() {
-        if (mQuiz.getQuizType().equals(QuizTypeEnum.SUBJECTIVE.toString())) {
-            mAssignmentResponse.setStage(AssignmentStage.STAGE_SUBMITTED.getAssignmentStage());
+        if (quizResponse.getQuizAttempts() <= 0) {
+            endDialogBinding.textViewAttempt.setVisibility(View.GONE);
         } else {
-            mAssignmentResponse = generateScoreNew(mAssignmentResponse, mQuiz);
-            mAssignmentResponse.setStage(AssignmentStage.STAGE_GRADED.getAssignmentStage());
+            endDialogBinding.textViewAttempt.setVisibility(View.VISIBLE);
+            if (quizResponse.getQuizAttempts() == 1) {
+                endDialogBinding.textViewAttempt.setText("No of attempt: 1");
+            } else {
+                endDialogBinding.textViewAttempt.setText("No of attempts: " + quizResponse.getQuizAttempts());
+            }
         }
 
-        mAssignmentResponse.setSubmissionDateTime(DateUtils.getISO8601DateStringFromDate(new Date()));
-        if (mAssignmentResponse.getSubmittedBy() == null) {
-            mAssignmentResponse.setSubmittedBy(mQuizPreviewModel.getSubmittedBy());
-        }
-        if (TextUtils.isEmpty(mAssignmentResponse.getSubmittedBy().getObjectId())) {
-            mAssignmentResponse.setSubmittedBy(mQuizPreviewModel.getSubmittedBy());
-        }
-        mAssignmentResponse.setSyncStatus(SyncStatus.NOT_SYNC.toString());
-        mQuizPreviewModel.saveAssignmentResponse(mAssignmentResponse);
-        mQuizPreviewModel.changeAssignmentStudent(mAssignmentResponse, mAssignmentStudentDocId);
-
-        mRxBus.send(new AssignmentSubmittedEvent(mAssignmentResponse));
-        SyncService.startActionUploadAssignmentResponse(getBaseContext(), mAssignmentResponse.getObjectId());
-        mIsResponseSubmitted = true;
     }
 
-    private AssignmentResponse generateScoreNew(AssignmentResponse assignmentResponse, Quiz quiz) {
-        double sum = 0;
-        final int HINT_DEDUCTION_PERCENTAGE = 20;
-        if (assignmentResponse.getTotalScore() > 0) {
-            final double MAX_MARKS_FOR_QUESTION = assignmentResponse.getTotalScore() / quiz.getQuestions().size();
-            for (QuestionResponse quizResponse : assignmentResponse.getQuizResponses()) {
-                if (quizResponse.getResponse().equals(String.valueOf(true))) {
-                    int hintsDeduction = 0;
-                    for (int hintindex = 0; hintindex < quizResponse.getHintUsed(); hintindex++) {
-                        hintsDeduction += (HINT_DEDUCTION_PERCENTAGE * MAX_MARKS_FOR_QUESTION) / 100;
+    /*draw and set values for accuracy pie chart*/
+    /*Get color form config */
+    private void drawAccuracyChart(float correctAnsPercent, LayoutQuizEndBinding endDialogBinding, ArrayList<ChartConfigurationData> quizAnalyticsConfigData) {
+
+        float total = 100;
+        float remaining = total - correctAnsPercent;
+
+        ArrayList<PieEntry> fillValues = new ArrayList<>();
+        int progressColor = ContextCompat.getColor(getBaseContext(), R.color.colorPrimary);
+
+        if (quizAnalyticsConfigData != null && !quizAnalyticsConfigData.isEmpty()) {
+            progressColor = pickColorAccording((int) correctAnsPercent, quizAnalyticsConfigData);
+        }
+
+        fillValues.add(new PieEntry(correctAnsPercent, 0));
+        fillValues.add(new PieEntry(remaining, 1));
+        PieDataSet dataSet = new PieDataSet(fillValues, ConstantUtil.BLANK);
+        dataSet.setColors(progressColor, ContextCompat.getColor(getBaseContext(), R.color.colorGrey));
+        dataSet.setValueTextSize(0f);
+        PieData data = new PieData(dataSet);
+        endDialogBinding.pieChartAccuracy.setData(data);
+        endDialogBinding.pieChartAccuracy.setHoleRadius(90f);
+        endDialogBinding.pieChartAccuracy.setDrawHoleEnabled(true);
+        endDialogBinding.pieChartAccuracy.setUsePercentValues(false);
+        endDialogBinding.pieChartAccuracy.setContentDescription(ConstantUtil.BLANK);
+        Description description = new Description();
+        description.setText(ConstantUtil.BLANK);
+        endDialogBinding.pieChartAccuracy.setDescription(description);
+        endDialogBinding.pieChartAccuracy.setDrawCenterText(true);
+        endDialogBinding.pieChartAccuracy.setCenterTextSize(24f);
+        endDialogBinding.pieChartAccuracy.setCenterTextColor(progressColor);
+        String centerTextValue = new DecimalFormat("##.##").format(correctAnsPercent) + "%";
+        endDialogBinding.pieChartAccuracy.setCenterTextTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        if (centerTextValue.contains("NaN")) {
+            endDialogBinding.pieChartAccuracy.setCenterText("0%");
+        } else {
+            endDialogBinding.pieChartAccuracy.setCenterText(centerTextValue);
+        }
+        endDialogBinding.pieChartAccuracy.getLegend().setEnabled(false);
+        endDialogBinding.pieChartAccuracy.invalidate();
+        endDialogBinding.pieChartAccuracy.setClickable(false);
+        endDialogBinding.pieChartAccuracy.setTouchEnabled(false);
+    }
+
+    /*Show this alert dialog in case of no internet.*/
+    private void showInternetAlertDialog(final String callingFrom) {
+        new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setMessage(getString(R.string.error_message_no_internet))
+                .setNegativeButton(R.string.go_back, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        finish();
                     }
-                    int attemptsDeduction = 0;
-                    if (quizResponse.getAttempts().size() > 1) {
-                        for (int attemptIndex = 1; attemptIndex < quizResponse.getAttempts().size(); attemptIndex++) {
-                            attemptsDeduction += (HINT_DEDUCTION_PERCENTAGE * MAX_MARKS_FOR_QUESTION) / 100;
+                })
+                .setPositiveButton(R.string.labelRetry, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (callingFrom.equalsIgnoreCase("submitQuizResponse")) {
+                            submitQuizResponse();
+                        } else {
+                            if (mCourseType.equalsIgnoreCase(getString(R.string.assignment).toLowerCase())) {
+                                // TODO: 12/8/19 hardcoded points and assessment type for homework/assignment
+                                mPointsPerQuestion = 20;
+                                mTypeOfLearning = TYPE_ASSESSMENT_OF_LEARNING;
+                                fetchQuestions();
+                            } else {
+                                fetchQuizConfiguration();
+                            }
+
                         }
                     }
-                    quizResponse.setMarksObtained(MAX_MARKS_FOR_QUESTION - hintsDeduction - attemptsDeduction);
-                    if (quizResponse.getMarksObtained() < 0) {
-                        quizResponse.setMarksObtained(0);
-                    }
-                } else {
-                    quizResponse.setMarksObtained(0);
-                }
-                sum += quizResponse.getMarksObtained();
-            }
-            sum = Math.round(sum * 100) / 100;
-            assignmentResponse.setAssignmentScore(sum);
-        }
-        return assignmentResponse;
+                })
+                .show();
     }
 
-    /**
-     * set up Disposable to listen to RxBus
-     */
-    @Override
-    public void setupSubscription() {
+    /*Show this dialog when user back press.*/
+    private void showBackAlertDialog() {
 
-        mSubscription = mRxBus.toFlowable().observeOn(Schedulers.newThread()).subscribe(new Consumer<Object>() {
-            @Override
-            public void accept(final Object eventObject) throws Exception {
-                if (eventObject instanceof LoadAssignmentResponseQuizPreview) {
-                    runOnUiThread(new Runnable() {
+        new AlertDialog.Builder(QuizPlayerActivity.this)
+                .setMessage(getString(R.string.close_alert_title))
+                .setPositiveButton(R.string.exit, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mQuestionResponses != null && mQuestionResponses.size() > 0) {
+                            submitQuizResponse();
+                        } else {
+                            finish();
+                        }
+
+                    }
+                }).setNegativeButton(R.string.label_continue, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
+    /*General method to show message in snackBar.*/
+    private void showSnackBar(String message) {
+        SnackBarUtils.showAlertSnackBar(this, mBinding.getRoot(), message);
+    }
+
+    @SuppressLint("CheckResult")
+    private void fetchQuizAnalyticsConfiguration(final QuizResponse quizResponse) {
+        if (GeneralUtils.isNetworkAvailable(this)) {
+            mPlayerModel.fetchQuizAnalyticsConfiguration().subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<GlobalConfigurationParent>() {
                         @Override
-                        public void run() {
-                            mAssignmentResponse = ((LoadAssignmentResponseQuizPreview) eventObject).getAssignmentResponse();
-                            initializeQuiz(((LoadAssignmentResponseQuizPreview) eventObject).getQuiz());
+                        public void accept(GlobalConfigurationParent configurationData) throws Exception {
 
+                            if (configurationData != null
+                                    && configurationData.getQuizAnalyticsConfig() != null
+                                    && !configurationData.getQuizAnalyticsConfig().isEmpty()) {
+                                showPracticeEndDialog(quizResponse, configurationData.getQuizAnalyticsConfig());
+                            } else {
+                                showPracticeEndDialog(quizResponse, null);
+                            }
+                        }
+
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
+                            showPracticeEndDialog(quizResponse, null);
                         }
                     });
+        } else {
 
-                } else if (eventObject instanceof ErrorEvent) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showErrorDialog(((ErrorEvent) eventObject).getmMessage());
-                        }
-                    });
+        }
 
+    }
+
+    public int pickColorAccording(int performance, ArrayList<ChartConfigurationData> quizAnalyticsConfigData) {
+
+        for (int j = 0; j < quizAnalyticsConfigData.size(); j++) {
+            ChartConfigurationData chartConfigurationData = quizAnalyticsConfigData.get(j);
+            if (performance >= chartConfigurationData.getFrom() && performance <= chartConfigurationData.getTo()) {
+                return Color.parseColor(chartConfigurationData.getColorCode());
+            }
+        }
+        return R.color.colorRed;
+    }
+
+    /*Drag Listeners*/
+    private class ChoiceDragListener implements View.OnDragListener {
+
+        @Override
+        public boolean onDrag(View dropView, DragEvent event) {
+            if (event.getAction() == DragEvent.ACTION_DRAG_LOCATION) {
+                int y = Math.round(event.getY());
+                int threshold = 600;
+                if (Math.abs(y - mScrollTop) < threshold) {
+                    mBinding.scrollView.smoothScrollBy(0, -30);
+                } else if (Math.abs((y + mScrollTop) - mScrollBottom) < threshold) {
+                    mBinding.scrollView.smoothScrollBy(0, 30);
                 }
             }
-        });
+            return true;
+        }
     }
 
-    /**
-     * show the error dialog
-     *
-     * @param messageString
-     */
-    public void showErrorDialog(String messageString) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(false);
+    public class ChoiceBDragListener implements View.OnDragListener {
 
-        builder.setMessage(messageString);
-        builder.show();
+        @Override
+        public boolean onDrag(View dropTargetView, DragEvent event) {
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    break;
+
+                case DragEvent.ACTION_DRAG_EXITED:
+                    break;
+
+                case DragEvent.ACTION_DROP:
+                    View droppedView = (View) event.getLocalState();
+                    Attempt attempt = new Attempt();
+                    attempt.setSubmittedAnswer(new ArrayList<>(Collections.singleton(String.valueOf(dropTargetView.getTag()))));
+
+                    if (dropTargetView.getTag() == droppedView.getTag()) {
+
+                        mMTFMatchCount++;
+
+                        int count = (int) mBinding.layoutMatchTheFollowingContainer.recyclerViewMTF.getTag();
+
+                        if (count == mMTFMatchCount) {
+                            GeneralUtils.showToastShort(getBaseContext(), getString(R.string.all_matched_please_submit));
+                        }
+
+                        mMatchTheFollowingChoiceAdapter.updateAdapter(droppedView.getId(), dropTargetView.getId());
+
+                        addAttemptToList(attempt, true);
+                    } else {
+                        addAttemptToList(attempt, false);
+                    }
+
+                    break;
+
+                default:
+
+                    break;
+            }
+            return true;
+        }
     }
 
-    /**
-     * initialize the folders for resources
-     *
-     * @param parentFolderAbsolutePath
-     */
-    @Override
-    public void initializeResourceFolders(String parentFolderAbsolutePath) {
-        mQuizResourceImageFolder = getFilesDir() + File.separator + parentFolderAbsolutePath + File.separator + "images";
-        mQuizResourceVideoFolder = getFilesDir() + File.separator + parentFolderAbsolutePath + File.separator + "videos";
-        mQuizResourceAudioFolder = getFilesDir() + File.separator + parentFolderAbsolutePath + File.separator + "TextDocPdf";
-        mQuizResourceDocumentFolder = getFilesDir() + File.separator + parentFolderAbsolutePath + File.separator + "audio";
-    }
 
+    public class MatchTheFollowingChoiceAdapter extends RecyclerView.Adapter<MatchTheFollowingChoiceAdapter.ViewHolder> {
+        private ArrayList<MatchingContent> mQuestionChoicesA;
+        private ArrayList<MatchingContent> mQuestionChoicesB;
+        private boolean mIsAttempt;
+        private Context mContext;
+        private SparseBooleanArray mItemStateArrayA = new SparseBooleanArray();
+        private SparseBooleanArray mItemStateArrayB = new SparseBooleanArray();
+
+        MatchTheFollowingChoiceAdapter(Context context, ArrayList<MatchingContent> questionChoicesA, ArrayList<MatchingContent> questionChoicesB, boolean isAttempt) {
+            mQuestionChoicesA = questionChoicesA;
+            mQuestionChoicesB = questionChoicesB;
+            mIsAttempt = isAttempt;
+            mContext = context;
+        }
+
+        @Override
+        public MatchTheFollowingChoiceAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutMatchTheFollowingItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_match_the_following_item, parent, false);
+            return new MatchTheFollowingChoiceAdapter.ViewHolder(binding);
+        }
+
+        @Override
+        public void onBindViewHolder(MatchTheFollowingChoiceAdapter.ViewHolder holder, int position) {
+            setDefaults(holder.mBinding);
+            int index = position / 2;
+
+            if (position % 2 == 0) {
+                /*Left side items*/
+                MatchingContent choice = mQuestionChoicesA.get(index);
+                setChoiceView(choice, index, holder.mBinding);
+
+
+            } else {
+                /*Right side items*/
+                MatchingContent choiceB = mQuestionChoicesB.get(index);
+                setChoiceBView(choiceB, index, holder.mBinding);
+
+            }
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return mQuestionChoicesA.size() + mQuestionChoicesB.size();
+
+        }
+
+        @SuppressLint("ClickableViewAccessibility")
+        private void setChoiceView(MatchingContent choice, int index, LayoutMatchTheFollowingItemBinding binding) {
+            int choiceId = choice.getId();
+            String text = choice.getEntity();
+            binding.layoutChoice.setTag(choiceId);
+            binding.layoutChoice.setVisibility(View.VISIBLE);
+
+            if (!TextUtils.isEmpty(text)) {
+                binding.textView.setVisibility(View.VISIBLE);
+                binding.textView.setText(text);
+                binding.layoutChoice.setId(index);
+            }
+
+            GradientDrawable gradientDrawable = new GradientDrawable();
+            gradientDrawable.setColor(choice.getColor());
+            gradientDrawable.setCornerRadius(12);
+
+            binding.layoutChoice.setBackground(gradientDrawable);
+            binding.layoutChoice.setOnTouchListener(new ChoiceTouchListener());
+
+            if (mItemStateArrayA.get(index)) {
+                binding.layoutChoice.setEnabled(false);
+                binding.textView.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite66));
+                GradientDrawable gradientDrawableDone = new GradientDrawable();
+                gradientDrawableDone.setColor(choice.getColor());
+                gradientDrawableDone.setCornerRadius(12);
+                binding.layoutChoice.setBackground(gradientDrawableDone);
+            }
+
+        }
+
+        private void setChoiceBView(MatchingContent choiceB, int index, LayoutMatchTheFollowingItemBinding binding) {
+            int choiceIdB = choiceB.getId();
+            String textB = choiceB.getPlaceHolder();
+            binding.layoutChoiceB.setTag(choiceIdB);
+            binding.layoutChoiceB.setVisibility(View.VISIBLE);
+
+            if (!TextUtils.isEmpty(textB)) {
+                binding.textViewB.setVisibility(View.VISIBLE);
+                binding.textViewB.setText(textB);
+                binding.layoutChoiceB.setId(index);
+            }
+
+            if (mItemStateArrayB.get(index)) {
+
+                GradientDrawable gradientDrawable = new GradientDrawable();
+                gradientDrawable.setColor(choiceB.getColor());
+                gradientDrawable.setCornerRadius(12);
+                gradientDrawable.setStroke(4, Color.WHITE);
+
+                binding.layoutChoiceB.setBackground(gradientDrawable);
+            }
+
+            binding.layoutChoiceB.setOnDragListener(new ChoiceBDragListener());
+
+        }
+
+        private void setReviewMode(MatchingContent choice, LayoutMatchTheFollowingItemBinding binding) {
+            binding.layoutChoice.setBackground(null);
+            binding.layoutChoice.setVisibility(View.VISIBLE);
+            binding.layoutChoiceB.setVisibility(View.VISIBLE);
+            ViewGroup.LayoutParams layoutParams = binding.layoutChoiceB.getLayoutParams();
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            binding.layoutChoiceB.setLayoutParams(layoutParams);
+//        AnimationUtils.fadeIn(mContext, binding.layoutMatchTheFollowingItem);
+            binding.layoutMatchTheFollowingItem.setBackground(ContextCompat.getDrawable(mContext, R.drawable.background_choice_selected));
+            String text = choice.getEntity();
+
+            if (!TextUtils.isEmpty(text)) {
+                binding.textView.setVisibility(View.VISIBLE);
+                binding.textView.setText(text);
+            }
+
+//        if (choice.getChoiceResource() != null && !TextUtils.isEmpty(choice.getChoiceResource().getUrlMain())) {
+//            binding.layoutImageView.setVisibility(View.VISIBLE);
+//            Picasso.with(mContext).load(choice.getChoiceResource().getUrlMain()).resize(240, 180).into(binding.imageView);
+//        }
+
+            String textB = choice.getPlaceHolder();
+
+            if (!TextUtils.isEmpty(textB)) {
+                binding.textViewB.setVisibility(View.VISIBLE);
+                binding.textViewB.setText(textB);
+            }
+
+//        if (choice.getChoiceResourceB() != null && !TextUtils.isEmpty(choice.getChoiceResourceB().getUrlMain())) {
+//            binding.layoutImageViewB.setVisibility(View.VISIBLE);
+//            Picasso.with(mContext).load(choice.getChoiceResourceB().getUrlMain()).resize(240, 180).into(binding.imageViewB);
+//        }
+
+        }
+
+        private void setDefaults(LayoutMatchTheFollowingItemBinding binding) {
+            binding.textView.setVisibility(View.GONE);
+            binding.textViewB.setVisibility(View.GONE);
+//        binding.layoutImageView.setVisibility(View.GONE);
+//        binding.layoutImageViewB.setVisibility(View.GONE);
+            binding.layoutChoice.setVisibility(View.GONE);
+            binding.layoutChoiceB.setVisibility(View.GONE);
+            binding.layoutChoice.setOnTouchListener(null);
+            binding.layoutChoice.setBackground(ContextCompat.getDrawable(mContext, R.drawable.background_choice_unselected));
+            binding.layoutChoiceB.setOnDragListener(null);
+            binding.layoutChoiceB.setBackground(ContextCompat.getDrawable(mContext, R.drawable.background_drop_area));
+        }
+
+        void updateAdapter(int choiceIndexA, int choiceIndexB) {
+            mItemStateArrayA.put(choiceIndexA, true);
+            mItemStateArrayB.put(choiceIndexB, true);
+            notifyDataSetChanged();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            LayoutMatchTheFollowingItemBinding mBinding;
+
+            public ViewHolder(LayoutMatchTheFollowingItemBinding binding) {
+                super(binding.getRoot());
+                mBinding = binding;
+            }
+        }
+
+        public final class ChoiceTouchListener implements View.OnTouchListener {
+            @SuppressLint({"NewApi", "ClickableViewAccessibility"})
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+
+                    ClipData data = ClipData.newPlainText("", "");
+                    View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+                    view.startDrag(data, shadowBuilder, view, 0);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+    }
 
 }

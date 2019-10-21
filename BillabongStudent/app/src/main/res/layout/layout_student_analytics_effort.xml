@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorWhite">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <!--effort-->
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/value_8dp">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewEffortTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="@dimen/value_8dp"
+                            android:layout_marginBottom="@dimen/value_8dp"
+                            android:text="@string/efforts"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/colorBlack"
+                            android:visibility="gone" />
+
+                        <FrameLayout
+                            android:id="@+id/frameTime1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/value_16dp"
+                            android:layout_marginEnd="@dimen/value_16dp"
+                            android:visibility="gone">
+
+                            <!--total-->
+                            <android.support.v7.widget.LinearLayoutCompat
+                                android:id="@+id/layoutTotalTimeSpent"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start"
+                                android:clickable="true"
+                                android:foreground="?selectableItemBackground"
+                                android:gravity="center_horizontal"
+                                android:orientation="vertical">
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/textViewTotalTimeSpent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                    android:textColor="@color/colorBlack"
+                                    android:textStyle="bold"
+                                    tools:text="40:25" />
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/textViewTotalTimeSpentLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/total_hh_mm"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                    android:textColor="@color/colorAccent" />
+
+                            </android.support.v7.widget.LinearLayoutCompat>
+
+                            <!--daily-->
+                            <android.support.v7.widget.LinearLayoutCompat
+                                android:id="@+id/layoutDailyTimeSpent"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="end"
+                                android:foreground="?selectableItemBackground"
+                                android:gravity="center_horizontal"
+                                android:orientation="vertical">
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/textViewDailyTimeSpent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                    android:textColor="@color/colorBlack"
+                                    android:textStyle="bold"
+                                    tools:text="40:25" />
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/textViewDailyTimeSpentLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/daily_avg"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                    android:textColor="@color/colorAccent" />
+
+                            </android.support.v7.widget.LinearLayoutCompat>
+
+                        </FrameLayout>
+
+                        <!--PieChart-->
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/chartEffort"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/value_16dp"
+                            android:minHeight="248dp"
+                            android:visibility="gone" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewNoEffortData"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/value_16dp"
+                            android:gravity="center"
+                            android:minHeight="248dp"
+                            android:text="@string/messageNoDataFound"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:visibility="gone" />
+
+                    </android.support.v7.widget.LinearLayoutCompat>
+
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:id="@+id/llPerformance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/value_8dp"
+                        android:layout_marginBottom="@dimen/value_8dp"
+                        android:background="@color/colorGrey11"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/imageViewSubjectIcon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_gravity="start|center"
+                            android:layout_marginStart="@dimen/value_16dp"
+                            tools:srcCompat="@drawable/icon_book" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewPerformance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start|center"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/value_8dp"
+                            android:gravity="start|center"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/colorBlack"
+                            tools:text="Superstar" />
+
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/pieChartPerformance"
+                            android:layout_width="78dp"
+                            android:layout_height="78dp"
+                            android:layout_gravity="end|center_horizontal|center_vertical"
+                            android:layout_marginStart="@dimen/value_4dp"
+                            android:layout_marginEnd="@dimen/value_16dp"
+                            android:minHeight="78dp" />
+
+
+                    </android.support.v7.widget.LinearLayoutCompat>
+
+                    <!--Time for Topic wise data  -->
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/value_8dp">
+
+
+                        <FrameLayout
+                            android:id="@+id/frameLayout2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/value_16dp"
+                            android:layout_marginEnd="@dimen/value_16dp"
+                            android:visibility="gone">
+
+                            <!--total-->
+                            <android.support.v7.widget.LinearLayoutCompat
+                                android:id="@+id/linearLayoutTopicTotalTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start"
+                                android:clickable="true"
+                                android:foreground="?selectableItemBackground"
+                                android:gravity="center_horizontal"
+                                android:orientation="vertical">
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/textViewTopicTotalTimeSpent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                    android:textColor="@color/colorBlack"
+                                    android:textStyle="bold"
+                                    tools:text="40:25" />
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/textViewTopicTotalTimeSpentLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/total_hh_mm"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                    android:textColor="@color/colorAccent" />
+
+                            </android.support.v7.widget.LinearLayoutCompat>
+
+                            <!--daily-->
+                            <android.support.v7.widget.LinearLayoutCompat
+                                android:id="@+id/linearLayoutDailyTimeSpent"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="end"
+                                android:foreground="?selectableItemBackground"
+                                android:gravity="center_horizontal"
+                                android:orientation="vertical">
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/textViewTopicDailyTimeSpent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                    android:textColor="@color/colorBlack"
+                                    android:textStyle="bold"
+                                    tools:text="40:25" />
+
+                                <android.support.v7.widget.AppCompatTextView
+                                    android:id="@+id/textViewTopicDailyTimeSpentLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/daily_avg"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                    android:textColor="@color/colorAccent" />
+
+                            </android.support.v7.widget.LinearLayoutCompat>
+
+                        </FrameLayout>
+
+                        <!--bar chart-->
+                        <LinearLayout
+                            android:id="@+id/llBarChart"
+                            android:layout_width="match_parent"
+                            android:layout_height="248dp"
+                            android:layout_margin="@dimen/value_4dp"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:id="@+id/textViewInMin"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:layout_marginEnd="-25dp"
+                                android:text="@string/in_min"
+                                android:textSize="10sp" />
+
+                            <com.github.mikephil.charting.charts.BarChart
+                                android:id="@+id/topicChartEffort"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="4dp"
+                                android:minHeight="248dp" />
+                        </LinearLayout>
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/textViewTopicNoEffortData"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/value_16dp"
+                            android:gravity="center"
+                            android:minHeight="248dp"
+                            android:text="@string/messageNoDataFound"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:visibility="gone" />
+
+                    </android.support.v7.widget.LinearLayoutCompat>
+
+
+                    <android.support.v7.widget.LinearLayoutCompat
+                        android:id="@+id/layoutRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/value_16dp"
+                        android:layout_marginBottom="@dimen/value_16dp"
+                        android:background="@color/colorWhite"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/value_16dp"
+                            android:layout_marginTop="@dimen/value_16dp"
+                            android:layout_marginEnd="@dimen/value_16dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:visibility="visible">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.7"
+                                android:text="@string/labelTopic"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:textColor="@color/colorBlack"
+                                android:textStyle="bold" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/value_8dp"
+                                android:layout_marginEnd="@dimen/value_8dp"
+                                android:layout_weight=".6"
+                                android:gravity="center"
+                                android:text="@string/time_hh_mm"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:textColor="@color/colorBlack"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/layoutListItem"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible">
+
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/recyclerViewTopic"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/value_16dp"
+                                android:background="@color/colorWhite"
+                                android:nestedScrollingEnabled="false"
+                                tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                                tools:listitem="@layout/layout_analytics_effort_topic_item"
+                                tools:orientation="vertical" />
+
+                        </RelativeLayout>
+
+                    </android.support.v7.widget.LinearLayoutCompat>
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+                <ProgressBar
+                    android:id="@+id/progressBarEffort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="280dp"
+                    android:layout_marginBottom="@dimen/value_16dp"
+                    android:background="@drawable/background_circle_solid_white"
+                    android:elevation="@dimen/elevation_8dp"
+                    android:padding="@dimen/value_4dp"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+</layout>

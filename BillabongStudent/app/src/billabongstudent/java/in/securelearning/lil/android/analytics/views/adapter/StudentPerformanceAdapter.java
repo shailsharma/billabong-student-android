@@ -78,14 +78,15 @@ public class StudentPerformanceAdapter extends RecyclerView.Adapter<StudentPerfo
                                 .append(" Hours ");
 
                     if (time.getAvgDaily() !=0) {
-                        totalTime.append("\n(Avg. Time ").append(Math.round( time.getAvgDaily())).append(" Minutes)");
+                        totalTime.append("\n(Avg. Time ").append(Math.round( time.getAvgDaily())).append(" Min.)");
                     }
                     holder.mBinding.textViewTime.setText(totalTime);
                 } else {
                     holder.mBinding.textViewTime.setVisibility(View.GONE);
                 }
                 holder.mBinding.textViewCoverage.setVisibility(View.VISIBLE);
-                holder.mBinding.textViewCoverage.setText((Math.round(subjectList.get(position).getCoverage()) + "% Progress"));
+                String coverage="\n"+Math.round(subjectList.get(position).getCoverage()) + "% Progress";
+                holder.mBinding.textViewCoverage.setText(coverage);
 
 
             }

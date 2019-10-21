@@ -82,7 +82,6 @@ public class SignUpActivity extends AppCompatActivity {
     private RadioButton mMaleRadioButton, mFemaleRadioButton;
     private TextView mTermsConditionTextView, mErrorGenderTextView, mLoadingMessageTextView;
     private Button mSignUpButton;
-    private CardView mGooglePlusButton, mFacebookButton;
     private RelativeLayout mProgressLayout, mSignUpLayout;
     private PopupWindow mAssociationPopup;
     private ImageButton mBackButton;
@@ -142,8 +141,6 @@ public class SignUpActivity extends AppCompatActivity {
         mErrorGenderTextView = (TextView) findViewById(R.id.textViewGenderEmpty);
         mLoadingMessageTextView = (TextView) findViewById(R.id.textViewLoadingMessage);
         mSignUpButton = (Button) findViewById(R.id.buttonSignUp);
-        mGooglePlusButton = (CardView) findViewById(R.id.imageButtonSignUpFacebook);
-        mFacebookButton = (CardView) findViewById(R.id.imageButtonSignUpGooglePlus);
         mBackButton = (ImageButton) findViewById(R.id.buttonBack);
 
 
@@ -770,8 +767,8 @@ public class SignUpActivity extends AppCompatActivity {
         point.y = location[1];
 
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View mPopupLayout = layoutInflater.inflate(R.layout.layout_recyclerview, null);
-        RecyclerView mInstituteRecyclerView = (RecyclerView) mPopupLayout.findViewById(R.id.recyclerview);
+        View mPopupLayout = layoutInflater.inflate(R.layout.layout_recycler_view_in_card, null);
+        RecyclerView mInstituteRecyclerView = (RecyclerView) mPopupLayout.findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(SignUpActivity.this);
         mInstituteRecyclerView.setLayoutManager(mLayoutManager);
         InstituteAdapter mInstituteAdapter = new InstituteAdapter(mInstitutionsList);

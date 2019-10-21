@@ -27,6 +27,10 @@ public class QuizResponse implements Serializable {
     @Expose
     private String mQuizId = null;
 
+    @SerializedName("attempts")
+    @Expose
+    private int mQuizAttempts;
+
     public String getQuizId() {
         return mQuizId;
     }
@@ -49,5 +53,9 @@ public class QuizResponse implements Serializable {
 
     public void setQuestionResponses(ArrayList<QuestionResponse> questionResponses) {
         this.mQuestionResponses = questionResponses;
+    }
+
+    public int getQuizAttempts() {
+        return mQuizAttempts;
     }
 }

@@ -1,5 +1,7 @@
 package in.securelearning.lil.android.learningnetwork.views.fragment;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,13 +21,14 @@ import android.view.ViewGroup;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
 import in.securelearning.lil.android.app.databinding.LayoutFragmentPostResponseBinding;
 import in.securelearning.lil.android.app.databinding.LayoutItemPostResponseBinding;
 import in.securelearning.lil.android.base.constants.PostResponseType;
@@ -33,9 +36,11 @@ import in.securelearning.lil.android.base.customchrometabutils.CustomChromeTabHe
 import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.dataobjects.GroupMember;
 import in.securelearning.lil.android.base.dataobjects.OGMetaDataResponse;
+import in.securelearning.lil.android.base.dataobjects.PostByUser;
 import in.securelearning.lil.android.base.dataobjects.PostData;
 import in.securelearning.lil.android.base.dataobjects.PostResponse;
 import in.securelearning.lil.android.base.dataobjects.Result;
+import in.securelearning.lil.android.base.dataobjects.Thumbnail;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
@@ -44,20 +49,24 @@ import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.home.dataobjects.TimeUtils;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
+import in.securelearning.lil.android.profile.views.activity.StudentProfileActivity;
 import in.securelearning.lil.android.learningnetwork.InjectorLearningNetwork;
 import in.securelearning.lil.android.learningnetwork.events.LoadNewPostResponseReceivedEvent;
 import in.securelearning.lil.android.learningnetwork.events.NewPostResponseAdded;
 import in.securelearning.lil.android.learningnetwork.model.PostDataLearningModel;
+import in.securelearning.lil.android.profile.views.activity.StudentPublicProfileActivity;
+import in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
 import in.securelearning.lil.android.syncadapter.utils.OgUtils;
 import in.securelearning.lil.android.syncadapter.utils.SoundUtils;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 /**
  * Created by Chaitendra on 04-Aug-17.
@@ -84,6 +93,7 @@ public class PostResponseListFragment extends Fragment {
     private static String GROUP_ID = "groupId";
     private static String POST_ID = "postId";
     private static String POST_ALIAS = "postAlias";
+
     private int mColumnCount = 1;
     private String mGroupId = "";
     private String mPostAlias = "";
@@ -152,7 +162,7 @@ public class PostResponseListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.layout_fragment_post_response, container, false);
         initializeViews();
         setDefault();
@@ -161,25 +171,31 @@ public class PostResponseListFragment extends Fragment {
         return mBinding.getRoot();
     }
 
+    @SuppressLint("CheckResult")
     private void getData(String postId, int skip, final int limit) {
-        mPostDataLearningModel.getPostResponseListForPost(postId, PostResponseType.TYPE_COMMENT.getPostResponseType(), skip, limit).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<ArrayList<PostResponse>>() {
-            @Override
-            public void accept(ArrayList<PostResponse> postResponses) throws Exception {
-                mSkip += postResponses.size();
-                noResultFound(mSkip);
-                if (postResponses.size() < limit) {
-                    mBinding.recyclerView.removeOnScrollListener(null);
-                }
-                mPostResponseAdapter.addItem(postResponses);
 
-            }
+        mPostDataLearningModel.getPostResponseListForPost(postId, PostResponseType.TYPE_COMMENT.getPostResponseType(), skip, limit)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ArrayList<PostResponse>>() {
+                    @Override
+                    public void accept(ArrayList<PostResponse> postResponses) throws Exception {
+                        mSkip += postResponses.size();
+                        noResultFound(mSkip);
+                        if (postResponses.size() < limit) {
+                            mBinding.recyclerView.removeOnScrollListener(null);
+                        }
+                        mPostResponseAdapter.addItem(postResponses);
 
-        });
+                    }
+
+                });
+
     }
 
     private void listenRxBusEvent() {
         mSubscription = mRxBus.toFlowable().observeOn(Schedulers.computation()).subscribe(new Consumer<Object>() {
+            @SuppressLint("CheckResult")
             @Override
             public void accept(final Object event) throws Exception {
                 if (event instanceof NewPostResponseAdded) {
@@ -347,51 +363,55 @@ public class PostResponseListFragment extends Fragment {
 
     }
 
+    @SuppressLint("CheckResult")
     private void fetchLiveOgFromServer(ArrayList<String> urlArrayList) {
         if (GeneralUtils.isNetworkAvailable(getContext())) {
             try {
-                mOgUtils.getOgDataFromServer(urlArrayList).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<OGMetaDataResponse>() {
-                    @Override
-                    public void accept(OGMetaDataResponse ogData) throws Exception {
-                        Result response = new Result();
-                        Result responseToSet = null;
-                        for (int i = 0; i < ogData.getResults().size(); i++) {
-                            response = ogData.getResults().get(i);
-                            if (response.getOg().equals(true)) {
-                                if (responseToSet == null) {
-                                    responseToSet = response;
+                mOgUtils.getOgDataFromServer(urlArrayList)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<OGMetaDataResponse>() {
+                            @Override
+                            public void accept(OGMetaDataResponse ogData) throws Exception {
+                                Result response = new Result();
+                                Result responseToSet = null;
+                                for (int i = 0; i < ogData.getResults().size(); i++) {
+                                    response = ogData.getResults().get(i);
+                                    if (response.getOg().equals(true)) {
+                                        if (responseToSet == null) {
+                                            responseToSet = response;
+                                        }
+                                    }
                                 }
+                                if (responseToSet != null) {
+                                    final Result finalResponseToSet = responseToSet;
+                                    Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
+                                        @Override
+                                        public void run() {
+
+                                            showLiveOgView(finalResponseToSet);
+
+
+                                        }
+                                    });
+                                } else if (response != null) {
+
+                                    Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
+                                        @Override
+                                        public void run() {
+                                            mBinding.includeOgLayout.layoutOgCard.setVisibility(View.GONE);
+
+                                        }
+                                    });
+                                }
+
                             }
-                        }
-                        if (responseToSet != null) {
-                            final Result finalResponseToSet = responseToSet;
-                            Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
-                                @Override
-                                public void run() {
-
-                                    showLiveOgView(finalResponseToSet);
-
-
-                                }
-                            });
-                        } else if (response != null) {
-
-                            Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
-                                @Override
-                                public void run() {
-                                    mBinding.includeOgLayout.layoutOgCard.setVisibility(View.GONE);
-
-                                }
-                            });
-                        }
-
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        throwable.printStackTrace();
-                    }
-                });
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                throwable.printStackTrace();
+                            }
+                        });
             } catch (Exception t) {
                 t.printStackTrace();
                 Log.e("OgIconData", "err fetching getOgIconData" + t.toString());
@@ -440,8 +460,9 @@ public class PostResponseListFragment extends Fragment {
             return position;
         }
 
+        @NotNull
         @Override
-        public PostResponseAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public PostResponseAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
             LayoutItemPostResponseBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_item_post_response, parent, false);
             return new PostResponseAdapter.ViewHolder(binding);
         }
@@ -539,21 +560,40 @@ public class PostResponseListFragment extends Fragment {
                 binding.layoutMe.setVisibility(View.GONE);
                 binding.layoutOther.setVisibility(View.VISIBLE);
                 binding.textViewNameOther.setText(postResponse.getFrom().getName());
-                setUserThumbnail(postResponse.getFrom().getId(), binding.imageViewOther);
+                setUserThumbnail(postResponse.getFrom(), binding.imageViewOther);
                 binding.textViewTimeOther.setText(TimeUtils.getTimeString(DateUtils.convertrIsoDate(postResponse.getCreatedTime())));
                 TextViewMore.setPostText(getContext(), postResponse.getText(), binding.textViewCommentOther, binding.includeTextViewMoreLessOther.textViewMoreLess);
                 setViewForUserIfContinueComment(binding, position);
             }
         }
 
-        private void setUserThumbnail(final String userId, AppCompatImageView imageView) {
+        private void setUserThumbnail(final PostByUser postByUser, AppCompatImageView imageView) {
+
+            final String userId = postByUser.getId();
 
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
                     if (GeneralUtils.isNetworkAvailable(getContext())) {
-                        getContext().startActivity(UserProfileActivity.getStartIntent(userId, getContext()));
+
+                        if (userId.equals(mAppUserModel.getObjectId())) {
+                            // private profile of student
+                            getContext().startActivity(StudentProfileActivity.getStartIntent(mAppUserModel.getObjectId(), getContext()));
+
+                        } else {
+
+                            if (postByUser.getRole().equalsIgnoreCase("Student")) {
+                                // public profile of student
+//                                getContext().startActivity(StudentPublicProfileActivity.getStartIntent(userId, getContext()));
+                            } else {
+                                // public profile of non-student
+                                getContext().startActivity(UserPublicProfileActivity.getStartIntent(getContext(), userId));
+                            }
+
+                        }
+
+
                     } else {
                         ToastUtils.showToastAlert(getContext(), getContext().getString(R.string.connect_internet));
                     }
@@ -561,27 +601,65 @@ public class PostResponseListFragment extends Fragment {
                 }
             });
 
-            ArrayList<GroupMember> groupMembers = mGroup.getMembers();
-            for (GroupMember groupMember : groupMembers) {
-                if (groupMember.getObjectId().equalsIgnoreCase(userId)) {
+            if (postByUser != null && postByUser.getUserProfileLite() != null) {
 
-                    if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getLocalUrl())) {
-                        Picasso.with(getContext()).load(groupMember.getPic().getLocalUrl()).transform(new CircleTransform()).into(imageView);
-                    } else if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getUrl())) {
-                        Picasso.with(getContext()).load(groupMember.getPic().getUrl()).transform(new CircleTransform()).into(imageView);
-                    } else if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getThumb())) {
-                        Picasso.with(getContext()).load(groupMember.getPic().getThumb()).transform(new CircleTransform()).into(imageView);
-                    } else {
-                        String firstWord = groupMember.getName().substring(0, 1).toUpperCase();
-                        TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimaryLN);
-                        imageView.setImageDrawable(textDrawable);
-                    }
-
-                    break;
+                Context context = getContext();
+                String name = "";
+                if (!TextUtils.isEmpty(postByUser.getName())) {
+                    name = postByUser.getName();
                 }
+
+                Thumbnail thumbnail = new Thumbnail();
+                if (postByUser.getUserProfileLite().getThumbnail() != null) {
+                    thumbnail = postByUser.getUserProfileLite().getThumbnail();
+                }
+
+
+                if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumbXL())) {
+                    Picasso.with(context).load(thumbnail.getThumbXL()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+                } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getThumb())) {
+                    Picasso.with(context).load(thumbnail.getThumb()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+                } else if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
+                    Picasso.with(context).load(thumbnail.getUrl()).transform(new CropCircleTransformation()).placeholder(R.drawable.icon_profile_large).fit().into(imageView);
+                } else {
+                    if (!TextUtils.isEmpty(name)) {
+                        String firstWord = name.substring(0, 1).toUpperCase();
+                        TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimary);
+                        imageView.setImageDrawable(textDrawable);
+                    }/* else {
+                    Picasso.with(context).load(R.drawable.icon_profile_large).transform(new CropCircleTransformation()).fit().centerCrop().into(imageView);
+                }*/
+                }
+
+            } else {
+
+                // for older post
+
+                ArrayList<GroupMember> groupMembers = mGroup.getMembers();
+                for (GroupMember groupMember : groupMembers) {
+                    if (groupMember.getObjectId().equalsIgnoreCase(userId)) {
+
+                        if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getLocalUrl())) {
+                            Picasso.with(getContext()).load(groupMember.getPic().getLocalUrl()).transform(new CircleTransform()).into(imageView);
+                        } else if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getUrl())) {
+                            Picasso.with(getContext()).load(groupMember.getPic().getUrl()).transform(new CircleTransform()).into(imageView);
+                        } else if (groupMember.getPic() != null && !TextUtils.isEmpty(groupMember.getPic().getThumb())) {
+                            Picasso.with(getContext()).load(groupMember.getPic().getThumb()).transform(new CircleTransform()).into(imageView);
+                        } else {
+                            String firstWord = groupMember.getName().substring(0, 1).toUpperCase();
+                            TextDrawable textDrawable = TextDrawable.builder().buildRound(firstWord, R.color.colorPrimaryLN);
+                            imageView.setImageDrawable(textDrawable);
+                        }
+
+                        break;
+                    }
+                }
+
             }
+
         }
 
+        @SuppressLint("CheckResult")
         private void setOgCard(final PostResponse postResponse, final LayoutItemPostResponseBinding binding, final boolean isMe) {
             if (!TextUtils.isEmpty(postResponse.getObjectId())) {
                 if (postResponse.getLocalOgDataList().size() > 0) {
@@ -594,57 +672,60 @@ public class PostResponseListFragment extends Fragment {
                     if (GeneralUtils.isNetworkAvailable(getContext())) {
                         if (postResponse.getoGDataList().size() > 0) {
                             try {
-                                mOgUtils.getOgDataFromServer(postResponse.getoGDataList()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<OGMetaDataResponse>() {
-                                    @Override
-                                    public void accept(OGMetaDataResponse ogData) throws Exception {
-                                        Result response = new Result();
-                                        Result responseToSet = null;
-                                        for (int i = 0; i < ogData.getResults().size(); i++) {
-                                            response = ogData.getResults().get(i);
-                                            postResponse.getLocalOgDataList().put(response.getUrl(), response); // Here we are making Map for url as key and image as value
-                                            if (response.getOg().equals(true)) {
-                                                if (responseToSet == null) {
-                                                    responseToSet = response;
-                                                    postResponse.setPositiveResult(responseToSet);
+                                mOgUtils.getOgDataFromServer(postResponse.getoGDataList())
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new Consumer<OGMetaDataResponse>() {
+                                            @Override
+                                            public void accept(OGMetaDataResponse ogData) throws Exception {
+                                                Result response = new Result();
+                                                Result responseToSet = null;
+                                                for (int i = 0; i < ogData.getResults().size(); i++) {
+                                                    response = ogData.getResults().get(i);
+                                                    postResponse.getLocalOgDataList().put(response.getUrl(), response); // Here we are making Map for url as key and image as value
+                                                    if (response.getOg().equals(true)) {
+                                                        if (responseToSet == null) {
+                                                            responseToSet = response;
+                                                            postResponse.setPositiveResult(responseToSet);
+                                                        }
+                                                    }
                                                 }
+                                                if (responseToSet != null) {
+                                                    final Result finalResponseToSet = responseToSet;
+                                                    Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
+                                                        @Override
+                                                        public void run() {
+
+                                                            if (isMe) {
+                                                                setOgViewForMe(binding, finalResponseToSet);
+                                                            } else {
+                                                                setOgViewForOther(binding, finalResponseToSet);
+                                                            }
+                                                        }
+                                                    });
+                                                } else if (response != null) {
+                                                    postResponse.setPositiveResult(response);
+                                                    Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
+                                                        @Override
+                                                        public void run() {
+                                                            if (isMe) {
+                                                                binding.includeOgLayoutMe.layoutOgCard.setVisibility(View.GONE);
+
+                                                            } else {
+                                                                binding.includeOgLayoutOther.layoutOgCard.setVisibility(View.GONE);
+
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                                mPostDataLearningModel.savePostResponseForOg(postResponse);
                                             }
-                                        }
-                                        if (responseToSet != null) {
-                                            final Result finalResponseToSet = responseToSet;
-                                            Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
-                                                @Override
-                                                public void run() {
-
-                                                    if (isMe) {
-                                                        setOgViewForMe(binding, finalResponseToSet);
-                                                    } else {
-                                                        setOgViewForOther(binding, finalResponseToSet);
-                                                    }
-                                                }
-                                            });
-                                        } else if (response != null) {
-                                            postResponse.setPositiveResult(response);
-                                            Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
-                                                @Override
-                                                public void run() {
-                                                    if (isMe) {
-                                                        binding.includeOgLayoutMe.layoutOgCard.setVisibility(View.GONE);
-
-                                                    } else {
-                                                        binding.includeOgLayoutOther.layoutOgCard.setVisibility(View.GONE);
-
-                                                    }
-                                                }
-                                            });
-                                        }
-                                        mPostDataLearningModel.savePostResponseForOg(postResponse);
-                                    }
-                                }, new Consumer<Throwable>() {
-                                    @Override
-                                    public void accept(Throwable throwable) throws Exception {
-                                        throwable.printStackTrace();
-                                    }
-                                });
+                                        }, new Consumer<Throwable>() {
+                                            @Override
+                                            public void accept(Throwable throwable) throws Exception {
+                                                throwable.printStackTrace();
+                                            }
+                                        });
                             } catch (Exception t) {
                                 t.printStackTrace();
                                 Log.e("OgIconData", "err fetching getOgIconData" + t.toString());

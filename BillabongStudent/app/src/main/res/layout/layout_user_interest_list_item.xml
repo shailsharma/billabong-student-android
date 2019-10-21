@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/value_4dp"
+        android:background="@drawable/gradient_chip"
+        android:elevation="@dimen/elevation_2dp"
+        android:paddingStart="@dimen/value_12dp"
+        android:paddingTop="@dimen/value_4dp"
+        android:paddingEnd="@dimen/value_12dp"
+        android:paddingBottom="@dimen/value_4dp"
+        android:textColor="@color/colorWhite"
+        tools:text="Arts &amp; Crafts" />
+
+
+</layout>

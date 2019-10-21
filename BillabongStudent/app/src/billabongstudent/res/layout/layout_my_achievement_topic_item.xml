@@ -1,41 +1,236 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <android.support.v7.widget.LinearLayoutCompat
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_12dp"
+        android:layout_marginLeft="@dimen/value_12dp"
+        android:layout_marginRight="@dimen/value_12dp"
         android:orientation="vertical">
 
         <android.support.v7.widget.LinearLayoutCompat
+            android:id="@+id/layoutHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:foreground="?android:attr/selectableItemBackground"
             android:gravity="center_vertical"
             android:orientation="horizontal">
-
-
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textViewTopicName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.2"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/colorBlack"
-                tools:text="@string/error_something_went_wrong"/>
+                android:layout_weight="1"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/textSize_16sp"
+                tools:text="@string/error_something_went_wrong" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textViewScore"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight=".4"
-                android:gravity="end|center_horizontal"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/colorPrimary"
-                tools:text="+470"/>
+                android:gravity="center"
+                android:padding="@dimen/value_8dp"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/textSize_16sp"
+                android:textStyle="bold"
+                tools:text="47000" />
 
         </android.support.v7.widget.LinearLayoutCompat>
+
+        <!--LRPAM-->
+        <android.support.v7.widget.LinearLayoutCompat
+            android:id="@+id/layoutLRPAM"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <!--Learn-->
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/value_8dp"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:paddingStart="@dimen/value_16dp"
+                    android:paddingEnd="@dimen/value_16dp"
+                    android:text="@string/label_learn"
+                    android:textColor="@color/colorBlack" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewEurosLearn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="@dimen/value_8dp"
+                        android:text="47000"
+                        android:textColor="@color/colorBlack" />
+
+
+                </FrameLayout>
+
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <!--Reinforce-->
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/value_8dp"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:paddingStart="@dimen/value_16dp"
+                    android:paddingEnd="@dimen/value_16dp"
+                    android:text="@string/label_reinforce"
+                    android:textColor="@color/colorBlack" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewEurosReinforce"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="@dimen/value_8dp"
+                        android:text="@string/zero"
+                        android:textColor="@color/colorBlack" />
+
+
+                </FrameLayout>
+
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <!--Practice-->
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/value_8dp"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:paddingStart="@dimen/value_16dp"
+                    android:paddingEnd="@dimen/value_16dp"
+                    android:text="@string/label_practice"
+                    android:textColor="@color/colorBlack" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewEurosPractice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="@dimen/value_8dp"
+                        android:text="@string/zero"
+                        android:textColor="@color/colorBlack" />
+
+
+                </FrameLayout>
+
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <!--Application-->
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/value_8dp"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:paddingStart="@dimen/value_16dp"
+                    android:paddingEnd="@dimen/value_16dp"
+                    android:text="@string/label_apply"
+                    android:textColor="@color/colorBlack" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewEurosApplication"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="@dimen/value_8dp"
+                        android:text="@string/zero"
+
+                        android:textColor="@color/colorBlack" />
+
+
+                </FrameLayout>
+
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <!--Miscellaneous(now bonus)-->
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/value_4dp"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:paddingStart="@dimen/value_16dp"
+                    android:paddingEnd="@dimen/value_16dp"
+                    android:text="@string/bonus"
+                    android:textColor="@color/colorBlack" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/textViewEurosMiscellaneous"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="@dimen/value_8dp"
+                        android:text="@string/zero"
+                        android:textColor="@color/colorBlack" />
+
+
+                </FrameLayout>
+
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
     </android.support.v7.widget.LinearLayoutCompat>
+
 </layout>

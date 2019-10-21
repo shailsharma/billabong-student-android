@@ -64,7 +64,7 @@
                         android:id="@+id/view1"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/black_de"></View>
+                        android:background="@color/colorBlack"></View>
 
                     <LinearLayout
                         android:id="@+id/l1"
@@ -76,8 +76,7 @@
 
                         <ImageView
                             android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:src="@drawable/memory_blue" />
+                            android:layout_height="50dp" />
 
 
                         <TextView
@@ -87,7 +86,7 @@
                             android:text="Memory"
                             android:layout_marginLeft="5dp"
                             android:layout_gravity="center_vertical"
-                            android:textColor="@color/black_de"
+                            android:textColor="@color/colorBlack"
                             android:textSize="17sp" />
 
                         <ProgressBar
@@ -107,7 +106,7 @@
                             android:layout_marginLeft="5dp"
                             android:text="70 %"
                             android:layout_gravity="center_vertical"
-                            android:textColor="@color/black_de"
+                            android:textColor="@color/colorBlack"
                             android:textSize="10sp" />
 
                     </LinearLayout>
@@ -133,7 +132,7 @@
                             android:text="Conceptual"
                             android:layout_marginLeft="5dp"
                             android:layout_gravity="center_vertical"
-                            android:textColor="@color/black_de"
+                            android:textColor="@color/colorBlack"
                             android:textSize="17sp" />
 
                         <ProgressBar
@@ -153,7 +152,7 @@
                             android:layout_marginLeft="5dp"
                             android:text="80 %"
                             android:layout_gravity="center_vertical"
-                            android:textColor="@color/black_de"
+                            android:textColor="@color/colorBlack"
                             android:textSize="10sp" />
 
                     </LinearLayout>
@@ -178,7 +177,7 @@
                             android:text="Application"
                             android:layout_marginLeft="10dp"
                             android:layout_gravity="center_vertical"
-                            android:textColor="@color/black_de"
+                            android:textColor="@color/colorBlack"
                             android:textSize="17sp" />
 
                         <ProgressBar
@@ -198,7 +197,7 @@
                             android:layout_marginLeft="5dp"
                             android:text="80 %"
                             android:layout_gravity="center_vertical"
-                            android:textColor="@color/black_de"
+                            android:textColor="@color/colorBlack"
                             android:textSize="10sp" />
 
                     </LinearLayout>
@@ -223,7 +222,7 @@
                             android:text="Analysis"
                             android:layout_marginLeft="10dp"
                             android:layout_gravity="center_vertical"
-                            android:textColor="@color/black_de"
+                            android:textColor="@color/colorBlack"
                             android:textSize="17sp" />
 
                         <ProgressBar
@@ -243,7 +242,7 @@
                             android:layout_marginLeft="5dp"
                             android:text="0 %"
                             android:layout_gravity="center_vertical"
-                            android:textColor="@color/black_de"
+                            android:textColor="@color/colorBlack"
                             android:textSize="10sp" />
 
                     </LinearLayout>

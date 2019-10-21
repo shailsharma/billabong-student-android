@@ -151,7 +151,7 @@
                         android:layout_height="match_parent"
                         android:foreground="@drawable/gradient_grey"
                         android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/sample_3"
+                        app:srcCompat="@drawable/image_placeholder"
                         />
 
                     <android.support.v7.widget.AppCompatImageView
@@ -289,7 +289,7 @@
                                 android:layout_height="match_parent"
                                 android:foreground="@drawable/gradient_grey"
                                 android:scaleType="centerCrop"
-                                app:srcCompat="@drawable/sample_3"
+                                app:srcCompat="@drawable/image_placeholder"
                                 />
 
                             <android.support.v7.widget.AppCompatImageView
@@ -330,7 +330,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_margin="16dp"
-            android:backgroundTint="@color/lite_blue"
+            android:backgroundTint="@color/colorBlue"
             android:text="@string/submit"
             android:visibility="gone"/>
 

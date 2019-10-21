@@ -558,7 +558,7 @@
 
                     <!--Video type explanation-->
                     <android.support.v7.widget.CardView
-                        android:id="@+id/layout_explanation_video"
+                        android:id="@+id/layout_explanation_khan_academy_video"
                         android:layout_width="170dp"
                         android:layout_height="130dp"
                         android:layout_margin="5dp"

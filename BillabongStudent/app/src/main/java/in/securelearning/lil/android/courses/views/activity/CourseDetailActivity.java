@@ -1,5 +1,6 @@
 package in.securelearning.lil.android.courses.views.activity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -33,7 +34,6 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
 import in.securelearning.lil.android.app.databinding.ActivityCourseDetailBinding;
 import in.securelearning.lil.android.app.databinding.RateAndReviewBinding;
 import in.securelearning.lil.android.assignments.views.activity.AssignActivity;
@@ -56,16 +56,16 @@ import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerActivity;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaActivity;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
-import in.securelearning.lil.android.base.views.activity.WebPlayerLiveActivity;
 import in.securelearning.lil.android.courses.InjectorCourses;
 import in.securelearning.lil.android.courses.models.CoursesModel;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
+import in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity;
 import in.securelearning.lil.android.syncadapter.events.FavoriteAboutCourseUpdate;
 import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
 import in.securelearning.lil.android.syncadapter.model.WebPlayerLiveModel;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -78,18 +78,11 @@ import io.reactivex.schedulers.Schedulers;
 
 import static android.view.View.GONE;
 
-public class CourseDetailActivity extends AppCompatActivity implements View.OnClickListener {
-    public static final String DATA_OBJECT = "data_object";
-    public static final String DATA_OBJECT_TYPE = "data_object_type";
-    public static final String ASSIGNMENT_RESPONSE_ID = "assignment_response_id";
-    public static final String DATA_CM = "conceptMap";
-    public static final String DATA_II = "interactiveImage";
-    public static final String DATA_IV = "interactiveVideo";
-    public static final String DATA_DB = "digitalBook";
-    public static final String DATA_PU = "popup";
-    public static final String DATA_VC = "videoCourse";
+public class CourseDetailActivity extends AppCompatActivity {
+
     @Inject
     CoursesModel mCoursesModel;
+
     @Inject
     RxBus mRxBus;
 
@@ -100,6 +93,16 @@ public class CourseDetailActivity extends AppCompatActivity implements View.OnCl
 
     @Inject
     AppUserModel mAppUserModel;
+
+    public static final String DATA_OBJECT = "data_object";
+    public static final String DATA_OBJECT_TYPE = "data_object_type";
+    public static final String ASSIGNMENT_RESPONSE_ID = "assignment_response_id";
+    public static final String DATA_CM = "conceptMap";
+    public static final String DATA_II = "interactiveImage";
+    public static final String DATA_IV = "interactiveVideo";
+    public static final String DATA_DB = "digitalBook";
+    public static final String DATA_PU = "popup";
+    public static final String DATA_VC = "videoCourse";
 
     private Disposable mSubscription;
     private String mId = "";
@@ -210,7 +213,9 @@ public class CourseDetailActivity extends AppCompatActivity implements View.OnCl
         return true;
     }
 
+    @SuppressLint("CheckResult")
     private void fetchAboutCourseFromLocalDataBase() {
+
         Observable.create(new ObservableOnSubscribe<AboutCourse>() {
             @Override
             public void subscribe(ObservableEmitter<AboutCourse> e) throws Exception {
@@ -247,7 +252,9 @@ public class CourseDetailActivity extends AppCompatActivity implements View.OnCl
                 });
     }
 
+    @SuppressLint("CheckResult")
     private void fetchAboutCourseFromServer() {
+
         Observable.create(new ObservableOnSubscribe<AboutCourse>() {
             @Override
             public void subscribe(ObservableEmitter<AboutCourse> e) throws Exception {
@@ -390,18 +397,18 @@ public class CourseDetailActivity extends AppCompatActivity implements View.OnCl
         Course course = getCourse();
         if (course != null && course.getSyncStatus().equals(SyncStatus.COMPLETE_SYNC.toString())) {
 
-            if (mClass.equals(VideoCourse.class) || mClass.equals(InteractiveVideo.class) || course.getTotalResourceCount().getVideoCourses() > 0 || course.getTotalResourceCount().getVideos() > 0) {
-                WebPlayerCordovaActivity.startWebPlayer(this, course.getObjectId(), course.getMetaInformation().getSubject().getId(), course.getMetaInformation().getTopic().getId(), course.getClass(), mAssignmentResponseId, false);
+            if (mClass.equals(VideoCourse.class) || mClass.equals(InteractiveVideo.class)
+                    || course.getTotalResourceCount().getVideoCourses() > 0 || course.getTotalResourceCount().getVideos() > 0) {
+                WebPlayerCordovaActivity.startWebPlayer(this, course.getObjectId(), course.getMetaInformation().getSubject().getId(),
+                        course.getMetaInformation().getTopic().getId(), course.getClass(), mAssignmentResponseId, false);
             } else {
-                WebPlayerActivity.startWebPlayer(this, course.getObjectId(), course.getMetaInformation().getSubject().getId(), course.getMetaInformation().getTopic().getId(), course.getClass(), mAssignmentResponseId, false);
+                WebPlayerActivity.startWebPlayer(this, course.getObjectId(), course.getMetaInformation().getSubject().getId(),
+                        course.getMetaInformation().getTopic().getId(), course.getClass(), mAssignmentResponseId, false);
             }
         } else {
             if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-                if (isVideoCourse || mClass.equals(VideoCourse.class) || mClass.equals(InteractiveVideo.class) || course.getTotalResourceCount().getVideoCourses() > 0 || course.getTotalResourceCount().getVideos() > 0) {
-                    WebPlayerCordovaLiveActivity.startWebPlayer(this, mId, mAboutCourse.getMetaInformation().getSubject().getId(), mAboutCourse.getMetaInformation().getTopic().getId(), mClass, mAssignmentResponseId, false);
-                } else {
-                    WebPlayerLiveActivity.startWebPlayer(this, mId, mAboutCourse.getMetaInformation().getSubject().getId(), mAboutCourse.getMetaInformation().getTopic().getId(), mClass, mAssignmentResponseId, false, false);
-                }
+                WebPlayerCordovaLiveActivity.startWebPlayer(this, mId, mAboutCourse.getMetaInformation().getSubject().getId(),
+                        mAboutCourse.getMetaInformation().getTopic().getId(), mClass, mAssignmentResponseId, false);
             } else {
                 ToastUtils.showToastAlert(getBaseContext(), getString(R.string.connect_internet));
             }
@@ -427,6 +434,7 @@ public class CourseDetailActivity extends AppCompatActivity implements View.OnCl
 
     private void listenRxBusEvents() {
         mSubscription = mRxBus.toFlowable().observeOn(Schedulers.computation()).subscribe(new Consumer<Object>() {
+            @SuppressLint("CheckResult")
             @Override
             public void accept(final Object event) throws Exception {
                 if (event instanceof ObjectDownloadComplete) {
@@ -541,6 +549,7 @@ public class CourseDetailActivity extends AppCompatActivity implements View.OnCl
 
     int likeCount = 0;
 
+    @SuppressLint("CheckResult")
     public void setCourseItem(final AboutCourse item) {
         mAboutCourse = item;
 
@@ -707,8 +716,7 @@ public class CourseDetailActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onClick(View view) {
                 if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-                    Intent mIntent = UserProfileActivity.getStartIntent(item.getCurator().getId(), getBaseContext());
-                    startActivity(mIntent);
+                    startActivity(UserPublicProfileActivity.getStartIntent(getBaseContext(), item.getCurator().getId()));
                 } else {
                     ToastUtils.showToastAlert(getBaseContext(), getString(R.string.connect_internet));
                 }
@@ -739,68 +747,71 @@ public class CourseDetailActivity extends AppCompatActivity implements View.OnCl
         mBinding.content.learningOutcomes.clearComposingText();
         mBinding.content.checkboxFavorite.setVisibility(View.VISIBLE);
         // TODO: 13-09-2017 here we manipulate for offline favouriate course
-        checkFavoriteItem(mAboutCourse).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<AboutCourse>() {
-            @Override
-            public void accept(final AboutCourse favorite) throws Exception {
-                if (!TextUtils.isEmpty(favorite.getDocId()) && favorite.getObjectId().equals(mAboutCourse.getObjectId())) {
-                    mFavouriteAboutCourseId = favorite.getDocId();
-                    mBinding.content.checkboxFavorite.setChecked(true);
-                } else {
-                    mBinding.content.checkboxFavorite.setChecked(false);
-                }
-                mBinding.content.checkboxFavorite
-                        .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                                                        @Override
-                                                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                                                            int count = 0;
-                                                            try {
-                                                                count = Integer.parseInt(mBinding.content.likesCount.getText().toString());
-                                                            } catch (Exception e) {
-                                                                e.printStackTrace();
-                                                            }
-                                                            if (b) {
-                                                                mBinding.content.likesCount.setText("" + (count + 1));
-                                                                // TODO: 13-09-2017 here we are manipulating course favourite in local database
-                                                                mAboutCourse.setDocId("");
-                                                                AboutCourse aboutCourse = mCoursesModel.saveFavouriteCourse(mAboutCourse);
-                                                                mFavouriteAboutCourseId = aboutCourse.getDocId();
-                                                                mCoursesModel.addAboutFavorite(mAboutCourse).subscribeOn(Schedulers.computation())
-                                                                        .observeOn(AndroidSchedulers.mainThread())
-                                                                        .subscribe(new Consumer<Boolean>() {
-                                                                            @Override
-                                                                            public void accept(Boolean aBoolean) throws Exception {
-                                                                                if (!aBoolean) {
-                                                                                    mBinding.content.checkboxFavorite.setChecked(false);
-                                                                                    ToastUtils.showToastAlert(getBaseContext(), getString(R.string.message_favorite_fail));
-                                                                                }
-                                                                            }
-                                                                        });
-                                                            } else {
-                                                                mBinding.content.likesCount.setText("" + (count - 1));
-                                                                // TODO: 13-09-2017 here we are manipulating course favourite in local database
-                                                                if (!TextUtils.isEmpty(mFavouriteAboutCourseId) && mFavouriteAboutCourseId != null) {
-                                                                    if (mCoursesModel.deleteFavourite(mFavouriteAboutCourseId)) {
-                                                                        mAboutCourse.setDocId("");
+        checkFavoriteItem(mAboutCourse)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<AboutCourse>() {
+                    @Override
+                    public void accept(final AboutCourse favorite) throws Exception {
+                        if (!TextUtils.isEmpty(favorite.getDocId()) && favorite.getObjectId().equals(mAboutCourse.getObjectId())) {
+                            mFavouriteAboutCourseId = favorite.getDocId();
+                            mBinding.content.checkboxFavorite.setChecked(true);
+                        } else {
+                            mBinding.content.checkboxFavorite.setChecked(false);
+                        }
+                        mBinding.content.checkboxFavorite
+                                .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                                                @Override
+                                                                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                                                    int count = 0;
+                                                                    try {
+                                                                        count = Integer.parseInt(mBinding.content.likesCount.getText().toString());
+                                                                    } catch (Exception e) {
+                                                                        e.printStackTrace();
                                                                     }
-                                                                }
-                                                                mCoursesModel.removeAboutFavorite(mAboutCourse).subscribeOn(Schedulers.computation())
-                                                                        .observeOn(AndroidSchedulers.mainThread())
-                                                                        .subscribe(new Consumer<Boolean>() {
-                                                                            @Override
-                                                                            public void accept(Boolean aBoolean) throws Exception {
-                                                                                if (!aBoolean) {
-                                                                                    mBinding.content.checkboxFavorite.setChecked(true);
-                                                                                    ToastUtils.showToastAlert(getBaseContext(), getString(R.string.message_unfavorite_fail));
-                                                                                }
+                                                                    if (b) {
+                                                                        mBinding.content.likesCount.setText("" + (count + 1));
+                                                                        // TODO: 13-09-2017 here we are manipulating course favourite in local database
+                                                                        mAboutCourse.setDocId("");
+                                                                        AboutCourse aboutCourse = mCoursesModel.saveFavouriteCourse(mAboutCourse);
+                                                                        mFavouriteAboutCourseId = aboutCourse.getDocId();
+                                                                        mCoursesModel.addAboutFavorite(mAboutCourse).subscribeOn(Schedulers.computation())
+                                                                                .observeOn(AndroidSchedulers.mainThread())
+                                                                                .subscribe(new Consumer<Boolean>() {
+                                                                                    @Override
+                                                                                    public void accept(Boolean aBoolean) throws Exception {
+                                                                                        if (!aBoolean) {
+                                                                                            mBinding.content.checkboxFavorite.setChecked(false);
+                                                                                            ToastUtils.showToastAlert(getBaseContext(), getString(R.string.message_favorite_fail));
+                                                                                        }
+                                                                                    }
+                                                                                });
+                                                                    } else {
+                                                                        mBinding.content.likesCount.setText("" + (count - 1));
+                                                                        // TODO: 13-09-2017 here we are manipulating course favourite in local database
+                                                                        if (!TextUtils.isEmpty(mFavouriteAboutCourseId) && mFavouriteAboutCourseId != null) {
+                                                                            if (mCoursesModel.deleteFavourite(mFavouriteAboutCourseId)) {
+                                                                                mAboutCourse.setDocId("");
                                                                             }
-                                                                        });
+                                                                        }
+                                                                        mCoursesModel.removeAboutFavorite(mAboutCourse).subscribeOn(Schedulers.computation())
+                                                                                .observeOn(AndroidSchedulers.mainThread())
+                                                                                .subscribe(new Consumer<Boolean>() {
+                                                                                    @Override
+                                                                                    public void accept(Boolean aBoolean) throws Exception {
+                                                                                        if (!aBoolean) {
+                                                                                            mBinding.content.checkboxFavorite.setChecked(true);
+                                                                                            ToastUtils.showToastAlert(getBaseContext(), getString(R.string.message_unfavorite_fail));
+                                                                                        }
+                                                                                    }
+                                                                                });
+                                                                    }
+                                                                    mRxBus.send(new FavoriteAboutCourseUpdate(mAboutCourse.getObjectId(), b));
+                                                                }
                                                             }
-                                                            mRxBus.send(new FavoriteAboutCourseUpdate(mAboutCourse.getObjectId(), b));
-                                                        }
-                                                    }
-                        );
-            }
-        });
+                                );
+                    }
+                });
 
 
 //        mBinding.content.checkboxFavorite.setChecked(isFavorite);
@@ -884,9 +895,7 @@ public class CourseDetailActivity extends AppCompatActivity implements View.OnCl
 
     private void setCuratorThumbnail(AboutCourse item) {
 
-        try
-
-        {
+        try {
             String curatorImageFilePath = "";
             if (item.getCurator().getUserThumbnail() != null) {
                 curatorImageFilePath = item.getCurator().getUserThumbnail().getUrl();
@@ -1075,10 +1084,6 @@ public class CourseDetailActivity extends AppCompatActivity implements View.OnCl
 //        text = text + "</ul>";
 
         return textExpanded;
-    }
-
-    @Override
-    public void onClick(View v) {
     }
 
     private void setButtonStatus(String status) {

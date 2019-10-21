@@ -1,6 +1,7 @@
 package in.securelearning.lil.android.syncadapter.dataobjects;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
@@ -11,6 +12,7 @@ import in.securelearning.lil.android.base.dataobjects.Location;
 import in.securelearning.lil.android.base.dataobjects.Role;
 import in.securelearning.lil.android.base.dataobjects.Section;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
+import in.securelearning.lil.android.profile.dataobject.UserInterestParent;
 
 public class StudentProfile extends UserProfile implements Serializable {
 
@@ -41,6 +43,14 @@ public class StudentProfile extends UserProfile implements Serializable {
     @SerializedName("motherName")
     @Expose
     private String motherName;
+
+    @SerializedName("userInterest")
+    @Expose
+    private UserInterestParent mUserInterest;
+
+    @SerializedName("admissionDate")
+    @Expose
+    private String mAdmissionDate;
 
     private Boolean mIsGood;
 
@@ -108,5 +118,19 @@ public class StudentProfile extends UserProfile implements Serializable {
         this.motherName = motherName;
     }
 
+    public UserInterestParent getUserInterest() {
+        return mUserInterest;
+    }
 
+    public void setUserInterest(UserInterestParent userInterest) {
+        mUserInterest = userInterest;
+    }
+
+    public String getAdmissionDate() {
+        return mAdmissionDate;
+    }
+
+    public void setAdmissionDate(String admissionDate) {
+        mAdmissionDate = admissionDate;
+    }
 }

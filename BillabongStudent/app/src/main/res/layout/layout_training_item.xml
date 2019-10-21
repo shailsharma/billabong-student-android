@@ -27,7 +27,7 @@
                     android:layout_width="96dp"
                     android:layout_height="56dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/margin_8dp"
+                    android:layout_marginLeft="@dimen/value_8dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/john_sample"
                     />

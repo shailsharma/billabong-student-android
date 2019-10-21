@@ -46,7 +46,6 @@ public class BlogNewActivity extends AppCompatActivity implements BlogFragment.O
     @Override
     public void onListFragmentInteraction(Object object) {
         if (object instanceof Blog) {
-            WebPlayerLiveActivity.startWebPlayer(this, ((Blog) object).getObjectId(),((Blog) object).getMetaInformation().getSubject().getId(),((Blog) object).getMetaInformation().getTopic().getId(), BlogDetails.class, "",true,false);
 
         }
     }

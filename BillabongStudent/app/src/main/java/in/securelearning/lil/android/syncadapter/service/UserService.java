@@ -68,11 +68,11 @@ public class UserService extends IntentService {
 
     }
 
-    public static void startActionUpdateUserProfile(Context context, String userId, String groupId) {
+    public static void startActionUpdateUserProfile(Context context) {
         Intent intent = new Intent(context, UserService.class);
         intent.setAction(ACTION_UPDATE_USER_PROFILE);
-        intent.putExtra(EXTRA_OBJECT_ID, userId);
-        intent.putExtra(EXTRA_GROUP_ID, groupId);
+//        intent.putExtra(EXTRA_OBJECT_ID, userId);
+//        intent.putExtra(EXTRA_GROUP_ID, groupId);
         context.startService(intent);
     }
 
@@ -122,10 +122,8 @@ public class UserService extends IntentService {
 
     private void handleActionUpdateUserProfile(String userId, String groupId) {
         if (GeneralUtils.isNetworkAvailable(UserService.this)) {
-            FirebaseMessaging.getInstance().subscribeToTopic(BuildConfig.SUBSCRIBE_FCM_PREFIX + groupId);
-            JobCreator.createDownloadGroupJob(groupId).execute();
-//            SyncServiceHelper.setCurrentUserProfile(UserService.this);
-//            SyncServiceHelper.updateProfile();
+            SyncServiceHelper.setCurrentUserProfile(UserService.this);
+            SyncServiceHelper.updateProfile();
         }
     }
 
@@ -133,8 +131,6 @@ public class UserService extends IntentService {
         if (GeneralUtils.isNetworkAvailable(UserService.this)) {
             FirebaseMessaging.getInstance().subscribeToTopic(BuildConfig.SUBSCRIBE_FCM_PREFIX + groupId);
             JobCreator.createDownloadGroupJob(groupId).execute();
-//            SyncServiceHelper.setCurrentUserProfile(UserService.this);
-//            SyncServiceHelper.updateProfile();
             mRxBus.send(new ObjectDownloadComplete(groupId, Group.class));
         }
     }

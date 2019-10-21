@@ -657,7 +657,7 @@ public class CourseFragmentNew extends Fragment {
 //                    if (null != mListener) {
                             AboutCourse item = holder.mItem;
                             // Notify the active callbacks interface (the activity, if the
-                            // fragment is attached to one) that an item has been selected.
+                            // activity is attached to one) that an item has been selected.
                             // mListener.onListFragmentInteraction(holder.mItem);
 //                        if (item instanceof DigitalBook) {
 //                        /*requires the json of the digital book and the referenced jsons*/
@@ -1039,7 +1039,7 @@ public class CourseFragmentNew extends Fragment {
 //                public void onClick(View v) {
 //                    if (null != mListener) {
 //                        // Notify the active callbacks interface (the activity, if the
-//                        // fragment is attached to one) that an item has been selected.
+//                        // activity is attached to one) that an item has been selected.
 //                        mListener.onListFragmentInteraction(holder.mItem);
 //                    }
 //                }
@@ -1360,7 +1360,7 @@ public class CourseFragmentNew extends Fragment {
 //                    if (null != mListener) {
                     Course item = holder.mItem;
                     // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
+                    // activity is attached to one) that an item has been selected.
                     // mListener.onListFragmentInteraction(holder.mItem);
 //                        if (item instanceof DigitalBook) {
 //                        /*requires the json of the digital book and the referenced jsons*/

@@ -5,14 +5,14 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,6 @@ import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
 import in.securelearning.lil.android.homework.dataobject.Homework;
 import in.securelearning.lil.android.homework.event.RefreshHomeworkEvent;
 import in.securelearning.lil.android.homework.model.HomeworkModel;
-import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -40,20 +39,22 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class HomeworkFragment extends Fragment {
-    private static final int OVERDUE_POSITION = 0;
-    private static final int PENDING_POSITION = 1;
+
     @Inject
     RxBus mRxBus;
+
     @Inject
     HomeworkModel mHomeworkModel;
+
+    private static final int OVERDUE_POSITION = 0;
+    private static final int PENDING_POSITION = 1;
+
     private LayoutHomeworkTabViewpagerBinding mBinding;
     private Disposable mDisposable;
     private AssignedHomeworkParent mAssignedHomeworkParent;
     private List<Homework> mPendingList = new ArrayList<>();
     private List<Homework> mOverdueList = new ArrayList<>();
     private Context mContext;
-    private String mStudentId;
-    private Disposable mSubscription;
 
     public HomeworkFragment() {
 
@@ -71,19 +72,25 @@ public class HomeworkFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.layout_homework_tab_viewpager, container, false);
 
-        setUpViewPager(0);
 
-        fetchAssignedHomework(OVERDUE_POSITION);
+        getAssignedHomework(OVERDUE_POSITION);
         listenRxEvent();
         return mBinding.getRoot();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mDisposable != null) {
+            mDisposable.dispose();
+        }
+    }
 
     private void listenRxEvent() {
-        mSubscription = mRxBus.toFlowable().observeOn(AndroidSchedulers.mainThread())
+        mDisposable = mRxBus.toFlowable().observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Object>() {
                     @SuppressLint("CheckResult")
                     @Override
@@ -98,8 +105,7 @@ public class HomeworkFragment extends Fragment {
                             Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
                                 @Override
                                 public void run() throws Exception {
-                                    fetchAssignedHomework(0);
-
+                                    getAssignedHomework(0);
 
                                 }
                             });
@@ -122,29 +128,39 @@ public class HomeworkFragment extends Fragment {
         mOverdueList.clear();
     }
 
-    // Subject Id is blank here fetching all subject homework
+    /*
+     * To get all assigned homework from all subjects
+     * For all assigned homework from all subjects - subjectId must be null
+     */
     @SuppressLint("CheckResult")
-    private void fetchAssignedHomework(final int overduePosition) {
+    private void getAssignedHomework(final int overduePosition) {
+
         if (GeneralUtils.isNetworkAvailable(mContext)) {
+
             mBinding.layoutProgressBar.setVisibility(View.VISIBLE);
-            mHomeworkModel.fetchHomework(mStudentId).subscribeOn(Schedulers.io())
+            mHomeworkModel.fetchHomework(null)
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<AssignedHomeworkParent>() {
                         @Override
                         public void accept(AssignedHomeworkParent assignedHomeworkParent) throws Exception {
+
                             mBinding.layoutProgressBar.setVisibility(View.GONE);
+
                             if (assignedHomeworkParent != null) {
+
                                 mAssignedHomeworkParent = assignedHomeworkParent;
                                 setDefaults();
-                                if (mAssignedHomeworkParent.getOverDueStudentAssignment() != null && mAssignedHomeworkParent.getOverDueStudentAssignment().getCount() > 0) {
+                                if (mAssignedHomeworkParent.getOverDueStudentAssignment() != null
+                                        && mAssignedHomeworkParent.getOverDueStudentAssignment().getCount() > 0) {
                                     mOverdueList = mAssignedHomeworkParent.getOverDueStudentAssignment().getAssignmentsList();
                                 }
 
-                                if (mAssignedHomeworkParent.getPendingAssignmentList() != null && !mAssignedHomeworkParent.getPendingAssignmentList().isEmpty()) {
+                                if (mAssignedHomeworkParent.getPendingAssignmentList() != null
+                                        && !mAssignedHomeworkParent.getPendingAssignmentList().isEmpty()) {
                                     mPendingList = mAssignedHomeworkParent.getPendingAssignmentList();
                                 }
 
-                                mBinding.viewPager.setVisibility(View.VISIBLE);
                                 setUpViewPager(overduePosition);
                             }
 
@@ -155,6 +171,7 @@ public class HomeworkFragment extends Fragment {
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
                             mBinding.layoutProgressBar.setVisibility(View.GONE);
+                            setUpViewPager(overduePosition);
 
                         }
                     });
@@ -170,7 +187,7 @@ public class HomeworkFragment extends Fragment {
                 .setAction((R.string.labelRetry), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        fetchAssignedHomework(OVERDUE_POSITION);
+                        getAssignedHomework(OVERDUE_POSITION);
                     }
                 })
                 .show();
@@ -179,15 +196,9 @@ public class HomeworkFragment extends Fragment {
 
     private void setUpViewPager(int pagerPosition) {
         mBinding.viewPager.setVisibility(View.VISIBLE);
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getFragmentManager());
-        mBinding.viewPager.setAdapter(viewPagerAdapter);
+        mBinding.viewPager.setAdapter(new ViewPagerAdapter(getFragmentManager()));
         mBinding.viewPager.setCurrentItem(pagerPosition, true);
         mBinding.tabLayout.setupWithViewPager(mBinding.viewPager);
-        mBinding.tabLayout.setTabTextColors(ContextCompat.getColor(mContext, R.color.colorWhite66),
-                ContextCompat.getColor(mContext, R.color.colorWhite));
-        mBinding.tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(mContext, R.color.colorWhite));
-        mBinding.tabLayout.setSelectedTabIndicatorHeight(4);
-        mBinding.tabLayout.setTabMode(TabLayout.MODE_FIXED);
     }
 
     @Override
@@ -199,14 +210,14 @@ public class HomeworkFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        this.mContext = null;
+//        this.mContext = null;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mSubscription != null) {
-            mSubscription.dispose();
+        if (mDisposable != null) {
+            mDisposable.dispose();
         }
     }
 
@@ -214,7 +225,7 @@ public class HomeworkFragment extends Fragment {
 
         private String[] mTabTitles = new String[]{getString(R.string.string_over_due), getString(R.string.pendingBy)};
 
-        public ViewPagerAdapter(FragmentManager fragmentManager) {
+        ViewPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
@@ -226,9 +237,9 @@ public class HomeworkFragment extends Fragment {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return HomeworkOverdueFragment.newInstance(ConstantUtil.OVERDUE, mOverdueList);
+                return HomeworkOverdueFragment.newInstance(mOverdueList);
             } else if (position == 1) {
-                return HomeworkPendingFragment.newInstance(ConstantUtil.PENDING, mPendingList);
+                return HomeworkPendingFragment.newInstance(mPendingList);
             } else {
                 return null;
             }

@@ -160,7 +160,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/noimage"
+                android:src="@drawable/image_placeholder"
                 android:tag="@string/string_AddThumbnailImage"/>
 
             <in.securelearning.lil.android.base.widget.ButtonCustom

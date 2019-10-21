@@ -11,8 +11,7 @@ import java.util.ArrayList;
 
 import in.securelearning.lil.android.gamification.dataobject.GamificationEvent;
 import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
-import in.securelearning.lil.android.syncadapter.dataobject.Permission;
-import in.securelearning.lil.android.syncadapter.dataobject.RolePermissions;
+import in.securelearning.lil.android.syncadapter.dataobjects.AboutCourseMinimal;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 
 /**
@@ -20,8 +19,8 @@ import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
  */
 
 public class GamificationPrefs {
-    private static SharedPreferences sGamificationPrefs;
     private final static String GAMIFICATION_SHARED_PREFERENCE = "gamification_preference"; // Shared Preference file name
+    private static SharedPreferences sGamificationPrefs;
 
     static SharedPreferences getSharePreference(Context context) {
         if (sGamificationPrefs == null) {
@@ -29,7 +28,6 @@ public class GamificationPrefs {
         }
         return sGamificationPrefs;
     }
-
 
 
     public static boolean setRanBefore(Context context) {
@@ -44,11 +42,47 @@ public class GamificationPrefs {
         return !ranBefore;
 
 
+    }
+
+    public static void setFirstTimeApplicationLoaded(Context context,boolean isRanFirstTime) {
+        SharedPreferences preferences = getSharePreference(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(ConstantUtil.DASHBOARD_LOAD_FIRST_TIME, isRanFirstTime);
+        editor.apply();
 
 
     }
-    public static void saveGamificationData(Context context, ArrayList<GamificationEvent> eventList)
-    {
+
+    public static boolean getFirstTimeApplicationLoaded(Context context) {
+
+        SharedPreferences preferences = getSharePreference(context);
+        if (preferences.contains(ConstantUtil.DASHBOARD_LOAD_FIRST_TIME)) {
+
+            return preferences.getBoolean(ConstantUtil.DASHBOARD_LOAD_FIRST_TIME, false);
+        }
+        return false;
+    }
+
+    public static void setSubjectCallDone(Context context,boolean isSubjectCallDone) {
+        SharedPreferences preferences = getSharePreference(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(ConstantUtil.DASHBOARD_IS_SUBJECT_DONE, isSubjectCallDone);
+        editor.apply();
+
+
+    }
+
+    public static boolean getSubjectDone(Context context) {
+
+        SharedPreferences preferences = getSharePreference(context);
+        if (preferences.contains(ConstantUtil.DASHBOARD_IS_SUBJECT_DONE)) {
+
+            return preferences.getBoolean(ConstantUtil.DASHBOARD_IS_SUBJECT_DONE, false);
+        }
+        return false;
+    }
+
+    public static void saveGamificationData(Context context, ArrayList<GamificationEvent> eventList) {
 
         SharedPreferences preferences = getSharePreference(context);
 
@@ -60,8 +94,116 @@ public class GamificationPrefs {
 
     }
 
-    public static ArrayList<GamificationEvent> getGamificationData(Context context)
-    {
+    public static void saveGamificationEventPosition(Context context, int position) {
+
+        SharedPreferences preferences = getSharePreference(context);
+
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putInt(ConstantUtil.GAMIFICATION_EVENT_POSITION, position);
+        editor.apply();
+
+    }
+
+    public static void savePractiseObject(Context context, AboutCourseMinimal course) {
+
+        SharedPreferences preferences = getSharePreference(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        final Gson gson = new Gson();
+        String serializedObject = gson.toJson(course);
+        editor.putString(ConstantUtil.GAMIFICATION_PRACTISE, serializedObject);
+        editor.apply();
+
+    }
+
+    public static void isTTSAvailable(Context context, boolean isTTSAvailable) {
+
+        SharedPreferences preferences = getSharePreference(context);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putBoolean(ConstantUtil.TTS_AVAILABLE, isTTSAvailable);
+        editor.apply();
+
+    }
+
+    public static boolean getTTS(Context context) {
+
+        SharedPreferences preferences = getSharePreference(context);
+        if (preferences.contains(ConstantUtil.TTS_AVAILABLE)) {
+
+            return preferences.getBoolean(ConstantUtil.TTS_AVAILABLE, false);
+        }
+        return false;
+    }
+
+
+    public static void saveSelectedId(Context context, String id) {
+
+        SharedPreferences preferences = getSharePreference(context);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putString(ConstantUtil.GAMIFICATION_SELECTED_ID, id);
+        editor.apply();
+
+    }
+
+    public static String getSelectedId(Context context) {
+
+        SharedPreferences preferences = getSharePreference(context);
+        if (preferences.contains(ConstantUtil.GAMIFICATION_SELECTED_ID)) {
+
+            return preferences.getString(ConstantUtil.GAMIFICATION_SELECTED_ID, "");
+        }
+        return null;
+    }
+    public static void clearSelectedId(Context context) {
+        SharedPreferences preferences = getSharePreference(context);
+        SharedPreferences.Editor spreferencesEditor = preferences.edit();
+        if (preferences.contains(ConstantUtil.GAMIFICATION_SELECTED_ID)) {
+            spreferencesEditor.remove(ConstantUtil.GAMIFICATION_SELECTED_ID); //we are removing prodId by key
+            spreferencesEditor.apply();
+        }
+    }
+
+    public static AboutCourseMinimal getPractiseObject(Context context) {
+
+        SharedPreferences preferences = getSharePreference(context);
+
+        if (preferences.contains(ConstantUtil.GAMIFICATION_PRACTISE)) {
+            final Gson gson = new Gson();
+            AboutCourseMinimal course;
+            String jsonPreferences = preferences.getString(ConstantUtil.GAMIFICATION_PRACTISE, "");
+            Type type = new TypeToken<AboutCourseMinimal>() {
+            }.getType();
+            course = gson.fromJson(jsonPreferences, type);
+
+            return course;
+        }
+        return null;
+    }
+
+    public static void clearPractiseObject(Context context) {
+        SharedPreferences preferences = getSharePreference(context);
+        SharedPreferences.Editor spreferencesEditor = preferences.edit();
+        if (preferences.contains(ConstantUtil.GAMIFICATION_PRACTISE)) {
+            spreferencesEditor.remove(ConstantUtil.GAMIFICATION_PRACTISE); //we are removing prodId by key
+            spreferencesEditor.apply();
+        }
+    }
+
+    public static int getEventPosition(Context context) {
+
+        SharedPreferences preferences = getSharePreference(context);
+
+        if (preferences.contains(ConstantUtil.GAMIFICATION_EVENT_POSITION)) {
+
+            int position = preferences.getInt(ConstantUtil.GAMIFICATION_EVENT_POSITION, 0);
+            return position;
+        }
+        return 0;
+    }
+
+    public static ArrayList<GamificationEvent> getGamificationData(Context context) {
 
         SharedPreferences preferences = getSharePreference(context);
 
@@ -69,13 +211,15 @@ public class GamificationPrefs {
             final Gson gson = new Gson();
             ArrayList<GamificationEvent> eventList;
             String jsonPreferences = preferences.getString(ConstantUtil.GAMIFICATION_OBJECT, "");
-            Type type = new TypeToken<ArrayList<GamificationEvent>>() {}.getType();
+            Type type = new TypeToken<ArrayList<GamificationEvent>>() {
+            }.getType();
             eventList = gson.fromJson(jsonPreferences, type);
 
             return eventList;
         }
         return null;
     }
+
     public static void clearGamificationPrefs(Context context) {
         SharedPreferences preferences = getSharePreference(context);
         SharedPreferences.Editor spreferencesEditor = preferences.edit();
@@ -84,6 +228,7 @@ public class GamificationPrefs {
             spreferencesEditor.apply();
         }
     }
+
 
 
 }

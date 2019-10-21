@@ -3,13 +3,16 @@ package in.securelearning.lil.android.player.di.component;
 
 import in.securelearning.lil.android.base.di.component.BaseComponent;
 import in.securelearning.lil.android.player.model.PlayerModel;
-import in.securelearning.lil.android.player.view.activity.PracticeQuestionActivity;
+import in.securelearning.lil.android.player.view.activity.PracticePlayerActivity;
+import in.securelearning.lil.android.player.view.activity.QuizPlayerActivity;
 import in.securelearning.lil.android.player.view.activity.RapidLearningCardsActivity;
 import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
+import in.securelearning.lil.android.player.view.adapter.QuestionResourceAdapter;
 import in.securelearning.lil.android.player.view.fragment.FeaturedCardListFragment;
 import in.securelearning.lil.android.resources.view.activity.VideoPlayActivity;
 import in.securelearning.lil.android.resources.view.activity.VimeoActivity;
 import in.securelearning.lil.android.syncadapter.utils.TextToSpeechUtils;
+import in.securelearning.lil.android.thirdparty.views.activity.LogiqidsQuizPlayerActivity;
 
 /**
  * Created by Prabodh Dhabaria on 14-11-2016.
@@ -31,5 +34,9 @@ public interface PlayerBaseComponent extends BaseComponent {
 
     void inject(TextToSpeechUtils textToSpeechUtils);
 
-    void inject(PracticeQuestionActivity practiceQuestionActivity);
+    void inject(PracticePlayerActivity practicePlayerActivity);
+
+    void inject(QuizPlayerActivity quizPlayerActivity);
+
+    void inject(QuestionResourceAdapter questionResourceAdapter);
 }

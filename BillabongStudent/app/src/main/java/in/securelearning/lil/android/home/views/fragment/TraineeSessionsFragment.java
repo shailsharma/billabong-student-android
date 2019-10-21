@@ -26,7 +26,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.TextViewMore;
+import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
 import in.securelearning.lil.android.app.databinding.LayoutRecyclerViewBinding;
 import in.securelearning.lil.android.app.databinding.LayoutRecyclerviewSimpleItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutStudyReferenceItemBinding;

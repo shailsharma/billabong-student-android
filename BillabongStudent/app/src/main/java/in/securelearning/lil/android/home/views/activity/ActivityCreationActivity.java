@@ -217,7 +217,7 @@ public class ActivityCreationActivity extends AppCompatActivity {
 //                    String strPath = copyFiles(picturePathOriginal, mBaseFolder, mLearningNetworkFolder, String.valueOf(System.currentTimeMillis()) + ".jpg");
 //                    addFileToPreviewLayout(strPath, selectedImage);
 //                } else {
-//                    ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit));
+//                    ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit_10MB));
 //                }
 //
 //            }
@@ -627,7 +627,7 @@ public class ActivityCreationActivity extends AppCompatActivity {
                     .start(this);
 
         } else {
-            ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit));
+            ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit_10MB));
         }
     }
 
@@ -1194,7 +1194,7 @@ public class ActivityCreationActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     String mimeType = URLConnection.guessContentTypeFromName(mAttachPathList.get(position));
                     if (mimeType.contains("image")) {
-                        FullScreenImage.setUpFullImageView(ActivityCreationActivity.this, position, true, true, FullScreenImage.getResourceArrayList(mAttachPathList));
+                        FullScreenImage.setUpFullImageView(ActivityCreationActivity.this, position, true, true, false, FullScreenImage.getResourceArrayList(mAttachPathList));
                     } else if (mimeType.contains("video")) {
                         Resource item = new Resource();
                         item.setType("video");

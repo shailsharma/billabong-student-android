@@ -1,6 +1,7 @@
 package in.securelearning.lil.android.player.view.activity;
 
 import android.animation.AnimatorSet;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -8,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 import com.yuyakaido.android.cardstackview.CardStackView;
 import com.yuyakaido.android.cardstackview.SwipeDirection;
@@ -40,11 +44,9 @@ import in.securelearning.lil.android.base.dataobjects.CourseCardMedia;
 import in.securelearning.lil.android.base.dataobjects.CourseProgress;
 import in.securelearning.lil.android.base.dataobjects.CourseSectionCard;
 import in.securelearning.lil.android.base.dataobjects.DigitalBook;
-import in.securelearning.lil.android.base.dataobjects.FavouriteResource;
 import in.securelearning.lil.android.base.dataobjects.InteractiveImage;
 import in.securelearning.lil.android.base.dataobjects.InteractiveVideo;
 import in.securelearning.lil.android.base.dataobjects.PopUps;
-import in.securelearning.lil.android.base.dataobjects.Quiz;
 import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.dataobjects.SectionItems;
 import in.securelearning.lil.android.base.dataobjects.SectionProgress;
@@ -56,27 +58,24 @@ import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.base.views.activity.WebPlayerCordovaLiveActivity;
-import in.securelearning.lil.android.base.views.activity.WebPlayerLiveActivity;
+import in.securelearning.lil.android.base.widget.CustomImageButton;
 import in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity;
 import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.PlayVimeoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.PlayYouTubeFullScreenActivity;
 import in.securelearning.lil.android.player.InjectorPlayer;
+import in.securelearning.lil.android.player.events.SpeakCompletedEvent;
+import in.securelearning.lil.android.player.events.TTSInitialiseDoneEvent;
 import in.securelearning.lil.android.player.model.PlayerModel;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
+import in.securelearning.lil.android.syncadapter.utils.TTSPrefs;
+import in.securelearning.lil.android.syncadapter.utils.TextToSpeechUtils;
+import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 
 public class RapidLearningCardsActivity extends AppCompatActivity {
 
-    @Inject
-    PlayerModel mPlayerModel;
-    @Inject
-    AppUserModel mAppUserModel;
-    @Inject
-    RxBus mRxBus;
-    LayoutSectionViewBinding mBinding;
     public static final String COURSE_ID = "id";
     public static final String SECTION_TITLE = "sectionTitle";
     public static final String SECTION_ID = "sectionId";
@@ -84,6 +83,15 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
     public static final String CARDS = "cards";
     public static final String PROGRESS = "progress";
     public static final String COURSE_TYPE = "courseType";
+    @Inject
+    PlayerModel mPlayerModel;
+    @Inject
+    AppUserModel mAppUserModel;
+    @Inject
+    RxBus mRxBus;
+    @Inject
+    TextToSpeechUtils mTTSUtils;
+    LayoutSectionViewBinding mBinding;
     private String mCourseId, mSectionId;
     private int mProgress, mTotal = -1;
     private ArrayList<String> mCompletedItems = new ArrayList<>();
@@ -91,45 +99,9 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
     private Disposable mDisposable;
     private String mStartTime;
     private String mCourseType;
+    private boolean mIsTTSReady = false;
+    private CustomImageButton mPlayButton;
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //saveProgress(true);
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mDisposable != null) {
-            mDisposable.dispose();
-        }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        InjectorPlayer.INSTANCE.getComponent().inject(this);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.layout_section_view);
-        handleIntent();
-        listenRxEvent();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     public static Intent getStartIntent(Context context, String id, String title, String sectionId, String color, ArrayList<CourseSectionCard> cards, String courseType, int progress) {
         Intent intent = new Intent(context, RapidLearningCardsActivity.class);
@@ -141,6 +113,84 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
         intent.putExtra(COURSE_TYPE, courseType);
         intent.putExtra(PROGRESS, progress);
         return intent;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+    }
+
+    @Override
+    protected void onPause() {
+        mTTSUtils.stop();
+        refreshPlayButtonImage();
+        super.onPause();
+
+
+    }
+
+    private void refreshPlayButtonImage() {
+        if (mBinding.cardStackView.getTopView() != null && mBinding.cardStackView.getTopView().getContentContainer() != null && mBinding.cardStackView.getTopView().getContentContainer().findViewById(R.id.buttonTextToSpeech) != null) {
+            CustomImageButton playButton = mBinding.cardStackView.getTopView().getContentContainer().findViewById(R.id.buttonTextToSpeech);
+            playButton.setTag("Play");
+            mTTSUtils.mStopHighlight = true;
+            playButton.setImageDrawable(getResources().getDrawable(R.drawable.action_speaker_g));
+            playButton.refreshDrawableState();
+        } else {
+            if (mPlayButton != null) {
+                mPlayButton.setTag("Play");
+                mTTSUtils.mStopHighlight = true;
+                mPlayButton.setImageDrawable(getResources().getDrawable(R.drawable.action_speaker_g));
+                mPlayButton.refreshDrawableState();
+            }
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        if (mDisposable != null) {
+            mDisposable.dispose();
+        }
+        mTTSUtils.destroyTTS();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        InjectorPlayer.INSTANCE.getComponent().inject(this);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.layout_section_view);
+        mBinding.layoutRapidProgressBar.setVisibility(View.VISIBLE);
+        TTSPrefs.setFirstTimeRapidLoaded(RapidLearningCardsActivity.this, true);
+        //initializeTTS();
+        listenRxEvent();
+    }
+
+    /*Initialising TTS with text speak and highlight*/
+    private void initializeTTS() {
+        if (mTTSUtils.mTts != null) {
+            mTTSUtils.mTts.stop();
+            mTTSUtils.mTts.shutdown();
+        }
+        mTTSUtils = new TextToSpeechUtils(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initializeTTS();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void handleIntent() {
@@ -169,70 +219,46 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
         }
     }
 
+
     private void listenRxEvent() {
-        mDisposable = mRxBus.toFlowable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Object>() {
-            @Override
-            public void accept(Object event) throws Exception {
-                if (event instanceof QuizCompletedEvent) {
-                    mBinding.cardStackView.getTopView().setDraggable(true);
-                    setCompletedItems(((QuizCompletedEvent) event).getQuizId());
+        mDisposable = mRxBus.toFlowable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Object>() {
+                    @SuppressLint("CheckResult")
+                    @Override
+                    public void accept(Object event) throws Exception {
+                        if (event instanceof TTSInitialiseDoneEvent) {
+                            mIsTTSReady = ((TTSInitialiseDoneEvent) event).isTTsInitCompleted();
+                            if (TTSPrefs.getFirstTimeRapidLoaded(RapidLearningCardsActivity.this)) {
+                                handleIntent();
+                            }
 
-                }
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                throwable.printStackTrace();
-            }
-        });
-    }
+                        } else if (event instanceof SpeakCompletedEvent) {
+                            if (((SpeakCompletedEvent) event).isSpeakCompleted()) {
+                                Completable.complete()
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new Action() {
+                                            @Override
+                                            public void run() throws Exception {
+                                                mTTSUtils.stop();
+                                                refreshPlayButtonImage();
 
-    private void saveProgress(boolean createNotification) {
 
-        CourseProgress updateProgress = mPlayerModel.getCourseProgress(mCourseId);
-        if (updateProgress != null && !TextUtils.isEmpty(updateProgress.getObjectId())) {
-            ArrayList<SectionProgress> list = updateProgress.getSectionProgresses();
-            SectionProgress sectionProgress = new SectionProgress();
-            sectionProgress.setProgress(mBinding.cardStackView.getTopIndex());
-            sectionProgress.setObjectId(mSectionId);
-            sectionProgress.setCompletedItems(mCompletedItems);
-            sectionProgress.setTotalCards(mTotal);
-            sectionProgress.setAlias(null);
-            int index = list.indexOf(sectionProgress);
-            if (index > -1) {
-                list.set(index, sectionProgress);
-            } else {
-                sectionProgress.setSectionItems(getSectionItems(mCourseSectionCards));
-                list.add(sectionProgress);
-            }
-            updateProgress.setSectionProgresses(list);
-            updateProgress.setType(getString(R.string.typeCourse));
-            updateProgress.setTypeName(getString(R.string.typeNameFeatureCourse));
-            updateProgress.setComplete(getIsComplete());
-            updateProgress.setUserId(mAppUserModel.getObjectId());
-            updateProgress.setAlias(null);
-            mPlayerModel.saveCourseProgress(updateProgress, createNotification);
-        } else {
-            CourseProgress courseProgress = new CourseProgress();
-            courseProgress.setObjectId(mCourseId);
-            ArrayList<SectionProgress> list = new ArrayList<>();
-            SectionProgress sectionProgress = new SectionProgress();
-            sectionProgress.setProgress(mBinding.cardStackView.getTopIndex());
-            sectionProgress.setObjectId(mSectionId);
-            sectionProgress.setCompletedItems(mCompletedItems);
-            sectionProgress.setTotalCards(mTotal);
-            sectionProgress.setAlias(null);
-            sectionProgress.setSectionItems(getSectionItems(mCourseSectionCards));
-            list.add(sectionProgress);
-            courseProgress.setSectionProgresses(list);
-            courseProgress.setType(getString(R.string.typeCourse));
-            courseProgress.setTypeName(getString(R.string.typeNameFeatureCourse));
-            courseProgress.setComplete(getIsComplete());
-            courseProgress.setUserId(mAppUserModel.getObjectId());
-            courseProgress.setAlias(null);
-            mPlayerModel.saveCourseProgress(courseProgress, createNotification);
-        }
+                                            }
+                                        });
+                            }
+                        } else if (event instanceof QuizCompletedEvent) {
+                            mBinding.cardStackView.getTopView().setDraggable(true);
+                            setCompletedItems(((QuizCompletedEvent) event).getQuizId());
 
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
+                });
     }
 
     private void getPreviouslyCompletedItems(String courseId) {
@@ -271,11 +297,16 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
     }
 
     private void initializeCardStack(List<CourseSectionCard> cards) {
+        mBinding.layoutRapidProgressBar.setVisibility(View.GONE);
+        mBinding.cardStackView.setVisibility(View.VISIBLE);
+
         if (cards != null && !cards.isEmpty()) {
             SectionCardStackAdapter adapter = new SectionCardStackAdapter(getBaseContext(), cards);
             mBinding.cardStackView.setAdapter(adapter);
         }
 
+        /*Not to call handle intent again and again*/
+        TTSPrefs.setFirstTimeRapidLoaded(RapidLearningCardsActivity.this, false);
     }
 
     private void reverse(int index) {
@@ -284,7 +315,6 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
         } else {
             mBinding.cardStackView.reverse();
         }
-        //  mBinding.progressBar.setProgress(index);
     }
 
     private void setUpToolbar(String color, String title) {
@@ -311,7 +341,7 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
     private void moveToPosition(int position) {
         if (position > -1 && position < mTotal) {
             int currentPosition = mBinding.cardStackView.getTopIndex();
-            SwipeDirection direction = null;
+            SwipeDirection direction;
             if (position < currentPosition) {
                 direction = SwipeDirection.Left;
                 for (int i = currentPosition; i > position; i--) {
@@ -336,13 +366,22 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
             @Override
             public void onCardDragging(float percentX, float percentY) {
                 Log.d("CardStackView", "onCardDragging");
-
+                if (percentY > 0.0 || percentY < 0.0) {
+                    refreshPlayButtonImage();
+                    mTTSUtils.stop();
+                    mTTSUtils.mStopHighlight = true;
+                }
             }
 
             @Override
             public void onCardSwiped(SwipeDirection direction) {
                 Log.d("CardStackView", "onCardSwiped: " + direction.toString());
                 Log.d("CardStackView", "topIndex: " + mBinding.cardStackView.getTopIndex());
+
+                /*stop TTS*/
+                mTTSUtils.stop();
+                mTTSUtils.mStopHighlight = true;
+                refreshPlayButtonImage();
                 if ((mBinding.cardStackView.getTopIndex()) == size) {
                     generateUserCourseProgress(mCourseSectionCards.get(mBinding.cardStackView.getTopIndex() - 1).getObjectId(), mStartTime);
                     finish();
@@ -353,7 +392,6 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
                     mBinding.progressBar.setProgress(mBinding.cardStackView.getTopIndex() + 1);
                     String value = (mBinding.cardStackView.getTopIndex() + 1) + "/" + size;
                     mBinding.textViewProgressCount.setText(value);
-                    //saveProgress(false);
                 }
 
             }
@@ -361,6 +399,9 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
             @Override
             public void onCardReversed() {
                 Log.d("CardStackView", "onCardReversed");
+                mTTSUtils.stop();
+                mTTSUtils.mStopHighlight = true;
+                refreshPlayButtonImage();
                 if ((mBinding.cardStackView.getTopIndex()) == size) {
                     generateUserCourseProgress(mCourseSectionCards.get(mBinding.cardStackView.getTopIndex() - 1).getObjectId(), mStartTime);
                     finish();
@@ -369,7 +410,6 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
                     String text = (mBinding.cardStackView.getTopIndex() + 1) + "/" + size;
                     mBinding.textViewProgressCount.setText(text);
                     generateUserCourseProgress(mCourseSectionCards.get(mBinding.cardStackView.getTopIndex()).getObjectId(), mStartTime);
-                    //saveProgress(false);
                 }
             }
 
@@ -390,6 +430,42 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
         mPlayerModel.generateUserCourseProgress(mCourseId, mCourseType, false, startTime, DateUtils.getCurrentISO8601DateString(), "sections", mSectionId, "card", cardId);
     }
 
+    /*If TTS is ready then play button will be visible*/
+    private void checkTTS(final CustomImageButton buttonTextToSpeech) {
+        if (mTTSUtils.mTts != null && mIsTTSReady) {
+            buttonTextToSpeech.setVisibility(View.VISIBLE);
+        } else {
+            buttonTextToSpeech.setVisibility(View.GONE);
+        }
+    }
+
+    /*To stop highlight TTS Text*/
+    private void stopVoice(CustomImageButton buttonTextToSpeech) {
+        mTTSUtils.stop();
+        mTTSUtils.mStopHighlight = true;
+        if (buttonTextToSpeech != null) {
+            buttonTextToSpeech.setTag("Play");
+            buttonTextToSpeech.setImageResource(R.drawable.action_speaker_g);
+        }
+
+    }
+
+    /*Play voice and text highlight*/
+    private void playVoice(CustomImageButton buttonTextToSpeech, String caption, final AppCompatTextView textViewContent) {
+        buttonTextToSpeech.setTag("Stop");
+        mTTSUtils.mStopHighlight = false;
+        buttonTextToSpeech.setImageResource(R.drawable.action_stop_g);
+        final String[] wordStrings = android.text.Html.fromHtml(caption).toString().split(" ");
+        mTTSUtils.speakAndHighLight(caption, textViewContent, wordStrings);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+
     public class SectionCardStackAdapter extends CardStackAdapter<CourseSectionCard> {
         private List<CourseSectionCard> mList;
         private int mCaptionSizeExtra = 0;
@@ -399,9 +475,10 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
             mList = list;
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View contentView, ViewGroup parent) {
-            ViewHolder holder;
+        public View getView(int position, View contentView, @NonNull ViewGroup parent) {
+            final ViewHolder holder;
 
             if (contentView == null) {
                 LayoutSectionItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.layout_section_item, parent, false);
@@ -411,14 +488,26 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
             } else {
                 holder = (ViewHolder) contentView.getTag();
             }
-
             final CourseSectionCard object = mList.get(position);
             final CourseCardMedia media = object.getMedia();
             final CourseCardMedia mediaSecondary = object.getMediaSecondary();
-
+            mPlayButton = holder.mBinding.buttonTextToSpeech;
+            checkTTS(holder.mBinding.buttonTextToSpeech);
             String templateId = object.getTemplateId();
 
             setCardTitle(object.getTitle(), holder.mBinding.textViewTitle);
+
+            holder.mBinding.buttonTextToSpeech.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (holder.mBinding.buttonTextToSpeech.getTag().equals("Play")) {
+                        playVoice(holder.mBinding.buttonTextToSpeech, replaceHtmlTag(object.getCaption()), holder.mBinding.textViewContent);
+                    } else if (holder.mBinding.buttonTextToSpeech.getTag().equals("Stop")) {
+                        stopVoice(holder.mBinding.buttonTextToSpeech);
+                    }
+                }
+            });
+
 
             switch (templateId) {
                 case "T1":
@@ -436,6 +525,7 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
                     holder.mBinding.buttonPlay.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            stopVoice(holder.mBinding.buttonTextToSpeech);
                             if (media.getType().equalsIgnoreCase(getString(R.string.typePdf))) {
                                 playPdf(media);
                             } else if (media.getType().equalsIgnoreCase(getString(R.string.typeImage))) {
@@ -471,6 +561,7 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
                     holder.mBinding.buttonPlayPrimary.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            stopVoice(holder.mBinding.buttonTextToSpeech);
                             if (media.getType().equalsIgnoreCase(getString(R.string.typePdf))) {
                                 playPdf(media);
                             } else if (media.getType().equalsIgnoreCase(getString(R.string.typeImage))) {
@@ -511,6 +602,7 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
                     holder.mBinding.buttonPlayPrimary.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            stopVoice(holder.mBinding.buttonTextToSpeech);
                             if (media.getType().equalsIgnoreCase(getString(R.string.typePdf))) {
                                 playPdf(media);
                             } else if (media.getType().equalsIgnoreCase(getString(R.string.typeImage))) {
@@ -541,6 +633,7 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
                         holder.mBinding.buttonMediaPlaySecondary.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                stopVoice(holder.mBinding.buttonTextToSpeech);
                                 if (mediaSecondary.getType().equalsIgnoreCase(getString(R.string.typePdf))) {
                                     playPdf(mediaSecondary);
                                 } else if (mediaSecondary.getType().equalsIgnoreCase(getString(R.string.typeImage))) {
@@ -572,18 +665,31 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
         private void setCaption(String caption, AppCompatTextView textView) {
             if (!TextUtils.isEmpty(caption)) {
                 textView.setVisibility(View.VISIBLE);
-                textView.setText(Html.fromHtml(caption));
+                textView.setText(Html.fromHtml(replaceHtmlTag(caption)));
             } else {
                 textView.setVisibility(View.GONE);
             }
+        }
+
+        private String replaceHtmlTag(String caption) {
+            if (!TextUtils.isEmpty(caption)) {
+                if (caption.contains("<li>")) {
+                    String temp = caption
+                            .replaceAll("<li>", "&#9679;\n")
+                            .replaceAll("</li>\n", "<br/><br/>");
+                    return temp;
+                } else
+                    return caption;
+            }
+            return caption;
         }
 
         private void setCardTitle(String title, AppCompatTextView textView) {
             if (!TextUtils.isEmpty(title)) {
                 if (title.length() > 50) {
                     mCaptionSizeExtra--;
-                } else if (title.length() > 80) {
-                    mCaptionSizeExtra -= 2;
+                } else {
+                    title.length();
                 }
                 textView.setText(Html.fromHtml(title));
             } else {
@@ -601,11 +707,9 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
             if (mList != null && !mList.isEmpty() && position < mList.size()) {
                 CourseCardMedia media = mList.get(position).getMedia();
                 CourseSectionCard card = mList.get(position);
-                if (media != null && !TextUtils.isEmpty(media.getObjectId())
-                        && card.isMandatory()
-                        && (mCompletedItems == null || !mCompletedItems.contains(media.getObjectId()))) {
-                    return false;
-                }
+                return media == null || TextUtils.isEmpty(media.getObjectId())
+                        || !card.isMandatory()
+                        || (mCompletedItems != null && mCompletedItems.contains(media.getObjectId()));
             }
 
             return true;
@@ -707,7 +811,7 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
                     buttonPlay.setImageResource(R.drawable.action_video_w);
                     return true;
                 } else if (media.getType().equalsIgnoreCase(getString(R.string.typeMicroCourse))) {
-                    buttonPlay.setImageResource(R.drawable.chevron_right);
+                    buttonPlay.setImageResource(R.drawable.chevron_right_white);
                     return false;
                 } else {
                     buttonPlay.setVisibility(View.GONE);
@@ -733,7 +837,7 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
                     buttonPlay.setImageResource(R.drawable.action_video_w);
                     return true;
                 } else if (media.getType().equalsIgnoreCase(getString(R.string.typeMicroCourse))) {
-                    buttonPlay.setImageResource(R.drawable.chevron_right);
+                    buttonPlay.setImageResource(R.drawable.chevron_right_white);
                     return false;
                 } else {
                     buttonPlay.setVisibility(View.GONE);
@@ -780,11 +884,11 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
 
         private void playQuiz(CourseCardMedia media, String cardId) {
             String type = media.getMicroCourseType().toLowerCase();
-            if (type.equalsIgnoreCase("quiz")) {
-                //  startActivity(QuestionPlayerActivity.getStartIntentForQuizOnline(RapidLearningCardsActivity.this, media.getObjectId()));
+            if (type.equalsIgnoreCase(getString(R.string.quiz).toLowerCase())) {
 
                 if (GeneralUtils.isNetworkAvailable(getContext())) {
-                    WebPlayerLiveActivity.startWebPlayerFromRapidLearning(getContext(), media.getObjectId(), Quiz.class, "", mCourseId, mSectionId, cardId, false, false);
+                    startActivity(QuizPlayerActivity.getStartIntentFromRapidLearning(getBaseContext(), media.getObjectId(),
+                            mCourseId, mCourseType, cardId, mSectionId));
                 } else {
                     ToastUtils.showToastAlert(getContext(), getString(R.string.connect_internet));
                 }
@@ -793,13 +897,20 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
             }
         }
 
+
         private void playVimeoVideo(CourseCardMedia media) {
             if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
+                Gson gson = new GsonBuilder().create();
+
+                /*Adding sourceURL to url to play vimeo video in web player.*/
                 if (!TextUtils.isEmpty(media.getSourceURL())) {
-                    startActivity(PlayVimeoFullScreenActivity.getStartIntent(getContext(), media.getSourceURL()));
+                    media.setUrl(media.getSourceURL());
                 } else {
-                    startActivity(PlayVimeoFullScreenActivity.getStartIntent(getContext(), media.getReference()));
+                    media.setUrl(media.getUrlMain());
                 }
+
+                String json = gson.toJson(media);
+                WebPlayerCordovaLiveActivity.startWebPlayerForResourcePreview(getBaseContext(), mAppUserModel.getObjectId(), json);
                 setCompletedItems(media.getObjectId());
                 mBinding.cardStackView.getTopView().setDraggable(true);
             } else {
@@ -809,10 +920,15 @@ public class RapidLearningCardsActivity extends AppCompatActivity {
 
         private void playYouTubeVideo(CourseCardMedia media) {
             if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-                FavouriteResource favouriteResource = new FavouriteResource();
-                favouriteResource.setName(media.getName());
-                favouriteResource.setUrlThumbnail(media.getUrlThumbnail());
-                startActivity(PlayYouTubeFullScreenActivity.getStartIntent(getContext(), favouriteResource, false));
+                Gson gson = new GsonBuilder().create();
+
+                /*Adding videoId to objectId for web player*/
+                if (!TextUtils.isEmpty(media.getUrlMain())) {
+                    media.setObjectId(media.getUrlMain());
+                }
+
+                String json = gson.toJson(media);
+                WebPlayerCordovaLiveActivity.startWebPlayerForResourcePreview(getBaseContext(), mAppUserModel.getObjectId(), json);
                 setCompletedItems(media.getObjectId());
                 mBinding.cardStackView.getTopView().setDraggable(true);
             } else {

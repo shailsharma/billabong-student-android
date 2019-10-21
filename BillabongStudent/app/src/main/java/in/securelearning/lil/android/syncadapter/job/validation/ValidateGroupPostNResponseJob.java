@@ -11,7 +11,6 @@ import in.securelearning.lil.android.base.dataobjects.PostResponse;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.job.JobCreator;
 import in.securelearning.lil.android.syncadapter.job.resource.ResourceNetworkOperation;
-import in.securelearning.lil.android.syncadapter.utils.InternalNotificationActionUtils;
 import in.securelearning.lil.android.syncadapter.utils.NotificationUtil;
 
 /**
@@ -23,9 +22,11 @@ public class ValidateGroupPostNResponseJob extends BaseValidationJob<GroupPostsN
     private final String TAG = this.getClass().getCanonicalName();
     @Inject
     ResourceNetworkOperation mResourceNetworkOperation;
+    private String mGroupObjectId;
 
-    public ValidateGroupPostNResponseJob(GroupPostsNResponse dataObject) {
+    public ValidateGroupPostNResponseJob(GroupPostsNResponse dataObject, String groupObjectId) {
         super(dataObject);
+        this.mGroupObjectId = groupObjectId;
 
         /*perform injection*/
         InjectorSyncAdapter.INSTANCE.getComponent().inject(this);
@@ -37,6 +38,7 @@ public class ValidateGroupPostNResponseJob extends BaseValidationJob<GroupPostsN
     @Override
     public boolean executeValidation() {
         /*fetch  group from database*/
+        updateAndSaveGroup(mGroupObjectId);
 
         if (mDataObject != null) {
             if (mDataObject.getPost() != null) {
@@ -129,5 +131,16 @@ public class ValidateGroupPostNResponseJob extends BaseValidationJob<GroupPostsN
         mJobModel.updateAndSaveCompleteSyncStatus(group);
     }
 
+
+    /**
+     * save and update sync status
+     *
+     * @param groupId
+     */
+    private void updateAndSaveGroup(String groupId) {
+        Group group = mJobModel.fetchGroupFromObjectId(groupId);
+        group.setNetworkDataDownloaded(true);
+        mJobModel.updateAndSaveCompleteSyncStatus(group);
+    }
 
 }

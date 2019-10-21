@@ -28,9 +28,9 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
- * A fragment representing a list of Items.
+ * A activity representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnResourceFragmentInteractionListener}
+ * Activities containing this activity MUST implement the {@link OnResourceFragmentInteractionListener}
  * interface.
  */
 public class ResourceFragment extends Fragment {
@@ -45,8 +45,8 @@ public class ResourceFragment extends Fragment {
     private ResourceRecyclerViewAdapter mAdapter;
 
     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * Mandatory empty constructor for the activity manager to instantiate the
+     * activity (e.g. upon screen orientation changes).
      */
     public ResourceFragment() {
     }
@@ -129,7 +129,7 @@ public class ResourceFragment extends Fragment {
 
     /**
      * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
+     * activity to allow an interaction in this activity to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
      * <p/>
@@ -253,7 +253,7 @@ public class ResourceFragment extends Fragment {
 //                public void onClick(View v) {
 //                    if (null != mListener) {
 //                        // Notify the active callbacks interface (the activity, if the
-//                        // fragment is attached to one) that an item has been selected.
+//                        // activity is attached to one) that an item has been selected.
 //                        mListener.onResourceFragmentInteraction(holder.mItem);
 //                    }
 //                }

@@ -24,6 +24,12 @@ public interface DirectUploadApiInterface {
     @POST("QuizResponses/getReportByQuizId")
     Call<ResponseBody> getReportByQuizId(@Body RequestBody requestBody);
 
+    @POST("dictionaries/search")
+    Call<ResponseBody> dictionariesSearch(@Body RequestBody requestBody);
+
+    @POST("Utilities/getAflAolCourseConfig")
+    Call<ResponseBody> getAflAolConfiguration(@Body RequestBody requestBody);
+
     @POST("courseprogresses/create")
     Call<ResponseBody> saveCourseProgress(@Body RequestBody request);
 

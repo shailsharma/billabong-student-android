@@ -15,9 +15,11 @@ public class AssignedHomeworkParent implements Serializable {
     @SerializedName("today")
     @Expose
     private AssignedHomework mTodayStudentAssignment;
+
     @SerializedName("upComing")
     @Expose
     private AssignedHomework mUpComingStudentAssignment;
+
     @SerializedName("overDue")
     @Expose
     private AssignedHomework mOverDueStudentAssignment;
@@ -55,8 +57,9 @@ public class AssignedHomeworkParent implements Serializable {
     public AssignedHomework getOverDueStudentAssignment() {
         return mOverDueStudentAssignment;
     }
-    public class AssignedHomework implements Serializable
-    {
+
+    public class AssignedHomework implements Serializable {
+
         @SerializedName("list")
         @Expose
         private List<Homework> mAssignmentsList;

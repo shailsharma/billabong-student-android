@@ -63,7 +63,7 @@
                     android:id="@+id/imageViewThumbnail"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/event_item_height"
-                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/value_16dp"
                     android:scaleType="centerCrop"
                     tools:srcCompat="@tools:sample/backgrounds/scenic[5]"/>
 
@@ -126,8 +126,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginStart="@dimen/margin_8dp"
-                            android:layout_marginEnd="@dimen/margin_8dp"
+                            android:layout_marginStart="@dimen/value_8dp"
+                            android:layout_marginEnd="@dimen/value_8dp"
                             android:theme="@style/RapidLearningRatingBar"
                             />
 

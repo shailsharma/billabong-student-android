@@ -1,159 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/coordinator_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/colorWhite">
 
-            <RelativeLayout
+            <!--right_top-->
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="145dp"
+                android:layout_height="330dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                app:srcCompat="@drawable/dashboard_background_right_top" />
+
+            <!--bottom_end-->
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="208dp"
+                android:layout_height="120dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/dashboard_background_bottom_end" />
+
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusableInTouchMode="true"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
-
-                <!--<android.support.v7.widget.AppCompatImageView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:scaleType="centerCrop"-->
-                <!--app:srcCompat="@drawable/image_dashboard_background"/>-->
-
-                <!--layout toolbar-->
-                <LinearLayout
-                    android:id="@+id/layoutToolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="88dp"
-                    android:layout_alignParentTop="true"
-                    android:background="@drawable/gradient_app"
-                    android:elevation="4dp"
-                    android:gravity="center_vertical"
-
-                    >
-
-                    <in.securelearning.lil.android.base.widget.CustomImageButton
-                        android:id="@+id/buttonDrawer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_8dp"
-                        android:padding="@dimen/padding_8dp"
-                        android:src="@drawable/icon_hamburger_w"/>
-
-                    <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/imageViewUser"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginStart="@dimen/margin_16dp"
-                        />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_8dp"
-                        android:orientation="vertical"
-                        >
-
-                        <android.support.v7.widget.AppCompatTextView
-                            android:id="@+id/textViewGreeting"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                            android:textColor="@color/colorWhite"
-                            tools:text="Good Morning"/>
-
-                        <android.support.v7.widget.AppCompatTextView
-                            android:id="@+id/textViewUserName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                            android:textColor="@color/colorWhite"
-                            android:textStyle="bold"
-                            tools:text="Ritesh"/>
-
-                    </LinearLayout>
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        >
-
-                        <in.securelearning.lil.android.base.widget.CustomImageButton
-                            android:id="@+id/buttonNotification"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end|center_vertical"
-                            android:layout_marginEnd="@dimen/margin_8dp"
-                            android:padding="@dimen/padding_8dp"
-                            android:src="@drawable/logo_notification_w"
-                            android:visibility="gone"/>
-
-                        <android.support.v7.widget.AppCompatImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end|center_vertical"
-                            android:cropToPadding="true"
-                            android:layout_margin="@dimen/margin_16dp"
-                            android:src="@drawable/app_logo_light"/>
-                    </FrameLayout>
-
-                </LinearLayout>
-
+                <!--main-->
                 <android.support.v4.widget.NestedScrollView
                     android:id="@+id/scrollView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/layoutToolbar"
-                    android:background="@drawable/image_dashboard_background"
+                    android:fillViewport="true"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                    <android.support.v7.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_8dp"
-                        android:layout_marginBottom="@dimen/margin_8dp"
+                        android:layout_height="match_parent"
                         android:focusableInTouchMode="true"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:paddingBottom="@dimen/value_8dp">
+
+                        <!--layout toolbar-->
+                        <LinearLayout
+                            android:id="@+id/layoutToolbar"
+                            android:layout_width="match_parent"
+                            android:layout_height="88dp"
+                            android:layout_margin="@dimen/value_8dp"
+                            android:orientation="horizontal">
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:layout_width="196dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="end|center_vertical"
+                                android:adjustViewBounds="true"
+                                android:cropToPadding="true"
+                                app:srcCompat="@drawable/app_logo_with_name_horizontal" />
+
+                            <Space
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1" />
+
+                            <android.support.v7.widget.AppCompatImageButton
+                                android:id="@+id/imageViewUser"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_gravity="center_vertical|end"
+                                android:layout_marginEnd="@dimen/value_16dp"
+                                android:background="@null"
+                                android:elevation="10dp" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/value_16dp"
+                            android:layout_marginTop="@dimen/value_8dp"
+                            android:layout_marginBottom="@dimen/value_16dp"
+                            android:orientation="horizontal">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewGreeting"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppins_regular"
+                                android:text="Hey, "
+                                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                                android:textColor="@color/colorRyanBlack" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/textViewUserName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start"
+                                android:fontFamily="@font/poppins_regular"
+                                android:gravity="start"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                                android:textColor="@color/colorRyanBlack"
+                                android:textStyle="bold"
+                                tools:text="Ritesh" />
+
+                        </LinearLayout>
 
                         <!--Recap view-->
                         <include
                             android:id="@+id/recapView"
-                            layout="@layout/layout_dashboard_recap"/>
+                            layout="@layout/layout_dashboard_recap" />
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
-                            android:layout_marginTop="@dimen/margin_16dp"
-                            android:layout_marginBottom="@dimen/margin_16dp"
-                            android:background="@color/itemDivider"/>
+                            android:layout_margin="@dimen/value_16dp"
+                            android:background="@color/itemDivider" />
 
                         <!--assignment card view-->
                         <include
                             android:id="@+id/assignmentView"
-                            layout="@layout/layout_dashboard_assignment"/>
-
+                            layout="@layout/layout_dashboard_assignment" />
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
-                            android:layout_marginTop="@dimen/margin_16dp"
-                            android:layout_marginBottom="@dimen/margin_16dp"
-                            android:background="@color/itemDivider"/>
-
+                            android:layout_margin="@dimen/value_16dp"
+                            android:background="@color/itemDivider" />
 
                         <!--subjects-->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/margin_16dp"
-                            android:layout_marginRight="@dimen/margin_16dp"
+                            android:layout_marginLeft="@dimen/value_16dp"
+                            android:layout_marginRight="@dimen/value_16dp"
                             android:orientation="vertical">
 
                             <android.support.v7.widget.LinearLayoutCompat
@@ -166,10 +154,11 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="@string/label_subject"
+                                    android:fontFamily="@font/poppins_regular"
+                                    android:text="@string/label_subjects"
                                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                                     android:textColor="@color/colorRyanBlack"
-                                    android:textStyle="bold"/>
+                                    android:textStyle="bold" />
 
 
                                 <in.securelearning.lil.android.base.widget.CustomImageButton
@@ -177,9 +166,9 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:gravity="end"
-                                    android:padding="@dimen/padding_8dp"
+                                    android:padding="@dimen/value_8dp"
                                     android:src="@drawable/icon_dashboard_subject"
-                                    android:visibility="visible"/>
+                                    android:visibility="visible" />
 
                             </android.support.v7.widget.LinearLayoutCompat>
 
@@ -188,10 +177,11 @@
                                 android:id="@+id/textViewErrorSubject"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/event_item_height"
+                                android:fontFamily="@font/poppins_regular"
                                 android:gravity="center"
                                 android:text="@string/no_subject_available"
                                 android:textColor="@color/colorGrey55"
-                                android:visibility="gone"/>
+                                android:visibility="gone" />
 
                             <LinearLayout
                                 android:id="@+id/layoutSubjectProgressBar"
@@ -201,7 +191,7 @@
 
                                 <ProgressBar
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
+                                    android:layout_height="wrap_content" />
 
                             </LinearLayout>
 
@@ -210,16 +200,70 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:visibility="gone"/>
+                                android:visibility="gone" />
 
                         </LinearLayout>
 
+                        <!--Interest and Goal Add-->
+                        <!--<include
+                            android:id="@+id/layoutInterestGoalAdd"
+                            layout="@layout/layout_dashboard_interest_goal_add" />-->
 
-                    </LinearLayout>
+                        <View
+                            android:id="@+id/itemDividerChallengeVideo"
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:layout_margin="@dimen/value_16dp"
+                            android:background="@color/itemDivider"
+                            android:visibility="gone" />
+
+                        <!--Challenge Per Day-->
+                        <include
+                            android:id="@+id/layoutLogiqidsChallengeForDay"
+                            layout="@layout/layout_dashboard_challenge_for_day_logiqids" />
+
+                        <!--Video for day-->
+                        <include
+                            android:id="@+id/layoutVideoForDay"
+                            layout="@layout/layout_dashboard_video_for_day" />
+
+
+                    </android.support.v7.widget.LinearLayoutCompat>
 
 
                 </android.support.v4.widget.NestedScrollView>
-            </RelativeLayout>
-        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="88dp"
+                android:visibility="gone">
+
+                <android.support.v7.widget.LinearLayoutCompat
+                    android:id="@+id/buttonDrawer"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/value_8dp"
+                    android:layout_marginEnd="@dimen/value_4dp"
+                    android:background="@drawable/circle_solid_white"
+                    android:elevation="@dimen/elevation_8dp"
+                    android:gravity="center">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tint="@color/colorBlack"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/icon_hamburger_w" />
+
+                </android.support.v7.widget.LinearLayoutCompat>
+
+            </FrameLayout>
+
+        </RelativeLayout>
+
     </android.support.design.widget.CoordinatorLayout>
 </layout>

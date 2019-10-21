@@ -9,13 +9,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationParentData;
-import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationRequest;
 import in.securelearning.lil.android.analytics.dataobjects.ChartDataRequest;
 import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataRequest;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
 import in.securelearning.lil.android.analytics.dataobjects.EffortvsPerformanceData;
 import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.app.BuildConfig;
@@ -27,6 +24,7 @@ import in.securelearning.lil.android.base.dataobjects.Blog;
 import in.securelearning.lil.android.base.dataobjects.BlogComment;
 import in.securelearning.lil.android.base.dataobjects.CalendarEvent;
 import in.securelearning.lil.android.base.dataobjects.ConceptMap;
+import in.securelearning.lil.android.base.dataobjects.Credentials;
 import in.securelearning.lil.android.base.dataobjects.Curriculum;
 import in.securelearning.lil.android.base.dataobjects.DigitalBook;
 import in.securelearning.lil.android.base.dataobjects.Group;
@@ -54,22 +52,29 @@ import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.ArrayList;
 import in.securelearning.lil.android.courses.dataobject.CourseReview;
+import in.securelearning.lil.android.gamification.dataobject.GamificationBonus;
+import in.securelearning.lil.android.gamification.dataobject.GamificationSurvey;
 import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
 import in.securelearning.lil.android.homework.dataobject.Homework;
 import in.securelearning.lil.android.homework.dataobject.HomeworkSubmitResponse;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkLoginRequest;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkLoginResponse;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkQuestionParent;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkQuestionRequest;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkQuestionSubmit;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkTopicListRequest;
-import in.securelearning.lil.android.mindspark.dataobjects.MindSparkTopicResult;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkLoginRequest;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkLoginResponse;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkQuestionParent;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkQuestionRequest;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkQuestionSubmit;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkTopicListRequest;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkTopicResult;
+import in.securelearning.lil.android.profile.dataobject.TeacherProfile;
+import in.securelearning.lil.android.profile.dataobject.UserInterest;
+import in.securelearning.lil.android.profile.dataobject.UserInterestPost;
 import in.securelearning.lil.android.syncadapter.InjectorSyncAdapter;
 import in.securelearning.lil.android.syncadapter.dataobject.AuthToken;
 import in.securelearning.lil.android.syncadapter.dataobject.BlogResponse;
 import in.securelearning.lil.android.syncadapter.dataobject.BroadcastNotification;
 import in.securelearning.lil.android.syncadapter.dataobject.CloudinaryFileInner;
+import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
+import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationRequest;
 import in.securelearning.lil.android.syncadapter.dataobject.LearningMapAggregatesParams;
 import in.securelearning.lil.android.syncadapter.dataobject.LessonPlanMinimal;
 import in.securelearning.lil.android.syncadapter.dataobject.RecommendedApiObject;
@@ -98,9 +103,16 @@ import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanChapterRe
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectDetails;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectResult;
+import in.securelearning.lil.android.syncadapter.dataobjects.LogiQidsChallengeParent;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
-import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfile;
+import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfilePicturePost;
 import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
+import in.securelearning.lil.android.syncadapter.dataobjects.UserChallengePost;
+import in.securelearning.lil.android.syncadapter.dataobjects.VideoForDayParent;
+import in.securelearning.lil.android.syncadapter.dataobjects.VocationalSubject;
+import in.securelearning.lil.android.syncadapter.dataobjects.VocationalTopic;
+import in.securelearning.lil.android.syncadapter.dataobjects.VocationalTopicRequest;
+import in.securelearning.lil.android.syncadapter.dataobjects.WikiHowParent;
 import in.securelearning.lil.android.syncadapter.fcmservices.Message;
 import in.securelearning.lil.android.syncadapter.fcmservices.MessageData;
 import in.securelearning.lil.android.syncadapter.fcmservices.MessageDataPayload;
@@ -111,12 +123,26 @@ import in.securelearning.lil.android.syncadapter.rest.DirectUploadApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.DownloadApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.DownloadFilesApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.FCMApiInterface;
+import in.securelearning.lil.android.syncadapter.rest.LogiqidsApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.MindSparkApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.NewUploadApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.SearchApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.SyncSuccessApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.UploadApiInterface;
 import in.securelearning.lil.android.syncadapter.rest.UploadFilesApiInterface;
+import in.securelearning.lil.android.syncadapter.rest.WikiHowApiInterface;
+import in.securelearning.lil.android.thirdparty.dataobjects.LogiqidsLoginResult;
+import in.securelearning.lil.android.thirdparty.dataobjects.LogiqidsQuestionAttemptRequest;
+import in.securelearning.lil.android.thirdparty.dataobjects.LogiqidsQuestionAttemptResult;
+import in.securelearning.lil.android.thirdparty.dataobjects.LogiqidsQuestionResult;
+import in.securelearning.lil.android.thirdparty.dataobjects.LogiqidsWorksheetResult;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkLoginRequest;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkLoginResponse;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkQuestionParent;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkQuestionRequest;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkQuestionSubmit;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkTopicListRequest;
+import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkTopicResult;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -184,6 +210,13 @@ public class FlavorNetworkModel extends BaseModel {
     /*for mind spark user login*/
     @Inject
     MindSparkApiInterface mMindSparkApiInterface;
+
+    @Inject
+    WikiHowApiInterface mWikiHowApiInterface;
+
+    @Inject
+    LogiqidsApiInterface mLogiqidsApiInterface;
+
 
     public FlavorNetworkModel() {
         /*perform injection*/
@@ -434,9 +467,9 @@ public class FlavorNetworkModel extends BaseModel {
         return mDownloadApiInterface.getUserProfile(objectId);
     }
 
-    public Call<StudentProfile> fetchStudentProfile() {
+    /*public Call<StudentProfile> fetchStudentProfile() {
         return mDownloadApiInterface.getStudentProfile();
-    }
+    }*/
 
     public Call<GroupPostsNResponse> fetchGroupPostNResponse(String objectId) {
         return mDownloadApiInterface.fetchGroupPostAndResponse(objectId);
@@ -1115,7 +1148,6 @@ public class FlavorNetworkModel extends BaseModel {
     /*To fetch Today Recap*/
     public Call<LessonPlanChapterResult> getChapterResult(LessonPlanChapterPost lessonPlanChapterPost) {
         return mDownloadApiInterface.getChapterResult(lessonPlanChapterPost);
-
     }
 
     /*To fetch My Subject*/
@@ -1146,7 +1178,6 @@ public class FlavorNetworkModel extends BaseModel {
     /*To fetch all topic list of mind spark*/
     public Call<MindSparkTopicResult> getMindSparkTopicResult(MindSparkTopicListRequest mindSparkTopicListRequest) {
         return mMindSparkApiInterface.getMindSparkTopicResult(mindSparkTopicListRequest);
-
     }
 
     /*To fetch details of subject*/
@@ -1157,7 +1188,6 @@ public class FlavorNetworkModel extends BaseModel {
     /*To fetch Learn, Reinforce, Practice and Apply by topicId and type*/
     public Call<LRPAResult> fetchLRPA(LRPARequest lrpaRequest) {
         return mDownloadApiInterface.fetchLRPA(lrpaRequest);
-
     }
 
     /*To fetch third party meta information*/
@@ -1193,7 +1223,7 @@ public class FlavorNetworkModel extends BaseModel {
 
     /*To fetch effort (time spent) data for all subjects*/
     public Call<java.util.ArrayList<EffortvsPerformanceData>> fetchEffortvsPerformanceData() {
-        return mDownloadApiInterface.fetchEffortvsPerformanceData();
+        return mDownloadApiInterface.fetchEffortVsPerformanceData();
     }
 
     /*To fetch effort (time spent) data for individual subject*/
@@ -1202,42 +1232,125 @@ public class FlavorNetworkModel extends BaseModel {
     }
 
     /*To fetch effort (time spent) weekly data for individual subject*/
-    public Call<java.util.ArrayList<EffortChartDataWeekly>> fetchWeeklyEffortData(EffortChartDataRequest effortChartDataRequest) {
+    public Call<EffortChartDataParent> fetchWeeklyEffortData(EffortChartDataRequest effortChartDataRequest) {
         return mDownloadApiInterface.fetchWeeklyEffortData(effortChartDataRequest);
-
     }
 
     /*To fetch student's achievements*/
-    public Call<StudentAchievement> fetchStudentAchievements() {
-        return mDownloadApiInterface.fetchStudentAchievements();
-
+    public Call<StudentAchievement> fetchStudentAchievements(String userId) {
+        return mDownloadApiInterface.fetchStudentAchievements(userId);
     }
 
     /*To fetch chart configuration for performance and coverage*/
-    public Call<ChartConfigurationParentData> fetchChartConfiguration(ChartConfigurationRequest chartConfigurationRequest) {
-        return mDownloadApiInterface.fetchChartConfiguration(chartConfigurationRequest);
-
+    public Call<GlobalConfigurationParent> fetchGlobalConfiguration(GlobalConfigurationRequest chartConfigurationRequest) {
+        return mDownloadApiInterface.fetchGlobalConfiguration(chartConfigurationRequest);
     }
 
     /*To fetch details of overdue and pending list of student homework*/
     public Call<AssignedHomeworkParent> fetchHomework(String subjectId) {
         return mDownloadApiInterface.fetchHomework(subjectId);
-
     }
 
     /*To fetch details of overdue and pending list of student homework*/
     public Call<Homework> fetchHomeworkDetail(String homeworkId) {
         return mDownloadApiInterface.fetchHomeworkDetail(homeworkId);
-
     }
 
     public Call<HomeworkSubmitResponse> submitHomework(String homeworkId) {
         return mDownloadApiInterface.submitHomework(homeworkId);
-
     }
 
     /*To send status of application for various user activity*/
     public Call<ResponseBody> checkUserStatus(String status) {
         return mDownloadApiInterface.checkUserStatus(status);
+    }
+
+    public Call<GamificationBonus> saveBonus(GamificationBonus bonus) {
+        return mDownloadApiInterface.saveBonus(bonus);
+    }
+
+    public Call<GamificationBonus> getBonus(String bonusId) {
+        return mDownloadApiInterface.getBonus(bonusId);
+    }
+
+    public Call<ResponseBody> saveGamificationSurvey(GamificationSurvey survey) {
+        return mDownloadApiInterface.saveGamificationSurvey(survey);
+    }
+
+    /*To fetch detail of wikiHow card*/
+    public Call<WikiHowParent> fetchWikiHowCardDetail(String wikiHowId) {
+        return mWikiHowApiInterface.fetchWikiHowCardDetail("app", "article", wikiHowId, "json");
+    }
+
+    /*To fetch Student interest Data list according to interest type*/
+    public Call<java.util.ArrayList<UserInterest>> fetchStudentInterestData(String gradeId, int interestType) {
+        return mDownloadApiInterface.fetchStudentInterestData(gradeId, interestType);
+    }
+
+    /*To send selected goal/user interest first time to server*/
+    public Call<ResponseBody> sendUserInterestInitially(UserInterestPost post) {
+        return mDownloadApiInterface.sendUserInterestInitially(post);
+    }
+
+    /*To send selected goal/user interest after first time to server*/
+    public Call<ResponseBody> sendUserInterest(UserInterestPost post) {
+        return mDownloadApiInterface.sendUserInterest(post);
+    }
+
+    /*To fetch challenge for the day on Dashboard*/
+    public Call<LogiQidsChallengeParent> fetchChallengeForTheDay(String typeChallengeLogiqids) {
+        return mDownloadApiInterface.fetchChallengeForTheDay(typeChallengeLogiqids);
+    }
+
+    /*To fetch video for the day on dashboard*/
+    public Call<VideoForDayParent> fetchVideoForTheDay(String typeVideoPerDay) {
+        return mDownloadApiInterface.fetchVideoForTheDay(typeVideoPerDay);
+    }
+
+    /*To upload data for Take a Challenge Or Video for day of student when join/complete*/
+    public Call<ResponseBody> uploadTakeChallengeOrVideo(UserChallengePost post, int status) {
+        return mDownloadApiInterface.uploadTakeChallengeOrVideo(post, status);
+    }
+
+    /*To fetch non-student users' profile*/
+    public Call<TeacherProfile> fetchNonStudentUserProfileByUserId(String userId) {
+        return mDownloadApiInterface.fetchNonStudentUserProfileByUserId(userId);
+    }
+
+    /*To update profile of student with profile picture*/
+    public Call<ResponseBody> updateStudentProfileWithImage(StudentProfilePicturePost profilePicturePost, String userId) {
+        return mDownloadApiInterface.updateStudentProfileWithImage(profilePicturePost, userId);
+    }
+
+
+    /*To login student to Logiqids server*/
+    public Call<LogiqidsLoginResult> loginToLogiqids(Credentials credentials) {
+        return mLogiqidsApiInterface.loginToLogiqids(credentials);
+    }
+
+    /*To fetch worksheet list from Logiqids server*/
+    public Call<LogiqidsWorksheetResult> getWorksheetList(int userId, int topicId) {
+        return mLogiqidsApiInterface.getWorksheetList(userId, topicId);
+    }
+
+    /*To fetch question from Logiqids server*/
+    public Call<LogiqidsQuestionResult> getQuestion(int userId, int topicId, int worksheetId) {
+        return mLogiqidsApiInterface.getQuestion(userId, topicId, worksheetId);
+    }
+
+    /*To submit question response to Logiqids server*/
+    public Call<LogiqidsQuestionAttemptResult> submitQuestionResponse(int userId, int topicId, int worksheetId, LogiqidsQuestionAttemptRequest logiqidsQuestionAttemptRequest) {
+        return mLogiqidsApiInterface.submitQuestionResponse(userId, topicId, worksheetId, logiqidsQuestionAttemptRequest);
+    }
+
+    /*To fetch vocational subject on dashboard(for now, name = life skill)
+     * To fetch this post object should be empty*/
+    public Call<java.util.ArrayList<VocationalSubject>> fetchVocationalSubject(VocationalTopicRequest vocationalTopicRequest) {
+        return mDownloadApiInterface.fetchVocationalSubject(vocationalTopicRequest);
+    }
+
+    /*To fetch vocational topic (for now logiqids)*/
+    public Call<java.util.ArrayList<VocationalTopic>> fetchVocationalTopics(VocationalTopicRequest topicRequest) {
+        return mDownloadApiInterface.fetchVocationalTopics(topicRequest);
     }
 }

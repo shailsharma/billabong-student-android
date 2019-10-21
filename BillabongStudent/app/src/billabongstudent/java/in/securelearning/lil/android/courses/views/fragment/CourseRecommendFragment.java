@@ -91,7 +91,7 @@ public class CourseRecommendFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the layout for this activity
         mRootView = inflater.inflate(R.layout.fragment_demo_course_list, container, false);
         initializeViews();
         initializeRecyclerView();
@@ -353,7 +353,7 @@ public class CourseRecommendFragment extends Fragment {
 //                public void onClick(View v) {
 //                    if (null != mListener) {
 //                        // Notify the active callbacks interface (the activity, if the
-//                        // fragment is attached to one) that an item has been selected.
+//                        // activity is attached to one) that an item has been selected.
 //                        mListener.onListFragmentInteraction(holder.mItem);
 //                    }
 //                }

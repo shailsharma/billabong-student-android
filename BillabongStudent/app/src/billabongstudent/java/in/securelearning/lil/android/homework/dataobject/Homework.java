@@ -94,7 +94,7 @@ public class Homework implements Serializable {
     private ArrayList<Group> groupDetail;
     @SerializedName("userMarks")
     @Expose
-    private int userMarks;
+    private float userMarks;
 
     public String getHomeworkType() {
         return homeworkType;
@@ -289,7 +289,7 @@ public class Homework implements Serializable {
         return this.getHomeworkId().equals(((Homework) object).getHomeworkId());
     }
 
-    public int getUserMarks() {
+    public float getUserMarks() {
         return userMarks;
     }
 

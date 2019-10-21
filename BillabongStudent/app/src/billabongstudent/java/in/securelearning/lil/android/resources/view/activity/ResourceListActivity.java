@@ -96,13 +96,13 @@ public class ResourceListActivity extends AppCompatActivity {
                     mTopicId = appData.getString(TOPIC_ID);
                     mGradeId = appData.getString(GRADE_ID);
                     RecommendedListFragment fragment = RecommendedListFragment.newInstanceForTopicBrowse(mSubjects, mTopicId, mGradeId, mColumnCount);
-//                    RecommendResourceFragment fragment = RecommendResourceFragment.newInstance(mColumnCount);
+//                    RecommendResourceFragment activity = RecommendResourceFragment.newInstance(mColumnCount);
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.container_main, fragment);
                     fragmentTransaction.commit();
                 } else {
-//                    RecommendedListFragment fragment = RecommendedListFragment.newInstanceForBrowse(mColumnCount);
+//                    RecommendedListFragment activity = RecommendedListFragment.newInstanceForBrowse(mColumnCount);
                     getSupportActionBar().setElevation(0f);
                     RecommendResourceFragment2 fragment = RecommendResourceFragment2.newInstance(mColumnCount);
                     FragmentManager fragmentManager = getSupportFragmentManager();

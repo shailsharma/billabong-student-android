@@ -28,7 +28,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/logo_assignment_c" />
+                android:src="@drawable/logo_homework_c" />
 
             <in.securelearning.lil.android.base.widget.TextViewCustom
                 android:layout_width="wrap_content"

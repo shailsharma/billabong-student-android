@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/layout_assignments_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_16dp"
-        android:layout_marginRight="@dimen/margin_16dp"
-        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/value_16dp"
+        android:layout_marginRight="@dimen/value_16dp"
         android:gravity="center_vertical"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
-        <LinearLayout
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -23,10 +21,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/homework"
+                android:fontFamily="@font/poppins_regular"
+                android:text="@string/homeworkTime"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 android:textColor="@color/colorRyanBlack"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <in.securelearning.lil.android.base.widget.CustomImageButton
                 android:id="@+id/buttonAssignmentView"
@@ -34,76 +33,131 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:gravity="end"
-                android:padding="@dimen/padding_8dp"
+                android:padding="@dimen/value_8dp"
                 android:src="@drawable/icon_dashboard_assignment"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
-        </LinearLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
 
-        <LinearLayout
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_8dp"
-            android:layout_marginBottom="@dimen/margin_8dp"
-            android:orientation="horizontal"
-            android:weightSum="3">
+            android:layout_marginTop="@dimen/value_8dp"
+            android:layout_marginBottom="@dimen/value_8dp"
+            android:orientation="horizontal">
 
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/textViewAssignmentCount1"
+            <android.support.v7.widget.LinearLayoutCompat
+                android:id="@+id/layoutAssignmentCount1"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/margin_4dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/value_4dp"
                 android:layout_weight="1"
                 android:background="@drawable/gradient_chip"
-                android:elevation="@dimen/padding_2dp"
-                android:gravity="center"
-                android:paddingLeft="@dimen/padding_16dp"
-                android:paddingTop="@dimen/padding_12dp"
-                android:paddingRight="@dimen/padding_16dp"
-                android:paddingBottom="@dimen/padding_12dp"
-                tools:text="5 In Progress"
-                android:textColor="@color/colorWhite"
-                />
+                android:elevation="@dimen/elevation_2dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/textViewAssignmentCount2"
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/textViewAssignmentCount1"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="@dimen/value_4dp"
+                    android:background="@drawable/background_circle_white_stroke"
+                    android:fontFamily="@font/poppins_regular"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/colorWhite"
+                    tools:text="00" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/value_4dp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:text="@string/string_new"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:id="@+id/layoutAssignmentCount2"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/margin_4dp"
-                android:layout_marginRight="@dimen/margin_4dp"
-                android:layout_marginBottom="@dimen/margin_4dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/value_4dp"
+                android:layout_marginRight="@dimen/value_4dp"
+                android:layout_marginBottom="@dimen/value_4dp"
                 android:layout_weight="1"
                 android:background="@drawable/gradient_chip"
-                android:elevation="@dimen/padding_2dp"
-                android:gravity="center"
-                android:paddingLeft="@dimen/padding_16dp"
-                android:paddingTop="@dimen/padding_12dp"
-                android:paddingRight="@dimen/padding_16dp"
-                android:paddingBottom="@dimen/padding_12dp"
-                tools:text="1 Due Soon"
-                android:textColor="@color/colorWhite"
-                />
+                android:elevation="@dimen/elevation_2dp"
+                android:gravity="center_vertical">
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/textViewAssignmentCount3"
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/textViewAssignmentCount2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="@dimen/value_4dp"
+                    android:background="@drawable/background_circle_white_stroke"
+                    android:fontFamily="@font/poppins_regular"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/colorWhite"
+                    tools:text="00" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/value_4dp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:text="@string/due_soon"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:id="@+id/layoutAssignmentCount3"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/margin_4dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/value_4dp"
                 android:layout_weight="1"
                 android:background="@drawable/gradient_chip"
-                android:elevation="@dimen/padding_2dp"
-                android:gravity="center"
-                android:paddingLeft="@dimen/padding_16dp"
-                android:paddingTop="@dimen/padding_12dp"
-                android:paddingRight="@dimen/padding_16dp"
-                android:paddingBottom="@dimen/padding_12dp"
-                tools:text="2 Overdue"
-                android:textColor="@color/colorWhite"
-                />
+                android:elevation="@dimen/elevation_2dp"
+                android:gravity="center_vertical">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/textViewAssignmentCount3"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="@dimen/value_4dp"
+                    android:background="@drawable/background_circle_white_stroke"
+                    android:fontFamily="@font/poppins_regular"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/colorWhite"
+                    tools:text="00" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/value_4dp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:text="@string/string_over_due"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+
+            </android.support.v7.widget.LinearLayoutCompat>
 
 
-        </LinearLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
 
     </LinearLayout>
+
 </layout>

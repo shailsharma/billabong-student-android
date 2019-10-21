@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.AppCompatTextView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/textViewChapterTitle"
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/padding_16dp"
-        android:paddingRight="@dimen/padding_16dp"
-        android:paddingTop="@dimen/padding_8dp"
-        android:paddingBottom="@dimen/padding_8dp"
-        android:text="text"
-        android:textSize="@dimen/textSize_14sp"/>
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textViewChapterTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/value_28dp"
+            android:layout_marginEnd="@dimen/value_28dp"
+            android:padding="@dimen/value_8dp"
+            android:textColor="@color/colorGreyDark"
+            tools:text="text" />
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+
 </layout>
