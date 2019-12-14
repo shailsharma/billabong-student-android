@@ -1,9 +1,9 @@
 <resources>
 
     <!--App names according to variant-->
-    <string name="app_name_release">BillaboxNG</string>
-    <string name="app_name_test">BillaboxNG Test</string>
-    <string name="app_name_debug">BillaboxNG Dev</string>
+    <string name="app_name_release">SatBox</string>
+    <string name="app_name_test">SatBox Test</string>
+    <string name="app_name_debug">SatBox Dev</string>
 
     <!--release urls-->
     <string name="base_api_url">https://billabong.learnindialearn.in/api/</string>
@@ -45,18 +45,18 @@
     <string name="file_provider_authority_test">in.securelearning.lil.android.app.billabongstudent.demo.provider.FileProvider</string>
 
     <!--generic strings-->
-    <string name="no_currency_found">No billabucks found</string>
-    <string name="label_currency_value">Billabucks</string>
+    <string name="no_currency_found">No satbucks found</string>
+    <string name="label_currency_value">Satbucks</string>
     <string name="gamification_assignment_pending"><![CDATA[%1$s, You have %2$s new homework today.\nYou may please plan the day accordingly.]]></string>
     <string name="gamification_bonus"><![CDATA[Congratulations! I\'ve unlocked Flash Bonus for you! You\'ll secure fifty percent extra points, should you Learn, Revise and Practice %1$s topics Today]]></string>
     <string name="gamification_school_survey"><![CDATA[Good to see you Again! Let me know how was your School Experience today? Please select your best response from the choice. ]]></string>
-    <string name="gamification_practice_accuracy">You can Earn 50 Billabucks every streak of 4 consecutive correct answers.</string>
-    <string name="messageNextLevel">"Congratulations!\nYou have unlocked next level with Bonus Billabucks!!</string>
+    <string name="gamification_practice_accuracy">You can Earn 50 Satbucks every streak of 4 consecutive correct answers.</string>
+    <string name="messageNextLevel">"Congratulations!\nYou have unlocked next level with Bonus Satbucks!!</string>
 
-    <string name="label_learn">Know &amp; Inquire</string>
-    <string name="label_reinforce">Explore &amp; Explain</string>
-    <string name="label_practice">Analyze &amp; Apply</string>
-    <string name="label_apply">Reflect</string>
+    <string name="label_learn">Learn</string>
+    <string name="label_reinforce">Reinforce</string>
+    <string name="label_practice">Practice</string>
+    <string name="label_apply">Apply</string>
 
     <!-- Strings related to Settings -->
     <!-- SkillMasteryQuestionPostData General settings -->
@@ -408,7 +408,7 @@
     <string name="incorrect_message_5">Nice attempt..Lets not miss the next one.</string>
     <string name="incorrect_message_6">It was difficult..isn\'t it ?</string>
     <string name="incorrect_message_7">No worries..you are not the only one who got it wrong.</string>
-    <string name="incorrect_message_8">Ohh..Surely a better focus would get you full Billabucks.</string>
+    <string name="incorrect_message_8">Ohh..Surely a better focus would get you full Satbucks.</string>
     <string name="incorrect_message_9">Ohh..May you want to try hints or ask someone.</string>
     <string name="incorrect_message_10">It seems next one will be alright!</string>
 
