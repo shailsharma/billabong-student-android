@@ -94,7 +94,6 @@
                     <android.support.v7.widget.AppCompatImageView
                         android:layout_width="28dp"
                         android:layout_height="28dp"
-                        android:scaleType="fitXY"
                         android:layout_gravity="center_vertical"
                         app:srcCompat="@drawable/icon_coin" />
 

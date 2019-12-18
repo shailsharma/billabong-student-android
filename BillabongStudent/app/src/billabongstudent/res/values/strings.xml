@@ -2,7 +2,7 @@
 
     <!--App names according to variant-->
     <string name="app_name_release">SatBox</string>
-    <string name="app_name_test">SatBox Test</string>
+    <string name="app_name_test">SatBox</string>
     <string name="app_name_debug">SatBox Dev</string>
 
     <!--release urls-->
@@ -344,7 +344,7 @@
     <string name="cant_receive_image_from_this_app">Can\'t receive image from this app</string>
     <string name="cant_pick_this_file">Can\'t pick this file</string>
     <string name="message_unauthorized">"Your session has expired. Please login again to continue using the app."</string>
-    <string name="message_user_archived">"Request has been denied. Please contact to argus administrator!"</string>
+    <string name="message_user_archived">"Request has been denied. Please contact to administrator!"</string>
 
     <string name="unable_to_submit_homework">Unable to submit homework</string>
     <string name="homework_submit_success">Homework submitted successfully</string>
