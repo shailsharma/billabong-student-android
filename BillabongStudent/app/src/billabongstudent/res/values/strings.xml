@@ -1,8 +1,8 @@
 <resources>
 
     <!--App names according to variant-->
-    <string name="app_name_release">SatBox</string>
-    <string name="app_name_test">SatBox</string>
+    <string name="app_name_release">SatBox@Homee</string>
+    <string name="app_name_test">SatBox@Home</string>
     <string name="app_name_debug">SatBox Dev</string>
 
     <!--release urls-->
