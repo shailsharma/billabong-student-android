@@ -17,9 +17,9 @@ import in.securelearning.lil.android.gamification.dataobject.GamificationSurveyD
 import in.securelearning.lil.android.gamification.utils.GamificationPrefs;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
-import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
-import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationRequest;
-import in.securelearning.lil.android.syncadapter.model.FlavorNetworkModel;
+import in.securelearning.lil.android.syncadapter.dataobjects.GlobalConfigurationParent;
+import in.securelearning.lil.android.syncadapter.dataobjects.GlobalConfigurationRequest;
+import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import io.reactivex.Observable;
@@ -35,7 +35,7 @@ public class MascotModel {
     Context mAppContext;
 
     @Inject
-    FlavorNetworkModel mFlavorNetworkModel;
+    NetworkModel mNetworkModel;
 
     private ArrayList<GamificationEvent> eventList = new ArrayList<>();
     private ArrayList<GamificationBonus> bonusList = new ArrayList<>();
@@ -44,7 +44,12 @@ public class MascotModel {
         InjectorHome.INSTANCE.getComponent().inject(this);
     }
 
-    private void setGamificationEvent(int id, String eventName, String eventType, int priority, String msg, String activity, String subActivity, String action, boolean isBonusAvailable, boolean isPoint, boolean isOption, String eventOccurrenceTime, String criteria, int frequency, String frequencyUnit) {
+    private void setGamificationEvent(int id, String eventName, String eventType,
+                                      int priority, String msg, String activity,
+                                      String subActivity, String action, boolean isBonusAvailable,
+                                      boolean isPoint, boolean isOption, String eventOccurrenceTime,
+                                      String criteria, int frequency, String frequencyUnit) {
+
         GamificationEvent event = new GamificationEvent();
         event.setEventId(id);
         event.setEventName(eventName);
@@ -79,27 +84,14 @@ public class MascotModel {
         bonusList.add(bonus);
         setBonusToGamificationEvent();
 
-
     }
 
-    public int getEventPosition() {
-        return GamificationPrefs.getEventPosition(mAppContext);
-    }
-
-    public void setEventPosition(int position) {
-        GamificationPrefs.saveGamificationEventPosition(mAppContext, position);
-    }
-
-    public GamificationEvent getGamificationEventForPosition() {
-        eventList = GamificationPrefs.getGamificationData(mAppContext);
-        if (eventList != null && !eventList.isEmpty()) {
-            return eventList.get(getEventPosition());
-        }
-        return null;
-    }
-
-
-    public GamificationBonus createGamificationBonusForServer(int gamificationId, int bonusId, String bonusActivity, String bonusSubActivity, String userId, String subjectId, String topicId, String expiryDate, String bonusType, int multiplier, String sectionId, String gradeId, String subjectName) {
+    public GamificationBonus createGamificationBonusForServer(int gamificationId, int bonusId,
+                                                              String bonusActivity, String bonusSubActivity,
+                                                              String userId, String subjectId,
+                                                              String topicId, String expiryDate,
+                                                              String bonusType, int multiplier,
+                                                              String sectionId, String gradeId, String subjectName) {
         GamificationBonus bonus = new GamificationBonus();
         bonus.setBonusId(null);
         bonus.setUserId(userId);
@@ -130,7 +122,7 @@ public class MascotModel {
         return Observable.create(new ObservableOnSubscribe<GamificationBonus>() {
             @Override
             public void subscribe(ObservableEmitter<GamificationBonus> e) throws Exception {
-                Call<GamificationBonus> call = mFlavorNetworkModel.saveBonus(bonus);
+                Call<GamificationBonus> call = mNetworkModel.saveBonus(bonus);
                 Response<GamificationBonus> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -158,45 +150,12 @@ public class MascotModel {
         });
     }
 
-    public Observable<GamificationBonus> isBonusForAnySubject(final String bonusId) {
-
-        return Observable.create(new ObservableOnSubscribe<GamificationBonus>() {
-            @Override
-            public void subscribe(ObservableEmitter<GamificationBonus> e) throws Exception {
-                Call<GamificationBonus> call = mFlavorNetworkModel.getBonus(bonusId);
-                Response<GamificationBonus> response = call.execute();
-
-                if (response != null && response.isSuccessful()) {
-                    Log.e("getBonus", "Successful");
-                    e.onNext(response.body());
-                } else if (response.code() == 404) {
-                    throw new Exception(mAppContext.getString(R.string.messageUnableToGetData));
-                } else if (response.code() == 401 && SyncServiceHelper.refreshToken(mAppContext)) {
-                    Response<GamificationBonus> response2 = call.clone().execute();
-                    if (response2 != null && response2.isSuccessful()) {
-                        Log.e("getBonus", "Successful");
-                        e.onNext(response2.body());
-                    } else if (response2.code() == 401) {
-                        mAppContext.startActivity(LoginActivity.getUnauthorizedIntent(mAppContext));
-                    } else if (response2.code() == 404) {
-                        throw new Exception(mAppContext.getString(R.string.messageUnableToGetData));
-                    }
-                } else {
-                    Log.e("saveBonus", "Failed");
-                    throw new Exception(mAppContext.getString(R.string.messageUnableToGetData));
-                }
-                e.onComplete();
-
-            }
-        });
-    }
-
     public Observable<ResponseBody> saveSurveyData(final GamificationSurvey survey) {
 
         return Observable.create(new ObservableOnSubscribe<ResponseBody>() {
             @Override
             public void subscribe(ObservableEmitter<ResponseBody> e) throws Exception {
-                Call<ResponseBody> call = mFlavorNetworkModel.saveGamificationSurvey(survey);
+                Call<ResponseBody> call = mNetworkModel.saveGamificationSurvey(survey);
                 Response<ResponseBody> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -225,6 +184,7 @@ public class MascotModel {
     }
 
     public void setBonusCalculateDateGamificationEvent(String currentDate) {
+
         eventList = GamificationPrefs.getGamificationData(mAppContext);
         if (eventList != null && !eventList.isEmpty()) {
             for (GamificationEvent event : eventList) {
@@ -235,14 +195,20 @@ public class MascotModel {
                 }
             }
         }
+
     }
 
     public void setBonusToGamificationEvent() {
+
         eventList = GamificationPrefs.getGamificationData(mAppContext);
+
         if (eventList != null && !eventList.isEmpty()) {
+
             for (GamificationEvent event : eventList) {
+
                 if (event != null && event.isBonusAvailable()) {
                     if (bonusList != null && !bonusList.isEmpty()) {
+
                         for (GamificationBonus bonus : bonusList) {
                             if (bonus != null && bonus.getGamificationId() == event.getEventId()) {
                                 event.setBonusCalculateDate(DateUtils.getCurrentISO8601DateString());
@@ -251,6 +217,7 @@ public class MascotModel {
                                 break;
                             }
                         }
+
                     }
 
                 }
@@ -310,7 +277,7 @@ public class MascotModel {
             public void subscribe(ObservableEmitter<GlobalConfigurationParent> e) throws Exception {
                 GlobalConfigurationRequest globalConfigurationRequest = new GlobalConfigurationRequest();
                 globalConfigurationRequest.setBonusValue(true);
-                Call<GlobalConfigurationParent> call = mFlavorNetworkModel.fetchGlobalConfiguration(globalConfigurationRequest);
+                Call<GlobalConfigurationParent> call = mNetworkModel.fetchGlobalConfiguration(globalConfigurationRequest);
                 Response<GlobalConfigurationParent> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {

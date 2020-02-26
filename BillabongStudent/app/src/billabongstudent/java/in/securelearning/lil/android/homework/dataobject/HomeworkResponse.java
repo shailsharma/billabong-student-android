@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-import in.securelearning.lil.android.syncadapter.dataobject.UserMinimal;
+import in.securelearning.lil.android.syncadapter.dataobjects.UserMinimal;
 /* in this class getting pending and submitted student score and submitted date
 * we are getting student name ect so we are extend userprofile class*/
 

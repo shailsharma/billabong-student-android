@@ -6,6 +6,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import java.util.List;
 
 public class MyXAxisValueFormatter implements IAxisValueFormatter {
+
     private List labels;
 
     public MyXAxisValueFormatter(List<String> labels) {

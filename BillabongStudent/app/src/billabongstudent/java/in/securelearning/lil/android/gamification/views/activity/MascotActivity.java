@@ -3,18 +3,17 @@ package in.securelearning.lil.android.gamification.views.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.Locale;
 import java.util.Random;
@@ -35,6 +34,7 @@ import in.securelearning.lil.android.gamification.event.GamificationEventDone;
 import in.securelearning.lil.android.gamification.model.MascotModel;
 import in.securelearning.lil.android.gamification.utils.GamificationPrefs;
 import in.securelearning.lil.android.home.InjectorHome;
+import in.securelearning.lil.android.home.events.SubjectBonusAvailedEvent;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.Completable;
@@ -81,11 +81,10 @@ public class MascotActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_gamification_dialog);
-        handleIntent();
 
+        handleIntent();
         initValues();
 
     }
@@ -475,23 +474,24 @@ public class MascotActivity extends AppCompatActivity {
 
 
     @SuppressLint("CheckResult")
-    private void saveBonusToServer(GamificationBonus bonus) {
+    private void saveBonusToServer(final GamificationBonus bonus) {
         if (GeneralUtils.isNetworkAvailable(MascotActivity.this)) {
             mMascotModel.saveGamificationBonusToServer(bonus)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<GamificationBonus>() {
                         @Override
-                        public void accept(GamificationBonus bonus) throws Exception {
+                        public void accept(GamificationBonus bonusResponse) throws Exception {
                             clearTtsEngine();
                             setEventDone();
-                            if (bonus != null) {
-                                mMascotModel.createGamificationBonusObject(bonus, false);
-                                Toast.makeText(MascotActivity.this, "Thanks " + AppPrefs.getUserName(MascotActivity.this) + " Bonus is now available for you.", Toast.LENGTH_LONG).show();
+                            if (bonusResponse != null) {
+                                mMascotModel.createGamificationBonusObject(bonusResponse, false);
+                                mRxBus.send(new SubjectBonusAvailedEvent(bonus.getSubjectId()));
+                                GeneralUtils.showToastLong(MascotActivity.this, "Thanks " + AppPrefs.getUserName(MascotActivity.this) + " Bonus is now available for you.");
                                 finish();
                             } else {
-                                mMascotModel.createGamificationBonusObject(bonus, false);
-                                Toast.makeText(MascotActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                                mMascotModel.createGamificationBonusObject(bonusResponse, false);
+                                GeneralUtils.showToastLong(MascotActivity.this, "Something went wrong");
                                 finish();
                             }
 
@@ -579,7 +579,6 @@ public class MascotActivity extends AppCompatActivity {
                         }
                     } else {
                         // show dialog with voice
-                        //showView();
                         playVoice();
                     }
 

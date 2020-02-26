@@ -9,22 +9,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -48,7 +48,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -62,7 +61,6 @@ import in.securelearning.lil.android.base.dataobjects.BranchDetail;
 import in.securelearning.lil.android.base.dataobjects.Grade;
 import in.securelearning.lil.android.base.dataobjects.GradeSectionSuper;
 import in.securelearning.lil.android.base.dataobjects.Institution;
-import in.securelearning.lil.android.base.dataobjects.LearningLevel;
 import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.dataobjects.Thumbnail;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
@@ -71,17 +69,16 @@ import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity;
-import in.securelearning.lil.android.home.views.activity.UserProfileEditActivity;
-import in.securelearning.lil.android.home.views.widget.AndroidPermissions;
+import in.securelearning.lil.android.player.view.activity.PlayFullScreenImageActivity;
+import in.securelearning.lil.android.syncadapter.permission.AndroidPermissions;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
 import in.securelearning.lil.android.profile.event.StudentPersonalProfileRefreshEvent;
 import in.securelearning.lil.android.profile.model.ProfileModel;
 import in.securelearning.lil.android.profile.views.fragment.StudentAchievementFragment;
 import in.securelearning.lil.android.profile.views.fragment.StudentParentFragment;
 import in.securelearning.lil.android.profile.views.fragment.StudentPersonalFragment;
-import in.securelearning.lil.android.syncadapter.dataobject.CloudinaryFileInner;
-import in.securelearning.lil.android.syncadapter.dataobject.FileChooser;
+import in.securelearning.lil.android.syncadapter.dataobjects.CloudinaryFileInner;
+import in.securelearning.lil.android.syncadapter.dataobjects.FileChooser;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfile;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfilePicturePost;
@@ -163,12 +160,11 @@ public class StudentProfileActivity extends AppCompatActivity {
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
-    }
 
-    private void actionEditProfile() {
-        startActivity(UserProfileEditActivity.getStartIntent(getBaseContext(), mUserObjectId));
+        if (mProgressDialog!=null){
+            mProgressDialog.dismiss();
+        }
     }
-
 
     public static Intent getStartIntent(String userId, Context context) {
         Intent intent = new Intent(context, StudentProfileActivity.class);
@@ -218,7 +214,7 @@ public class StudentProfileActivity extends AppCompatActivity {
 
                     /*For toolbar*/
                     mBinding.textViewToolbarTitle.setVisibility(View.VISIBLE);
-                    mBinding.toolbar.setNavigationIcon(R.drawable.action_arrow_left_dark);
+                    mBinding.toolbar.setNavigationIcon(R.drawable.icon_arrow_left_dark);
                     mBinding.textViewToolbarTitle.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorBlack));
 
                     requestLayout(mBinding.viewPager);
@@ -242,7 +238,7 @@ public class StudentProfileActivity extends AppCompatActivity {
 
                     /*For toolbar*/
                     mBinding.textViewToolbarTitle.setVisibility(View.GONE);
-                    mBinding.toolbar.setNavigationIcon(R.drawable.action_arrow_left_light);
+                    mBinding.toolbar.setNavigationIcon(R.drawable.arrow_left_white);
                     mBinding.textViewToolbarTitle.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorWhite));
 
                     requestLayout(mBinding.appBarLayout);
@@ -555,7 +551,6 @@ public class StudentProfileActivity extends AppCompatActivity {
 
         } else {
             mBinding.layoutProgressBottom.setVisibility(View.GONE);
-//            GeneralUtils.showToastShort(getBaseContext(), getString(R.string.connect_internet_for_upload));
             GeneralUtils.showToastShort(getBaseContext(), getString(R.string.error_message_no_internet));
         }
     }
@@ -573,12 +568,6 @@ public class StudentProfileActivity extends AppCompatActivity {
     }
 
     private void setAssociation(Institution association, BranchDetail branchDetail) {
-//        if (association != null && !TextUtils.isEmpty(association.getName()) && branchDetail != null && !TextUtils.isEmpty(branchDetail.getName())) {
-//            String text = association.getName() + ", " + branchDetail.getName();
-//            mBinding.textViewAddress.setText(text);
-//        } else if (association != null && !TextUtils.isEmpty(association.getName())) {
-//            mBinding.textViewAddress.setText(association.getName());
-//        } else
         if (branchDetail != null && !TextUtils.isEmpty(branchDetail.getName())) {
             String text = branchDetail.getName();
             mBinding.textViewAddress.setText(text);
@@ -606,62 +595,6 @@ public class StudentProfileActivity extends AppCompatActivity {
     private String upperCaseFirstLetter(String string) {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
-
-
-    private void setUserName(String firstName, String lastName) {
-
-        if (!TextUtils.isEmpty(firstName)) {
-            firstName = upperCaseFirstLetter(firstName);
-        }
-        if (!TextUtils.isEmpty(lastName)) {
-            lastName = upperCaseFirstLetter(lastName);
-        }
-
-    }
-
-    private void setInterest(UserProfile userProfile) {
-        if (isFromLoggedInUser) {
-            setInterestLearningLevel(userProfile.getInterest().getLearningLevel());
-            //setInterestSubject(userProfile.getInterest().getSubject());
-        }
-    }
-
-    private void setAddress(UserProfile userProfile) {
-
-        if (isFromLoggedInUser) {
-            if (!TextUtils.isEmpty(userProfile.getLocation().getCity()) &&
-                    !TextUtils.isEmpty(userProfile.getLocation().getState().getName()) &&
-                    !TextUtils.isEmpty(userProfile.getLocation().getCountry().getName())) {
-                mBinding.textViewAddress.setVisibility(View.VISIBLE);
-                mBinding.textViewAddress.setText(upperCaseFirstLetter(userProfile.getLocation().getCity()) + ", " + upperCaseFirstLetter(userProfile.getLocation().getState().getName()) + ", " + upperCaseFirstLetter(userProfile.getLocation().getCountry().getName()));
-            } else {
-                mBinding.textViewAddress.setVisibility(View.GONE);
-            }
-        } else {
-            mBinding.textViewAddress.setVisibility(View.GONE);
-        }
-
-
-    }
-
-
-    private void setInterestLearningLevel(List<LearningLevel> list) {
-        try {
-            if (list != null) {
-                java.util.ArrayList<String> learningLevelList = new java.util.ArrayList<>();
-                for (int i = 0; i < list.size(); i++) {
-                    learningLevelList.add(list.get(i).getName());
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-
-
-    }
-
 
     private void setUserThumbnail(UserProfile userProfile) {
 
@@ -997,6 +930,5 @@ public class StudentProfileActivity extends AppCompatActivity {
             ToastUtils.showToastAlert(getBaseContext(), getString(R.string.file_size_limit) + " " + ConstantUtil.PROFILE_IMAGE_MAX_SIZE_IN_MB + " MB");
         }
     }
-
 
 }

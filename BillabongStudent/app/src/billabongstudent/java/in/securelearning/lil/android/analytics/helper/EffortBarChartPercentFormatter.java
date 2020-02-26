@@ -15,12 +15,12 @@ public class EffortBarChartPercentFormatter implements IValueFormatter, IAxisVal
 
     @Override
     public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+
         if (value > 0) {
             return String.valueOf(Math.round(value) + " Min");
-
         } else {
             return "";
-
         }
+
     }
 }

@@ -2,10 +2,10 @@ package in.securelearning.lil.android.home.views.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +17,7 @@ import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutMyAchievementTopicItemBinding;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentTopicReward;
 
-/*To set/show data Reward/Billabucks in SubjectTopics*/
+/*To set/show data Reward/Euros in SubjectTopics*/
 public class SubjectTopicsRewardAdapter extends RecyclerView.Adapter<SubjectTopicsRewardAdapter.ViewHolder> {
 
     private ArrayList<StudentTopicReward> mList;
@@ -45,7 +45,12 @@ public class SubjectTopicsRewardAdapter extends RecyclerView.Adapter<SubjectTopi
         } else {
             holder.mBinding.textViewTopicName.setVisibility(View.GONE);
         }
+
         holder.mBinding.textViewScore.setText(String.valueOf(topic.getPointsRewarded()));
+        if (topic.getMaximumPoints() > 0) {
+            String maxPoints = mContext.getString(R.string.labelSlash) + topic.getMaximumPoints();
+            holder.mBinding.textViewScoreMaximum.setText(maxPoints);
+        }
 
         holder.mBinding.textViewEurosLearn.setText(String.valueOf(topic.getLearnEuros()));
         holder.mBinding.textViewEurosPractice.setText(String.valueOf(topic.getPracticeEuros()));

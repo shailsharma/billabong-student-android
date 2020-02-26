@@ -3,20 +3,20 @@ package in.securelearning.lil.android.analytics.views.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -40,7 +40,7 @@ import in.securelearning.lil.android.app.databinding.LayoutCustomAppBarViewpager
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
+import in.securelearning.lil.android.syncadapter.dataobjects.GlobalConfigurationParent;
 import in.securelearning.lil.android.syncadapter.utils.AppBarStateChangeListener;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
@@ -50,13 +50,13 @@ import io.reactivex.schedulers.Schedulers;
 
 public class StudentAnalyticsTabActivity extends AppCompatActivity {
 
-    LayoutCustomAppBarViewpagerBinding mBinding;
-
     @Inject
     AnalyticsModel mAnalyticsModel;
 
     @Inject
     AppUserModel mAppUserModel;
+
+    LayoutCustomAppBarViewpagerBinding mBinding;
 
     GlobalConfigurationParent mChartConfigurationParentData;
 
@@ -75,7 +75,7 @@ public class StudentAnalyticsTabActivity extends AppCompatActivity {
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_custom_app_bar_viewpager);
 
-        mAnalyticsModel.setImmersiveStatusBar(getWindow());
+        CommonUtils.getInstance().setImmersiveStatusBar(getWindow());
         CommonUtils.getInstance().setStatusBarIconsDark(StudentAnalyticsTabActivity.this);
         getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.white));
         mBinding.layoutProgressBar.setVisibility(View.VISIBLE);
@@ -141,7 +141,7 @@ public class StudentAnalyticsTabActivity extends AppCompatActivity {
                     mBinding.collapsingToolbarLayout.setStatusBarScrimColor(ContextCompat.getColor(getBaseContext(), R.color.colorWhite));
 
                     /*For toolbar*/
-                    mBinding.toolbar.setNavigationIcon(R.drawable.action_arrow_left_dark);
+                    mBinding.toolbar.setNavigationIcon(R.drawable.icon_arrow_left_dark);
                     mBinding.textViewToolbarTitle.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorBlack));
 
                     requestLayout(mBinding.viewPager);
@@ -164,7 +164,7 @@ public class StudentAnalyticsTabActivity extends AppCompatActivity {
                     mBinding.collapsingToolbarLayout.setStatusBarScrimColor(ContextCompat.getColor(getBaseContext(), R.color.colorTransparent));
 
                     /*For toolbar*/
-                    mBinding.toolbar.setNavigationIcon(R.drawable.action_arrow_left_light);
+                    mBinding.toolbar.setNavigationIcon(R.drawable.arrow_left_white);
                     mBinding.textViewToolbarTitle.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorWhite));
 
                     requestLayout(mBinding.appBarLayout);
@@ -182,7 +182,8 @@ public class StudentAnalyticsTabActivity extends AppCompatActivity {
     private void fetchChartConfiguration() {
         if (GeneralUtils.isNetworkAvailable(this)) {
             mBinding.layoutProgressBar.setVisibility(View.GONE);
-            mAnalyticsModel.fetchChartConfiguration().subscribeOn(Schedulers.io())
+            mAnalyticsModel.fetchChartConfiguration()
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<GlobalConfigurationParent>() {
                         @Override
@@ -203,6 +204,7 @@ public class StudentAnalyticsTabActivity extends AppCompatActivity {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
+
                             mBinding.layoutProgressBar.setVisibility(View.GONE);
                             mBinding.textViewNoData.setVisibility(View.VISIBLE);
                         }
@@ -248,8 +250,6 @@ public class StudentAnalyticsTabActivity extends AppCompatActivity {
                             if (tabViewChild instanceof TextView) {
                                 ((TextView) tabViewChild).setTextSize(20);
                                 ((TextView) tabViewChild).setTypeface(null, Typeface.BOLD);
-                                //  ((TextView) tabViewChild).setTextAppearance(StudentAnalyticsTabActivity.this, android.R.style.TextAppearance_Large);
-
                             }
                         }
                     }

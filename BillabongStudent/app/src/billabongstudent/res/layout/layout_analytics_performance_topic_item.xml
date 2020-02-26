@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.LinearLayoutCompat
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/value_8dp"
@@ -10,7 +10,7 @@
         android:orientation="horizontal"
         android:weightSum="3">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/textViewTopicName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
             android:textColor="@color/colorBlack"
             tools:text="The study of substances" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/textViewTopicPerformance"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -38,6 +38,6 @@
             android:layout_weight=".7" />
 
 
-    </android.support.v7.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </layout>

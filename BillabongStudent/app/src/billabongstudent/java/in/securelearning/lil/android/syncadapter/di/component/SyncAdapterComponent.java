@@ -3,7 +3,7 @@ package in.securelearning.lil.android.syncadapter.di.component;
 import in.securelearning.lil.android.base.di.component.BaseComponent;
 import in.securelearning.lil.android.base.model.BadgesModel;
 import in.securelearning.lil.android.base.model.GroupModel;
-import in.securelearning.lil.android.syncadapter.fcmservices.FlavorFCMReceiverService;
+import in.securelearning.lil.android.syncadapter.service.FCMReceiverService;
 import in.securelearning.lil.android.syncadapter.ftp.FtpFunctions;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadAboutCourseConceptMapJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadAboutCourseDigitalBookJsonJob;
@@ -15,14 +15,10 @@ import in.securelearning.lil.android.syncadapter.job.download.DownloadActivityDe
 import in.securelearning.lil.android.syncadapter.job.download.DownloadAssignedBadgeJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadAssignmentJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadAssignmentResponseJsonJob;
-import in.securelearning.lil.android.syncadapter.job.download.DownloadBlogCommentsJob;
-import in.securelearning.lil.android.syncadapter.job.download.DownloadBlogDetailsJsonJob;
-import in.securelearning.lil.android.syncadapter.job.download.DownloadBlogJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadBroadcastNotificationJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadCalEventJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadConceptMapJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadCuratorMappingListJob;
-import in.securelearning.lil.android.syncadapter.job.download.DownloadCurriculumListJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadCustomSectionJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadDigitalBookJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadGroupJob;
@@ -46,8 +42,6 @@ import in.securelearning.lil.android.syncadapter.job.download.DownloadRecentlyRe
 import in.securelearning.lil.android.syncadapter.job.download.DownloadResourceJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadTopicCoveredDataJsonJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadTrackingRouteListJob;
-import in.securelearning.lil.android.syncadapter.job.download.DownloadTrainingJob;
-import in.securelearning.lil.android.syncadapter.job.download.DownloadTrainingsBulkJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadUserProfileJob;
 import in.securelearning.lil.android.syncadapter.job.download.DownloadVideoCourseJsonJob;
 import in.securelearning.lil.android.syncadapter.job.resource.ResourceNetworkOperation;
@@ -56,7 +50,6 @@ import in.securelearning.lil.android.syncadapter.job.upload.PostAssignmentRespon
 import in.securelearning.lil.android.syncadapter.job.upload.PostQuizJob;
 import in.securelearning.lil.android.syncadapter.job.upload.PostQuizResourcesJob;
 import in.securelearning.lil.android.syncadapter.job.upload.UploadAssignedBadgeJob;
-import in.securelearning.lil.android.syncadapter.job.upload.UploadBlogCommentJob;
 import in.securelearning.lil.android.syncadapter.job.upload.UploadCalEventJob;
 import in.securelearning.lil.android.syncadapter.job.upload.UploadEventResourcesJob;
 import in.securelearning.lil.android.syncadapter.job.upload.UploadPostDataJob;
@@ -67,9 +60,6 @@ import in.securelearning.lil.android.syncadapter.job.validation.ValidateAboutCou
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateAssignedBadgesJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateAssignmentJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateAssignmentResponseJob;
-import in.securelearning.lil.android.syncadapter.job.validation.ValidateBlogDetailsJob;
-import in.securelearning.lil.android.syncadapter.job.validation.ValidateBlogJob;
-import in.securelearning.lil.android.syncadapter.job.validation.ValidateBlogReviewJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateCalendarEventDataJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateConceptMapJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateCustomSectionJob;
@@ -87,20 +77,14 @@ import in.securelearning.lil.android.syncadapter.job.validation.ValidateQuizWebJ
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateResourceWebJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateUserJob;
 import in.securelearning.lil.android.syncadapter.job.validation.ValidateVideoCourseJob;
-import in.securelearning.lil.android.syncadapter.model.FlavorJobModel;
-import in.securelearning.lil.android.syncadapter.model.FlavorNetworkModel;
-import in.securelearning.lil.android.syncadapter.model.FlavorSyncServiceModel;
 import in.securelearning.lil.android.syncadapter.model.JobModel;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.model.SyncServiceModel;
 import in.securelearning.lil.android.syncadapter.model.WebPlayerLiveModel;
 import in.securelearning.lil.android.syncadapter.receiver.ConnectivityChangeReceiver;
 import in.securelearning.lil.android.syncadapter.rest.ApiModule;
-import in.securelearning.lil.android.syncadapter.service.AssignmentService;
 import in.securelearning.lil.android.syncadapter.service.CourseService;
 import in.securelearning.lil.android.syncadapter.service.MessageService;
-import in.securelearning.lil.android.syncadapter.service.PeriodService;
-import in.securelearning.lil.android.syncadapter.service.ReminderService;
 import in.securelearning.lil.android.syncadapter.service.SyncService;
 import in.securelearning.lil.android.syncadapter.service.UserService;
 import in.securelearning.lil.android.syncadapter.utils.OgUtils;
@@ -218,16 +202,6 @@ public interface SyncAdapterComponent extends BaseComponent {
 
     void inject(ResourceNetworkOperation resourceNetworkOperation);
 
-    void inject(DownloadBlogJsonJob job);
-
-    void inject(ValidateBlogJob job);
-
-    void inject(ValidateBlogDetailsJob job);
-
-    void inject(ValidateBlogReviewJob job);
-
-    void inject(DownloadBlogCommentsJob job);
-
     void inject(UploadCalEventJob job);
 
     void inject(DownloadCalEventJsonJob job);
@@ -238,15 +212,9 @@ public interface SyncAdapterComponent extends BaseComponent {
 
     void inject(DownloadBroadcastNotificationJsonJob job);
 
-    void inject(DownloadBlogDetailsJsonJob job);
-
-    void inject(UploadBlogCommentJob job);
-
     void inject(WebPlayerLiveModel model);
 
     void inject(DownloadUserProfileJob model);
-
-    void inject(DownloadCurriculumListJob job);
 
     void inject(MessageService object);
 
@@ -274,39 +242,21 @@ public interface SyncAdapterComponent extends BaseComponent {
 
     void inject(DownloadAboutCourseInteractiveImageJsonJob downloadAboutCourseInteractiveImageJsonJob);
 
-    void inject(in.securelearning.lil.android.syncadapter.fcmservices.FCMReceiverService fcmReceiverService);
-
     void inject(DownloadTrackingRouteListJob downloadTrackingRouteListJob);
 
     void inject(OgUtils ogUtils);
 
     void inject(DownloadPeriodicEventsBulkJob job);
 
-    void inject(PeriodService periodService);
-
     void inject(DownloadCuratorMappingListJob downloadCuratorMappingListJob);
 
     void inject(UserService userService);
 
-    void inject(AssignmentService assignmentService);
-
     void inject(CourseService courseService);
 
-    void inject(ReminderService reminderService);
-
-    void inject(FlavorSyncServiceModel flavorSyncServiceModel);
-
-    void inject(FlavorNetworkModel flavorNetworkModel);
-
-    void inject(FlavorJobModel flavorJobModel);
-
-    void inject(FlavorFCMReceiverService flavorFCMReceiverService);
+    void inject(FCMReceiverService FCMReceiverService);
 
     void inject(UploadQuestionResponseJob uploadQuestionResponseJob);
-
-    void inject(DownloadTrainingsBulkJob downloadTrainingsBulkJob);
-
-    void inject(DownloadTrainingJob downloadTrainingJob);
 
     void inject(DownloadActivityDetailsJsonJob downloadActivityDetailsJsonJob);
 

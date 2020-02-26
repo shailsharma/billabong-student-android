@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="208dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/value_16dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="@dimen/value_8dp"
+        app:cardElevation="@dimen/value_4dp"
+        app:cardUseCompatPadding="true">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/rootView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient_curved"
+            android:gravity="start"
+            android:orientation="vertical"
+            android:padding="@dimen/value_12dp">
+
+            <!--Subject-->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewSubject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold"
+                tools:text="Science" />
+
+            <!--Topic Count-->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewTopicCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/value_16dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold"
+                tools:text="02" />
+
+            <!--Topics for Revision-->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/value_8dp"
+                android:ellipsize="end"
+                android:gravity="center_horizontal"
+                android:text="@string/labelTopicsForRevision"
+                android:textColor="@color/colorWhite" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.cardview.widget.CardView>
+
+</layout>

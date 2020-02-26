@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:background="@color/colorWhite"
         android:fitsSystemWindows="true"
         android:layout_height="match_parent"
@@ -15,5 +15,5 @@
             android:id="@+id/includeLoginProgress"
             layout="@layout/layout_app_login_progress"/>
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

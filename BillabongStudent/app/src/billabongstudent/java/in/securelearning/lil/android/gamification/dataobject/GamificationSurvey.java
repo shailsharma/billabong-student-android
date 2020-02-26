@@ -14,6 +14,7 @@ public class GamificationSurvey implements Serializable {
     @SerializedName("userId")
     @Expose
     private String userId;
+
     @SerializedName("detail")
     @Expose
     private GamificationSurveyDetail surveyDetail;

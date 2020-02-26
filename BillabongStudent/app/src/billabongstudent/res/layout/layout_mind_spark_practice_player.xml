@@ -10,7 +10,7 @@
         android:fitsSystemWindows="true"
         android:orientation="vertical">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
             android:fitsSystemWindows="true"
             app:elevation="0dp">
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
                 android:fitsSystemWindows="true"
                 app:elevation="0dp"
                 app:titleTextColor="@color/colorWhite"/>
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <RelativeLayout
             android:id="@+id/layoutTop"
@@ -37,7 +37,7 @@
             android:elevation="4dp"
             android:visibility="visible">
 
-            <android.support.v7.widget.LinearLayoutCompat
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/layoutQuestionCounter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
                     android:textStyle="bold"
                     tools:text=" 1"/>
 
-            </android.support.v7.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <LinearLayout
                 android:id="@+id/layoutTimer"
@@ -97,7 +97,7 @@
 
             </LinearLayout>
 
-            <android.support.v7.widget.LinearLayoutCompat
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/layoutHintButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
                 android:orientation="vertical"
                 >
 
-                <android.support.v7.widget.AppCompatImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/buttonQuestionHints"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
@@ -117,7 +117,7 @@
                     android:visibility="visible"/>
 
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textQuestionHints"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -126,9 +126,9 @@
                     android:visibility="visible"
                     tools:text="2/4"/>
 
-            </android.support.v7.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewQuestionType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -174,7 +174,7 @@
 
         </LinearLayout>
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -197,7 +197,7 @@
                     android:textColor="@color/white"/>
 
                 <!--resources-->
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/layoutQuestionResource"
                     android:layout_width="196dp"
                     android:layout_height="148dp"
@@ -206,14 +206,14 @@
                     app:cardElevation="@dimen/elevation_4dp"
                     app:cardUseCompatPadding="true">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/imageViewResourceThumbnail"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
                         />
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/imageViewResourceType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -223,7 +223,7 @@
                         app:srcCompat="@drawable/icon_image_white"/>
 
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
                 <WebView
                     android:id="@+id/webView"
@@ -334,7 +334,7 @@
                             android:textColor="@color/white"
                             android:visibility="gone"/>
 
-                        <android.support.v7.widget.CardView
+                        <androidx.cardview.widget.CardView
                             android:id="@+id/layoutExplanationResource"
                             android:layout_width="196dp"
                             android:layout_height="148dp"
@@ -343,14 +343,14 @@
                             app:cardElevation="4dp"
                             app:cardUseCompatPadding="true">
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/imageViewExplanationThumbnail"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
                                 />
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/imageViewExplanationType"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -358,7 +358,7 @@
                                 android:layout_margin="4dp"
                                 android:padding="4dp"/>
 
-                        </android.support.v7.widget.CardView>
+                        </androidx.cardview.widget.CardView>
 
 
                     </LinearLayout>
@@ -367,9 +367,9 @@
 
             </LinearLayout>
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
-        <android.support.v7.widget.LinearLayoutCompat
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/layoutBottomButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -402,7 +402,7 @@
                 android:textSize="20sp"
                 android:visibility="gone"/>
 
-        </android.support.v7.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </RelativeLayout>
 

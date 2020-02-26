@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.LinearLayoutCompat
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/value_8dp"
@@ -12,14 +12,14 @@
         android:padding="@dimen/value_16dp">
 
         <!--Title-->
-        <android.support.v7.widget.LinearLayoutCompat
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <!--Title-->
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewHeader"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -33,31 +33,31 @@
                 tools:text="Critical Thinking" />
 
             <!--Third party icon-->
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageViewThirdParty"
                 android:layout_width="96dp"
                 android:layout_height="@dimen/chipButtonHeight_36dp"
                 android:visibility="visible"
                 app:srcCompat="@drawable/image_logiqids" />
 
-        </android.support.v7.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewSubTopic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 tools:itemCount="4"
-                tools:layoutManager="android.support.v7.widget.GridLayoutManager"
+                tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 tools:listitem="@layout/layout_vocational_sub_topic_list_item"
                 tools:spanCount="2" />
 
             <!--Error-->
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewErrorSubTopic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,6 +70,6 @@
 
         </RelativeLayout>
 
-    </android.support.v7.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </layout>

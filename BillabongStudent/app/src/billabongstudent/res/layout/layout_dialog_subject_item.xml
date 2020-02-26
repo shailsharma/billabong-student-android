@@ -2,19 +2,19 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.LinearLayoutCompat
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/value_12dp">
 
-        <android.support.v7.widget.LinearLayoutCompat
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageViewThumbnail"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
@@ -22,7 +22,7 @@
                 android:visibility="visible"
                 tools:src="@drawable/icon_book" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewTopicName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
                 android:textColor="@color/colorBlack"
                 tools:text="@string/error_something_went_wrong" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,23 +43,44 @@
                 android:textStyle="bold"
                 tools:text="470000" />
 
-        </android.support.v7.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="@dimen/dividerHeight"
             android:layout_marginTop="@dimen/value_4dp"
             android:layout_marginBottom="@dimen/value_4dp"
             android:background="@color/itemDivider" />
 
-        <android.support.v7.widget.RecyclerView
+
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewTopic"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/value_0dp"
+            android:layout_weight="1"
             tools:itemCount="3"
             tools:listitem="@layout/layout_my_achievement_topic_item" />
 
-    </android.support.v7.widget.LinearLayoutCompat>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dividerHeight"
+            android:layout_marginTop="@dimen/value_4dp"
+            android:layout_marginBottom="@dimen/value_4dp"
+            android:background="@color/itemDivider" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="@dimen/value_4dp"
+            android:layout_marginTop="@dimen/value_4dp"
+            android:layout_marginEnd="@dimen/value_4dp"
+            android:gravity="center"
+            android:text="@string/messagePointsDistributionWithAsterisk"
+            android:textSize="@dimen/textSize_10sp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </layout>
 

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--Divider-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="@dimen/value_16dp"
+            android:layout_marginTop="@dimen/value_12dp"
+            android:layout_marginEnd="@dimen/value_16dp"
+            android:layout_marginBottom="@dimen/value_12dp"
+            android:background="@color/itemDivider" />
+
+        <!--Header-->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/value_16dp"
+            android:layout_marginTop="@dimen/value_16dp"
+            android:layout_marginRight="@dimen/value_16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/labelTimeToRevise"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorEuroBlack"
+                android:textStyle="bold" />
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!--Revision list, Error, Progress Bar-->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--Revision list-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycleViewRevision"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingStart="@dimen/value_16dp"
+                android:paddingEnd="@dimen/value_16dp"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/layout_revision_quiz_card_item"
+                tools:orientation="horizontal" />
+
+            <!--Error Revision-->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewErrorRevision"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/event_item_height"
+                android:gravity="center"
+                android:text="No revision"
+                android:textColor="@color/colorGrey55"
+                android:visibility="gone" />
+
+            <!--Progress Bar-->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/layoutRevisionProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/event_item_height"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</layout>

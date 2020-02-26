@@ -3,12 +3,12 @@ package in.securelearning.lil.android.profile.views.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -30,11 +30,11 @@ import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity;
+import in.securelearning.lil.android.player.view.activity.PlayFullScreenImageActivity;
 import in.securelearning.lil.android.profile.dataobject.TeacherAchievementRewards;
 import in.securelearning.lil.android.profile.dataobject.TeacherProfile;
 import in.securelearning.lil.android.profile.model.ProfileModel;
-import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
+import in.securelearning.lil.android.syncadapter.dataobjects.IdNameObject;
 import in.securelearning.lil.android.syncadapter.utils.CircleTransform;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
@@ -43,9 +43,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.support.design.widget.Snackbar.LENGTH_INDEFINITE;
+import static com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE;
 
-/*Activity for non-student users' public profile*/
+/*Activity for non-student users'; primarily for teachers public profile*/
 public class UserPublicProfileActivity extends AppCompatActivity {
 
 
@@ -305,7 +305,7 @@ public class UserPublicProfileActivity extends AppCompatActivity {
             mBinding.textViewUserLearningLevel.setText(learningLevelList);
             mBinding.textViewUserLearningLevel.setVisibility(View.VISIBLE);
         } else {
-            mBinding.layoutLearningLevel.setVisibility(View.GONE);
+            mBinding.layoutSubject.setVisibility(View.GONE);
 
         }
 
@@ -346,7 +346,7 @@ public class UserPublicProfileActivity extends AppCompatActivity {
     }
 
 
-    /*Set Billabucks count*/
+    /*Set Euros count*/
     private void setEuros() {
 
         String totalEuros = new DecimalFormat("##.##").format(mAchievementRewards.getTotalReward());

@@ -6,17 +6,17 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.annotation.Nullable;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.core.widget.NestedScrollView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
@@ -57,9 +57,10 @@ import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
-import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
+import in.securelearning.lil.android.player.view.activity.PlayVideoFullScreenActivity;
 import in.securelearning.lil.android.learningnetwork.adapter.FullScreenImage;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import in.securelearning.lil.android.syncadapter.utils.SoundUtils;
 import in.securelearning.lil.android.syncadapter.utils.TextViewMore;
@@ -868,7 +869,7 @@ public class MindSparkPlayerActivity extends AppCompatActivity {
                 Resource item = new Resource();
                 item.setType("video");
                 item.setUrlMain(resourcePath);
-                startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(getBaseContext(), PlayVideoFullScreenActivity.NETWORK_TYPE_LOCAL, (Resource) item));
+                startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(getBaseContext(), ConstantUtil.BLANK, ConstantUtil.BLANK, PlayVideoFullScreenActivity.NETWORK_TYPE_LOCAL, (Resource) item));
             }
         }
 

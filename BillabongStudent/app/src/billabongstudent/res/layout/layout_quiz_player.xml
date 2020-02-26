@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_quiz_player"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/layoutContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusableInTouchMode="true"
+            android:visibility="visible">
+
+            <!--back/close, Title, Streak, point, coin-->
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="@null"
+                android:fitsSystemWindows="true"
+                app:elevation="0dp">
+
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="?actionBarSize"
+                    android:orientation="horizontal">
+
+                    <!--back/close-->
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/back"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center_vertical"
+                        android:padding="@dimen/value_12dp"
+                        app:srcCompat="@drawable/action_close_w" />
+
+                    <!--title-->
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/textViewToolbarTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                        android:textColor="@color/colorWhite"
+                        tools:text="I just want have a half of screen with 1 linearLayout and half screen with other" />
+
+                    <!--Streak, point, coin-->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|end"
+                        android:layout_marginStart="@dimen/value_8dp"
+                        android:layout_marginEnd="@dimen/value_8dp"
+                        android:orientation="horizontal">
+
+                        <!--Streak-->
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/layoutStreak"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+                            <com.robinhood.ticker.TickerView
+                                android:id="@+id/textViewStreak"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center|end"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                android:textColor="@color/colorWhite"
+                                android:textStyle="bold"
+                                android:visibility="visible" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/imageViewStreak"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:layout_gravity="center_vertical"
+                                app:srcCompat="@drawable/icon_streak" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <!--point, coin-->
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/layoutPoint"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:background="@drawable/chip_accent_color"
+                            android:orientation="horizontal">
+
+                            <com.robinhood.ticker.TickerView
+                                android:id="@+id/textViewPoint"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center|end"
+                                android:ellipsize="end"
+                                android:singleLine="true"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                                android:textColor="@color/colorWhite"
+                                android:visibility="visible"
+                                tools:text=" 150 " />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/imageViewCoin"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:layout_gravity="center_vertical"
+                                app:srcCompat="@drawable/icon_coin" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <!--Question Counter, Size, Timer, Hint, Question Type-->
+            <include
+                android:id="@+id/includeLayoutTop"
+                layout="@layout/layout_question_player_top_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/app_bar"
+                android:visibility="visible" />
+
+            <!--Response-->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/layoutResponse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="80dp"
+                android:elevation="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/imageViewResponse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+
+                <in.securelearning.lil.android.base.widget.TextViewCustom
+                    android:id="@+id/textViewResponse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:paddingEnd="@dimen/value_12dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/colorWhite"
+                    android:textStyle="bold" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <!--Question, Question resources, Choices, Match the following, Hints, explanation-->
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/layoutBottom"
+                android:layout_below="@+id/includeLayoutTop"
+                android:requiresFadingEdge="vertical">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/value_8dp">
+
+                    <!--Question-->
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/textViewQuestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/value_8dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/colorWhite"
+                        android:textColorLink="@color/colorWhite" />
+
+                    <!--Recycler View to render question resources-->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/listQuestionResource"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:overScrollMode="never"
+                        android:visibility="gone" />
+
+                    <!--resources-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/layoutQuestionResource"
+                        android:layout_width="196dp"
+                        android:layout_height="148dp"
+                        android:layout_gravity="center_horizontal"
+                        android:visibility="gone"
+                        app:cardCornerRadius="2dp"
+                        app:cardElevation="@dimen/elevation_4dp"
+                        app:cardUseCompatPadding="true">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imageViewResourceThumbnail"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:alpha="0.2"
+                            android:background="@color/colorBlack" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imageViewResourceType"
+                            android:layout_width="@dimen/value_32dp"
+                            android:layout_height="@dimen/value_32dp"
+                            android:layout_gravity="bottom|end"
+                            android:layout_margin="@dimen/value_4dp"
+                            app:srcCompat="@drawable/icon_image_white" />
+
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!--choices-->
+                    <!--<android.support.v7.widget.CardView-->
+                    <!--android:id="@+id/cardViewChoices"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="12dp"-->
+                    <!--android:visibility="gone"-->
+                    <!--app:cardCornerRadius="2dp"-->
+                    <!--app:cardElevation="4dp"-->
+                    <!--app:cardUseCompatPadding="true"-->
+
+                    <!--&gt;-->
+
+                    <!--Choices-->
+                    <LinearLayout
+                        android:id="@+id/layoutChoices"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:orientation="vertical"
+                        android:visibility="gone" />
+
+                    <!--Match the following-->
+                    <include
+                        android:id="@+id/layout_match_the_following_container"
+                        layout="@layout/layout_match_the_following_container" />
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
+
+                    <!--Hints-->
+                    <FrameLayout
+                        android:id="@+id/cardViewHints"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:background="@drawable/background_choice_unselected"
+                        android:visibility="gone"
+                        app:cardCornerRadius="2dp"
+                        app:cardElevation="4dp"
+                        app:cardUseCompatPadding="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <in.securelearning.lil.android.base.widget.TextViewCustom
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="8dp"
+                                android:background="@drawable/chip_accent_color"
+                                android:paddingLeft="@dimen/value_8dp"
+                                android:paddingRight="@dimen/value_8dp"
+                                android:text="@string/label_hints"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:textColor="@color/white" />
+
+                            <LinearLayout
+                                android:id="@+id/layoutHints"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:divider="@drawable/separator"
+                                android:orientation="vertical"
+                                android:showDividers="middle">
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+                    </FrameLayout>
+
+                    <!--Explanation, Explanation resource, Explanation khan academy video-->
+                    <FrameLayout
+                        android:id="@+id/layoutExplanation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:background="@drawable/background_choice_unselected"
+                        android:padding="8dp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="2dp"
+                        app:cardElevation="4dp"
+                        app:cardUseCompatPadding="true">
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="8dp"
+                                android:layout_marginBottom="@dimen/value_2dp"
+                                android:background="@drawable/chip_accent_color"
+                                android:paddingLeft="@dimen/value_8dp"
+                                android:paddingRight="@dimen/value_8dp"
+                                android:text="@string/heading_explanation_text"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:textColor="@color/white" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/textViewExplanationText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                android:textColor="@color/white"
+                                android:textColorLink="@color/colorWhite"
+                                android:visibility="gone" />
+
+                            <!--Khan academy video header line-->
+                            <androidx.appcompat.widget.LinearLayoutCompat
+                                android:id="@+id/layoutKhanAcademyVideoHeader"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/dividerHeight"
+                                    android:layout_marginTop="@dimen/value_16dp"
+                                    android:background="@color/colorWhite66" />
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/value_8dp"
+                                    android:layout_marginBottom="@dimen/value_4dp"
+                                    android:text="@string/watch_the_video_to_reinforce_concept"
+                                    android:textColor="@color/colorWhite"
+                                    android:textStyle="bold" />
+
+                            </androidx.appcompat.widget.LinearLayoutCompat>
+
+                            <!--Recycler View to render explanation resources-->
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/listExplanationResource"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:overScrollMode="never"
+                                android:visibility="gone" />
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/layoutExplanationResource"
+                                android:layout_width="196dp"
+                                android:layout_height="148dp"
+                                android:visibility="gone"
+                                app:cardCornerRadius="2dp"
+                                app:cardElevation="4dp"
+                                app:cardUseCompatPadding="true">
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/imageViewExplanationThumbnail"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerCrop" />
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/imageViewExplanationType"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom|start"
+                                    android:layout_margin="4dp"
+                                    android:padding="4dp" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <!--NOT IN USE BELOW KAVideo include-->
+                            <!--Explanation khan academy video-->
+                            <include
+                                android:id="@+id/layout_explanation_khan_academy_video"
+                                layout="@layout/layout_explanation_khan_academy_video"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/value_8dp"
+                                android:visibility="gone" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    </FrameLayout>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </androidx.core.widget.NestedScrollView>
+
+            <!--layout bottom, question feedback-->
+            <RelativeLayout
+                android:id="@+id/layoutBottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="@dimen/value_8dp"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonDone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/chipButtonHeight_36dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/chip_accent_color"
+                    android:paddingStart="@dimen/value_48dp"
+                    android:paddingEnd="@dimen/value_48dp"
+                    android:text="@string/submit"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/textSize_16sp"
+                    android:visibility="gone" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/buttonQuestionFeedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:drawableTop="@drawable/icon_suggestion_white"
+                    android:gravity="center_horizontal"
+                    android:text="@string/improve_the_question"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/textSize_10sp" />
+
+            </RelativeLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewAddedPoint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/chip_accent_color"
+                android:drawableEnd="@drawable/icon_coin"
+                android:drawablePadding="@dimen/value_8dp"
+                android:paddingStart="@dimen/value_8dp"
+                android:paddingEnd="@dimen/value_8dp"
+                android:text="+20"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/textSize_36sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:fontFamily="@font/digital" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:drawableEnd="@drawable/icon_streak"
+                android:drawablePadding="@dimen/value_8dp"
+                android:paddingStart="@dimen/value_8dp"
+                android:paddingEnd="@dimen/value_8dp"
+                android:text="x3"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/textSize_48sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+
+        <!--Question Response for user-->
+        <include
+            android:id="@+id/layoutPlayerResponseForUser"
+            layout="@layout/layout_player_response"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" />
+
+
+    </RelativeLayout>
+
+</layout>

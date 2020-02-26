@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/layoutHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/value_8dp"
+            android:paddingBottom="@dimen/value_8dp">
+
+            <!--Category-->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="@dimen/value_8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorGreyDark"
+                tools:text="Dashboard" />
+
+            <!--Header Indicator-->
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewHeaderIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/value_8dp"
+                android:layout_marginEnd="@dimen/value_8dp"
+                android:src="@drawable/chevron_down_dark" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!--Module list-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewModule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            tools:listitem="@layout/layout_help_and_faq_module_list_item" />
+
+        <!--Divider-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dividerHeight"
+            android:background="@color/itemDivider" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</layout>

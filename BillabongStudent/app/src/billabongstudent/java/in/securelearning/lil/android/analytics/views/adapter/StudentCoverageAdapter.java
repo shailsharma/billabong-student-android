@@ -2,9 +2,9 @@ package in.securelearning.lil.android.analytics.views.adapter;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.databinding.DataBindingUtil;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -16,6 +16,7 @@ import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsPerformanceTopicItemBinding;
 
 public class StudentCoverageAdapter extends RecyclerView.Adapter<StudentCoverageAdapter.ViewHolder> {
+
     private Context mContext;
     private ArrayList<CoverageChartData> mList;
     private StudentCoverageFragment mFragment;

@@ -6,17 +6,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -31,7 +31,6 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -46,12 +45,11 @@ import in.securelearning.lil.android.base.dataobjects.BranchDetail;
 import in.securelearning.lil.android.base.dataobjects.Grade;
 import in.securelearning.lil.android.base.dataobjects.GradeSectionSuper;
 import in.securelearning.lil.android.base.dataobjects.Institution;
-import in.securelearning.lil.android.base.dataobjects.LearningLevel;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity;
+import in.securelearning.lil.android.player.view.activity.PlayFullScreenImageActivity;
 import in.securelearning.lil.android.home.views.adapter.SubjectTopicsRewardAdapter;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
 import in.securelearning.lil.android.profile.model.ProfileModel;
@@ -99,7 +97,6 @@ public class StudentPublicProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InjectorHome.INSTANCE.getComponent().inject(this);
-        //appUserModel = InjectorSyncAdapter.INSTANCE.getComponent().appUserModel();
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_student_public_profile);
 
         listenRxEvent();
@@ -127,7 +124,6 @@ public class StudentPublicProfileActivity extends AppCompatActivity {
         if (getIntent() != null) {
             mUserObjectId = getIntent().getStringExtra(USER_ID);
             fetchUserProfileFromServer(mUserObjectId);
-
         }
     }
 
@@ -165,7 +161,7 @@ public class StudentPublicProfileActivity extends AppCompatActivity {
 
                     /*For toolbar*/
                     mBinding.textViewToolbarTitle.setVisibility(View.VISIBLE);
-                    mBinding.toolbar.setNavigationIcon(R.drawable.action_arrow_left_dark);
+                    mBinding.toolbar.setNavigationIcon(R.drawable.icon_arrow_left_dark);
                     mBinding.textViewToolbarTitle.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorBlack));
 
                     mBinding.viewDividerTop.setVisibility(View.GONE);
@@ -190,7 +186,7 @@ public class StudentPublicProfileActivity extends AppCompatActivity {
 
                     /*For toolbar*/
                     mBinding.textViewToolbarTitle.setVisibility(View.GONE);
-                    mBinding.toolbar.setNavigationIcon(R.drawable.action_arrow_left_light);
+                    mBinding.toolbar.setNavigationIcon(R.drawable.arrow_left_white);
                     mBinding.textViewToolbarTitle.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorWhite));
 
                     mBinding.viewDividerTop.setVisibility(View.VISIBLE);
@@ -333,12 +329,6 @@ public class StudentPublicProfileActivity extends AppCompatActivity {
     }
 
     private void setAssociation(Institution association, BranchDetail branchDetail) {
-//        if (association != null && !TextUtils.isEmpty(association.getName()) && branchDetail != null && !TextUtils.isEmpty(branchDetail.getName())) {
-//            String text = association.getName() + ", " + branchDetail.getName();
-//            mBinding.textViewAddress.setText(text);
-//        } else if (association != null && !TextUtils.isEmpty(association.getName())) {
-//            mBinding.textViewAddress.setText(association.getName());
-//        } else
         if (branchDetail != null && !TextUtils.isEmpty(branchDetail.getName())) {
             String text = branchDetail.getName();
             mBinding.textViewAddress.setText(text);
@@ -366,62 +356,6 @@ public class StudentPublicProfileActivity extends AppCompatActivity {
     private String upperCaseFirstLetter(String string) {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
-
-
-    private void setUserName(String firstName, String lastName) {
-
-        if (!TextUtils.isEmpty(firstName)) {
-            firstName = upperCaseFirstLetter(firstName);
-        }
-        if (!TextUtils.isEmpty(lastName)) {
-            lastName = upperCaseFirstLetter(lastName);
-        }
-
-    }
-
-    private void setInterest(UserProfile userProfile) {
-        if (isFromLoggedInUser) {
-            setInterestLearningLevel(userProfile.getInterest().getLearningLevel());
-            //setInterestSubject(userProfile.getInterest().getSubject());
-        }
-    }
-
-    private void setAddress(UserProfile userProfile) {
-
-        if (isFromLoggedInUser) {
-            if (!TextUtils.isEmpty(userProfile.getLocation().getCity()) &&
-                    !TextUtils.isEmpty(userProfile.getLocation().getState().getName()) &&
-                    !TextUtils.isEmpty(userProfile.getLocation().getCountry().getName())) {
-                mBinding.textViewAddress.setVisibility(View.VISIBLE);
-                mBinding.textViewAddress.setText(upperCaseFirstLetter(userProfile.getLocation().getCity()) + ", " + upperCaseFirstLetter(userProfile.getLocation().getState().getName()) + ", " + upperCaseFirstLetter(userProfile.getLocation().getCountry().getName()));
-            } else {
-                mBinding.textViewAddress.setVisibility(View.GONE);
-            }
-        } else {
-            mBinding.textViewAddress.setVisibility(View.GONE);
-        }
-
-
-    }
-
-
-    private void setInterestLearningLevel(List<LearningLevel> list) {
-        try {
-            if (list != null) {
-                java.util.ArrayList<String> learningLevelList = new java.util.ArrayList<>();
-                for (int i = 0; i < list.size(); i++) {
-                    learningLevelList.add(list.get(i).getName());
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-
-
-    }
-
 
     private void setUserThumbnail(UserProfile userProfile) {
 
@@ -461,7 +395,6 @@ public class StudentPublicProfileActivity extends AppCompatActivity {
         });
     }
 
-
     private void setAchievements() {
         if (mStudentAchievement != null) {
             setRewards(mStudentAchievement.getRewardsList(), mStudentAchievement.getTotalRewards());
@@ -474,7 +407,7 @@ public class StudentPublicProfileActivity extends AppCompatActivity {
         }
     }
 
-    /*Rewards are now Billabucks*/
+    /*Rewards are now Euros*/
     private void setRewards(final ArrayList<StudentSubjectReward> rewardsList, int totalRewards) {
 
         mBinding.textViewTotalRewards.setText(String.valueOf(totalRewards));
@@ -500,7 +433,7 @@ public class StudentPublicProfileActivity extends AppCompatActivity {
         });
     }
 
-    /*To set visibility of label_currency_value tab for first time and other times*/
+    /*To set visibility of euros tab for first time and other times*/
     private void setEurosVisibility(ArrayList<StudentSubjectReward> rewardsList) {
         mBinding.recyclerViewTrophies.setVisibility(View.GONE);
         mBinding.recyclerViewBadges.setVisibility(View.GONE);
@@ -592,7 +525,7 @@ public class StudentPublicProfileActivity extends AppCompatActivity {
         if (topicList != null && !topicList.isEmpty()) {
             final Dialog dialog = new Dialog(StudentPublicProfileActivity.this);
 
-            /*Dialog box when user click on subject in total rewards/label_currency_value */
+            /*Dialog box when user click on subject in total rewards/euros */
             LayoutDialogSubjectItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getBaseContext()), R.layout.layout_dialog_subject_item, null, false);
             dialog.setCancelable(true);
             dialog.setContentView(binding.getRoot());

@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorWhite"
         android:fitsSystemWindows="true">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
             android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <android.support.design.widget.CollapsingToolbarLayout
+            <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsingToolbarLayout"
                 android:layout_width="match_parent"
                 android:layout_height="208dp"
@@ -27,7 +27,7 @@
                 app:titleEnabled="false">
 
                 <!--Header Image-->
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/headerImageView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -38,7 +38,7 @@
                     app:layout_collapseMode="parallax" />
 
                 <!--Profile Picture, Name-->
-                <android.support.v7.widget.LinearLayoutCompat
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:elevation="@dimen/elevation_4dp"
@@ -46,7 +46,7 @@
                     android:orientation="vertical">
 
                     <!--Profile picture-->
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/imageViewProfile"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
@@ -55,7 +55,7 @@
                         tools:srcCompat="@drawable/john_sample" />
 
                     <!--Name-->
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/textViewName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -68,10 +68,10 @@
                         tools:text="Bhuvan Sharma" />
 
 
-                </android.support.v7.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <!--Grade(Section), Address-->
-                <android.support.v7.widget.LinearLayoutCompat
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/layoutHeaderContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                     app:layout_collapseMode="parallax">
 
                     <!--Grade(Section)-->
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/textViewGradeSection"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
                         tools:text="V (C)" />
 
                     <!--Address-->
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/textViewAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -111,20 +111,20 @@
                         android:textColor="@color/colorBlack"
                         tools:text="EuroSchool India, Airoli" />
 
-                </android.support.v7.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <!--Toolbar, Title-->
-                <android.support.v7.widget.Toolbar
+                <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:layout_gravity="top"
                     app:layout_collapseMode="pin"
-                    app:navigationIcon="@drawable/action_arrow_left_light"
+                    app:navigationIcon="@drawable/arrow_left_white"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                     app:titleTextColor="@android:color/white">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/textViewToolbarTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -133,20 +133,20 @@
                         android:visibility="gone"
                         tools:text="Hello" />
 
-                </android.support.v7.widget.Toolbar>
+                </androidx.appcompat.widget.Toolbar>
 
 
-            </android.support.design.widget.CollapsingToolbarLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/layoutContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <android.support.v7.widget.LinearLayoutCompat
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -159,15 +159,15 @@
                     android:layout_height="0.5dp"
                     android:background="@color/itemDivider" />
 
-                <android.support.v7.widget.LinearLayoutCompat
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="?actionBarSize"
                     android:orientation="horizontal">
 
 
-                    <!--rewards/label_currency_value-->
-                    <android.support.v7.widget.LinearLayoutCompat
+                    <!--rewards/euros-->
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -176,7 +176,7 @@
                         android:orientation="vertical">
 
 
-                        <android.support.v7.widget.LinearLayoutCompat
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             android:id="@+id/layoutRewardHeader"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -189,20 +189,20 @@
                             android:paddingBottom="@dimen/value_4dp">
 
                             <!--Icon big-->
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="44dp"
                                 android:layout_height="48dp"
                                 android:layout_marginEnd="@dimen/value_8dp"
                                 app:srcCompat="@drawable/icon_coin_gold_48_vector" />
 
-                            <!--Total rewards/label_currency_value-->
-                            <android.support.v7.widget.LinearLayoutCompat
+                            <!--Total rewards/euros-->
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
                                 android:orientation="vertical">
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:id="@+id/textViewTotalRewards"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -213,16 +213,16 @@
                                     android:textStyle="bold"
                                     tools:text="33350" />
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/label_currency_value"
+                                    android:text="@string/euros"
                                     android:textColor="@android:color/black" />
 
-                            </android.support.v7.widget.LinearLayoutCompat>
+                            </androidx.appcompat.widget.LinearLayoutCompat>
 
                             <!--down arrow with tint-->
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/imageViewRewardsIndicator"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -231,10 +231,10 @@
                                 android:visibility="gone"
                                 app:srcCompat="@drawable/chevron_right_white" />
 
-                        </android.support.v7.widget.LinearLayoutCompat>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-                        <!--Bottom line label_currency_value-->
+                        <!--Bottom line euros-->
                         <View
                             android:id="@+id/bottomLineEuros"
                             android:layout_width="match_parent"
@@ -243,7 +243,7 @@
                             android:visibility="gone" />
 
 
-                    </android.support.v7.widget.LinearLayoutCompat>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <!--Divider-->
                     <View
@@ -252,7 +252,7 @@
                         android:background="@color/itemDivider" />
 
                     <!--trophies-->
-                    <android.support.v7.widget.LinearLayoutCompat
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -261,7 +261,7 @@
                         android:orientation="vertical">
 
 
-                        <android.support.v7.widget.LinearLayoutCompat
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             android:id="@+id/layoutTrophiesHeader"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -274,21 +274,21 @@
                             android:paddingBottom="@dimen/value_4dp">
 
                             <!--Icon big-->
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="36dp"
                                 android:layout_height="48dp"
                                 android:layout_marginEnd="@dimen/value_8dp"
                                 app:srcCompat="@drawable/icon_trophies" />
 
                             <!--Total rewards-->
-                            <android.support.v7.widget.LinearLayoutCompat
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
                                 android:orientation="vertical">
 
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:id="@+id/textViewTotalTrophies"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -297,16 +297,16 @@
                                     android:textStyle="bold"
                                     tools:text="4" />
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:text="@string/trophies"
                                     android:textColor="@android:color/black" />
 
-                            </android.support.v7.widget.LinearLayoutCompat>
+                            </androidx.appcompat.widget.LinearLayoutCompat>
 
                             <!--down arrow with tint-->
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/imageViewTrophiesIndicator"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -315,7 +315,7 @@
                                 android:visibility="gone"
                                 app:srcCompat="@drawable/chevron_right_white" />
 
-                        </android.support.v7.widget.LinearLayoutCompat>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
                         <!--Bottom line trophies-->
@@ -326,7 +326,7 @@
                             android:background="@color/colorPrimary"
                             android:visibility="gone" />
 
-                    </android.support.v7.widget.LinearLayoutCompat>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <!--Divider-->
                     <View
@@ -335,7 +335,7 @@
                         android:background="@color/itemDivider" />
 
                     <!--badges-->
-                    <android.support.v7.widget.LinearLayoutCompat
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -344,7 +344,7 @@
                         android:orientation="vertical">
 
 
-                        <android.support.v7.widget.LinearLayoutCompat
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             android:id="@+id/layoutBadgesHeader"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -357,7 +357,7 @@
                             android:paddingBottom="@dimen/value_4dp">
 
                             <!--Icon big-->
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="36dp"
                                 android:layout_height="48dp"
                                 android:layout_marginEnd="@dimen/value_8dp"
@@ -365,14 +365,14 @@
 
 
                             <!--Total rewards-->
-                            <android.support.v7.widget.LinearLayoutCompat
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
                                 android:orientation="vertical">
 
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:id="@+id/textViewTotalBadges"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -381,16 +381,16 @@
                                     android:textStyle="bold"
                                     tools:text="4" />
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:text="@string/badges"
                                     android:textColor="@android:color/black" />
 
-                            </android.support.v7.widget.LinearLayoutCompat>
+                            </androidx.appcompat.widget.LinearLayoutCompat>
 
                             <!--down arrow with tint-->
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/imageViewBadgesIndicator"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -399,7 +399,7 @@
                                 android:visibility="gone"
                                 app:srcCompat="@drawable/chevron_right_white" />
 
-                        </android.support.v7.widget.LinearLayoutCompat>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <!--Bottom line badges-->
                         <View
@@ -409,10 +409,10 @@
                             android:background="@color/colorPrimary"
                             android:visibility="gone" />
 
-                    </android.support.v7.widget.LinearLayoutCompat>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-                </android.support.v7.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <!--Divider-->
                 <View
@@ -420,8 +420,8 @@
                     android:layout_height="0.5dp"
                     android:background="@color/itemDivider" />
 
-                <!--rewards/label_currency_value-->
-                <android.support.v7.widget.RecyclerView
+                <!--rewards/euros-->
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewRewards"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -431,7 +431,7 @@
                     tools:spanCount="4" />
 
                 <!--trophies-->
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewTrophies"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -440,7 +440,7 @@
                     tools:listitem="@layout/layout_my_achievement_trophies_item" />
 
                 <!--badges-->
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewBadges"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -455,22 +455,22 @@
                     android:layout_marginTop="56dp"
                     android:visibility="gone">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_margin="@dimen/value_16dp"
                         android:gravity="center"
-                        android:text="@string/no_currency_found"
+                        android:text="No euros found"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 </FrameLayout>
 
-            </android.support.v7.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

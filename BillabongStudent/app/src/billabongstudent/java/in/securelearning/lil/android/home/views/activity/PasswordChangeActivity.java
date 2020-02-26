@@ -6,11 +6,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -18,8 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -30,9 +28,10 @@ import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.login.events.PasswordChangeEvent;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
-import in.securelearning.lil.android.syncadapter.dataobject.PasswordChange;
+import in.securelearning.lil.android.syncadapter.dataobjects.PasswordChange;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -115,9 +114,18 @@ public class PasswordChangeActivity extends AppCompatActivity {
     }
 
     private void setUpToolbar() {
-        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimary));
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().setBackgroundDrawableResource(android.R.drawable.screen_background_light);
+        CommonUtils.getInstance().setStatusBarIconsDark(PasswordChangeActivity.this);
+
         setTitle(mToolbarTitle);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
     }
 
     private void initializeUiAndListeners() {
@@ -174,7 +182,9 @@ public class PasswordChangeActivity extends AppCompatActivity {
 
     @SuppressLint("CheckResult")
     private void performPasswordChange(final String userId, final String password) {
+
         if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
+
             final ProgressDialog progressDialog = ProgressDialog.show(this, "", getString(R.string.messagePleaseWait), false);
             progressDialog.setCancelable(true);
             progressDialog.setCanceledOnTouchOutside(false);

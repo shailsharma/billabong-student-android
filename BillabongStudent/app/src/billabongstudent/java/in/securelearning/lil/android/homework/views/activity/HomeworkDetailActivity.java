@@ -3,26 +3,27 @@ package in.securelearning.lil.android.homework.views.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+
+import com.google.android.material.snackbar.Snackbar;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutHomeworkDetailBinding;
-import in.securelearning.lil.android.base.constants.AssignmentType;
 import in.securelearning.lil.android.base.dataobjects.AssignedGroup;
 import in.securelearning.lil.android.base.dataobjects.ConceptMap;
 import in.securelearning.lil.android.base.dataobjects.DigitalBook;
@@ -34,7 +35,6 @@ import in.securelearning.lil.android.base.dataobjects.Quiz;
 import in.securelearning.lil.android.base.dataobjects.Thumbnail;
 import in.securelearning.lil.android.base.dataobjects.VideoCourse;
 import in.securelearning.lil.android.base.events.QuizCompletedEvent;
-import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
@@ -61,15 +61,15 @@ import io.reactivex.schedulers.Schedulers;
 public class HomeworkDetailActivity extends AppCompatActivity {
 
     @Inject
-    public AppUserModel mAppUserModel;
-    @Inject
     HomeworkModel mHomeworkModel;
+
     @Inject
     RxBus mRxBus;
+
     private LayoutHomeworkDetailBinding mBinding;
     private boolean isTypeQuiz = false;
     private boolean isTypeCourse = false;
-    private boolean isTypeResource = false;
+    private boolean isTypeWorksheet = false;
     private Class mObjectClass = null;
     private Homework mHomework;
     private Disposable mSubscription;
@@ -96,7 +96,6 @@ public class HomeworkDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_homework_detail);
-        getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorCenterGradient));
 
         handleIntent();
         listenRxBusEvents();
@@ -105,7 +104,7 @@ public class HomeworkDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_scrolling, menu);
+        getMenuInflater().inflate(R.menu.menu_homework_detail, menu);
         mPlayMenuItem = menu.findItem(R.id.action_play);
         playMenuItemVisibility(false);
         return true;
@@ -121,7 +120,7 @@ public class HomeworkDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_play) {
-            if (mHomework != null && !TextUtils.isEmpty(mHomework.getAttachmentId()) && mObjectClass != null) {
+            if (mHomework != null && !TextUtils.isEmpty(mHomework.getAttachmentId())) {
                 if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
                     if (isTypeQuiz) {
                         if (!mHomework.isSubmitted()) {
@@ -137,6 +136,40 @@ public class HomeworkDetailActivity extends AppCompatActivity {
                         }
                         submitResponse(mHomework.getHomeworkId());
 
+                    } else if (isTypeWorksheet) {
+                        if (mHomework.getResourceDetail() != null) {
+                            String worksheetUrl;
+                            if (!TextUtils.isEmpty(mHomework.getResourceDetail().getUrl())) {
+                                worksheetUrl = mHomework.getResourceDetail().getUrl();
+                            } else if (!TextUtils.isEmpty(mHomework.getResourceDetail().getUrlMain())) {
+                                worksheetUrl = mHomework.getResourceDetail().getUrlMain();
+                            } else {
+                                worksheetUrl = ConstantUtil.BLANK;
+                            }
+
+                            try {
+                                if (!TextUtils.isEmpty(worksheetUrl) && worksheetUrl.endsWith(".pdf")) {
+
+                                    worksheetUrl = worksheetUrl.trim();
+                                    Uri uri = Uri.parse(worksheetUrl);
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+                                    Intent chooser = Intent.createChooser(intent, "Choose");
+                                    chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(chooser);
+                                    submitResponse(mHomework.getHomeworkId());
+
+                                } else {
+                                    GeneralUtils.showToastShort(getBaseContext(), getString(R.string.error_something_went_wrong));
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            GeneralUtils.showToastShort(getBaseContext(), getString(R.string.error_something_went_wrong));
+                        }
+                    } else {
+                        GeneralUtils.showToastShort(getBaseContext(), getString(R.string.error_something_went_wrong));
                     }
                 } else {
                     SnackBarUtils.showNoInternetSnackBar(getBaseContext(), mBinding.getRoot());
@@ -167,8 +200,15 @@ public class HomeworkDetailActivity extends AppCompatActivity {
     }
 
     private void setUpToolbar(String homeworkTitle) {
-        setSupportActionBar(mBinding.toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().setBackgroundDrawableResource(android.R.drawable.screen_background_light);
+        CommonUtils.getInstance().setStatusBarIconsDark(HomeworkDetailActivity.this);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         setTitle(homeworkTitle);
     }
 
@@ -206,6 +246,14 @@ public class HomeworkDetailActivity extends AppCompatActivity {
                                     mRxBus.send(new RefreshHomeworkEvent());
                                     if (isTypeCourse) {
                                         GeneralUtils.showToastLong(getBaseContext(), getString(R.string.homework_pre_read_submit_success));
+                                        if (mPlayMenuItem != null) {
+                                            mPlayMenuItem.setVisible(false);
+                                        }
+                                    } else if (isTypeWorksheet) {
+                                        GeneralUtils.showToastLong(getBaseContext(), getString(R.string.homework_worksheet_submit_success));
+                                        if (mPlayMenuItem != null) {
+                                            mPlayMenuItem.setVisible(false);
+                                        }
                                     } else {
                                         GeneralUtils.showToastShort(getBaseContext(), getString(R.string.homework_submit_success));
                                     }
@@ -320,7 +368,6 @@ public class HomeworkDetailActivity extends AppCompatActivity {
         }
 
 
-        //  CommonUtils.getInstance().setGroupThumbnail(HomeworkDetailActivity.this,homeworkDetail.getAssignedGroups().get);
         setAssignmentStatus(homeworkDetail);
         setAssignmentInstruction(homeworkDetail);
         setAssignmentDuration(homeworkDetail);
@@ -359,21 +406,18 @@ public class HomeworkDetailActivity extends AppCompatActivity {
             if (assignmentType.equalsIgnoreCase("quiz")) {
                 isTypeQuiz = true;
                 isTypeCourse = false;
-                isTypeResource = false;
+                isTypeWorksheet = false;
                 String type = "Quiz";
                 mObjectClass = Quiz.class;
                 return type;
 
-            } else if (assignmentType.equalsIgnoreCase(AssignmentType.TYPE_RESOURCE.getAssignmentType())) {
-                String type = getString(R.string.resource);
-                isTypeQuiz = false;
-                isTypeCourse = false;
-                isTypeResource = true;
-                return type;
+            } else if (assignmentType.contains("teachingresource")) {
+                isTypeWorksheet = true;
+                return getString(R.string.labelWorksheet);
             } else {
                 isTypeQuiz = false;
                 isTypeCourse = true;
-                isTypeResource = false;
+                isTypeWorksheet = false;
                 String type = "";
                 if (assignmentType.equalsIgnoreCase("digitalbook")) {
                     type = "Digital Book";

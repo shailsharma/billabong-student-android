@@ -12,14 +12,13 @@ import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -57,7 +56,7 @@ import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.base.utils.KeyBoardUtil;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.base.views.activity.LilPrivacyPolicy;
-import in.securelearning.lil.android.login.dataobject.SignUpError;
+import in.securelearning.lil.android.login.dataobject.ResponseError;
 import in.securelearning.lil.android.syncadapter.rest.ApiModule;
 import in.securelearning.lil.android.syncadapter.rest.BaseApiInterface;
 import io.reactivex.Observable;
@@ -209,13 +208,13 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
                 KeyBoardUtil.hideSoftKeyboard(mGenderRadioGroup, getBaseContext());
-                if (checkedId == R.id.radiobutton_male) {
+                if (checkedId == R.id.radioButtonMale) {
                     mMaleRadioButton.setTextColor(ContextCompat.getColor(SignUpActivity.this, R.color.colorWhite));
                     mFemaleRadioButton.setTextColor(ContextCompat.getColor(SignUpActivity.this, R.color.hintColorWhite66));
                     RadioButton radioButton = (RadioButton) findViewById(checkedId);
                     strGender = (String) radioButton.getText();
                     mErrorGenderTextView.setVisibility(View.GONE);
-                } else if (checkedId == R.id.radiobutton_female) {
+                } else if (checkedId == R.id.radioButtonFemale) {
                     mFemaleRadioButton.setTextColor(ContextCompat.getColor(SignUpActivity.this, R.color.colorWhite));
                     mMaleRadioButton.setTextColor(ContextCompat.getColor(SignUpActivity.this, R.color.hintColorWhite66));
                     RadioButton radioButton = (RadioButton) findViewById(checkedId);
@@ -365,21 +364,15 @@ public class SignUpActivity extends AppCompatActivity {
         if (validateGender()) {
             return;
         }
-//        if (!validateAssociation()) {
-//            return;
-//        }
-//        if (mOtherAssociationLayout.getVisibility() == View.VISIBLE) {
-//            if (!validateOtherAssociation())
-//                return;
-//        }
 
-        Observable.just(SignUpActivity.this).subscribeOn(Schedulers.computation()).subscribe(new Consumer<SignUpActivity>() {
-            @Override
-            public void accept(SignUpActivity signUpActivity) {
-
-                performSignUp(view);
-            }
-        });
+        Observable.just(SignUpActivity.this)
+                .subscribeOn(Schedulers.computation())
+                .subscribe(new Consumer<SignUpActivity>() {
+                    @Override
+                    public void accept(SignUpActivity signUpActivity) {
+                        performSignUp(view);
+                    }
+                });
 
 
     }
@@ -400,7 +393,6 @@ public class SignUpActivity extends AppCompatActivity {
             requestFocus(mFirstNameEditText);
             return false;
         } else {
-            // mFirstNameEditText.clearFocus();
             mFirstNameLayout.setErrorEnabled(false);
         }
         return true;
@@ -422,7 +414,6 @@ public class SignUpActivity extends AppCompatActivity {
             requestFocus(mLastNameEditText);
             return false;
         } else {
-            //mLastNameEditText.clearFocus();
             mLastNameLayout.setErrorEnabled(false);
         }
         return true;
@@ -444,7 +435,6 @@ public class SignUpActivity extends AppCompatActivity {
             requestFocus(mEmailEditText);
             return false;
         } else {
-            //mEmailEditText.clearFocus();
             mEmailLayout.setErrorEnabled(false);
         }
         return true;
@@ -478,7 +468,6 @@ public class SignUpActivity extends AppCompatActivity {
             requestFocus(mPasswordEditText);
             return false;
         } else {
-            // mPasswordEditText.clearFocus();
             mPasswordLayout.setErrorEnabled(false);
         }
         return true;
@@ -509,7 +498,6 @@ public class SignUpActivity extends AppCompatActivity {
             requestFocus(mConfirmPasswordEditText);
             return false;
         } else {
-            //  mConfirmPasswordEditText.clearFocus();
             mConfirmPasswordLayout.setErrorEnabled(false);
         }
         return true;
@@ -535,42 +523,6 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     /**
-     * validate association field
-     *
-     * @return
-     */
-    private boolean validateAssociation() {
-        strAssociationName = mAssociationEditText.getText().toString().trim();
-        if (strAssociationName.isEmpty()) {
-            mAssociationLayout.setError(getString(R.string.error_field_required));
-            requestFocus(mAssociationEditText);
-            return false;
-        } else {
-            mAssociationEditText.clearFocus();
-            mAssociationLayout.setErrorEnabled(false);
-        }
-        return true;
-    }
-
-    /**
-     * validate association name enter by user
-     *
-     * @return
-     */
-    private boolean validateOtherAssociation() {
-        strOtherAssociationName = mOtherAssociationEditText.getText().toString().trim();
-        if (strOtherAssociationName.isEmpty()) {
-            mOtherAssociationLayout.setError(getString(R.string.error_field_required));
-            requestFocus(mOtherAssociationEditText);
-            return false;
-        } else {
-            mOtherAssociationEditText.clearFocus();
-            mOtherAssociationLayout.setErrorEnabled(false);
-        }
-        return true;
-    }
-
-    /**
      * requesting keyboard for focused edittext
      *
      * @param view
@@ -579,58 +531,6 @@ public class SignUpActivity extends AppCompatActivity {
         if (view.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
-    }
-
-    /**
-     * fetch institutions list and save it to arraylist
-     */
-    private void getInstituteList() {
-        ApiModule apiModule = new ApiModule(SignUpActivity.this);
-        BaseApiInterface apiInterface = apiModule.getBaseClient();
-        Call<ArrayList<Institution>> arrayListInstituteCall = apiInterface.fetchInstituteList();
-        arrayListInstituteCall.enqueue(new Callback<ArrayList<Institution>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Institution>> call, Response<ArrayList<Institution>> response) {
-
-                if (response != null && response.isSuccessful()) {
-                    Log.e("fetching institute list", "successful");
-                    mInstitutionsList = response.body();
-                    Log.e("institute list", "" + mInstitutionsList.size());
-                    addNoneOfThemToInstitute();
-
-                } else {
-
-                    Log.e("Fetch Institute list", "err fetching" + response.message());
-                    ToastUtils.showToastAlert(SignUpActivity.this, "Error fetching associations list");
-                    addNoneOfThemToInstitute();
-
-                }
-
-
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Institution>> call, Throwable t) {
-
-                Log.e("Fetch Institute", "err fetching" + t.toString());
-                ToastUtils.showToastAlert(SignUpActivity.this, getString(R.string.no_internet));
-                addNoneOfThemToInstitute();
-            }
-        });
-
-
-    }
-
-    /**
-     * add "None of them" item to institute array list
-     */
-    private void addNoneOfThemToInstitute() {
-        mAssociationEditText.setClickable(true);
-        mAssociationEditText.setEnabled(true);
-        Institution otherInstitution = new Institution();
-        otherInstitution.setId(strAssociationId);
-        otherInstitution.setName("Lil Opencourses");
-        mInstitutionsList.add(otherInstitution);
     }
 
     /**
@@ -702,8 +602,6 @@ public class SignUpActivity extends AppCompatActivity {
                     if (response != null && response.isSuccessful()) {
                         Log.e("SignUp", "successful");
                         showProgress(false);
-//                        AppPrefs.setUserId(userProfile.getEmail(), getBaseContext());
-//                        AppPrefs.setUserPassword(userProfile.getPassword(), getBaseContext());
                         new AlertDialog.Builder(SignUpActivity.this)
                                 .setTitle(R.string.sign_up_success_title)
                                 .setMessage(R.string.sign_up_success_message)
@@ -720,11 +618,11 @@ public class SignUpActivity extends AppCompatActivity {
                         Log.e("SignUpActivity ", "err signUp" + response.message());
                         try {
                             final String errorMessage = response.errorBody().string();
-                            SignUpError error = GeneralUtils.fromGson(errorMessage, SignUpError.class);
-                            if (TextUtils.isEmpty(error.getErrorBody().getMessage())) {
+                            ResponseError error = GeneralUtils.fromGson(errorMessage, ResponseError.class);
+                            if (TextUtils.isEmpty(error.getErrorBody().getMessage().toString())) {
                                 Snackbar.make(view, getString(R.string.no_internet) + " " + getString(R.string.sign_up_failed), Snackbar.LENGTH_LONG).show();
                             } else {
-                                Snackbar.make(view, error.getErrorBody().getMessage(), Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(view, error.getErrorBody().getMessage().toString(), Snackbar.LENGTH_LONG).show();
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -788,14 +686,6 @@ public class SignUpActivity extends AppCompatActivity {
         mAssociationPopup.setOutsideTouchable(true);
         mAssociationPopup.setAnimationStyle(android.R.style.Animation_Dialog);
         mAssociationPopup.showAtLocation(mPopupLayout, Gravity.NO_GRAVITY, point.x + OFFSET_X, point.y + OFFSET_Y);
-    }
-
-    /**
-     * clear keyboard focus from edittext
-     */
-    private void clearFocus() {
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
     }
 
     /**

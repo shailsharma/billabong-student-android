@@ -28,13 +28,6 @@ public class BroadcastNotificationService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionDownloadBroadcastNotification(Context context) {
-        Intent intent = new Intent(context, BroadcastNotificationService.class);
-        intent.setAction(ACTION_DOWNLOAD_BROADCAST_NOTIFICATION);
-        context.startService(intent);
-
-    }
-
     protected void onHandleIntent(Intent intent) {
         final ConnectivityManager connectivityManager = (ConnectivityManager) getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 

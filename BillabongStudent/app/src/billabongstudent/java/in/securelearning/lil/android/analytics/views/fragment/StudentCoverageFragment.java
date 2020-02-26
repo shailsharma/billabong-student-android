@@ -2,14 +2,14 @@ package in.securelearning.lil.android.analytics.views.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.annotation.NonNull;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,7 +81,6 @@ public class StudentCoverageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null && getArguments().getSerializable(ConstantUtil.COVERAGE) != null) {
-
             this.mChartConfigurationData = (ArrayList<ChartConfigurationData>) getArguments().getSerializable(ConstantUtil.COVERAGE);
         }
     }
@@ -93,9 +92,7 @@ public class StudentCoverageFragment extends Fragment {
 
         if (!fragmentResume && fragmentVisible) {   //only when first time activity is created
             fetchCoverageData(mChartConfigurationData);
-        } /*else {
-            mBinding.textViewNoCoverageData.setVisibility(View.VISIBLE);
-        }*/
+        }
 
         return mBinding.getRoot();
     }
@@ -145,7 +142,6 @@ public class StudentCoverageFragment extends Fragment {
                         @Override
                         public void accept(ArrayList<CoverageChartData> coverageChartData) throws Exception {
 
-//                            mBinding.progressBarCoverage.setVisibility(View.GONE);
 
                             if (coverageConfiguration != null && !coverageConfiguration.isEmpty() && !coverageChartData.isEmpty()) {
 
@@ -294,7 +290,6 @@ public class StudentCoverageFragment extends Fragment {
                 CoverageChartData ccd = (CoverageChartData) e.getData();
                 int coverage = Math.round(ccd.getCoverage());
 
-                //startActivity(ProgressDetailActivity.getStartIntent(mContext, ccd.getId(), ccd.getName(), coverage));
                 drawProgress(coverage);
                 getCoverageDataOfSubject(ccd.getId());
                 pickColorAccording(coverage);
@@ -468,11 +463,4 @@ public class StudentCoverageFragment extends Fragment {
 
     }
 
-
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mContext = null;
-//
-//    }
 }

@@ -3,12 +3,12 @@ package in.securelearning.lil.android.home.views.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +22,7 @@ import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutVocationalTopicBinding;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.home.model.FlavorHomeModel;
+import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.home.views.adapter.VocationalTopicsAdapter;
 import in.securelearning.lil.android.syncadapter.dataobjects.VocationalTopic;
 import in.securelearning.lil.android.syncadapter.dataobjects.VocationalTopicRequest;
@@ -35,7 +35,7 @@ import io.reactivex.schedulers.Schedulers;
 public class VocationalTopicsActivity extends AppCompatActivity {
 
     @Inject
-    FlavorHomeModel mFlavorHomeModel;
+    HomeModel mHomeModel;
 
     private static final String SUBJECT_ID = "subjectId";
     private static final String SUBJECT_NAME = "subjectName";
@@ -123,7 +123,7 @@ public class VocationalTopicsActivity extends AppCompatActivity {
             mBinding.textViewError.setVisibility(View.GONE);
             mBinding.recyclerViewTopic.setVisibility(View.GONE);
 
-            mFlavorHomeModel.fetchVocationalTopics(topicRequest)
+            mHomeModel.fetchVocationalTopics(topicRequest)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<ArrayList<VocationalTopic>>() {

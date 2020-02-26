@@ -12,42 +12,56 @@ public class GamificationBonus implements Serializable {
     private String mBonusId;
 
     private Integer GamificationId;
+
     @SerializedName("userId")
     @Expose
     private String userId;
+
     @SerializedName("subjectId")
     @Expose
     private String subjectId;
+
     @SerializedName("subjectName")
     @Expose
     private String subjectName;
+
     @SerializedName("topicId")
     @Expose
     private String topicId;
+
     // where we have to update the bonus login , subject
-    private String  bonusActivity ;
+    private String bonusActivity;
+
     private String bonusSubActivity;
+
     @SerializedName("percentMultiplier")
     @Expose
-    private Integer  multiplier ;
+    private Integer multiplier;
+
     @SerializedName("endDateTime")
     @Expose
     private String endDate;
+
     @SerializedName("startDateTime")
     @Expose
     private String startDate;
+
     @SerializedName("bonusType")
     @Expose
     private String type;
+
     @SerializedName("sectionId")
     @Expose
     private String sectionId;
+
     @SerializedName("gradeId")
     @Expose
     private String gradeId;
+
     @SerializedName("consumptionStatus")
     @Expose
     private Integer consumptionStatus;
+
     @SerializedName("academicSessionId")
     @Expose
     private String academicSessionId;
@@ -103,7 +117,6 @@ public class GamificationBonus implements Serializable {
     public void setBonusSubActivity(String bonusSubActivity) {
         this.bonusSubActivity = bonusSubActivity;
     }
-
 
     public int getMultiplier() {
         return multiplier;

@@ -53,6 +53,10 @@ public class AboutCourseMinimal implements Serializable {
 
     private boolean mIsSelected;
 
+    // Third Party Id
+    private String mTPId;
+    private String mTPDescription;
+
     public String getId() {
         return mId;
     }
@@ -144,5 +148,21 @@ public class AboutCourseMinimal implements Serializable {
 
     public void setColorCode(String colorCode) {
         mColorCode = colorCode;
+    }
+
+    public String getTPId() {
+        return mTPId;
+    }
+
+    public void setTPId(String TPId) {
+        mTPId = TPId;
+    }
+
+    public String getTPDescription() {
+        return mTPDescription;
+    }
+
+    public void setTPDescription(String TPDescription) {
+        mTPDescription = TPDescription;
     }
 }

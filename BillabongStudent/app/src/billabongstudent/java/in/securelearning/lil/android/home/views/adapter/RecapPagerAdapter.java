@@ -1,12 +1,12 @@
 package in.securelearning.lil.android.home.views.adapter;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -21,7 +21,7 @@ import in.securelearning.lil.android.app.databinding.LayoutLessonPlanCardItemBin
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.helper.OnCheckUserRecapOpenListener;
 import in.securelearning.lil.android.player.view.activity.RapidLearningSectionListActivity;
-import in.securelearning.lil.android.syncadapter.dataobject.LessonPlanMinimal;
+import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanMinimal;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 
@@ -84,30 +84,6 @@ public class RecapPagerAdapter extends RecyclerView.Adapter<RecapPagerAdapter.Vi
             textView.setVisibility(View.GONE);
         }
 
-    }
-
-    private void setDescription(AppCompatTextView textView, String description) {
-        if (!TextUtils.isEmpty(description)) {
-            textView.setVisibility(View.VISIBLE);
-            textView.setText(Html.fromHtml(description));
-        } else {
-            textView.setVisibility(View.GONE);
-        }
-    }
-
-    private void setGrade(AppCompatTextView textView, String grade, String section) {
-        if (!TextUtils.isEmpty(grade) && !TextUtils.isEmpty(section)) {
-            textView.setVisibility(View.VISIBLE);
-            String gradeString = grade.toUpperCase().trim();
-            String value = gradeString + "-" + section;
-            textView.setText(value);
-        } else if (!TextUtils.isEmpty(grade)) {
-            textView.setVisibility(View.VISIBLE);
-            String gradeString = grade.toUpperCase().trim();
-            textView.setText(gradeString);
-        } else {
-            textView.setVisibility(View.VISIBLE);
-        }
     }
 
     private void setSubject(AppCompatTextView textView, String subject) {

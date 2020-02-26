@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <in.securelearning.lil.android.base.widget.TextViewCustom
+        android:id="@+id/textViewMoreLess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+</layout>
+

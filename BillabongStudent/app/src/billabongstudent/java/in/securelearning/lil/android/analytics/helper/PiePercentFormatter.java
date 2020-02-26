@@ -20,7 +20,6 @@ public class PiePercentFormatter implements IValueFormatter, IAxisValueFormatter
 
         } else {
             return "";
-
         }
     }
 }

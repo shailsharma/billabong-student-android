@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="120dp"
+                app:srcCompat="@drawable/icon_revision_white" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/value_16dp"
+                android:text="@string/messageLetsGetStartedRevision"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textSize_16sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewTopicName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/value_16dp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textSize_20sp" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/value_16dp"
+                android:gravity="center"
+                android:padding="@dimen/value_16dp"
+                android:text="All the best!"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textSize_24sp" />
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    </ScrollView>
+
+</layout>

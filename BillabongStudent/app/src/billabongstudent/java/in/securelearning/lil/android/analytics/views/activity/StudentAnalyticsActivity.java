@@ -3,14 +3,14 @@ package in.securelearning.lil.android.analytics.views.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 
 import com.github.mikephil.charting.components.AxisBase;
@@ -48,7 +48,8 @@ import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsStudentBinding;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
+import in.securelearning.lil.android.syncadapter.dataobjects.GlobalConfigurationParent;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -58,10 +59,10 @@ import static java.lang.Float.NaN;
 
 public class StudentAnalyticsActivity extends AppCompatActivity {
 
-    LayoutAnalyticsStudentBinding mBinding;
-
     @Inject
     AnalyticsModel mAnalyticsModel;
+
+    LayoutAnalyticsStudentBinding mBinding;
 
     public static Intent getStartIntent(Context context) {
         return new Intent(context, StudentAnalyticsActivity.class);
@@ -78,7 +79,7 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_analytics_student);
 
-        mAnalyticsModel.setImmersiveStatusBar(getWindow());
+        CommonUtils.getInstance().setImmersiveStatusBar(getWindow());
         fetchEffortData();
         initializeClickListeners();
     }
@@ -98,7 +99,9 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void fetchChartConfiguration() {
         if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-            mAnalyticsModel.fetchChartConfiguration().subscribeOn(Schedulers.io())
+
+            mAnalyticsModel.fetchChartConfiguration()
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<GlobalConfigurationParent>() {
                         @Override
@@ -113,6 +116,7 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
+
                             mBinding.progressBarPerformance.setVisibility(View.GONE);
                             mBinding.progressBarCoverage.setVisibility(View.GONE);
                             mBinding.textViewNoPerformanceData.setVisibility(View.VISIBLE);
@@ -129,11 +133,14 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void fetchEffortData() {
         if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-            mAnalyticsModel.fetchEffortData().subscribeOn(Schedulers.io())
+
+            mAnalyticsModel.fetchEffortData()
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<EffortChartDataParent>() {
                         @Override
                         public void accept(EffortChartDataParent effortChartDataParent) throws Exception {
+
                             mBinding.progressBarEffort.setVisibility(View.GONE);
                             fetchChartConfiguration();
                             if (!effortChartDataParent.getEffortChartDataList().isEmpty()) {
@@ -153,6 +160,7 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
+
                             fetchChartConfiguration();
                             mBinding.progressBarEffort.setVisibility(View.GONE);
                             mBinding.layoutTotalTimeSpent.setVisibility(View.GONE);
@@ -264,7 +272,7 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
             totalPracticeTime += effortChartData.get(i).getTotalPracticeTimeSpent();
         }
         /*Total time spent*/
-        String formattedTotalTimeSpent = mAnalyticsModel.convertSecondToHourMinuteSecond((long) totalTimeSpent);
+        String formattedTotalTimeSpent = mAnalyticsModel.showHoursMinutesFromSeconds((long) totalTimeSpent);
         mBinding.textViewTotalTimeSpent.setText(formattedTotalTimeSpent);
         final float finalTotalTimeSpent = totalTimeSpent;
         final float finalTotalReadTime = totalReadTime;
@@ -584,7 +592,6 @@ public class StudentAnalyticsActivity extends AppCompatActivity {
                 CoverageChartData ccd = (CoverageChartData) e.getData();
                 float coverage = Math.round((ccd.getCoverage() / ccd.getTotal()) * 100);
                 startActivity(ProgressDetailActivity.getStartIntent(getBaseContext(), ccd.getId(), ccd.getName(), coverage));
-
             }
 
             @Override

@@ -1,28 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-        <!-- Default screen margins, per the Android Design guidelines. -->
-        
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-        
-    <dimen name="activity_vertical_margin">16dp</dimen>
-        
-    <dimen name="fab_margin">16dp</dimen>
-        
-    <dimen name="dots_height">30dp</dimen>
-        
-    <dimen name="dots_margin_bottom">20dp</dimen>
-        
-    <dimen name="img_width_height">120dp</dimen>
-        
-    <dimen name="slide_title">30dp</dimen>
-        
-    <dimen name="slide_desc">18sp</dimen>
-        
-    <dimen name="desc_padding">40dp</dimen>
+     
 
-    <dimen name="touch_raise">24dp</dimen>
+    <dimen name="large_highlight_text_size">30sp</dimen>
+    <dimen name="medium_highlight_text_size">20sp</dimen>
+    <dimen name="small_highlight_text_size">15sp</dimen>
+    <dimen name="card_dimension">90dp</dimen>
+    <dimen name="image_view_height_full_width_wide">210dp</dimen>
+    <dimen name="image_view_height_wide_16dp">202dp</dimen>
+    <dimen name="image_view_height_wide_24dp">196dp</dimen>
+    <dimen name="event_item_height">170dp</dimen>
 
-    <!--Margin-->
+    <dimen name="dividerHeight">0.5dp</dimen>
+
+    <dimen name="value_0dp">0dp</dimen>
     <dimen name="value_2dp">2dp</dimen>
     <dimen name="value_4dp">4dp</dimen>
     <dimen name="value_6dp">6dp</dimen>
@@ -88,4 +79,6 @@
 
     <!-- Animation Duration -->
     <item name="duration_point_flip_animation" type="integer">150</item>
+    <dimen name="fab_margin">16dp</dimen>
+
 </resources>

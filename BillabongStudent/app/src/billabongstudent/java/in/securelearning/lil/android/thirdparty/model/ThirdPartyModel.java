@@ -26,11 +26,13 @@ import in.securelearning.lil.android.base.dataobjects.QuestionHint;
 import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.utils.AppPrefs;
-import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.PlayVimeoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.PlayYouTubeFullScreenActivity;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
-import in.securelearning.lil.android.syncadapter.model.FlavorNetworkModel;
+import in.securelearning.lil.android.player.view.activity.PlayVideoFullScreenActivity;
+import in.securelearning.lil.android.player.view.activity.PlayVimeoFullScreenActivity;
+import in.securelearning.lil.android.player.view.activity.PlayYouTubeFullScreenActivity;
+import in.securelearning.lil.android.syncadapter.dataobjects.ThirdPartyMapping;
+import in.securelearning.lil.android.syncadapter.dataobjects.WikiHowParent;
+import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.thirdparty.InjectorThirdParty;
@@ -56,6 +58,7 @@ import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkQuestionTyp
 import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkQuestionTypeMCQ;
 import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkTopicListRequest;
 import in.securelearning.lil.android.thirdparty.dataobjects.MindSparkTopicResult;
+import in.securelearning.lil.android.thirdparty.dataobjects.TPCurriculumResponse;
 import in.securelearning.lil.android.thirdparty.utils.ThirdPartyConstants;
 import in.securelearning.lil.android.thirdparty.utils.ThirdPartyPrefs;
 import io.reactivex.Observable;
@@ -76,7 +79,7 @@ import static in.securelearning.lil.android.thirdparty.utils.ThirdPartyConstants
 public class ThirdPartyModel {
 
     @Inject
-    FlavorNetworkModel mFlavorNetworkModel;
+    NetworkModel mNetworkModel;
 
     @Inject
     Context mContext;
@@ -183,7 +186,7 @@ public class ThirdPartyModel {
         Resource item = new Resource();
         item.setType(context.getString(R.string.typeVideo));
         item.setUrlMain(url);
-        context.startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(context, PlayVideoFullScreenActivity.NETWORK_TYPE_ONLINE, (Resource) item));
+        context.startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(context, ConstantUtil.BLANK, ConstantUtil.BLANK, PlayVideoFullScreenActivity.NETWORK_TYPE_ONLINE, (Resource) item));
     }
 
     /*To start youtube player activity*/
@@ -199,20 +202,20 @@ public class ThirdPartyModel {
                 FavouriteResource favouriteResource = new FavouriteResource();
                 favouriteResource.setName(videoId);
                 favouriteResource.setUrlThumbnail(ConstantUtil.BLANK);
-                context.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(context, favouriteResource, false));
+                context.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(context, ConstantUtil.BLANK, ConstantUtil.BLANK, favouriteResource));
             }
 
         } else {
             FavouriteResource favouriteResource = new FavouriteResource();
             favouriteResource.setName(url);
             favouriteResource.setUrlThumbnail(ConstantUtil.BLANK);
-            context.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(context, favouriteResource, false));
+            context.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(context, ConstantUtil.BLANK, ConstantUtil.BLANK, favouriteResource));
         }
     }
 
     /*To start vimeo player activity*/
     public void startVimeoPlayer(Context context, String url) {
-        context.startActivity(PlayVimeoFullScreenActivity.getStartIntent(context, url));
+        context.startActivity(PlayVimeoFullScreenActivity.getStartIntent(context, ConstantUtil.BLANK, ConstantUtil.BLANK, ConstantUtil.BLANK, url));
     }
 
     /*Here converting Mind Spark question schema to LIL Question schema*/
@@ -319,7 +322,7 @@ public class ThirdPartyModel {
                     mindSparkLoginRequest.setTopicId(thirdPartyTopicIds.get(i));
                     mindSparkLoginRequest.setVendorCode(MS_VENDOR);
 
-                    Call<MindSparkLoginResponse> call = mFlavorNetworkModel.loginUserToMindSpark(mindSparkLoginRequest);
+                    Call<MindSparkLoginResponse> call = mNetworkModel.loginUserToMindSpark(mindSparkLoginRequest);
                     Response<MindSparkLoginResponse> response = call.execute();
 
                     if (response != null && response.isSuccessful()) {
@@ -376,7 +379,7 @@ public class ThirdPartyModel {
             @Override
             public void subscribe(ObservableEmitter<MindSparkQuestionParent> e) throws Exception {
                 mindSparkQuestionRequest.setJWT(ThirdPartyPrefs.getMindSparkJsonWebToken(mContext));
-                Call<MindSparkQuestionParent> call = mFlavorNetworkModel.getMindSparkQuestion(mindSparkQuestionRequest);
+                Call<MindSparkQuestionParent> call = mNetworkModel.getMindSparkQuestion(mindSparkQuestionRequest);
                 Response<MindSparkQuestionParent> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -436,7 +439,7 @@ public class ThirdPartyModel {
             @Override
             public void subscribe(ObservableEmitter<MindSparkQuestionParent> e) throws Exception {
 
-                Call<MindSparkQuestionParent> call = mFlavorNetworkModel.submitAndFetchNewQuestion(mindSparkQuestionSubmit);
+                Call<MindSparkQuestionParent> call = mNetworkModel.submitAndFetchNewQuestion(mindSparkQuestionSubmit);
                 Response<MindSparkQuestionParent> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -483,7 +486,7 @@ public class ThirdPartyModel {
             @Override
             public void subscribe(ObservableEmitter<MindSparkTopicResult> e) throws Exception {
 
-                Call<MindSparkTopicResult> call = mFlavorNetworkModel.getMindSparkTopicResult(new MindSparkTopicListRequest(ThirdPartyPrefs.getMindSparkJsonWebToken(mContext)));
+                Call<MindSparkTopicResult> call = mNetworkModel.getMindSparkTopicResult(new MindSparkTopicListRequest(ThirdPartyPrefs.getMindSparkJsonWebToken(mContext)));
                 Response<MindSparkTopicResult> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -537,7 +540,7 @@ public class ThirdPartyModel {
                 credentials.setUserName("euroschool@dummy.com");
                 credentials.setPassword("logic123");
 
-                Call<LogiqidsLoginResult> call = mFlavorNetworkModel.loginToLogiqids(credentials);
+                Call<LogiqidsLoginResult> call = mNetworkModel.loginToLogiqids(credentials);
                 Response<LogiqidsLoginResult> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -562,7 +565,7 @@ public class ThirdPartyModel {
             @Override
             public void subscribe(ObservableEmitter<LogiqidsWorksheetResult> e) throws Exception {
 
-                Call<LogiqidsWorksheetResult> call = mFlavorNetworkModel.getWorksheetList(userId, topicId);
+                Call<LogiqidsWorksheetResult> call = mNetworkModel.getWorksheetList(userId, topicId);
                 Response<LogiqidsWorksheetResult> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -586,7 +589,7 @@ public class ThirdPartyModel {
             @Override
             public void subscribe(ObservableEmitter<Question> e) throws Exception {
 
-                Call<LogiqidsQuestionResult> call = mFlavorNetworkModel.getQuestion(userId, topicId, worksheetId);
+                Call<LogiqidsQuestionResult> call = mNetworkModel.getQuestion(userId, topicId, worksheetId);
                 Response<LogiqidsQuestionResult> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -709,7 +712,7 @@ public class ThirdPartyModel {
             @Override
             public void subscribe(ObservableEmitter<LogiqidsQuestionAttemptResult> e) throws Exception {
 
-                Call<LogiqidsQuestionAttemptResult> call = mFlavorNetworkModel.submitQuestionResponse(userId, topicId, worksheetId, logiqidsQuestionAttemptRequest);
+                Call<LogiqidsQuestionAttemptResult> call = mNetworkModel.submitQuestionResponse(userId, topicId, worksheetId, logiqidsQuestionAttemptRequest);
                 Response<LogiqidsQuestionAttemptResult> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -724,6 +727,71 @@ public class ThirdPartyModel {
 
             }
         });
+
+    }
+
+
+    /*To fetch detail of wikiHow card*/
+    public Observable<WikiHowParent> fetchWikiHowCardDetail(final String wikiHowId) {
+
+        return Observable.create(new ObservableOnSubscribe<WikiHowParent>() {
+            @Override
+            public void subscribe(ObservableEmitter<WikiHowParent> e) throws Exception {
+                Call<WikiHowParent> call = mNetworkModel.fetchWikiHowCardDetail(wikiHowId);
+                Response<WikiHowParent> response = call.execute();
+
+                if (response != null && response.isSuccessful()) {
+                    Log.e("WikiHowData", "Successful");
+                    e.onNext(response.body());
+                } else {
+                    Log.e("WikiHowData", "Failed");
+                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                }
+                e.onComplete();
+            }
+        });
+
+    }
+
+
+    /*To fetch Geo-Gebra card detail list for Apply*/
+    public Observable<ArrayList<TPCurriculumResponse>> fetchGeoGebraCardDetail(final ThirdPartyMapping thirdPartyMapping) {
+
+        return
+                Observable.create(new ObservableOnSubscribe<ArrayList<TPCurriculumResponse>>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<ArrayList<TPCurriculumResponse>> e) throws Exception {
+
+                        Call<ArrayList<TPCurriculumResponse>> call = mNetworkModel.fetchGeoGebraCardDetail(thirdPartyMapping);
+                        Response<ArrayList<TPCurriculumResponse>> response = call.execute();
+
+                        if (response != null && response.isSuccessful()) {
+                            ArrayList<TPCurriculumResponse> list = response.body();
+                            Log.e("GeoGebraCardList1--", "Successful");
+                            e.onNext(list);
+                        } else if (response.code() == 404) {
+                            throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                        } else if ((response.code() == 401) && SyncServiceHelper.refreshToken(mContext)) {
+                            Response<ArrayList<TPCurriculumResponse>> response2 = call.clone().execute();
+                            if (response2 != null && response2.isSuccessful()) {
+                                ArrayList<TPCurriculumResponse> list2 = response2.body();
+                                Log.e("GeoGebraCardList2--", "Successful");
+                                e.onNext(list2);
+                            } else if ((response2.code() == 401)) {
+                                mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
+                            } else if (response2.code() == 404) {
+                                throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                            } else {
+                                Log.e("GeoGebraCardList2--", "Failed");
+                                throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                            }
+                        } else {
+                            Log.e("GeoGebraCardList1--", "Failed");
+                            throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                        }
+                        e.onComplete();
+                    }
+                });
 
     }
 

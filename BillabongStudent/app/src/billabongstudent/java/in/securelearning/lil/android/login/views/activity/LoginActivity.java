@@ -3,11 +3,7 @@ package in.securelearning.lil.android.login.views.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.AlarmManager;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -15,34 +11,25 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.databinding.DataBindingUtil;
-import android.graphics.BitmapFactory;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.DeadObjectException;
-import android.os.Looper;
 import android.os.Vibrator;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -50,8 +37,6 @@ import android.widget.ArrayAdapter;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -63,6 +48,7 @@ import javax.inject.Inject;
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAppMainLoginBinding;
+import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
@@ -71,22 +57,21 @@ import in.securelearning.lil.android.base.utils.AppPrefs;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.gamification.utils.GamificationPrefs;
 import in.securelearning.lil.android.home.model.HomeModel;
-import in.securelearning.lil.android.home.utils.PermissionPrefs;
-import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
-import in.securelearning.lil.android.home.utils.PreferenceSettingUtilClass;
 import in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity;
 import in.securelearning.lil.android.home.views.activity.PasswordChangeActivity;
 import in.securelearning.lil.android.learningnetwork.views.activity.CreatePostSharedIntentActivity;
 import in.securelearning.lil.android.login.InjectorLogin;
 import in.securelearning.lil.android.login.events.AlreadyLoggedInEvent;
 import in.securelearning.lil.android.login.events.PasswordChangeEvent;
-import in.securelearning.lil.android.syncadapter.dataobject.RolePermissions;
-import in.securelearning.lil.android.syncadapter.fcmservices.FCMToken;
-import in.securelearning.lil.android.syncadapter.fcmservices.FlavorFCMReceiverService;
+import in.securelearning.lil.android.syncadapter.dataobjects.FCMToken;
+import in.securelearning.lil.android.syncadapter.dataobjects.RolePermissions;
 import in.securelearning.lil.android.syncadapter.model.NetworkModel;
+import in.securelearning.lil.android.syncadapter.permission.PermissionPrefs;
+import in.securelearning.lil.android.syncadapter.permission.PermissionPrefsCommon;
+import in.securelearning.lil.android.syncadapter.permission.PreferenceSettingUtilClass;
+import in.securelearning.lil.android.syncadapter.service.FCMReceiverService;
 import in.securelearning.lil.android.syncadapter.service.MessageService;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
-import in.securelearning.lil.android.syncadapter.utils.NotificationUtil;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
 import in.securelearning.lil.android.syncadapter.utils.PrefManagerStudentSubjectMapping;
 import in.securelearning.lil.android.syncadapter.utils.ShortcutUtil;
@@ -111,7 +96,6 @@ import static in.securelearning.lil.android.home.views.activity.PasswordChangeAc
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     public static final String ACTION_LOGOUT = "in.securelearning.lil.android.action.ACTION_LOGOUT";
-    //    public static final String ACTION_UNAUTHORIZED_LOGOUT = "in.securelearning.lil.android.action.ACTION_UNAUTHORIZED_LOGOUT";
     public static final String ACTION_USER_ARCHIVED = "in.securelearning.lil.android.action.ACTION_USER_ARCHIVED";
 
     public static final String ACTION_UNAUTHORIZED = "in.securelearning.lil.android.action.ACTION_UNAUTHORIZED";
@@ -123,31 +107,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int MY_PERMISSIONS_REQUEST = 1;
-    /**
-     * Keep track of the refreshToken task to ensure we can cancel it if requested.
-     */
+
     @Inject
     Context mContext;
+
     @Inject
     AppUserModel mAppUserModel;
+
     @Inject
     NetworkModel mNetworkModel;
+
     @Inject
     RxBus mRxBus;
+
     @Inject
     HomeModel mHomeModel;
+
     private String mAction = "";
     private LayoutAppMainLoginBinding mBinding;
 
     private final static String EMAIL_PHONE_SHARED_PREFERENCE = "email_phone_pref";
     private final static String SET_LOGGED_IN_EMAIL_PHONE = "set_logged_in_email_phone";
     private boolean mIsAlreadyLoggedIn;
-
-    public static Intent startIntentLoginActivity(Context context) {
-        Intent intent = new Intent(context, LoginActivity.class);
-        intent.setAction(Intent.ACTION_MAIN);
-        return intent;
-    }
 
     @Override
     public void onBackPressed() {
@@ -171,7 +152,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorGrey55));
         }
         handleUpgrade();
-        setMoscoatValues();
+        setMoscotValues();
 
         final Intent intent = getIntent();
         if (intent != null && !TextUtils.isEmpty(intent.getAction())) {
@@ -191,7 +172,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     intentActionDialog(getString(R.string.message_user_archived));
                 }
                 initializeUiAndClickListeners();
-                //handleException();
                 requestAndroidPermission();
                 listenRxEvent();
 
@@ -199,7 +179,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    private void setMoscoatValues() {
+    private void setMoscotValues() {
         GamificationPrefs.setFirstTimeApplicationLoaded(mContext, false);
         GamificationPrefs.setSubjectCallDone(mContext, false);
     }
@@ -272,91 +252,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 });
     }
 
-    /**
-     * Handle exception and send log file to registered mail ids
-     */
-    private void handleException() {
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-                if (BuildConfig.DEBUG) {
-                    showExceptionNotification(e);
-                } else {
-                    if (e instanceof IOException || e instanceof IllegalStateException || e instanceof DeadObjectException || e instanceof InterruptedException || e instanceof OutOfMemoryError || e instanceof NullPointerException) {
-
-                    } else {
-                        showExceptionNotification(e);
-                    }
-                }
-                if (t != null && t.getId() == Looper.getMainLooper().getThread().getId()) {
-                    //restartApp(LoginActivity.this);
-                }
-            }
-        });
-    }
-
-    private static void restartApp(Context context) {
-        Intent intent = LoginActivity.startIntentLoginActivity(context);
-        int pendingIntentId = 123456;
-        PendingIntent mPendingIntent = PendingIntent.getActivity(context, pendingIntentId, intent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, mPendingIntent);
-        System.exit(0);
-    }
-
-    private void showExceptionNotification(Throwable e) {
-        StringWriter stackTrace = new StringWriter();
-        e.printStackTrace(new PrintWriter(stackTrace));
-        e.printStackTrace();
-
-        String stackTraceString = stackTrace.toString();
-        int width = getResources().getDisplayMetrics().widthPixels;
-        int height = getResources().getDisplayMetrics().heightPixels;
-        final String msg = "Device Detail:\nManufacturer: " + android.os.Build.MANUFACTURER + "\nModel: " +
-                android.os.Build.MODEL +
-                "\nAndroid Version: " + android.os.Build.VERSION.RELEASE +
-                "\nAndroid Flavor: " + BuildConfig.FLAVOR +
-                "\nUser ID: " + AppPrefs.getUserId(getBaseContext()) +
-                "\nUser Name: " + AppPrefs.getUserName(getBaseContext()) +
-                "\n App Version:" + BuildConfig.VERSION_NAME +
-                "\nScreen Size: " + width + "*" + height
-                + "\n\nReport:\n" + stackTraceString;
-
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_EMAIL, new String[]{"chaitendra.singh@securelearning.in,prabodh.dhabaria@securelearning.in"});
-        i.putExtra(Intent.EXTRA_SUBJECT, "Crash report ");
-        i.putExtra(Intent.EXTRA_TEXT, msg);
-        Intent finalIntent = Intent.createChooser(i, "Send Crash Report");
-
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(getBaseContext(), NotificationUtil.NOTIFICATION_CHANNEL_ID)
-                        .setSmallIcon(android.R.drawable.stat_notify_error)
-                        .setLargeIcon(BitmapFactory.decodeResource(getBaseContext().getResources(), R.drawable.notification_icon))
-                        .setColor(ContextCompat.getColor(getBaseContext(), R.color.notification_small_background))
-                        .setTicker("Bug report")
-                        .setAutoCancel(true)
-                        .setContentTitle("Bug Report - " + e.getClass().getSimpleName())
-                        .setContentText("A bug report has been generated. Please send it to help us improve the application.\n" + e.getMessage());
-
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 0, finalIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.addAction(android.R.drawable.sym_action_email, "SEND", pendingIntent);
-
-        builder.setContentIntent(pendingIntent);
-        //notificationManager.notify(NotificationUtil.BUG_REPORT, builder.build());
-
-        NotificationManager notifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(NotificationUtil.NOTIFICATION_CHANNEL_ID, NotificationUtil.NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
-            notifyMgr.createNotificationChannel(channel);
-        }
-        notifyMgr.notify(NotificationUtil.BUG_REPORT, builder.build());
-
-
-    }
-
     @SuppressLint("CheckResult")
     private void setDefaults() {
         Completable.complete().subscribeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
@@ -415,22 +310,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onStart();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        if (mSubscription != null) {
-//            mSubscription.dispose();
-//        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-//        if (mSubscription != null) {
-//            mSubscription.dispose();
-//        }
-    }
-
     private void logoutAction() {
         SyncServiceHelper.stopSyncService(LoginActivity.this);
         clearPreferences(LoginActivity.this);
@@ -451,6 +330,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @SuppressLint("ClickableViewAccessibility")
     private void initializeUiAndClickListeners() {
+
+        /*To set password only for 'debug' build variant*/
+        if (BuildConfig.BUILD_TYPE.equalsIgnoreCase("debug")) {
+            mBinding.includeLoginEmail.editTextLoginPassword.setText("Qaz123wsx");
+        }
+
         if (getEmailOrPhoneFromSharedPref() != null && !getEmailOrPhoneFromSharedPref().isEmpty()) {
             ArrayList<String> arrayList = new ArrayList<>();
             arrayList.addAll(getEmailOrPhoneFromSharedPref());
@@ -461,6 +346,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mBinding.includeLoginEmail.editTextLoginEmail.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorGreyDark));
         }
         mBinding.includeLoginEmail.editTextLoginEmail.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+
+        final Resource resourceLoginHelp = new Resource();
+        resourceLoginHelp.setUrl("https://euro-faq.s3.ap-south-1.amazonaws.com/argus%40home+installation+16+dec.mp4");
+
+        mBinding.includeLoginEmail.buttonLoginHelp.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mHomeModel.playVideo(resourceLoginHelp);
+            }
+        });
 
         mBinding.includeLoginEmail.buttonBack.setOnClickListener(new OnClickListener() {
             @Override
@@ -546,8 +441,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Callback received when a permissions request has been completed.
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -618,21 +512,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
 
-    }
-
-    /**
-     * check all type of validations for email
-     *
-     * @param email
-     * @return
-     */
-    private boolean isEmailValid(String email) {
-        if (email.contains("@") && email.contains(".")) {
-            return true;
-        } else if (email.length() == 10 && TextUtils.isDigitsOnly(email)) {
-            return true;
-        }
-        return true;
     }
 
     /**
@@ -719,15 +598,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    /**
-     * Shows the soft keyboard
-     */
-    public void showSoftKeyboard(View view) {
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        view.requestFocus();
-        inputMethodManager.showSoftInput(view, 0);
-    }
-
     /*Perform user login from initially*/
     @SuppressLint("CheckResult")
     private void performLogin(final View view, final String email, final String password, final boolean isAlreadyLoggedIn) {
@@ -792,7 +662,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
     }
-
 
     private void copyUserProfileFromGuestDB(String userId) {
         int version = PrefManager.getUpdatedToVersion(this);
@@ -903,17 +772,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             /*To update UserProfile object stored  locally.*/
             SyncServiceHelper.updateProfile();
 
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    mBinding.includeLoginProgress.textViewLoadingMessage.setText(getString(R.string.message_loading_groups));
-//
-//                }
-//            });
-//
-//            /*Starting download job to fetch and save user's group.*/
-//            JobCreator.createNetworkGroupDownloadJob().execute();
-
             if (BuildConfig.IS_LEARNING_NETWORK_ENABLED) {
 
                 Completable.complete().observeOn(Schedulers.newThread())
@@ -969,11 +827,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-
     /*Starting FCM Receiver service after successful login*/
     private void startFCMService() {
         try {
-            startService(new Intent(LoginActivity.this, FlavorFCMReceiverService.class));
+            startService(new Intent(LoginActivity.this, FCMReceiverService.class));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -986,17 +843,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         AppPrefs.setUserPassword(password, LoginActivity.this);
     }
 
-
     private void startChangePasswordActivity() {
 
         startActivity(PasswordChangeActivity.getStartIntent(getBaseContext(), mAppUserModel.getObjectId(), getString(R.string.messageChangePasswordLogout), getString(R.string.labelChangePassword), FROM_LOGIN));
 
     }
 
-    /*To refresh dashboard data when boolean value is false*/
-    private void refreshDashboardData(boolean shouldRefresh) {
-        PreferenceSettingUtilClass.setDashboardDataFetch(shouldRefresh, LoginActivity.this);
-    }
 
     private boolean fetchAndSetRolePermissions(Context context) throws IOException {
         Call<RolePermissions> call = mNetworkModel.fetchRolePermissions();
@@ -1091,7 +943,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         SyncServiceHelper.startSyncService(this);
         Intent intent = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
         intent.setAction(ACTION_LEARNING_NETWORK);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
@@ -1108,7 +959,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         SyncServiceHelper.startSyncService(this);
         Intent intent = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
         intent.setAction(ACTION_NOTIFICATION);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
@@ -1190,51 +1040,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
-    }
-
-    private void changeStatusBarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-        }
-    }
-
-    public class AppIntroViewPagerAdapter extends PagerAdapter {
-        private LayoutInflater layoutInflater;
-        private int[] layouts;
-        Context mContext;
-
-        public AppIntroViewPagerAdapter(Context context, int[] layouts) {
-            this.mContext = context;
-            this.layouts = layouts;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = layoutInflater.inflate(layouts[position], container, false);
-            container.addView(view);
-            return view;
-        }
-
-        @Override
-        public int getCount() {
-            return layouts.length;
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object obj) {
-            return view == obj;
-        }
-
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            View view = (View) object;
-            container.removeView(view);
-        }
-
     }
 
 }

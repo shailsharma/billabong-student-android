@@ -11,6 +11,7 @@ public class LessonPlanChapterResult implements Serializable {
     public static final String STATUS_COMPLETED = "completed";
     public static final String STATUS_IN_PROGRESS = "today";
     public static final String STATUS_YET_TO_START = "yetToStart";
+
     @SerializedName("results")
     @Expose
     private ArrayList<LessonPlanChapter> mLessonPlanChapters;

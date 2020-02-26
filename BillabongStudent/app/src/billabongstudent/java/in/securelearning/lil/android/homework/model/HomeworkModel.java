@@ -16,7 +16,7 @@ import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
 import in.securelearning.lil.android.homework.dataobject.Homework;
 import in.securelearning.lil.android.homework.dataobject.HomeworkSubmitResponse;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
-import in.securelearning.lil.android.syncadapter.model.FlavorNetworkModel;
+import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.Observable;
@@ -31,7 +31,7 @@ public class HomeworkModel {
     Context mContext;
 
     @Inject
-    FlavorNetworkModel mFlavorNetworkModel;
+    NetworkModel mNetworkModel;
 
     public HomeworkModel() {
         InjectorHome.INSTANCE.getComponent().inject(this);
@@ -49,7 +49,7 @@ public class HomeworkModel {
             @Override
             public void subscribe(ObservableEmitter<AssignedHomeworkParent> e) throws Exception {
 
-                Call<AssignedHomeworkParent> call = mFlavorNetworkModel.fetchHomework(subjectId);
+                Call<AssignedHomeworkParent> call = mNetworkModel.fetchHomework(subjectId);
                 Response<AssignedHomeworkParent> response1 = call.execute();
 
                 if (response1 != null && response1.isSuccessful()) {
@@ -88,7 +88,7 @@ public class HomeworkModel {
             @Override
             public void subscribe(ObservableEmitter<AssignedHomeworkParent> e) throws Exception {
 
-                Call<AssignedHomeworkParent> call = mFlavorNetworkModel.fetchHomework(subjectId);
+                Call<AssignedHomeworkParent> call = mNetworkModel.fetchHomework(subjectId);
                 Response<AssignedHomeworkParent> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -123,7 +123,7 @@ public class HomeworkModel {
             @Override
             public void subscribe(ObservableEmitter<Homework> e) throws Exception {
 
-                Call<Homework> call = mFlavorNetworkModel.fetchHomeworkDetail(homeworkId);
+                Call<Homework> call = mNetworkModel.fetchHomeworkDetail(homeworkId);
                 Response<Homework> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -157,7 +157,7 @@ public class HomeworkModel {
             @Override
             public void subscribe(ObservableEmitter<HomeworkSubmitResponse> e) throws Exception {
 
-                Call<HomeworkSubmitResponse> call = mFlavorNetworkModel.submitHomework(homeworkId);
+                Call<HomeworkSubmitResponse> call = mNetworkModel.submitHomework(homeworkId);
                 Response<HomeworkSubmitResponse> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {

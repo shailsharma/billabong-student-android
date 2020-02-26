@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/menu_logout"
-        android:icon="@drawable/exit_w"
+        android:icon="@drawable/action_logout_dark"
         android:title="@string/logout"
         app:showAsAction="always" />
 

@@ -1,13 +1,13 @@
 package in.securelearning.lil.android.analytics.dataobjects;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class EffortChartDataWeekly implements Serializable , Comparable<EffortChartDataWeekly>{
+public class EffortChartDataWeekly implements Serializable, Comparable<EffortChartDataWeekly> {
 
     @SerializedName("_id")
     @Expose
@@ -35,7 +35,6 @@ public class EffortChartDataWeekly implements Serializable , Comparable<EffortCh
 
     @Override
     public int compareTo(@NonNull EffortChartDataWeekly effortChartDataWeekly) {
-
-            return effortChartDataWeekly.getDate().compareTo( this.getDate() );
+        return effortChartDataWeekly.getDate().compareTo(this.getDate());
     }
 }

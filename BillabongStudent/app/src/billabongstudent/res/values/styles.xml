@@ -11,6 +11,22 @@
 
     </style>
 
+    <style name="AppThemeWhite" parent="AppTheme">
+        <item name="colorPrimary">@color/colorWhite</item>
+        <item name="colorPrimaryDark">@color/colorWhite</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="toolbarStyle">@style/ToolbarThemeWhite</item>
+        <item name="android:statusBarColor">@color/colorWhite</item>
+        <item name="android:homeAsUpIndicator">@drawable/icon_arrow_left_dark</item>
+
+    </style>
+
+    <style name="ToolbarThemeWhite" parent="@style/Widget.AppCompat.Toolbar">
+        <item name="titleTextColor">@color/colorBlack</item>
+        <item name="subtitleTextColor">@color/colorGreyDark</item>
+        <item name="android:background">@color/colorWhite</item>
+    </style>
+
     <style name="RapidLearningRatingBar" parent="Theme.AppCompat">
         <item name="colorControlActivated">@color/white</item>
         <item name="colorControlNormal">@color/colorWhite</item><!-- Whatever color you want-->
@@ -81,4 +97,90 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
+    <!--Curved top bottom sheet theme-->
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/background_rectangle_curved_white_top
+        </item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="EditTextSignUp">
+        <item name="colorControlNormal">#ffffff</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+    </style>
+
+    <style name="themeEditTextGrey">
+        <item name="colorControlNormal">@color/colorGrey77</item>
+        <item name="colorControlActivated">@color/colorGreyDark</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+    </style>
+
+    <style name="EditTextThemeWhite">
+        <item name="colorControlNormal">@color/colorWhite66</item>
+        <item name="colorControlActivated">@color/colorWhite</item>
+        <item name="colorControlHighlight">@color/colorWhite</item>
+
+    </style>
+
+    <style name="ButtonColorAccent" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="cursorColor" parent="AppTheme.AppBarOverlay">
+        <item name="android:textCursorDrawable">@drawable/image_search_view_cursor</item>
+    </style>
+
+    <style name="CustomTextInputLayoutHint" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorGrey77</item>
+    </style>
+
+    <style name="CustomTextInputLayoutError" parent="TextAppearance.Design.Error">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="ToolbarExpandedTextAppearance">
+        <item name="android:background">@drawable/gradient_black_top_bottom</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowRadius">4</item>
+        <item name="android:shadowColor">@android:color/black</item>
+    </style>
+
+    <style name="ProgressWhiteAccent">
+        <item name="colorAccent">@color/white</item>
+    </style>
+
+    <style name="ProgressRedAccent">
+        <item name="colorAccent">@color/colorRed</item>
+        <item name="colorPrimary">@color/colorWhite</item>
+    </style>
+
+    <style name="Theme.Transparent" parent="android:Theme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
 </resources>
