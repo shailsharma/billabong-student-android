@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/value_12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/question_feedback_title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/buttonClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/value_4dp"
+                android:background="@drawable/background_circle_solid_white"
+                android:elevation="@dimen/elevation_2dp"
+                android:padding="@dimen/value_8dp"
+                android:tint="@color/colorBlack"
+                app:srcCompat="@drawable/action_close_w" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/value_16dp"
+            android:layout_marginEnd="@dimen/value_16dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <!--Options-->
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/value_4dp"
+                    android:layout_marginTop="@dimen/value_16dp"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/question_feedback_issue_location"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/colorBlack" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewFeedbackOptions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:visibility="gone"
+                        tools:itemCount="4"
+                        tools:listitem="@layout/layout_question_feedback_option_item" />
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/value_8dp"
+                        android:layout_marginBottom="@dimen/value_8dp" />
+
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <!--Comments-->
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/value_16dp"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/value_4dp"
+                        android:text="@string/labelDetails"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/colorBlack" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputLayoutIssueDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/value_4dp"
+                        android:layout_marginTop="-8dp"
+                        android:layout_marginEnd="@dimen/value_4dp"
+                        android:textColorHint="@color/colorGrey77"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="@integer/question_feedback_limit"
+                        app:errorTextAppearance="@style/CustomTextInputLayoutError"
+                        app:hintAnimationEnabled="false"
+                        app:hintEnabled="false"
+                        app:hintTextAppearance="@style/CustomTextInputLayoutHint">
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/editTextIssueDetails"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top|start"
+                            android:hint="@string/issue_description"
+                            android:inputType="textMultiLine|textCapSentences"
+                            android:maxLength="@integer/question_feedback_limit"
+                            android:minLines="4"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/textSize_14sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonSubmit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/chipButtonHeight_36dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/value_8dp"
+                    android:layout_marginBottom="@dimen/value_8dp"
+                    android:background="@drawable/chip_accent_color"
+                    android:paddingStart="@dimen/value_28dp"
+                    android:paddingEnd="@dimen/value_28dp"
+                    android:text="@string/submit"
+                    android:textColor="@color/colorWhite" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</layout>

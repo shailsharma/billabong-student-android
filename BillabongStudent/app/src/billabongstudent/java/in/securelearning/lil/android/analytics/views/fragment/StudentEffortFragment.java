@@ -2,14 +2,14 @@ package in.securelearning.lil.android.analytics.views.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.annotation.NonNull;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,6 +63,7 @@ public class StudentEffortFragment extends Fragment {
 
     @Inject
     AnalyticsModel mAnalyticsModel;
+
     private LayoutStudentAnalyticsEffortBinding mBinding;
     private boolean fragmentResume = false;
     private boolean fragmentVisible = false;
@@ -83,7 +84,6 @@ public class StudentEffortFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null && getArguments().getSerializable(ConstantUtil.EFFORT) != null) {
-
             this.mChartConfigurationData = (ArrayList<ChartConfigurationData>) getArguments().getSerializable(ConstantUtil.EFFORT);
         }
     }
@@ -96,7 +96,6 @@ public class StudentEffortFragment extends Fragment {
         if (!fragmentResume && fragmentVisible) {   //only when first time activity is created
             fetchEffortData();
         }
-
 
         return mBinding.getRoot();
     }
@@ -159,6 +158,7 @@ public class StudentEffortFragment extends Fragment {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
+
                             mBinding.progressBarEffort.setVisibility(View.GONE);
                             mBinding.frameLayout2.setVisibility(View.GONE);
                             mBinding.frameTime1.setVisibility(View.GONE);
@@ -209,7 +209,7 @@ public class StudentEffortFragment extends Fragment {
         mTotalTime = totalTimeSpent;
 
         /*Total time spent*/
-        String formattedTotalTimeSpent = mAnalyticsModel.showSecondAndMinutesAndHours((long) totalTimeSpent);
+        String formattedTotalTimeSpent = mAnalyticsModel.showHoursMinutesFromSeconds((long) totalTimeSpent);
         mBinding.textViewTotalTimeSpent.setText(formattedTotalTimeSpent);
         final float finalTotalTimeSpent = totalTimeSpent;
         final float finalTotalReadTime = totalReadTime;
@@ -228,7 +228,7 @@ public class StudentEffortFragment extends Fragment {
         final float dailyReadTimeSpent = totalReadTime / daysCount;
         final float dailyVideoTimeSpent = totalVideoTime / daysCount;
         final float dailyPracticeTimeSpent = totalPracticeTime / daysCount;
-        String formattedDailyTimeSpent = mAnalyticsModel.showSecondAndMinutesAndHours((long) dailyTimeSpent);
+        String formattedDailyTimeSpent = mAnalyticsModel.showHoursMinutesFromSeconds((long) dailyTimeSpent);
         mBinding.textViewDailyTimeSpent.setText(formattedDailyTimeSpent);
 
 
@@ -571,13 +571,8 @@ public class StudentEffortFragment extends Fragment {
         barData.setValueFormatter(new EffortBarChartPercentFormatter());
         barData.setValueTextSize(mAnalyticsModel.barTextSize());
         barData.setBarWidth(mAnalyticsModel.effortBarWidth());
-//        mBinding.topicChartEffort.setXAxisRenderer
-//                (new ChartXAxisRenderer(mBinding.topicChartEffort.getViewPortHandler(),
-//                        mBinding.topicChartEffort.getXAxis(),
-//                        mBinding.topicChartEffort.getTransformer(YAxis.AxisDependency.LEFT)));
         mBinding.topicChartEffort.setExtraBottomOffset(10);
         mBinding.topicChartEffort.getDescription().setEnabled(false);
-        //mBinding.topicChartEffort.setMaxVisibleValueCount(100);
         mBinding.topicChartEffort.setPinchZoom(false);
         mBinding.topicChartEffort.setDrawGridBackground(false);
         mBinding.topicChartEffort.getXAxis().setDrawGridLines(false);
@@ -617,24 +612,24 @@ public class StudentEffortFragment extends Fragment {
             totalPracticeTime += effortChartDataList.get(i).getTotalPracticeTimeSpent();
         }
         /*Total time spent*/
-        String formattedTotalTimeSpent = mAnalyticsModel.showSecondAndMinutesAndHours((long) totalTimeSpent);
+        String formattedTotalTimeSpent = mAnalyticsModel.showHoursMinutesFromSeconds((long) totalTimeSpent);
         mBinding.textViewTopicTotalTimeSpent.setText(formattedTotalTimeSpent);
         final float finalTotalTimeSpent = totalTimeSpent;
         final float finalTotalReadTime = totalReadTime;
         final float finalTotalVideoTime = totalVideoTime;
         final float finalTotalPracticeTime = totalPracticeTime;
 
-        //mBinding.textViewTopicDailyTimeSpentLabel.setPaintFlags(mBinding.textViewDailyTimeSpentLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        //mBinding.textViewTopicTotalTimeSpentLabel.setPaintFlags(mBinding.textViewTotalTimeSpentLabel.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         mBinding.linearLayoutTopicTotalTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!TextUtils.isEmpty(mBinding.textViewPerformance.getText())) {
                     String subjectName = mBinding.textViewPerformance.getText().toString();
-                    mAnalyticsModel.showDetailedTotalTimeSpent(mContext, finalTotalTimeSpent, finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime, subjectName);
+                    mAnalyticsModel.showDetailedTotalTimeSpent(mContext, finalTotalTimeSpent,
+                            finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime, subjectName);
                 } else {
-                    mAnalyticsModel.showDetailedTotalTimeSpent(mContext, finalTotalTimeSpent, finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime, ConstantUtil.BLANK);
+                    mAnalyticsModel.showDetailedTotalTimeSpent(mContext, finalTotalTimeSpent,
+                            finalTotalReadTime, finalTotalVideoTime, finalTotalPracticeTime, ConstantUtil.BLANK);
                 }
 
             }
@@ -645,36 +640,19 @@ public class StudentEffortFragment extends Fragment {
         final float dailyReadTimeSpent = totalReadTime / daysCount;
         final float dailyVideoTimeSpent = totalVideoTime / daysCount;
         final float dailyPracticeTimeSpent = totalPracticeTime / daysCount;
-        String formattedDailyTimeSpent = mAnalyticsModel.showSecondAndMinutesAndHours((long) dailyTimeSpent);
+        String formattedDailyTimeSpent = mAnalyticsModel.showHoursMinutesFromSeconds((long) dailyTimeSpent);
         mBinding.textViewTopicDailyTimeSpent.setText(formattedDailyTimeSpent);
 
 
         mBinding.linearLayoutDailyTimeSpent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAnalyticsModel.showDetailedDailyTimeSpent(mContext, dailyTimeSpent, dailyReadTimeSpent, dailyVideoTimeSpent, dailyPracticeTimeSpent);
+                mAnalyticsModel.showDetailedDailyTimeSpent(mContext, dailyTimeSpent, dailyReadTimeSpent,
+                        dailyVideoTimeSpent, dailyPracticeTimeSpent);
             }
         });
     }
 
-
-    private void showTopicInternetSnackBar(final String subjectId) {
-
-    /*    Snackbar.make(mBinding.getRoot(), getString(R.string.error_message_no_internet), Snackbar.LENGTH_INDEFINITE)
-                .setAction((R.string.labelRetry), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (!TextUtils.isEmpty(subjectId)) {
-                            fetchSubjectWiseEffortData(subjectId);
-                        } else {
-                            fetchWeeklyEffortData(subjectId);
-                        }
-
-                    }
-                })
-                .show();
-*/
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -683,12 +661,5 @@ public class StudentEffortFragment extends Fragment {
 
     }
 
-
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mContext = null;
-//
-//    }
 }
 

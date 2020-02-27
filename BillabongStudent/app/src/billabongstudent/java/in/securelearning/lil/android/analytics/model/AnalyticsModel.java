@@ -2,20 +2,15 @@ package in.securelearning.lil.android.analytics.model;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
-import android.graphics.Color;
+import androidx.databinding.DataBindingUtil;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -23,18 +18,16 @@ import in.securelearning.lil.android.analytics.dataobjects.ChartDataRequest;
 import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
 import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataRequest;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
 import in.securelearning.lil.android.analytics.dataobjects.EffortvsPerformanceData;
 import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsTimeSpentDetailPopupBinding;
 import in.securelearning.lil.android.base.model.AppUserModel;
-import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
-import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
-import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationRequest;
-import in.securelearning.lil.android.syncadapter.model.FlavorNetworkModel;
+import in.securelearning.lil.android.syncadapter.dataobjects.GlobalConfigurationParent;
+import in.securelearning.lil.android.syncadapter.dataobjects.GlobalConfigurationRequest;
+import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -45,7 +38,7 @@ import retrofit2.Response;
 public class AnalyticsModel {
 
     @Inject
-    FlavorNetworkModel mFlavorNetworkModel;
+    NetworkModel mNetworkModel;
 
     @Inject
     Context mContext;
@@ -55,48 +48,6 @@ public class AnalyticsModel {
 
     public AnalyticsModel() {
         InjectorHome.INSTANCE.getComponent().inject(this);
-    }
-
-    /*Set activity status bar style immersive*/
-    public void setImmersiveStatusBar(Window window) {
-        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        window.setStatusBarColor(Color.TRANSPARENT);
-    }
-
-    /*convert seconds to natural time format*/
-    public String convertSecondToHourMinuteSecond(long actualSeconds) {
-        String strHours;
-        String strMinutes;
-
-        long hours = actualSeconds / 3600;
-        long hoursMod = actualSeconds % 3600;
-        long minutes = hoursMod / 60;
-        long seconds = hoursMod % 60;
-
-        /*This is to convert into a minute, if seconds value is >= 30 seconds else seconds
-        value will become zero as discussed*/
-        if (seconds >= 30) {
-            minutes = minutes + 1;
-        }
-
-        strHours = String.valueOf(hours);
-        strMinutes = String.valueOf(minutes);
-        // strSeconds = String.valueOf(newSeconds);
-
-
-        if (hours >= 0 && hours <= 9) {
-            strHours = "0" + strHours;
-        }
-
-        if (minutes >= 0 && minutes <= 9) {
-            strMinutes = "0" + strMinutes;
-        }
-//        if (newSeconds >= 0 && newSeconds <= 9) {
-//            strSeconds = "0" + strSeconds;
-//
-//        }
-
-        return strHours + ":" + strMinutes; // + ":" + strSeconds;
     }
 
     /*convert seconds to minutes*/
@@ -123,19 +74,23 @@ public class AnalyticsModel {
         return strMinutes;
     }
 
-    //Need to show Hours Minutes
-    public String showSecondAndMinutesAndHours(long actualSeconds) {
-        String strMinutes, strSeconds, strHours;
+    /**
+     * Convert seconds to natural time format which is hour:minutes
+     * For example 120 seconds = 2 minutes
+     *
+     * @param actualSeconds
+     * @return String which is in format - hour:minutes
+     */
+    public String showHoursMinutesFromSeconds(long actualSeconds) {
+        String strMinutes, strHours;
 
 
         long hours = actualSeconds / 3600;
         long hoursMod = actualSeconds % 3600;
         long minutes = hoursMod / 60;
-        long seconds = hoursMod % 60;
 
         strHours = String.valueOf(hours);
         strMinutes = String.valueOf(minutes);
-        strSeconds = String.valueOf(seconds);
 
 
         if (hours >= 0 && hours <= 9) {
@@ -145,66 +100,48 @@ public class AnalyticsModel {
         if (minutes >= 0 && minutes <= 9) {
             strMinutes = "0" + strMinutes;
         }
-        if (seconds >= 0 && seconds <= 9) {
-            strSeconds = "0" + strSeconds;
 
-        }
-
-        return strHours + ":" + strMinutes /*+ ":" + strSeconds*/;
-    }
-
-    /*convert seconds to minutes*/
-    public long longConvertSecondToMinute(long actualSeconds) {
-
-        long hoursMod = actualSeconds % 3600;
-        long minutes = hoursMod / 60;
-        long seconds = hoursMod % 60;
-
-        /*This is to convert into a minute, if seconds value is >= 30 seconds else seconds
-        value will become zero as discussed*/
-        if (seconds >= 30) {
-            minutes = minutes + 1;
-        }
-
-        return minutes;
+        return strHours + ":" + strMinutes;
     }
 
     /*Method to fetch coverage data for particular subject and all subject*/
     public Observable<ArrayList<CoverageChartData>> fetchCoverageData(final String subjectId) {
-        return Observable.create(new ObservableOnSubscribe<ArrayList<CoverageChartData>>() {
-            @Override
-            public void subscribe(ObservableEmitter<ArrayList<CoverageChartData>> e) throws Exception {
-                Call<ArrayList<CoverageChartData>> call;
-                if (!TextUtils.isEmpty(subjectId)) {
-                    call = mFlavorNetworkModel.fetchSubjectWiseCoverageData(new ChartDataRequest(subjectId));
-                } else {
-                    call = mFlavorNetworkModel.fetchAllSubjectCoverageData(new ChartDataRequest());
-                }
-                Response<ArrayList<CoverageChartData>> response = call.execute();
 
-                if (response != null && response.isSuccessful()) {
-                    Log.e("CoverageChartData", "Successful");
-                    e.onNext(response.body());
-                } else if (response.code() == 404) {
-                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
-                } else if (response.code() == 401 && SyncServiceHelper.refreshToken(mContext)) {
-                    Response<ArrayList<CoverageChartData>> response2 = call.clone().execute();
-                    if (response2 != null && response2.isSuccessful()) {
-                        Log.e("CoverageChartData", "Successful");
-                        e.onNext(response2.body());
-                    } else if (response2.code() == 401) {
-                        mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
-                    } else if (response2.code() == 404) {
-                        throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+        return
+                Observable.create(new ObservableOnSubscribe<ArrayList<CoverageChartData>>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<ArrayList<CoverageChartData>> e) throws Exception {
+                        Call<ArrayList<CoverageChartData>> call;
+                        if (!TextUtils.isEmpty(subjectId)) {
+                            call = mNetworkModel.fetchSubjectWiseCoverageData(new ChartDataRequest(subjectId));
+                        } else {
+                            call = mNetworkModel.fetchAllSubjectCoverageData(new ChartDataRequest());
+                        }
+                        Response<ArrayList<CoverageChartData>> response = call.execute();
+
+                        if (response != null && response.isSuccessful()) {
+                            Log.e("CoverageChartData", "Successful");
+                            e.onNext(response.body());
+                        } else if (response.code() == 404) {
+                            throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                        } else if (response.code() == 401 && SyncServiceHelper.refreshToken(mContext)) {
+                            Response<ArrayList<CoverageChartData>> response2 = call.clone().execute();
+                            if (response2 != null && response2.isSuccessful()) {
+                                Log.e("CoverageChartData", "Successful");
+                                e.onNext(response2.body());
+                            } else if (response2.code() == 401) {
+                                mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
+                            } else if (response2.code() == 404) {
+                                throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                            }
+                        } else {
+                            Log.e("CoverageChartData", "Failed");
+                            throw new Exception(mContext.getString(R.string.messageUnableToGetData));
+                        }
+
+                        e.onComplete();
                     }
-                } else {
-                    Log.e("CoverageChartData", "Failed");
-                    throw new Exception(mContext.getString(R.string.messageUnableToGetData));
-                }
-
-                e.onComplete();
-            }
-        });
+                });
 
     }
 
@@ -215,9 +152,9 @@ public class AnalyticsModel {
             public void subscribe(ObservableEmitter<ArrayList<PerformanceChartData>> e) throws Exception {
                 Call<ArrayList<PerformanceChartData>> call;
                 if (!TextUtils.isEmpty(subjectId)) {
-                    call = mFlavorNetworkModel.fetchSubjectWisePerformanceData(new ChartDataRequest(subjectId));
+                    call = mNetworkModel.fetchSubjectWisePerformanceData(new ChartDataRequest(subjectId));
                 } else {
-                    call = mFlavorNetworkModel.fetchAllSubjectPerformanceData(new ChartDataRequest());
+                    call = mNetworkModel.fetchAllSubjectPerformanceData(new ChartDataRequest());
                 }
                 Response<ArrayList<PerformanceChartData>> response = call.execute();
 
@@ -254,7 +191,7 @@ public class AnalyticsModel {
             public void subscribe(ObservableEmitter<EffortChartDataParent> e) throws Exception {
                 EffortChartDataRequest effortChartDataRequest = new EffortChartDataRequest();
                 effortChartDataRequest.setEmail(mAppUserModel.getApplicationUser().getEmail());
-                Call<EffortChartDataParent> call = mFlavorNetworkModel.fetchEffortData(effortChartDataRequest);
+                Call<EffortChartDataParent> call = mNetworkModel.fetchEffortData(effortChartDataRequest);
                 Response<EffortChartDataParent> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -290,7 +227,7 @@ public class AnalyticsModel {
                 EffortChartDataRequest effortChartDataRequest = new EffortChartDataRequest();
                 effortChartDataRequest.setEmail(mAppUserModel.getApplicationUser().getEmail());
                 effortChartDataRequest.setSubjectId(subjectId);
-                Call<EffortChartDataParent> call = mFlavorNetworkModel.fetchSubjectWiseEffortData(effortChartDataRequest);
+                Call<EffortChartDataParent> call = mNetworkModel.fetchSubjectWiseEffortData(effortChartDataRequest);
                 Response<EffortChartDataParent> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -326,22 +263,22 @@ public class AnalyticsModel {
                 EffortChartDataRequest effortChartDataRequest = new EffortChartDataRequest();
                 effortChartDataRequest.setEmail(mAppUserModel.getApplicationUser().getEmail());
                 effortChartDataRequest.setSubjectId(subjectId);
-                Call<EffortChartDataParent> call = mFlavorNetworkModel.fetchWeeklyEffortData(effortChartDataRequest);
+                Call<EffortChartDataParent> call = mNetworkModel.fetchWeeklyEffortData(effortChartDataRequest);
                 Response<EffortChartDataParent> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
                     Log.e("EffortChartDataWeekly", "Successful");
                     e.onNext(response.body());
-                } else if (response!=null && response.code() == 404) {
+                } else if (response != null && response.code() == 404) {
                     throw new Exception(mContext.getString(R.string.messageUnableToGetData));
-                } else if (response!=null && response.code() == 401 && SyncServiceHelper.refreshToken(mContext)) {
+                } else if (response != null && response.code() == 401 && SyncServiceHelper.refreshToken(mContext)) {
                     Response<EffortChartDataParent> response2 = call.clone().execute();
                     if (response2 != null && response2.isSuccessful()) {
                         Log.e("EffortChartDataWeekly", "Successful");
                         e.onNext(response2.body());
-                    } else if (response2!=null &&  response2.code() == 401) {
+                    } else if (response2 != null && response2.code() == 401) {
                         mContext.startActivity(LoginActivity.getUnauthorizedIntent(mContext));
-                    } else if (response2!=null && response2.code() == 404) {
+                    } else if (response2 != null && response2.code() == 404) {
                         throw new Exception(mContext.getString(R.string.messageUnableToGetData));
                     }
                 } else {
@@ -363,7 +300,7 @@ public class AnalyticsModel {
                 chartConfigurationRequest.setPerformance(true);
                 chartConfigurationRequest.setCoverage(true);
                 chartConfigurationRequest.setPerformanceStandards(true);
-                Call<GlobalConfigurationParent> call = mFlavorNetworkModel.fetchGlobalConfiguration(chartConfigurationRequest);
+                Call<GlobalConfigurationParent> call = mNetworkModel.fetchGlobalConfiguration(chartConfigurationRequest);
                 Response<GlobalConfigurationParent> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {
@@ -391,12 +328,6 @@ public class AnalyticsModel {
         });
     }
 
-    /*TO get formatted date to show on Weekly time spent graph*/
-    public String getFormattedDateForWeeklyEffortChart(String isoDate) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM", Locale.ENGLISH);
-        return formatter.format(new Date(DateUtils.getSecondsOfISODateString(isoDate) * 1000L));
-    }
-
     /*To show detailed time spent in popup-reading, video and practice*/
     public void showDetailedTotalTimeSpent(Context context, float finalTotalTimeSpent, float finalTotalReadTime, float finalTotalVideoTime, float finalTotalPracticeTime, String SubjectName) {
         final Dialog dialog = new Dialog(context);
@@ -405,19 +336,16 @@ public class AnalyticsModel {
         dialog.setContentView(binding.getRoot());
         dialog.setCancelable(true);
 
-        String formattedTotalTimeSpent = showSecondAndMinutesAndHours((long) finalTotalTimeSpent);
-        String formattedReadTimeSpent = showSecondAndMinutesAndHours((long) finalTotalReadTime);
-        String formattedVideoTimeSpent = showSecondAndMinutesAndHours((long) finalTotalVideoTime);
-        String formattedPracticeTimeSpent = showSecondAndMinutesAndHours((long) finalTotalPracticeTime);
+        String formattedTotalTimeSpent = showHoursMinutesFromSeconds((long) finalTotalTimeSpent);
+        String formattedReadTimeSpent = showHoursMinutesFromSeconds((long) finalTotalReadTime);
+        String formattedVideoTimeSpent = showHoursMinutesFromSeconds((long) finalTotalVideoTime);
+        String formattedPracticeTimeSpent = showHoursMinutesFromSeconds((long) finalTotalPracticeTime);
         int readingPercentage = Math.round((finalTotalReadTime / finalTotalTimeSpent) * 100);
         int videoPercentage = Math.round((finalTotalVideoTime / finalTotalTimeSpent) * 100);
         int practicePercentage = Math.round((finalTotalPracticeTime / finalTotalTimeSpent) * 100);
-        if(!TextUtils.isEmpty(SubjectName))
-        {
-            binding.textViewTitle.setText(SubjectName+" "+context.getString(R.string.efforts));
-        }
-        else
-        {
+        if (!TextUtils.isEmpty(SubjectName)) {
+            binding.textViewTitle.setText(SubjectName + " " + context.getString(R.string.efforts));
+        } else {
             binding.textViewTitle.setText(context.getString(R.string.total_efforts));
         }
 
@@ -445,10 +373,10 @@ public class AnalyticsModel {
         dialog.setContentView(binding.getRoot());
         dialog.setCancelable(true);
 
-        String formattedTotalTimeSpent = showSecondAndMinutesAndHours((long) dailyTimeSpent);
-        String formattedReadTimeSpent = showSecondAndMinutesAndHours((long) dailyReadTimeSpent);
-        String formattedVideoTimeSpent = showSecondAndMinutesAndHours((long) dailyVideoTimeSpent);
-        String formattedPracticeTimeSpent = showSecondAndMinutesAndHours((long) dailyPracticeTimeSpent);
+        String formattedTotalTimeSpent = showHoursMinutesFromSeconds((long) dailyTimeSpent);
+        String formattedReadTimeSpent = showHoursMinutesFromSeconds((long) dailyReadTimeSpent);
+        String formattedVideoTimeSpent = showHoursMinutesFromSeconds((long) dailyVideoTimeSpent);
+        String formattedPracticeTimeSpent = showHoursMinutesFromSeconds((long) dailyPracticeTimeSpent);
         int readingPercentage = Math.round((dailyReadTimeSpent / dailyTimeSpent) * 100);
         int videoPercentage = Math.round((dailyVideoTimeSpent / dailyTimeSpent) * 100);
         int practicePercentage = Math.round((dailyPracticeTimeSpent / dailyTimeSpent) * 100);
@@ -479,6 +407,7 @@ public class AnalyticsModel {
     public float barWidth() {
         return 0.36f;
     }
+
     public float effortBarWidth() {
         return 0.78f;
     }
@@ -488,7 +417,7 @@ public class AnalyticsModel {
         return Observable.create(new ObservableOnSubscribe<ArrayList<EffortvsPerformanceData>>() {
             @Override
             public void subscribe(ObservableEmitter<ArrayList<EffortvsPerformanceData>> e) throws Exception {
-                Call<ArrayList<EffortvsPerformanceData>> call = mFlavorNetworkModel.fetchEffortvsPerformanceData();
+                Call<ArrayList<EffortvsPerformanceData>> call = mNetworkModel.fetchEffortvsPerformanceData();
                 Response<ArrayList<EffortvsPerformanceData>> response = call.execute();
 
                 if (response != null && response.isSuccessful()) {

@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class ThirdPartyMapping implements Serializable {
 
@@ -22,6 +23,10 @@ public class ThirdPartyMapping implements Serializable {
     @SerializedName("type")
     @Expose
     private String mType;
+
+    @SerializedName("tpTypes")
+    @Expose
+    private ArrayList<Integer> mTPTypeList;
 
     public ThirdPartyMapping(String subjectId, String topicId) {
         mSubjectId = subjectId;
@@ -56,5 +61,13 @@ public class ThirdPartyMapping implements Serializable {
 
     public void setMindSparkTopicId(String mindSparkTopicId) {
         mMindSparkTopicId = mindSparkTopicId;
+    }
+
+    public ArrayList<Integer> getTPTypeList() {
+        return mTPTypeList;
+    }
+
+    public void setTPTypeList(ArrayList<Integer> TPTypeList) {
+        mTPTypeList = TPTypeList;
     }
 }

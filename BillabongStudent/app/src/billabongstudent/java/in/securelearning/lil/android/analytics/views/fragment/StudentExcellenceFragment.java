@@ -2,14 +2,14 @@ package in.securelearning.lil.android.analytics.views.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.annotation.NonNull;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +61,7 @@ public class StudentExcellenceFragment extends Fragment {
 
     @Inject
     AnalyticsModel mAnalyticsModel;
+
     private boolean fragmentResume = false;
     private boolean fragmentVisible = false;
     private boolean fragmentOnCreated = false;
@@ -80,7 +81,6 @@ public class StudentExcellenceFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null && getArguments().getSerializable(ConstantUtil.EXCELLENCE) != null) {
-
             this.mChartConfigurationData = (ArrayList<ChartConfigurationData>) getArguments().getSerializable(ConstantUtil.EXCELLENCE);
         }
     }
@@ -161,6 +161,7 @@ public class StudentExcellenceFragment extends Fragment {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
+
                             mBinding.textViewNoExcellenceData.setVisibility(View.VISIBLE);
                             mBinding.progressBarExcellence.setVisibility(View.GONE);
                             mBinding.chartPerformance.setVisibility(View.GONE);
@@ -185,7 +186,8 @@ public class StudentExcellenceFragment extends Fragment {
         /*Add legend entries according to configuration*/
         for (int i = 0; i < performanceConfiguration.size(); i++) {
             ChartConfigurationData configurationData = performanceConfiguration.get(i);
-            legendEntries.add(new LegendEntry(configurationData.getLabel(), Legend.LegendForm.SQUARE, NaN, NaN, null, Color.parseColor(configurationData.getColorCode())));
+            legendEntries.add(new LegendEntry(configurationData.getLabel(), Legend.LegendForm.SQUARE, NaN, NaN,
+                    null, Color.parseColor(configurationData.getColorCode())));
 
         }
 
@@ -299,13 +301,12 @@ public class StudentExcellenceFragment extends Fragment {
                 setSubjectIcon(ccd.getSubjectIcon());
                 mBinding.llExcellence.setVisibility(View.VISIBLE);
                 mBinding.textViewPerformance.setText(ccd.getName());
-                //  startActivity(PerformanceDetailActivity.getStartIntent(mContext, ccd.getId(), ccd.getName(), performance));
 
             }
 
             @Override
             public void onNothingSelected() {
-                // mBinding.llExcellence.setVisibility(View.GONE);
+
             }
 
         });
@@ -389,11 +390,13 @@ public class StudentExcellenceFragment extends Fragment {
 
             mBinding.progressBarExcellence.setVisibility(View.VISIBLE);
 
-            mAnalyticsModel.fetchPerformanceData(subjectId).subscribeOn(Schedulers.io())
+            mAnalyticsModel.fetchPerformanceData(subjectId)
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<ArrayList<PerformanceChartData>>() {
                         @Override
                         public void accept(ArrayList<PerformanceChartData> performanceChartData) throws Exception {
+
                             mBinding.progressBarExcellence.setVisibility(View.GONE);
                             if (!performanceChartData.isEmpty()) {
                                 mBinding.layoutRecyclerView.setVisibility(View.VISIBLE);
@@ -402,6 +405,7 @@ public class StudentExcellenceFragment extends Fragment {
                             } else {
                                 mBinding.textViewNoPerformanceData.setVisibility(View.VISIBLE);
                             }
+
                         }
                     }, new Consumer<Throwable>() {
                         @Override
@@ -456,11 +460,4 @@ public class StudentExcellenceFragment extends Fragment {
         mContext = context;
     }
 
-
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mContext = null;
-//
-//    }
 }

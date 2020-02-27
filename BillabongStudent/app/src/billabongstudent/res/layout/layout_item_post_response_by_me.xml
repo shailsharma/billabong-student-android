@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/value_16dp"
+        android:paddingLeft="@dimen/value_16dp"
+        android:paddingRight="@dimen/value_16dp"
+        android:paddingTop="@dimen/value_16dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewUser"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:visibility="gone"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:ellipsize="end"
+            android:maxEms="6"
+            android:maxLines="1"
+            android:textSize="12sp"
+            android:visibility="gone"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewCommentTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="20 Nov, 8:56pm"
+            android:textSize="12sp"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_response_by_me"
+            android:padding="8dp"
+            android:text="This is first."
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorBlack"/>
+
+    </LinearLayout>
+</layout>

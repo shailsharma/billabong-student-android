@@ -11,20 +11,20 @@
         android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <android.support.v7.widget.LinearLayoutCompat
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/poppins_regular"
                 android:text="@string/homeworkTime"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorRyanBlack"
+                android:textColor="@color/colorEuroBlack"
                 android:textStyle="bold" />
 
             <in.securelearning.lil.android.base.widget.CustomImageButton
@@ -37,9 +37,9 @@
                 android:src="@drawable/icon_dashboard_assignment"
                 android:visibility="invisible" />
 
-        </android.support.v7.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <android.support.v7.widget.LinearLayoutCompat
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/value_8dp"
@@ -47,7 +47,7 @@
             android:orientation="horizontal">
 
 
-            <android.support.v7.widget.LinearLayoutCompat
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/layoutAssignmentCount1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewAssignmentCount1"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
@@ -70,7 +70,7 @@
                     android:textColor="@color/colorWhite"
                     tools:text="00" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/value_4dp"
@@ -81,9 +81,9 @@
                     android:textColor="@color/colorWhite"
                     android:textSize="12sp" />
 
-            </android.support.v7.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <android.support.v7.widget.LinearLayoutCompat
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/layoutAssignmentCount2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
                 android:elevation="@dimen/elevation_2dp"
                 android:gravity="center_vertical">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewAssignmentCount2"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
@@ -107,7 +107,7 @@
                     android:textColor="@color/colorWhite"
                     tools:text="00" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/value_4dp"
@@ -118,9 +118,9 @@
                     android:textColor="@color/colorWhite"
                     android:textSize="12sp" />
 
-            </android.support.v7.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <android.support.v7.widget.LinearLayoutCompat
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/layoutAssignmentCount3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -130,7 +130,7 @@
                 android:elevation="@dimen/elevation_2dp"
                 android:gravity="center_vertical">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewAssignmentCount3"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
@@ -142,7 +142,7 @@
                     android:textColor="@color/colorWhite"
                     tools:text="00" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/value_4dp"
@@ -153,10 +153,10 @@
                     android:textColor="@color/colorWhite"
                     android:textSize="12sp" />
 
-            </android.support.v7.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-        </android.support.v7.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </LinearLayout>
 

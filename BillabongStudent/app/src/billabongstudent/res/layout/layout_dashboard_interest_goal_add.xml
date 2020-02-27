@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!--Interest and Goal Add-->
-    <android.support.v7.widget.LinearLayoutCompat
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/layoutInterestGoalContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,11 +12,11 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="88dp"
             android:layout_height="88dp" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -27,7 +27,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/colorWhite" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageViewAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,6 +36,6 @@
             app:srcCompat="@drawable/add_gray" />
 
 
-    </android.support.v7.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </layout>

@@ -8,7 +8,7 @@
                   android:layout_height="wrap_content"
                   android:orientation="horizontal">
 
-        <android.support.v7.widget.LinearLayoutCompat
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -20,11 +20,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/face_good"/>
+                    app:srcCompat="@drawable/image_face_good"/>
             </FrameLayout>
 
             <FrameLayout
@@ -33,11 +33,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/face_ok"/>
+                    app:srcCompat="@drawable/image_face_ok"/>
             </FrameLayout>
 
             <FrameLayout
@@ -46,16 +46,16 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/face_sad"/>
+                    app:srcCompat="@drawable/image_face_sad"/>
             </FrameLayout>
 
 
 
-        </android.support.v7.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
     </LinearLayout>

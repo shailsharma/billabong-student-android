@@ -10,18 +10,23 @@ public class GamificationSurveyDetail implements Serializable {
     @SerializedName("QuestionText")
     @Expose
     private String QuestionText;
+
     @SerializedName("Option1")
     @Expose
     private String Option1;
+
     @SerializedName("Option2")
     @Expose
     private String Option2;
+
     @SerializedName("Option3")
     @Expose
     private String Option3;
+
     @SerializedName("Option4")
     @Expose
     private String Option4;
+
     @SerializedName("selectedOption")
     @Expose
     private String selectedOption;

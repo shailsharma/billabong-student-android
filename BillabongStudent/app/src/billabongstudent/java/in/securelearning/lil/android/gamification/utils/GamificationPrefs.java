@@ -10,7 +10,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import in.securelearning.lil.android.gamification.dataobject.GamificationEvent;
-import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
 import in.securelearning.lil.android.syncadapter.dataobjects.AboutCourseMinimal;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 
@@ -19,6 +18,7 @@ import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
  */
 
 public class GamificationPrefs {
+
     private final static String GAMIFICATION_SHARED_PREFERENCE = "gamification_preference"; // Shared Preference file name
     private static SharedPreferences sGamificationPrefs;
 
@@ -30,21 +30,7 @@ public class GamificationPrefs {
     }
 
 
-    public static boolean setRanBefore(Context context) {
-        SharedPreferences preferences = getSharePreference(context);
-        boolean ranBefore = PermissionPrefsCommon.isRanBefore(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        if (!ranBefore) {
-            // first time
-            editor.putBoolean(PermissionPrefsCommon.IS_RAN_BEFORE, true);
-            editor.apply();
-        }
-        return !ranBefore;
-
-
-    }
-
-    public static void setFirstTimeApplicationLoaded(Context context,boolean isRanFirstTime) {
+    public static void setFirstTimeApplicationLoaded(Context context, boolean isRanFirstTime) {
         SharedPreferences preferences = getSharePreference(context);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(ConstantUtil.DASHBOARD_LOAD_FIRST_TIME, isRanFirstTime);
@@ -63,7 +49,7 @@ public class GamificationPrefs {
         return false;
     }
 
-    public static void setSubjectCallDone(Context context,boolean isSubjectCallDone) {
+    public static void setSubjectCallDone(Context context, boolean isSubjectCallDone) {
         SharedPreferences preferences = getSharePreference(context);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(ConstantUtil.DASHBOARD_IS_SUBJECT_DONE, isSubjectCallDone);
@@ -90,17 +76,6 @@ public class GamificationPrefs {
         final Gson gson = new Gson();
         String serializedObject = gson.toJson(eventList);
         editor.putString(ConstantUtil.GAMIFICATION_OBJECT, serializedObject);
-        editor.apply();
-
-    }
-
-    public static void saveGamificationEventPosition(Context context, int position) {
-
-        SharedPreferences preferences = getSharePreference(context);
-
-        SharedPreferences.Editor editor = preferences.edit();
-
-        editor.putInt(ConstantUtil.GAMIFICATION_EVENT_POSITION, position);
         editor.apply();
 
     }
@@ -136,7 +111,6 @@ public class GamificationPrefs {
         return false;
     }
 
-
     public static void saveSelectedId(Context context, String id) {
 
         SharedPreferences preferences = getSharePreference(context);
@@ -155,14 +129,6 @@ public class GamificationPrefs {
             return preferences.getString(ConstantUtil.GAMIFICATION_SELECTED_ID, "");
         }
         return null;
-    }
-    public static void clearSelectedId(Context context) {
-        SharedPreferences preferences = getSharePreference(context);
-        SharedPreferences.Editor spreferencesEditor = preferences.edit();
-        if (preferences.contains(ConstantUtil.GAMIFICATION_SELECTED_ID)) {
-            spreferencesEditor.remove(ConstantUtil.GAMIFICATION_SELECTED_ID); //we are removing prodId by key
-            spreferencesEditor.apply();
-        }
     }
 
     public static AboutCourseMinimal getPractiseObject(Context context) {
@@ -191,18 +157,6 @@ public class GamificationPrefs {
         }
     }
 
-    public static int getEventPosition(Context context) {
-
-        SharedPreferences preferences = getSharePreference(context);
-
-        if (preferences.contains(ConstantUtil.GAMIFICATION_EVENT_POSITION)) {
-
-            int position = preferences.getInt(ConstantUtil.GAMIFICATION_EVENT_POSITION, 0);
-            return position;
-        }
-        return 0;
-    }
-
     public static ArrayList<GamificationEvent> getGamificationData(Context context) {
 
         SharedPreferences preferences = getSharePreference(context);
@@ -228,7 +182,6 @@ public class GamificationPrefs {
             spreferencesEditor.apply();
         }
     }
-
 
 
 }

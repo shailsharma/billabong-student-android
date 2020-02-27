@@ -49,11 +49,7 @@ public class ResourceNetworkOperation {
     private String generateDevicePath(Context context, Resource resource) {
         String url = "";
 
-//        if (resource.getResourceType().equals(Resource.TYPE_RESOURCE_IMAGE)) {
         url = context.getFilesDir() + File.separator + resource.getDeviceURL();
-//        } else {
-//            url = context.getFilesDir() + File.separator + resource.getDeviceURL();
-//        }
 
         return url;
     }
@@ -149,25 +145,19 @@ public class ResourceNetworkOperation {
     public boolean downloadResourceFromNetwork(String devicePath, final Resource resourceLocal) {
         boolean success = false;
         try {
-             /*download resource from network*/
+            /*download resource from network*/
             Response<ResponseBody> response = mNetworkModel.fetchFileResource(resourceLocal.getUrlMain()).execute();
 
-                    /*if network call is successful*/
+            /*if network call is successful*/
             if (response != null && response.isSuccessful()) {
 
-                        /*save file to disk*/
+                /*save file to disk*/
                 success = saveFile(devicePath, response.body());
 
 
                 Log.e(TAG, "question resource downloaded from cloud");
-                        /*save to drive*/
-//                        Observable.just(null).subscribeOn(Schedulers.computation())
-//                                .subscribe(new Consumer<Object>() {
-//                                    @Override
-//                                    public void accept(Object o) {
+                /*save to drive*/
                 saveToDrive(devicePath, resourceLocal.getDeviceURL());
-//                                    }
-//                                });
 
             } else if (response != null && response.code() == 400) {
                 if (resourceLocal.getUrlMain().startsWith("http://")) {
@@ -177,15 +167,15 @@ public class ResourceNetworkOperation {
                 }
                 Response<ResponseBody> response2 = mNetworkModel.fetchFileResource(resourceLocal.getUrlMain()).execute();
 
-                    /*if network call is successful*/
+                /*if network call is successful*/
                 if (response2 != null && response2.isSuccessful()) {
 
-                        /*save file to disk*/
+                    /*save file to disk*/
                     success = saveFile(devicePath, response.body());
 
 
                     Log.e(TAG, "question resource downloaded from cloud");
-                        /*save to drive*/
+                    /*save to drive*/
                     saveToDrive(devicePath, resourceLocal.getDeviceURL());
                 } else if (response2 != null) {
                     success = true;
@@ -209,13 +199,7 @@ public class ResourceNetworkOperation {
 
                         Log.e(TAG, "question resource downloaded from cloud");
                         /*save to drive*/
-//                        Observable.just(null).subscribeOn(Schedulers.computation())
-//                                .subscribe(new Consumer<Object>() {
-//                                    @Override
-//                                    public void accept(Object o) {
                         saveToDrive(devicePath, resourceLocal.getDeviceURL());
-//                                    }
-//                                });
 
                     } else if (response != null && response.code() == 400) {
                         if (resourceLocal.getUrlMain().startsWith("http://")) {
@@ -225,15 +209,15 @@ public class ResourceNetworkOperation {
                         }
                         Response<ResponseBody> response2 = mNetworkModel.fetchFileResource(resourceLocal.getUrlMain()).execute();
 
-                    /*if network call is successful*/
+                        /*if network call is successful*/
                         if (response2 != null && response2.isSuccessful()) {
 
-                        /*save file to disk*/
+                            /*save file to disk*/
                             success = saveFile(devicePath, response.body());
 
 
                             Log.e(TAG, "question resource downloaded from cloud");
-                        /*save to drive*/
+                            /*save to drive*/
                             saveToDrive(devicePath, resourceLocal.getDeviceURL());
                         } else if (response2 != null) {
                             success = true;

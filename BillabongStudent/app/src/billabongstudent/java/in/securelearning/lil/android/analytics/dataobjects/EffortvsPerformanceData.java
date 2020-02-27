@@ -4,13 +4,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class EffortvsPerformanceData implements Serializable {
 
     @SerializedName("id")
     @Expose
     private String mId;
+
     @SerializedName("name")
     @Expose
     private String mName;
@@ -18,6 +18,7 @@ public class EffortvsPerformanceData implements Serializable {
     @SerializedName("totalScore")
     @Expose
     private String mTotalScore;
+
     @SerializedName("percentage")
     @Expose
     private float mPercentage;
@@ -62,7 +63,7 @@ public class EffortvsPerformanceData implements Serializable {
         return mTimeResponseList;
     }
 
-    public class TimeResponse implements Serializable{
+    public class TimeResponse implements Serializable {
 
         @SerializedName("totalReadTimeSpent")
         @Expose
@@ -96,18 +97,15 @@ public class EffortvsPerformanceData implements Serializable {
             return mActiveDays;
         }
 
-        public float getTotalTime()
-        {
-            return (getTotalReadTimeSpent()+getTotalPracticeTimeSpent()+getTotalVideoTimeSpent())/60;
+        public float getTotalTime() {
+            return (getTotalReadTimeSpent() + getTotalPracticeTimeSpent() + getTotalVideoTimeSpent()) / 60;
         }
 
-        public float getAvgDaily()
-        {
+        public float getAvgDaily() {
 
-            if(getTotalTime()!=0f && getActiveDays()!=0)
-            {
+            if (getTotalTime() != 0f && getActiveDays() != 0) {
 
-                return getTotalTime()/getActiveDays();
+                return getTotalTime() / getActiveDays();
             }
             return 0f;
         }

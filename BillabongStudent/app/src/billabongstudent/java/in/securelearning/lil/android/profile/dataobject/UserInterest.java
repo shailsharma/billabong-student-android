@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
+import in.securelearning.lil.android.syncadapter.dataobjects.IdNameObject;
 
 /**
  * Created by Rajat Jain on 28/8/19.

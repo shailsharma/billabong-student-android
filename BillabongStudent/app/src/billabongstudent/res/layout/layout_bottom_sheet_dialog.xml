@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorBackground">
@@ -20,7 +20,7 @@
                 android:orientation="horizontal">
 
                 <!--Title-->
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
                     android:textColor="@color/colorGreyDark"/>
 
                 <!--Clear Filter-->
-                <android.support.v7.widget.AppCompatButton
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/buttonClearFilter"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
                     android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
                     android:visibility="gone"/>
 
                 <!--done button-->
-                <android.support.v7.widget.AppCompatButton
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/buttonDone"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
                     android:layout_width="wrap_content"
@@ -78,7 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewNoResult"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
                     android:textColor="@color/colorGreyDark"
                     android:visibility="gone"/>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -102,6 +102,6 @@
 
         </LinearLayout>
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

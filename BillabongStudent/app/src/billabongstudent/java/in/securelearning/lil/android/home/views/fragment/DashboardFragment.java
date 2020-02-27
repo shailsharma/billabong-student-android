@@ -2,16 +2,16 @@ package in.securelearning.lil.android.home.views.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.annotation.NonNull;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,24 +46,26 @@ import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
 import in.securelearning.lil.android.home.events.ChallengeAndVideoAsInterestRefreshEvent;
 import in.securelearning.lil.android.home.events.HomeworkTabOpeningEvent;
+import in.securelearning.lil.android.home.events.SubjectBonusAvailedEvent;
 import in.securelearning.lil.android.home.helper.OnCheckBonusAvailabilityListener;
 import in.securelearning.lil.android.home.helper.OnCheckUserRecapOpenListener;
-import in.securelearning.lil.android.home.model.FlavorHomeModel;
+import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity;
-import in.securelearning.lil.android.home.views.activity.SubjectDetailsActivity;
 import in.securelearning.lil.android.home.views.adapter.RecapPagerAdapter;
+import in.securelearning.lil.android.home.views.adapter.RevisionListAdapter;
 import in.securelearning.lil.android.home.views.adapter.SubjectAdapter;
 import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
 import in.securelearning.lil.android.homework.event.RefreshHomeworkEvent;
 import in.securelearning.lil.android.homework.views.fragment.HomeworkFragment;
+import in.securelearning.lil.android.lrpa.views.activity.SubjectDetailsActivity;
+import in.securelearning.lil.android.player.events.RevisionCompletedEvent;
 import in.securelearning.lil.android.profile.views.activity.StudentProfileActivity;
-import in.securelearning.lil.android.syncadapter.dataobject.GlobalConfigurationParent;
-import in.securelearning.lil.android.syncadapter.dataobject.LessonPlanMinimal;
 import in.securelearning.lil.android.syncadapter.dataobjects.ChallengeDetail;
+import in.securelearning.lil.android.syncadapter.dataobjects.GlobalConfigurationParent;
+import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanMinimal;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubject;
 import in.securelearning.lil.android.syncadapter.dataobjects.LessonPlanSubjectResult;
-import in.securelearning.lil.android.syncadapter.dataobjects.LogiQidsChallenge;
-import in.securelearning.lil.android.syncadapter.dataobjects.LogiQidsChallengeParent;
+import in.securelearning.lil.android.syncadapter.dataobjects.RevisionSubject;
 import in.securelearning.lil.android.syncadapter.dataobjects.UserChallengePost;
 import in.securelearning.lil.android.syncadapter.dataobjects.VideoForDay;
 import in.securelearning.lil.android.syncadapter.dataobjects.VideoForDayParent;
@@ -73,6 +75,8 @@ import in.securelearning.lil.android.syncadapter.events.ObjectDownloadComplete;
 import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.PrefManager;
+import in.securelearning.lil.android.thirdparty.dataobjects.LogiQidsChallenge;
+import in.securelearning.lil.android.thirdparty.dataobjects.LogiQidsChallengeParent;
 import in.securelearning.lil.android.thirdparty.views.activity.LogiqidsQuizPlayerActivity;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -97,7 +101,7 @@ public class DashboardFragment extends Fragment {
 
 
     @Inject
-    FlavorHomeModel mFlavorHomeModel;
+    HomeModel mHomeModel;
 
     @Inject
     MascotModel mMascotModel;
@@ -109,6 +113,7 @@ public class DashboardFragment extends Fragment {
     private boolean mIsSurveyDone = false;
     private int mOverDueCount = 0, mNewCount = 0, mDueSoonCount = 0;
     private boolean mIsLogiqidsChallengeShowing, mIsVideoForDayShowing, mIsVideoForDayAlreadyCalled;
+    private ArrayList<LessonPlanSubject> mLessonPlanSubjectList;
 
 
     public DashboardFragment() {
@@ -128,19 +133,20 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.layout_dashboard_fragment, container, false);
+
         listenRxBusEvents();
         initializeUIAndClickListeners();
         getTodayRecaps();
 
         mBinding.layoutLogiqidsChallengeForDay.getRoot().setVisibility(View.GONE);
         mBinding.layoutVideoForDay.getRoot().setVisibility(View.GONE);
+        mBinding.layoutRevision.getRoot().setVisibility(View.GONE);
 
         return mBinding.getRoot();
 
@@ -202,6 +208,7 @@ public class DashboardFragment extends Fragment {
                     @SuppressLint("CheckResult")
                     @Override
                     public void accept(Object event) {
+
                         if (event instanceof RefreshHomeworkEvent) {
                             Completable.complete().observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(new Action() {
@@ -218,8 +225,8 @@ public class DashboardFragment extends Fragment {
                                 Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
                                     @Override
                                     public void run() throws Exception {
-                                        AnimationUtils.fadeInFast(getContext(), mBinding.scrollView);
-                                        AnimationUtils.fadeIn(getContext(), mBinding.layoutToolbar);
+                                        AnimationUtils.fadeInFast(mContext, mBinding.scrollView);
+                                        AnimationUtils.fadeIn(mContext, mBinding.layoutToolbar);
 
                                     }
                                 });
@@ -256,6 +263,7 @@ public class DashboardFragment extends Fragment {
                                 checkHomeWorkMsg();
                             }
                         }
+
 //                else if (event instanceof ChallengeForTheDayCompleteEvent) {
 //                    getChallengeForTheDay(false);
 //                }
@@ -269,10 +277,56 @@ public class DashboardFragment extends Fragment {
                                             /*Even if user changes his/her interests in personal tab
                                              * for now we do not need to refresh instantly
                                              * so below line is commented*/
-//                                    getVideoForTheDay();
+                                            getVideoForTheDay();
                                         }
                                     });
                         }
+
+                        if (event instanceof RevisionCompletedEvent) {
+                            Completable.complete()
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action() {
+                                        @Override
+                                        public void run() throws Exception {
+                                            // getRevisionSubjects();
+                                        }
+                                    });
+                        }
+
+                        /*On bonus avail subject list will refresh*/
+                        if (event instanceof SubjectBonusAvailedEvent) {
+
+                            final String id = ((SubjectBonusAvailedEvent) event).getSubjectId();
+
+                            Completable.complete()
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action() {
+                                        @Override
+                                        public void run() throws Exception {
+
+                                            if (!TextUtils.isEmpty(id)
+                                                    && mLessonPlanSubjectList != null
+                                                    && !mLessonPlanSubjectList.isEmpty()) {
+
+                                                for (int i = 0; i < mLessonPlanSubjectList.size(); i++) {
+
+                                                    if (mLessonPlanSubjectList.get(i).getId().equals(id)) {
+                                                        mLessonPlanSubjectList.get(i).setAvailedBonus(true);
+                                                    } else {
+                                                        mLessonPlanSubjectList.get(i).setAvailedBonus(false);
+                                                    }
+
+                                                }
+
+                                                /*Reinitializing subject list*/
+                                                initializeSubjectRecyclerView(mLessonPlanSubjectList);
+
+                                            }
+
+                                        }
+                                    });
+                        }
+
 
                     }
                 }, new Consumer<Throwable>() {
@@ -429,6 +483,8 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 mContext.startActivity(StudentProfileActivity.getStartIntent(mAppUserModel.getObjectId(), mContext));
+                //mContext.startActivity(SampleWebTextActivity.getStartIntent(mContext));
+
             }
         });
 
@@ -507,7 +563,7 @@ public class DashboardFragment extends Fragment {
     private void getAssignmentCounts() {
         if (GeneralUtils.isNetworkAvailable(mContext)) {
 
-            mFlavorHomeModel.fetchHomeworkCount(null)
+            mHomeModel.fetchHomeworkCount(null)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<AssignedHomeworkParent>() {
@@ -560,12 +616,13 @@ public class DashboardFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void getTodayRecaps() {
+
         if (GeneralUtils.isNetworkAvailable(mContext)) {
             mBinding.recapView.layoutRecapProgressBar.setVisibility(View.VISIBLE);
             mBinding.recapView.recycleViewRecap.setVisibility(View.GONE);
             mBinding.recapView.textViewErrorRecap.setVisibility(View.GONE);
 
-            mFlavorHomeModel.getTodayRecaps().subscribeOn(Schedulers.io())
+            mHomeModel.getTodayRecaps().subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<ArrayList<LessonPlanMinimal>>() {
                         @Override
@@ -596,7 +653,6 @@ public class DashboardFragment extends Fragment {
             showInternetSnackBar();
         }
 
-
     }
 
     // Mascot need to show when subject loading done
@@ -609,7 +665,7 @@ public class DashboardFragment extends Fragment {
             mBinding.textViewErrorSubject.setVisibility(View.GONE);
             mBinding.recyclerView.setVisibility(View.GONE);
 
-            mFlavorHomeModel.getMySubject()
+            mHomeModel.getMySubject()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<LessonPlanSubjectResult>() {
@@ -625,7 +681,8 @@ public class DashboardFragment extends Fragment {
                                     && lessonPlanSubjectResult.getLessonPlanSubjects() != null
                                     && !lessonPlanSubjectResult.getLessonPlanSubjects().isEmpty()) {
 
-                                initializeSubjectRecyclerView(lessonPlanSubjectResult.getLessonPlanSubjects());
+                                mLessonPlanSubjectList = lessonPlanSubjectResult.getLessonPlanSubjects();
+                                initializeSubjectRecyclerView(mLessonPlanSubjectList);
 
 
                             } else {
@@ -678,7 +735,7 @@ public class DashboardFragment extends Fragment {
             mBinding.textViewErrorSubject.setVisibility(View.GONE);
             mBinding.recyclerView.setVisibility(View.GONE);
 
-            mFlavorHomeModel.fetchVocationalSubject(new VocationalTopicRequest())
+            mHomeModel.fetchVocationalSubject(new VocationalTopicRequest())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<ArrayList<VocationalSubject>>() {
@@ -708,7 +765,7 @@ public class DashboardFragment extends Fragment {
                                 mBinding.textViewErrorSubject.setVisibility(View.VISIBLE);
                                 mBinding.recyclerView.setVisibility(View.GONE);
                             }
-                            initializeSubjectRecyclerView(lessonPlanSubjectList);
+//                            initializeSubjectRecyclerView(lessonPlanSubjectList);
                             //getChallengeForTheDay();
 
                         }
@@ -722,7 +779,7 @@ public class DashboardFragment extends Fragment {
                             mBinding.textViewErrorSubject.setVisibility(View.VISIBLE);
                             mBinding.recyclerView.setVisibility(View.GONE);
 
-                            initializeSubjectRecyclerView(lessonPlanSubjectList);
+//                            initializeSubjectRecyclerView(lessonPlanSubjectList);
                             // getChallengeForTheDay();
 
                         }
@@ -740,7 +797,7 @@ public class DashboardFragment extends Fragment {
 
         if (GeneralUtils.isNetworkAvailable(mContext)) {
 
-            mFlavorHomeModel.fetchChallengeForTheDay(ConstantUtil.CHALLENGE_PER_DAY_LOGIQIDS)
+            mHomeModel.fetchChallengeForTheDay(ConstantUtil.CHALLENGE_PER_DAY_LOGIQIDS)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<LogiQidsChallengeParent>() {
@@ -789,7 +846,7 @@ public class DashboardFragment extends Fragment {
 
         if (GeneralUtils.isNetworkAvailable(mContext)) {
 
-            mFlavorHomeModel.fetchVideoForTheDay(ConstantUtil.VIDEO_PER_DAY)
+            mHomeModel.fetchVideoForTheDay(ConstantUtil.VIDEO_PER_DAY)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<VideoForDayParent>() {
@@ -808,6 +865,7 @@ public class DashboardFragment extends Fragment {
                             }
 
                             showChallengeAndVideoItemDivider();
+                            //getRevisionSubjects();
 
                         }
                     }, new Consumer<Throwable>() {
@@ -815,8 +873,48 @@ public class DashboardFragment extends Fragment {
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
                             mBinding.layoutVideoForDay.getRoot().setVisibility(View.GONE);
+
                             mIsVideoForDayShowing = false;
                             showChallengeAndVideoItemDivider();
+                            //getRevisionSubjects();
+                        }
+                    });
+
+        } else {
+            showInternetSnackBar();
+        }
+
+    }
+
+    /*To get revision subjects with details*/
+    // TODO: 7/12/19 Not need Revision functionality on production as of now, unable calling when needed.
+    @SuppressLint("CheckResult")
+    private void getRevisionSubjects() {
+
+        if (GeneralUtils.isNetworkAvailable(mContext)) {
+
+            mHomeModel.fetchRevisionSubjects()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<ArrayList<RevisionSubject>>() {
+                        @Override
+                        public void accept(ArrayList<RevisionSubject> list) throws Exception {
+
+                            if (list != null && !list.isEmpty()) {
+
+                                mBinding.layoutRevision.getRoot().setVisibility(View.VISIBLE);
+                                initializeRRevisionRecyclerView(list);
+
+                            } else {
+                                mBinding.layoutRevision.getRoot().setVisibility(View.GONE);
+                            }
+
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
+                            mBinding.layoutRevision.getRoot().setVisibility(View.GONE);
                         }
                     });
 
@@ -849,7 +947,7 @@ public class DashboardFragment extends Fragment {
 
                 mBinding.layoutLogiqidsChallengeForDay.progressBarChallengeForDay.setVisibility(View.VISIBLE);
 
-                mFlavorHomeModel.uploadTakeChallengeOrVideo(post, status)
+                mHomeModel.uploadTakeChallengeOrVideo(post, status)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Consumer<ResponseBody>() {
@@ -881,8 +979,6 @@ public class DashboardFragment extends Fragment {
 
         if (GeneralUtils.isNetworkAvailable(mContext)) {
 
-            int status = STATUS_COMPLETE;
-
             UserChallengePost post = new UserChallengePost();
             ChallengeDetail challengeDetail = new ChallengeDetail();
 
@@ -893,15 +989,15 @@ public class DashboardFragment extends Fragment {
 
             mBinding.layoutVideoForDay.progressBarVideoForDay.setVisibility(View.VISIBLE);
 
-            mFlavorHomeModel.uploadTakeChallengeOrVideo(post, status)
+            mHomeModel.uploadTakeChallengeOrVideo(post, STATUS_COMPLETE)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<ResponseBody>() {
                         @Override
                         public void accept(ResponseBody body) throws Exception {
                             mBinding.layoutVideoForDay.progressBarVideoForDay.setVisibility(View.GONE);
-//                            getVideoForTheDay();
-                            mFlavorHomeModel.playVideo(videoForDayParent.getVideoForDay().getVideoResource());
+                            getVideoForTheDay();
+                            mHomeModel.playVideo(videoForDayParent.getVideoForDay().getVideoResource());
                         }
                     }, new Consumer<Throwable>() {
                         @Override
@@ -974,6 +1070,7 @@ public class DashboardFragment extends Fragment {
 
         if (videoForDayParent.getViews() > 0) {
             mBinding.layoutVideoForDay.textViewViewsCount.setVisibility(View.VISIBLE);
+            mBinding.layoutVideoForDay.itemDividerViews.setVisibility(View.VISIBLE);
             String videoViewCountString = "";
             if (videoForDayParent.getViews() == 1) {
                 videoViewCountString = videoForDayParent.getViews() + " View";
@@ -982,7 +1079,8 @@ public class DashboardFragment extends Fragment {
             }
             mBinding.layoutVideoForDay.textViewViewsCount.setText(videoViewCountString);
         } else {
-            mBinding.layoutVideoForDay.textViewViewsCount.setVisibility(View.INVISIBLE);
+            mBinding.layoutVideoForDay.textViewViewsCount.setVisibility(View.GONE);
+            mBinding.layoutVideoForDay.itemDividerViews.setVisibility(View.GONE);
         }
 
         if (videoForDay.getVideoResource() != null) {
@@ -1012,11 +1110,11 @@ public class DashboardFragment extends Fragment {
 
         }
 
-        mBinding.layoutVideoForDay.buttonPlayVideo.setOnClickListener(new View.OnClickListener() {
+        mBinding.layoutVideoForDay.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (videoForDayParent.getVideoForDay().isViewed()) {
-                    mFlavorHomeModel.playVideo(videoForDayParent.getVideoForDay().getVideoResource());
+                    mHomeModel.playVideo(videoForDayParent.getVideoForDay().getVideoResource());
                 } else {
                     uploadVideoWatchAndLearnData(videoForDayParent);
                 }
@@ -1046,7 +1144,7 @@ public class DashboardFragment extends Fragment {
         OnCheckUserRecapOpenListener onCheckUserRecapOpenListener = new OnCheckUserRecapOpenListener() {
             @Override
             public void OnCheckUserStatusListener() {
-                mFlavorHomeModel.checkUserStatus(ConstantUtil.TYPE_LESSON_PLAN);
+                mHomeModel.checkUserStatus(ConstantUtil.TYPE_LESSON_PLAN);
             }
         };
 
@@ -1054,7 +1152,6 @@ public class DashboardFragment extends Fragment {
     }
 
     private void initializeSubjectRecyclerView(ArrayList<LessonPlanSubject> lessonPlanSubjects) {
-
 
         if (lessonPlanSubjects != null && !lessonPlanSubjects.isEmpty()) {
 
@@ -1088,10 +1185,21 @@ public class DashboardFragment extends Fragment {
         }
     }
 
+    /*Initializing revision recycler view*/
+    private void initializeRRevisionRecyclerView(ArrayList<RevisionSubject> revisionSubjectList) {
+
+        mBinding.layoutRevision.recycleViewRevision.setAdapter(null);
+        mBinding.layoutRevision.recycleViewRevision.setLayoutManager(null);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
+        mBinding.layoutRevision.recycleViewRevision.setLayoutManager(layoutManager);
+        mBinding.layoutRevision.recycleViewRevision.setHasFixedSize(true);
+        mBinding.layoutRevision.recycleViewRevision.setAdapter(new RevisionListAdapter(mContext, revisionSubjectList));
+    }
+
     @SuppressLint("CheckResult")
     private void fetchSubjectPerformanceData() {
         if (GeneralUtils.isNetworkAvailable(mContext)) {
-            mFlavorHomeModel.fetchEffortvsPerformanceData()
+            mHomeModel.fetchEffortvsPerformanceData()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<ArrayList<EffortvsPerformanceData>>() {
@@ -1184,7 +1292,9 @@ public class DashboardFragment extends Fragment {
         if (eventList != null && !eventList.isEmpty()) {
             if (eventList.size() > 4) {
                 GamificationEvent event = eventList.get(2);
-                if (event != null && event.getActivity().equalsIgnoreCase("dashboard") && event.isBonusAvailable()) {
+                if (event != null
+                        && event.getActivity().equalsIgnoreCase("dashboard")
+                        && event.isBonusAvailable()) {
                     bonusObject = event.getBonusObject();
                     if (bonusObject != null && bonusObject.getBonusAvail()
                             && !TextUtils.isEmpty(bonusObject.getUserId())
@@ -1193,7 +1303,7 @@ public class DashboardFragment extends Fragment {
                             equalsIgnoreCase(AppPrefs.getUserId(mContext))
                             && CommonUtils.getInstance().checkDateRange(bonusObject.getStartDate(), bonusObject.getEndDate())
                             && !TextUtils.isEmpty(bonusObject.getSubjectName())) {
-                        String msg = "Congratulations! We have unlocked an exclusive Flash Bonus for " + bonusObject.getSubjectName() + "." + " You will secure Extra Billabucks. Should you \n" + "either Learn or Reinforce " + bonusObject.getSubjectName() + " topics Today?";
+                        String msg = "Congratulations! We have unlocked an exclusive Flash Bonus for " + bonusObject.getSubjectName() + "." + " You will secure Extra Euros. Should you \n" + "either Learn or Reinforce " + bonusObject.getSubjectName() + " topics Today?";
                         mContext.startActivity(MascotActivity.getStartIntent(mContext, msg, event));
                     } else {
                         mContext.startActivity(SubjectDetailsActivity.getStartIntent(getContext(), lrpaSubjectId));

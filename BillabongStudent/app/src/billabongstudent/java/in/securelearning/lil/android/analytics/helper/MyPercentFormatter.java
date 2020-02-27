@@ -17,10 +17,8 @@ public class MyPercentFormatter implements IValueFormatter, IAxisValueFormatter 
     public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
         if (value > 0) {
             return String.valueOf(Math.round(value));
-
         } else {
             return "";
-
         }
     }
 }

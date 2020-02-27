@@ -3,42 +3,33 @@ package in.securelearning.lil.android.analytics.views.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import in.securelearning.lil.android.analytics.helper.MyXAxisValueFormatter;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartData;
+import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
 import in.securelearning.lil.android.analytics.model.AnalyticsModel;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsEffortTopicItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsTimeSpentDetailBinding;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartData;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataParent;
-import in.securelearning.lil.android.analytics.dataobjects.EffortChartDataWeekly;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -48,6 +39,7 @@ public class TimeEffortDetailActivity extends AppCompatActivity {
 
     @Inject
     AnalyticsModel mAnalyticsModel;
+
     private static final String SUBJECT_ID = "subjectId";
     private static final String SUBJECT_NAME = "subjectName";
 
@@ -71,7 +63,7 @@ public class TimeEffortDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_analytics_time_spent_detail);
-        mAnalyticsModel.setImmersiveStatusBar(getWindow());
+        CommonUtils.getInstance().setImmersiveStatusBar(getWindow());
         handleIntent();
     }
 
@@ -104,7 +96,7 @@ public class TimeEffortDetailActivity extends AppCompatActivity {
                     .subscribe(new Consumer<EffortChartDataParent>() {
                         @Override
                         public void accept(EffortChartDataParent effortChartDataParent) throws Exception {
-                            fetchWeeklyEffortData(subjectId);
+
                             if (!effortChartDataParent.getEffortChartDataList().isEmpty()) {
                                 mBinding.layoutTotalTimeSpent.setVisibility(View.VISIBLE);
                                 mBinding.layoutDailyTimeSpent.setVisibility(View.VISIBLE);
@@ -122,7 +114,7 @@ public class TimeEffortDetailActivity extends AppCompatActivity {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
-                            //fetchWeeklyEffortData(subjectId);
+
                             mBinding.layoutTotalTimeSpent.setVisibility(View.GONE);
                             mBinding.layoutDailyTimeSpent.setVisibility(View.GONE);
                             mBinding.layoutRecyclerView.setVisibility(View.GONE);
@@ -134,62 +126,6 @@ public class TimeEffortDetailActivity extends AppCompatActivity {
             showInternetSnackBar(subjectId);
         }
 
-    }
-
-    @SuppressLint("CheckResult")
-    private void fetchWeeklyEffortData(String subjectId) {
-
-    }
-
-    private void drawEffortLineChart(ArrayList<EffortChartDataWeekly> effortChartDataWeeklies) {
-        ArrayList<Entry> entries = new ArrayList<>();
-        final ArrayList<String> xAxisLabel = new ArrayList<>();
-        for (int i = 0; i < effortChartDataWeeklies.size(); i++) {
-            entries.add(new Entry(i, mAnalyticsModel.longConvertSecondToMinute((long) effortChartDataWeeklies.get(i).getTime())));
-            xAxisLabel.add(mAnalyticsModel.getFormattedDateForWeeklyEffortChart(effortChartDataWeeklies.get(i).getDate()));
-        }
-
-        LineDataSet lineDataSet = new LineDataSet(entries, "");
-        lineDataSet.setLineWidth(1.5f);
-        lineDataSet.setCircleRadius(6f);
-        lineDataSet.setDrawFilled(false);
-        lineDataSet.setCircleColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimary));
-        lineDataSet.setCircleColorHole(ContextCompat.getColor(getBaseContext(), R.color.colorPrimary));
-
-
-        LineData lineData = new LineData(lineDataSet);
-        mBinding.chartEffort.setData(lineData);
-
-        mBinding.chartEffort.setDrawGridBackground(false);
-        mBinding.chartEffort.getDescription().setEnabled(false);
-        mBinding.chartEffort.setTouchEnabled(true);
-        mBinding.chartEffort.setDragEnabled(false);
-        mBinding.chartEffort.setScaleEnabled(false);
-        mBinding.chartEffort.setPinchZoom(false);
-
-        XAxis xAxis = mBinding.chartEffort.getXAxis();
-        xAxis.setAvoidFirstLastClipping(true);
-        xAxis.setAxisMinimum(0f);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setGranularityEnabled(true);
-        xAxis.setDrawGridLines(false);
-        xAxis.setValueFormatter(new MyXAxisValueFormatter(xAxisLabel));
-
-
-        YAxis leftAxis = mBinding.chartEffort.getAxisLeft();
-        leftAxis.setInverted(false);
-        leftAxis.setAxisMinimum(0f);
-        leftAxis.setGridColor(ContextCompat.getColor(getBaseContext(), R.color.colorTransparent));
-
-        YAxis rightAxis = mBinding.chartEffort.getAxisRight();
-        rightAxis.setEnabled(false);
-        rightAxis.setDrawAxisLine(false);
-
-        Legend l = mBinding.chartEffort.getLegend();
-        l.setForm(Legend.LegendForm.LINE);
-        l.setEnabled(false);
-
-        mBinding.chartEffort.invalidate();
     }
 
     private void setTimeSpentTopicList(ArrayList<EffortChartData> effortChartDataList) {
@@ -210,7 +146,7 @@ public class TimeEffortDetailActivity extends AppCompatActivity {
             totalPracticeTime += effortChartDataList.get(i).getTotalPracticeTimeSpent();
         }
         /*Total time spent*/
-        String formattedTotalTimeSpent = mAnalyticsModel.convertSecondToHourMinuteSecond((long) mTotalTimeSpent);
+        String formattedTotalTimeSpent = mAnalyticsModel.showHoursMinutesFromSeconds((long) mTotalTimeSpent);
         mBinding.textViewTotalTimeSpent.setText(formattedTotalTimeSpent);
         final float finalTotalTimeSpent = mTotalTimeSpent;
         final float finalTotalReadTime = totalReadTime;
@@ -246,6 +182,7 @@ public class TimeEffortDetailActivity extends AppCompatActivity {
 
 
     private class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+
         private Context mContext;
         private ArrayList<EffortChartData> mList;
         private float mTotalTimeSpent;
@@ -297,8 +234,6 @@ public class TimeEffortDetailActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         if (!TextUtils.isEmpty(subjectId)) {
                             fetchSubjectWiseEffortData(subjectId);
-                        } else {
-                            fetchWeeklyEffortData(subjectId);
                         }
 
                     }

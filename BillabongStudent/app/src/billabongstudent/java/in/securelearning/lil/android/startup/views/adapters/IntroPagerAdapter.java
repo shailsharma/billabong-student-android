@@ -1,9 +1,9 @@
 package in.securelearning.lil.android.startup.views.adapters;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
+import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +15,7 @@ import in.securelearning.lil.android.app.databinding.LayoutIntroItemBinding;
 
 public class IntroPagerAdapter extends PagerAdapter {
     private int[] mDrawable;
-    Context mContext;
+    private Context mContext;
 
     public IntroPagerAdapter(Context context, int[] drawable) {
         this.mContext = context;
@@ -27,6 +27,7 @@ public class IntroPagerAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         LayoutIntroItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(container.getContext()), R.layout.layout_intro_item, container, false);
         View view = binding.getRoot();
+
         Picasso.with(mContext).load(mDrawable[position]).fit().centerCrop().into(binding.imageViewMain);
 
         container.addView(view);

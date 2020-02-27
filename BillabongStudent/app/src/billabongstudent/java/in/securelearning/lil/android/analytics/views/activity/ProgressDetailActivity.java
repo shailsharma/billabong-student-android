@@ -4,15 +4,15 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,25 +27,30 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
 import in.securelearning.lil.android.analytics.model.AnalyticsModel;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsPerformanceTopicItemBinding;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsProgressDetailBinding;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.analytics.dataobjects.CoverageChartData;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class ProgressDetailActivity extends AppCompatActivity {
 
-    LayoutAnalyticsProgressDetailBinding mBinding;
     @Inject
     AnalyticsModel mAnalyticsModel;
+
+
     private static final String SUBJECT_ID = "subjectId";
     private static final String SUBJECT_NAME = "subjectName";
     private static final String PROGRESS = "progress";
+
+    LayoutAnalyticsProgressDetailBinding mBinding;
+
 
     public static Intent getStartIntent(Context context, String id, String name, float progress) {
         Intent intent = new Intent(context, ProgressDetailActivity.class);
@@ -65,7 +70,8 @@ public class ProgressDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_analytics_progress_detail);
-        mAnalyticsModel.setImmersiveStatusBar(getWindow());
+
+        CommonUtils.getInstance().setImmersiveStatusBar(getWindow());
         handleIntent();
 
     }
@@ -96,11 +102,13 @@ public class ProgressDetailActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void fetchCoverageData(String subjectId) {
         if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-            mAnalyticsModel.fetchCoverageData(subjectId).subscribeOn(Schedulers.io())
+            mAnalyticsModel.fetchCoverageData(subjectId)
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<ArrayList<CoverageChartData>>() {
                         @Override
                         public void accept(ArrayList<CoverageChartData> coverageChartData) throws Exception {
+
                             mBinding.progressBarCoverage.setVisibility(View.GONE);
                             if (!coverageChartData.isEmpty()) {
                                 mBinding.layoutRecyclerView.setVisibility(View.VISIBLE);
@@ -136,7 +144,7 @@ public class ProgressDetailActivity extends AppCompatActivity {
             int[] colors = new int[]{ContextCompat.getColor(Objects.requireNonNull(getBaseContext()), R.color.colorRed), ContextCompat.getColor(getBaseContext(), R.color.colorGrey)};
             dataSet.setColors(colors);
         } else if (progress > 40 && progress <= 70) {
-            int[] colors = new int[]{ContextCompat.getColor(Objects.requireNonNull(getBaseContext()), R.color.colorAnnouncement), ContextCompat.getColor(getBaseContext(), R.color.colorGrey)};
+            int[] colors = new int[]{ContextCompat.getColor(Objects.requireNonNull(getBaseContext()), R.color.colorOrange), ContextCompat.getColor(getBaseContext(), R.color.colorGrey)};
             dataSet.setColors(colors);
         } else if (progress > 70) {
             int[] colors = new int[]{ContextCompat.getColor(Objects.requireNonNull(getBaseContext()), R.color.colorGreenDark), ContextCompat.getColor(getBaseContext(), R.color.colorGrey)};
@@ -170,6 +178,7 @@ public class ProgressDetailActivity extends AppCompatActivity {
     }
 
     private class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+
         private Context mContext;
         private ArrayList<CoverageChartData> mList;
 
@@ -198,7 +207,7 @@ public class ProgressDetailActivity extends AppCompatActivity {
             if (coveragePercent > 0 && coveragePercent <= 40) {
                 holder.mBinding.progressBar.setProgressTintList(ColorStateList.valueOf(ContextCompat.getColor(getBaseContext(), R.color.colorRed)));
             } else if (coveragePercent > 40 && coveragePercent <= 70) {
-                holder.mBinding.progressBar.setProgressTintList(ColorStateList.valueOf(ContextCompat.getColor(getBaseContext(), R.color.colorAnnouncement)));
+                holder.mBinding.progressBar.setProgressTintList(ColorStateList.valueOf(ContextCompat.getColor(getBaseContext(), R.color.colorOrange)));
 
             } else if (coveragePercent > 70) {
                 holder.mBinding.progressBar.setProgressTintList(ColorStateList.valueOf(ContextCompat.getColor(getBaseContext(), R.color.colorGreenDark)));

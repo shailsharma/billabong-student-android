@@ -2,11 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white">
@@ -15,14 +15,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <android.support.v7.widget.LinearLayoutCompat
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/value_20dp"
                     android:layout_marginBottom="@dimen/value_8dp"
                     android:orientation="vertical">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_vertical"
@@ -32,7 +32,7 @@
                         android:textColor="@color/colorBlack"
                         android:visibility="gone" />
 
-                    <android.support.v7.widget.LinearLayoutCompat
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="wrap_content"
                         android:layout_height="300dp"
                         android:layout_gravity="center_horizontal"
@@ -40,20 +40,20 @@
                         android:layout_marginBottom="@dimen/value_8dp"
                         android:orientation="horizontal">
 
-                        <android.support.v7.widget.LinearLayoutCompat
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             android:layout_width="wrap_content"
                             android:layout_height="230dp"
                             android:layout_marginTop="@dimen/value_16dp"
                             android:orientation="vertical">
 
-                            <android.support.v7.widget.AppCompatTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="end"
                                 android:padding="2dp"
                                 android:text="@string/high" />
 
-                            <android.support.v7.widget.AppCompatTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="0dp"
                                 android:layout_gravity="center_vertical"
@@ -68,17 +68,17 @@
                                 android:textColor="@color/colorBlack" />
 
 
-                        </android.support.v7.widget.LinearLayoutCompat>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <!-- rectangle box -->
-                        <android.support.v7.widget.LinearLayoutCompat
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             android:layout_width="256dp"
                             android:layout_height="256dp"
                             android:layout_gravity="center"
                             android:orientation="vertical">
 
                             <!--brilliant, Catching-->
-                            <android.support.v7.widget.LinearLayoutCompat
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
                                 android:layout_weight="1"
@@ -86,7 +86,7 @@
                                 android:orientation="horizontal">
 
                                 <!--brilliant-->
-                                <android.support.v7.widget.LinearLayoutCompat
+                                <androidx.appcompat.widget.LinearLayoutCompat
                                     android:id="@+id/ll_brilliant"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
@@ -95,7 +95,7 @@
                                     android:gravity="center"
                                     android:orientation="vertical">
 
-                                    <android.support.v7.widget.AppCompatTextView
+                                    <androidx.appcompat.widget.AppCompatTextView
                                         android:id="@+id/textViewBrilliant"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
                                         android:textColor="@color/color_brilliant"
                                         android:textStyle="bold" />
 
-                                    <android.support.v7.widget.AppCompatTextView
+                                    <androidx.appcompat.widget.AppCompatTextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center_horizontal"
@@ -115,14 +115,14 @@
 
                                         android:textColor="@color/white" />
 
-                                </android.support.v7.widget.LinearLayoutCompat>
+                                </androidx.appcompat.widget.LinearLayoutCompat>
 
                                 <Space
                                     android:layout_width="1dp"
                                     android:layout_height="match_parent" />
 
                                 <!--Catching-->
-                                <android.support.v7.widget.LinearLayoutCompat
+                                <androidx.appcompat.widget.LinearLayoutCompat
                                     android:id="@+id/ll_Catching"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
@@ -149,23 +149,23 @@
                                         android:text="@string/you_are_catching"
                                         android:textColor="@color/white" />
 
-                                </android.support.v7.widget.LinearLayoutCompat>
+                                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                            </android.support.v7.widget.LinearLayoutCompat>
+                            </androidx.appcompat.widget.LinearLayoutCompat>
 
                             <Space
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp" />
 
                             <!--work_harder, studying-->
-                            <android.support.v7.widget.LinearLayoutCompat
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
                                 android:layout_weight="1"
                                 android:orientation="horizontal">
 
                                 <!--work_harder-->
-                                <android.support.v7.widget.LinearLayoutCompat
+                                <androidx.appcompat.widget.LinearLayoutCompat
                                     android:id="@+id/ll_work_harder"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
@@ -175,7 +175,7 @@
                                     android:gravity="center"
                                     android:orientation="vertical">
 
-                                    <android.support.v7.widget.AppCompatTextView
+                                    <androidx.appcompat.widget.AppCompatTextView
                                         android:id="@+id/textViewWorkHarder"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
@@ -185,20 +185,20 @@
                                         android:textColor="@color/color_need_work_harder"
                                         android:textStyle="bold" />
 
-                                    <android.support.v7.widget.AppCompatTextView
+                                    <androidx.appcompat.widget.AppCompatTextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="@string/you_are_harder"
                                         android:textColor="@color/white" />
 
-                                </android.support.v7.widget.LinearLayoutCompat>
+                                </androidx.appcompat.widget.LinearLayoutCompat>
 
                                 <Space
                                     android:layout_width="1dp"
                                     android:layout_height="match_parent" />
 
                                 <!--studying-->
-                                <android.support.v7.widget.LinearLayoutCompat
+                                <androidx.appcompat.widget.LinearLayoutCompat
                                     android:id="@+id/ll_studying"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
@@ -208,7 +208,7 @@
                                     android:gravity="center"
                                     android:orientation="vertical">
 
-                                    <android.support.v7.widget.AppCompatTextView
+                                    <androidx.appcompat.widget.AppCompatTextView
                                         android:id="@+id/textViewStudying"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
@@ -218,7 +218,7 @@
                                         android:textColor="@color/color_studying"
                                         android:textStyle="bold" />
 
-                                    <android.support.v7.widget.AppCompatTextView
+                                    <androidx.appcompat.widget.AppCompatTextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/dividerHeight"
@@ -226,11 +226,11 @@
                                         android:text="@string/you_are_study"
                                         android:textColor="@color/white" />
 
-                                </android.support.v7.widget.LinearLayoutCompat>
+                                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                            </android.support.v7.widget.LinearLayoutCompat>
+                            </androidx.appcompat.widget.LinearLayoutCompat>
 
-                            <android.support.v7.widget.LinearLayoutCompat
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
                                 android:layout_weight=".3"
@@ -238,13 +238,13 @@
                                 android:baselineAligned="false"
                                 android:orientation="horizontal">
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:padding="@dimen/value_2dp"
                                     android:text="@string/low" />
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
@@ -256,20 +256,20 @@
                                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                                     android:textColor="@color/colorBlack" />
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:gravity="end"
                                     android:padding="@dimen/value_2dp"
                                     android:text="@string/high" />
 
-                            </android.support.v7.widget.LinearLayoutCompat>
+                            </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        </android.support.v7.widget.LinearLayoutCompat>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    </android.support.v7.widget.LinearLayoutCompat>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <android.support.v7.widget.LinearLayoutCompat
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/value_4dp"
@@ -277,7 +277,7 @@
                         android:orientation="vertical">
 
                         <!-- selected chart row-->
-                        <android.support.v7.widget.LinearLayoutCompat
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             android:id="@+id/llPerformance"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -287,7 +287,7 @@
                             android:visibility="gone">
 
 
-                            <android.support.v7.widget.AppCompatTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/textViewPerformance"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -300,7 +300,7 @@
                                 android:textColor="@color/colorBlack"
                                 tools:text="Superstar" />
 
-                            <android.support.v7.widget.AppCompatTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/textViewCount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -312,10 +312,10 @@
                                 android:textColor="@color/white"
                                 tools:text="4" />
 
-                        </android.support.v7.widget.LinearLayoutCompat>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <!-- student list-->
-                        <android.support.v7.widget.RecyclerView
+                        <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rvSubject"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -324,12 +324,12 @@
                             android:nestedScrollingEnabled="false"
                             android:visibility="gone">
 
-                        </android.support.v7.widget.RecyclerView>
+                        </androidx.recyclerview.widget.RecyclerView>
 
-                    </android.support.v7.widget.LinearLayoutCompat>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-                </android.support.v7.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <ProgressBar
                     android:id="@+id/progressBarPerformance"
@@ -345,8 +345,8 @@
 
             </FrameLayout>
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -13,37 +13,37 @@
             android:background="@color/colorWhite">
 
             <!--right_top-->
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="145dp"
                 android:layout_height="330dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                app:srcCompat="@drawable/dashboard_background_right_top" />
+                app:srcCompat="@drawable/background_dashboard_right_top" />
 
             <!--bottom_end-->
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="208dp"
                 android:layout_height="120dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/dashboard_background_bottom_end" />
+                app:srcCompat="@drawable/background_dashboard_bottom_end" />
 
-            <android.support.v4.widget.SwipeRefreshLayout
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipeRefreshLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <!--main-->
-                <android.support.v4.widget.NestedScrollView
+                <androidx.core.widget.NestedScrollView
                     android:id="@+id/scrollView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fillViewport="true"
                     android:orientation="vertical">
 
-                    <android.support.v7.widget.LinearLayoutCompat
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:focusableInTouchMode="true"
@@ -58,7 +58,7 @@
                             android:layout_margin="@dimen/value_8dp"
                             android:orientation="horizontal">
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="196dp"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="end|center_vertical"
@@ -71,7 +71,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1" />
 
-                            <android.support.v7.widget.AppCompatImageButton
+                            <androidx.appcompat.widget.AppCompatImageButton
                                 android:id="@+id/imageViewUser"
                                 android:layout_width="48dp"
                                 android:layout_height="48dp"
@@ -91,16 +91,16 @@
                             android:layout_marginBottom="@dimen/value_16dp"
                             android:orientation="horizontal">
 
-                            <android.support.v7.widget.AppCompatTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/textViewGreeting"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/poppins_regular"
                                 android:text="Hey, "
                                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                                android:textColor="@color/colorRyanBlack" />
+                                android:textColor="@color/colorEuroBlack" />
 
-                            <android.support.v7.widget.AppCompatTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/textViewUserName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
                                 android:fontFamily="@font/poppins_regular"
                                 android:gravity="start"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                                android:textColor="@color/colorRyanBlack"
+                                android:textColor="@color/colorEuroBlack"
                                 android:textStyle="bold"
                                 tools:text="Ritesh" />
 
@@ -144,20 +144,20 @@
                             android:layout_marginRight="@dimen/value_16dp"
                             android:orientation="vertical">
 
-                            <android.support.v7.widget.LinearLayoutCompat
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
                                 android:orientation="horizontal">
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:fontFamily="@font/poppins_regular"
                                     android:text="@string/label_subjects"
                                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                                    android:textColor="@color/colorRyanBlack"
+                                    android:textColor="@color/colorEuroBlack"
                                     android:textStyle="bold" />
 
 
@@ -170,10 +170,10 @@
                                     android:src="@drawable/icon_dashboard_subject"
                                     android:visibility="visible" />
 
-                            </android.support.v7.widget.LinearLayoutCompat>
+                            </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-                            <android.support.v7.widget.AppCompatTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/textViewErrorSubject"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/event_item_height"
@@ -195,7 +195,7 @@
 
                             </LinearLayout>
 
-                            <android.support.v7.widget.RecyclerView
+                            <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/recyclerView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -227,21 +227,26 @@
                             android:id="@+id/layoutVideoForDay"
                             layout="@layout/layout_dashboard_video_for_day" />
 
+                        <!--Revise-->
+                        <include
+                            android:id="@+id/layoutRevision"
+                            layout="@layout/layout_dashboard_revision" />
 
-                    </android.support.v7.widget.LinearLayoutCompat>
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-                </android.support.v4.widget.NestedScrollView>
+                </androidx.core.widget.NestedScrollView>
 
 
-            </android.support.v4.widget.SwipeRefreshLayout>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="88dp"
                 android:visibility="gone">
 
-                <android.support.v7.widget.LinearLayoutCompat
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/buttonDrawer"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -252,18 +257,18 @@
                     android:elevation="@dimen/elevation_8dp"
                     android:gravity="center">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tint="@color/colorBlack"
                         android:visibility="gone"
                         app:srcCompat="@drawable/icon_hamburger_w" />
 
-                </android.support.v7.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
             </FrameLayout>
 
         </RelativeLayout>
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

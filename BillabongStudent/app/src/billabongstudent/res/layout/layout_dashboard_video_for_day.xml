@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!--Challenge for the day-->
-    <android.support.v7.widget.LinearLayoutCompat
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/layoutVideoContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,12 +14,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.v7.widget.LinearLayoutCompat
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/value_16dp"
@@ -28,17 +28,18 @@
                     android:fontFamily="@font/poppins_regular"
                     android:text="@string/labelVideoForTheDay"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/colorRyanBlack"
+                    android:textColor="@color/colorEuroBlack"
                     android:textStyle="bold" />
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/value_16dp"
                     android:elevation="@dimen/elevation_4dp"
+                    android:foreground="?android:attr/selectableItemBackground"
                     app:cardCornerRadius="8dp">
 
-                    <android.support.v7.widget.LinearLayoutCompat
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -47,19 +48,19 @@
                         android:paddingEnd="@dimen/value_12dp">
 
                         <!--Subject-->
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/textViewSubject"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:fontFamily="@font/poppins_regular"
                             android:maxLines="1"
-                            android:textColor="@color/colorRyanBlack"
+                            android:textColor="@color/colorEuroBlack"
                             android:textSize="@dimen/textSize_16sp"
                             tools:text="Art &amp; Craft" />
 
                         <!--Title-->
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/textViewTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -68,19 +69,20 @@
                             android:fontFamily="@font/poppins_regular"
                             android:maxLines="2"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:textColor="@color/colorRyanBlack"
+                            android:textColor="@color/colorEuroBlack"
                             android:textStyle="bold"
                             tools:text="How to make paintings to make paintings to make paintings to make paintings" />
 
                         <!--Caption-->
-                        <android.support.v7.widget.LinearLayoutCompat
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/value_8dp"
+                            android:layout_marginBottom="@dimen/value_16dp"
                             android:orientation="horizontal">
 
                             <!--Caption-->
-                            <android.support.v7.widget.AppCompatTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/textViewCaption"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -89,18 +91,18 @@
                                 android:fontFamily="@font/poppins_regular"
                                 android:maxLines="5"
                                 android:paddingEnd="@dimen/value_8dp"
-                                android:textColor="@color/colorRyanBlack"
+                                android:textColor="@color/colorEuroBlack"
                                 tools:text="@string/gamification_bonus" />
 
 
-                            <android.support.v7.widget.LinearLayoutCompat
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
                                 android:orientation="vertical">
 
 
-                                <android.support.v7.widget.LinearLayoutCompat
+                                <androidx.appcompat.widget.LinearLayoutCompat
                                     android:layout_width="144dp"
                                     android:layout_height="wrap_content"
                                     android:orientation="vertical">
@@ -110,7 +112,7 @@
                                         android:layout_height="100dp"
                                         android:layout_gravity="center_vertical">
 
-                                        <android.support.v7.widget.AppCompatImageView
+                                        <androidx.appcompat.widget.AppCompatImageView
                                             android:id="@+id/imageViewThumbnail"
                                             android:layout_width="144dp"
                                             android:layout_height="100dp"
@@ -126,7 +128,7 @@
                                             android:fitsSystemWindows="true" />
 
                                         <!--Play icon-->
-                                        <android.support.v7.widget.AppCompatImageView
+                                        <androidx.appcompat.widget.AppCompatImageView
                                             android:id="@+id/imageViewVideoPlayIcon"
                                             android:layout_width="24dp"
                                             android:layout_height="24dp"
@@ -135,13 +137,13 @@
                                             app:srcCompat="@drawable/icon_play_circle_outline_white_48dp" />
 
                                         <!--Duration-->
-                                        <android.support.v7.widget.LinearLayoutCompat
+                                        <androidx.appcompat.widget.LinearLayoutCompat
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_gravity="bottom|end"
                                             android:layout_margin="@dimen/value_4dp">
 
-                                            <android.support.v7.widget.AppCompatTextView
+                                            <androidx.appcompat.widget.AppCompatTextView
                                                 android:id="@+id/textViewDuration"
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
@@ -152,40 +154,42 @@
                                                 android:visibility="gone"
                                                 tools:text="4:50" />
 
-                                        </android.support.v7.widget.LinearLayoutCompat>
+                                        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
                                     </FrameLayout>
 
-                                </android.support.v7.widget.LinearLayoutCompat>
+                                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                            </android.support.v7.widget.LinearLayoutCompat>
+                            </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        </android.support.v7.widget.LinearLayoutCompat>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <View
+                            android:id="@+id/itemDividerViews"
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
-                            android:layout_marginTop="@dimen/value_12dp"
                             android:background="@color/itemDivider" />
 
                         <!--Views, button-->
-                        <android.support.v7.widget.LinearLayoutCompat
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                            <android.support.v7.widget.AppCompatTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/textViewViewsCount"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/value_8dp"
+                                android:layout_marginBottom="@dimen/value_8dp"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/poppins_regular"
-                                android:textColor="@color/colorRyanBlack"
+                                android:textColor="@color/colorEuroBlack"
                                 tools:text="224 Views" />
 
-                            <android.support.v7.widget.AppCompatButton
+                            <androidx.appcompat.widget.AppCompatButton
                                 android:id="@+id/buttonPlayVideo"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -198,17 +202,18 @@
                                 android:paddingEnd="@dimen/value_16dp"
                                 android:text="@string/labelWatchAndLearn"
                                 android:textAllCaps="false"
-                                android:textColor="@color/white" />
+                                android:textColor="@color/white"
+                                android:visibility="gone" />
 
 
-                        </android.support.v7.widget.LinearLayoutCompat>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-                    </android.support.v7.widget.LinearLayoutCompat>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-            </android.support.v7.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <ProgressBar
                 android:id="@+id/progressBarVideoForDay"
@@ -223,6 +228,6 @@
 
         </FrameLayout>
 
-    </android.support.v7.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </layout>

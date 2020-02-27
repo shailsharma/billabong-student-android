@@ -1,11 +1,11 @@
 package in.securelearning.lil.android.home.views.adapter;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.RecyclerView;
+import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,8 +48,10 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
         final LessonPlanSubject lessonPlanSubject = mList.get(position);
+
         setSubjectName(lessonPlanSubject.getShortName(), lessonPlanSubject.getName(), holder.mBinding.textViewSubjectName);
         setSubjectIcon(lessonPlanSubject.getIconUrl(), holder.mBinding.imageViewSubjectIcon);
+        setSubjectBonusAvailedIcon(lessonPlanSubject.isAvailedBonus(), holder.mBinding.viewBonusAvailed);
 
         holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +90,16 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
         } else if (!TextUtils.isEmpty(name)) {
             textView.setText(name);
         }
+    }
+
+    private void setSubjectBonusAvailedIcon(boolean bonusAvailed, View view) {
+
+        if (bonusAvailed) {
+            view.setVisibility(View.VISIBLE);
+        } else {
+            view.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     @Override

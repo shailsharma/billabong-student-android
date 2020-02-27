@@ -3,14 +3,14 @@ package in.securelearning.lil.android.homework.views.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.view.Gravity;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import android.view.MenuItem;
 import android.view.View;
 
 import java.util.List;
@@ -20,23 +20,17 @@ import javax.inject.Inject;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutHomeworkRecyclerViewBinding;
 import in.securelearning.lil.android.base.rxbus.RxBus;
-import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
-import in.securelearning.lil.android.home.events.HomeworkTabOpeningEvent;
 import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
 import in.securelearning.lil.android.homework.dataobject.Homework;
 import in.securelearning.lil.android.homework.event.RefreshHomeworkEvent;
 import in.securelearning.lil.android.homework.model.HomeworkModel;
 import in.securelearning.lil.android.homework.views.adapter.HomeworkAssignedAdapter;
-import in.securelearning.lil.android.learningnetwork.events.AssignmentResponseDownloadEvent;
-import in.securelearning.lil.android.quizpreview.events.AssignmentSubmittedEvent;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
-import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -59,30 +53,34 @@ public class SubmitHomeworkActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_homework_recycler_view);
+
         setUpToolbar();
-        initializeClickListeners();
         fetchSubmittedList(0);
         listenRxBusEvents();
 
     }
 
 
-    private void initializeClickListeners() {
-        mBinding.layoutToolbar.back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setUpToolbar() {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
-        mBinding.layoutToolbar.getRoot().setVisibility(View.VISIBLE);
-        mBinding.layoutToolbar.textViewToolbarTitle.setText(getString(R.string.submitted_homework));
-        mBinding.layoutToolbar.textViewToolbarTitle.setGravity(Gravity.START);
-        mBinding.layoutToolbar.getRoot().setElevation(0f);
+        getWindow().setBackgroundDrawableResource(android.R.drawable.screen_background_light);
+        CommonUtils.getInstance().setStatusBarIconsDark(SubmitHomeworkActivity.this);
+
+        setTitle(getString(R.string.submitted_homework));
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void listenRxBusEvents() {

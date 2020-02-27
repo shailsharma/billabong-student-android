@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/value_16dp"
+        android:paddingLeft="@dimen/value_16dp"
+        android:paddingRight="@dimen/value_16dp"
+        android:paddingTop="@dimen/value_16dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewUser"
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textViewUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:ellipsize="end"
+                    android:maxEms="6"
+                    android:maxLines="1"
+                    android:text="Narendra Modiasdasdasdasdcdfhgdfghf"
+                    android:textSize="12sp"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" • "
+                    android:textColor="#808080"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textViewCommentTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:maxLines="1"
+                    android:text="1 Dec, 12:05am"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_response_by_other"
+                android:padding="8dp"
+                android:text="Material Design Icons' growing icon collection allows designers and developers targeting various platforms to download icons in the format, color and size they need for any project."
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorBlack"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

@@ -12,23 +12,22 @@
         android:orientation="vertical">
 
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:background="@drawable/gradient_app"
-            android:elevation="@dimen/elevation_4dp"
             android:fitsSystemWindows="true"
-            app:navigationIcon="@drawable/chevron_left_white"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:titleTextColor="@color/colorWhite">
+            app:elevation="@dimen/elevation_4dp"
+            app:navigationIcon="@drawable/icon_arrow_left_dark"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+            app:titleTextColor="@color/colorBlack">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewToolbarTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -44,26 +43,29 @@
                     android:visibility="gone"
                     tools:text="WikiHowWikiHowWikiHowWikiHowWikiHowWikiHowWikiHowWikiHow" />
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/imageViewLogo"
                     android:layout_width="96dp"
                     android:layout_height="@dimen/chipButtonHeight_36dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/value_16dp"
+                    android:background="@drawable/chip_solid_disabled_ripple"
+                    android:paddingStart="@dimen/value_8dp"
+                    android:paddingEnd="@dimen/value_8dp"
                     android:visibility="visible"
                     tools:srcCompat="@drawable/logo_mind_spark" />
 
             </RelativeLayout>
 
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -75,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewError"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

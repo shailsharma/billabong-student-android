@@ -2,15 +2,17 @@ package in.securelearning.lil.android.homework.views.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +33,7 @@ import in.securelearning.lil.android.homework.dataobject.AssignedHomeworkParent;
 import in.securelearning.lil.android.homework.dataobject.Homework;
 import in.securelearning.lil.android.homework.event.RefreshHomeworkEvent;
 import in.securelearning.lil.android.homework.model.HomeworkModel;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -55,6 +58,7 @@ public class HomeworkFragment extends Fragment {
     private List<Homework> mPendingList = new ArrayList<>();
     private List<Homework> mOverdueList = new ArrayList<>();
     private Context mContext;
+    private int mViewPagerIndex = 0;
 
     public HomeworkFragment() {
 
@@ -75,8 +79,16 @@ public class HomeworkFragment extends Fragment {
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.layout_homework_tab_viewpager, container, false);
 
+//        mBinding.viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
+//        {
+//            @Override
+//            public void onGlobalLayout()
+//            {
+//                viewPager.setCurrentItem(position, false);
+//            }
+//        });
 
-        getAssignedHomework(OVERDUE_POSITION);
+        getAssignedHomework();
         listenRxEvent();
         return mBinding.getRoot();
     }
@@ -105,12 +117,14 @@ public class HomeworkFragment extends Fragment {
                             Completable.complete().observeOn(AndroidSchedulers.mainThread()).subscribe(new Action() {
                                 @Override
                                 public void run() throws Exception {
-                                    getAssignedHomework(0);
+                                    mViewPagerIndex = 0;
+                                    getAssignedHomework();
 
                                 }
                             });
                         } else if (event instanceof HomeworkTabOpeningEvent) {
                             final int index = ((HomeworkTabOpeningEvent) event).getIndex();
+                            mViewPagerIndex = index;
                             mBinding.viewPager.setCurrentItem(index, true);
 
                         }
@@ -133,7 +147,7 @@ public class HomeworkFragment extends Fragment {
      * For all assigned homework from all subjects - subjectId must be null
      */
     @SuppressLint("CheckResult")
-    private void getAssignedHomework(final int overduePosition) {
+    private void getAssignedHomework(/*final int overduePosition*/) {
 
         if (GeneralUtils.isNetworkAvailable(mContext)) {
 
@@ -161,7 +175,7 @@ public class HomeworkFragment extends Fragment {
                                     mPendingList = mAssignedHomeworkParent.getPendingAssignmentList();
                                 }
 
-                                setUpViewPager(overduePosition);
+                                setUpViewPager(mViewPagerIndex);
                             }
 
 
@@ -171,7 +185,7 @@ public class HomeworkFragment extends Fragment {
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
                             mBinding.layoutProgressBar.setVisibility(View.GONE);
-                            setUpViewPager(overduePosition);
+                            setUpViewPager(mViewPagerIndex);
 
                         }
                     });
@@ -187,7 +201,7 @@ public class HomeworkFragment extends Fragment {
                 .setAction((R.string.labelRetry), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        getAssignedHomework(OVERDUE_POSITION);
+                        getAssignedHomework();
                     }
                 })
                 .show();
@@ -199,6 +213,7 @@ public class HomeworkFragment extends Fragment {
         mBinding.viewPager.setAdapter(new ViewPagerAdapter(getFragmentManager()));
         mBinding.viewPager.setCurrentItem(pagerPosition, true);
         mBinding.tabLayout.setupWithViewPager(mBinding.viewPager);
+        mBinding.tabLayout.setElevation(ConstantUtil.TOOLBAR_ELEVATION);
     }
 
     @Override

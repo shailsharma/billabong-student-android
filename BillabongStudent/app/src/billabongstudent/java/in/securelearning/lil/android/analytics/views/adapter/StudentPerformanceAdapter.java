@@ -2,15 +2,17 @@ package in.securelearning.lil.android.analytics.views.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -29,14 +31,11 @@ public class StudentPerformanceAdapter extends RecyclerView.Adapter<StudentPerfo
     public StudentPerformanceAdapter(ArrayList<EffortvsPerformanceData> subjectList, Context context) {
         this.subjectList = subjectList;
         this.mContext = context;
-
-
     }
 
     @NonNull
     @Override
-    public StudentPerformanceAdapter.ViewHolder onCreateViewHolder(final ViewGroup parent,
-                                                                   int viewType) {
+    public StudentPerformanceAdapter.ViewHolder onCreateViewHolder(@NotNull final ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         LayoutStudentAnalyticsPerformanceItemBinding binding = DataBindingUtil.inflate(layoutInflater, R.layout.layout_student_analytics_performance_item, parent, false);
         return new StudentPerformanceAdapter.ViewHolder(binding);
@@ -48,8 +47,9 @@ public class StudentPerformanceAdapter extends RecyclerView.Adapter<StudentPerfo
 
         if (subjectList != null) {
             EffortvsPerformanceData subjectData = subjectList.get(position);
+
             EffortvsPerformanceData.TimeResponse time = subjectList.get(position).getTimeResponseList();
-            //holder.mBinding.view.setVisibility(View.VISIBLE);
+
             if (subjectData != null) {
 
                 if (!TextUtils.isEmpty(subjectData.getName())) {
@@ -65,27 +65,27 @@ public class StudentPerformanceAdapter extends RecyclerView.Adapter<StudentPerfo
                     Picasso.with(mContext).load(R.drawable.icon_book).placeholder(R.drawable.icon_book).fit().centerCrop().into(holder.mBinding.imageSubject);
                 }
 
-                    holder.mBinding.progress.setVisibility(View.VISIBLE);
-                    holder.mBinding.textViewPercentage.setVisibility(View.VISIBLE);
-                    holder.mBinding.progress.setProgress((int) (subjectData.getPercentage()));
-                    holder.mBinding.textViewPercentage.setText(Math.round(subjectData.getPercentage()) + "%");
+                holder.mBinding.progress.setVisibility(View.VISIBLE);
+                holder.mBinding.textViewPercentage.setVisibility(View.VISIBLE);
+                holder.mBinding.progress.setProgress((int) (subjectData.getPercentage()));
+                holder.mBinding.textViewPercentage.setText(Math.round(subjectData.getPercentage()) + "%");
 
                 if (time != null) {
                     holder.mBinding.textViewTime.setVisibility(View.VISIBLE);
                     StringBuffer totalTime = new StringBuffer();
 
-                        totalTime.append(CommonUtils.getInstance().convertSecondToHourMinuteSecond((long) time.getTotalTime()*60))
-                                .append(" Hours ");
+                    totalTime.append(CommonUtils.getInstance().convertSecondToHourMinuteSecond((long) time.getTotalTime() * 60))
+                            .append(" Hours ");
 
-                    if (time.getAvgDaily() !=0) {
-                        totalTime.append("\n(Avg. Time ").append(Math.round( time.getAvgDaily())).append(" Min.)");
+                    if (time.getAvgDaily() != 0) {
+                        totalTime.append("\n(Avg. Time ").append(Math.round(time.getAvgDaily())).append(" Min.)");
                     }
                     holder.mBinding.textViewTime.setText(totalTime);
                 } else {
                     holder.mBinding.textViewTime.setVisibility(View.GONE);
                 }
                 holder.mBinding.textViewCoverage.setVisibility(View.VISIBLE);
-                String coverage="\n"+Math.round(subjectList.get(position).getCoverage()) + "% Progress";
+                String coverage = "\n" + Math.round(subjectList.get(position).getCoverage()) + "% Progress";
                 holder.mBinding.textViewCoverage.setText(coverage);
 
 
@@ -98,11 +98,11 @@ public class StudentPerformanceAdapter extends RecyclerView.Adapter<StudentPerfo
 
     @Override
     public int getItemCount() {
-        if (subjectList != null && !subjectList.isEmpty())
-
+        if (subjectList != null && !subjectList.isEmpty()) {
             return subjectList.size();
-        else
+        } else {
             return 0;
+        }
     }
 
 
@@ -112,8 +112,6 @@ public class StudentPerformanceAdapter extends RecyclerView.Adapter<StudentPerfo
         public ViewHolder(LayoutStudentAnalyticsPerformanceItemBinding binding) {
             super(binding.getRoot());
             this.mBinding = binding;
-
-
         }
     }
 }

@@ -33,6 +33,4 @@ public class LessonPlanSubjectResult implements Serializable {
         mTotal = total;
     }
 
-
-
 }

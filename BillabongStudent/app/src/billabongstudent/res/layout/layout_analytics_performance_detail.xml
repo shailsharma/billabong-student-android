@@ -2,7 +2,7 @@
 <layout
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,19 +18,19 @@
             android:layout_marginTop="72dp">
 
 
-            <android.support.v7.widget.LinearLayoutCompat
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <android.support.v7.widget.LinearLayoutCompat
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/colorWhite"
                     android:elevation="@dimen/elevation_2dp"
                     android:orientation="vertical">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -49,10 +49,10 @@
                         android:layout_marginBottom="@dimen/value_16dp"
                         android:minHeight="196dp"/>
 
-                </android.support.v7.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-                <android.support.v7.widget.LinearLayoutCompat
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/value_16dp"
@@ -79,7 +79,7 @@
                            android:visibility="visible"
                            android:weightSum="3">
 
-                           <android.support.v7.widget.AppCompatTextView
+                           <androidx.appcompat.widget.AppCompatTextView
                                android:layout_width="0dp"
                                android:layout_height="wrap_content"
                                android:layout_weight="1.7"
@@ -88,7 +88,7 @@
                                android:textColor="@color/colorBlack"
                                android:textStyle="bold"/>
 
-                           <android.support.v7.widget.AppCompatTextView
+                           <androidx.appcompat.widget.AppCompatTextView
                                android:layout_width="0dp"
                                android:layout_height="wrap_content"
                                android:layout_marginStart="@dimen/value_8dp"
@@ -112,13 +112,13 @@
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content">
 
-                           <android.support.v7.widget.RecyclerView
+                           <androidx.recyclerview.widget.RecyclerView
                                android:id="@+id/recyclerView"
                                android:layout_width="match_parent"
                                android:layout_height="wrap_content"
                                android:layout_margin="@dimen/value_16dp"
                                android:background="@color/colorWhite"
-                               tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                               tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                tools:listitem="@layout/layout_analytics_effort_topic_item"
                                tools:orientation="vertical"
                                />
@@ -127,7 +127,7 @@
 
                    </LinearLayout>
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/textViewNoPerformanceData"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -149,11 +149,11 @@
                         android:padding="@dimen/value_4dp"
                         android:visibility="visible"/>
 
-                </android.support.v7.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-            </android.support.v7.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </ScrollView>
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

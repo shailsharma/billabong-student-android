@@ -8,7 +8,8 @@ import java.util.ArrayList;
 
 import in.securelearning.lil.android.base.dataobjects.Group;
 import in.securelearning.lil.android.base.dataobjects.MetaInformation;
-import in.securelearning.lil.android.syncadapter.dataobject.UserMinimal;
+import in.securelearning.lil.android.base.dataobjects.Resource;
+import in.securelearning.lil.android.syncadapter.dataobjects.UserMinimal;
 
 public class Homework implements Serializable {
 
@@ -31,7 +32,6 @@ public class Homework implements Serializable {
     @SerializedName("assignedGroup")
     @Expose
     private ArrayList<String> mAssignedGroupIds;
-
 
     @SerializedName("allowedDuration")
     @Expose
@@ -92,9 +92,14 @@ public class Homework implements Serializable {
     @SerializedName("assignedGroupDetails")
     @Expose
     private ArrayList<Group> groupDetail;
+
     @SerializedName("userMarks")
     @Expose
     private float userMarks;
+
+    @SerializedName("resourceDetail")
+    @Expose
+    private Resource mResourceDetail;
 
     public String getHomeworkType() {
         return homeworkType;
@@ -277,6 +282,14 @@ public class Homework implements Serializable {
 
     public boolean isSubmitted() {
         return isSubmitted;
+    }
+
+    public Resource getResourceDetail() {
+        return mResourceDetail;
+    }
+
+    public void setResourceDetail(Resource resourceDetail) {
+        mResourceDetail = resourceDetail;
     }
 
     public boolean equals(Object object) {

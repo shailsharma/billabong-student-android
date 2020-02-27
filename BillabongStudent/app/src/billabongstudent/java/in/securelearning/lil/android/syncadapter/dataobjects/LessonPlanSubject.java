@@ -47,6 +47,10 @@ public class LessonPlanSubject implements Serializable {
     // To determine if subject is vocational
     private boolean isVocationalSubject;
 
+    @SerializedName("isAvailedBonus")
+    @Expose
+    private boolean mIsAvailedBonus;
+
     public String getId() {
         return mId;
     }
@@ -125,5 +129,13 @@ public class LessonPlanSubject implements Serializable {
 
     public void setVocationalSubject(boolean vocationalSubject) {
         isVocationalSubject = vocationalSubject;
+    }
+
+    public boolean isAvailedBonus() {
+        return mIsAvailedBonus;
+    }
+
+    public void setAvailedBonus(boolean availedBonus) {
+        mIsAvailedBonus = availedBonus;
     }
 }

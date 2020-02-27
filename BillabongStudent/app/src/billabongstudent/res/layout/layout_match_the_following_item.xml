@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layoutMatchTheFollowingItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/value_16dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/layoutChoiceEntity"
+            android:layout_width="@dimen/value_0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/value_8dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_choice_unselected"
+            android:gravity="center"
+            android:minHeight="64dp"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/layoutImageViewEntity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:cardCornerRadius="@dimen/value_8dp"
+                app:cardElevation="@dimen/value_0dp"
+                app:cardUseCompatPadding="true">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/imageViewEntity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewEntity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/value_4dp"
+                android:gravity="center"
+                android:paddingLeft="@dimen/value_4dp"
+                android:paddingRight="@dimen/value_4dp"
+                android:paddingBottom="@dimen/value_4dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorWhite"
+                android:visibility="gone">
+
+            </androidx.appcompat.widget.AppCompatTextView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <LinearLayout
+            android:id="@+id/layoutChoicePlaceholder"
+            android:layout_width="@dimen/value_0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/value_8dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/layoutImageViewPlaceholder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:cardCornerRadius="@dimen/value_8dp"
+                app:cardElevation="@dimen/value_0dp"
+                app:cardUseCompatPadding="true">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/imageViewPlaceholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewPlaceholder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/value_4dp"
+                android:gravity="center"
+                android:paddingLeft="@dimen/value_4dp"
+                android:paddingRight="@dimen/value_4dp"
+                android:paddingBottom="@dimen/value_4dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorWhite"
+                android:visibility="gone">
+
+            </androidx.appcompat.widget.AppCompatTextView>
+
+        </LinearLayout>
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</layout>

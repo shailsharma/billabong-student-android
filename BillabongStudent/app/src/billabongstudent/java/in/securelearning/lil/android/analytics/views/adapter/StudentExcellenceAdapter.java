@@ -2,9 +2,9 @@ package in.securelearning.lil.android.analytics.views.adapter;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.databinding.DataBindingUtil;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -16,6 +16,7 @@ import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsPerformanceTopicItemBinding;
 
 public class StudentExcellenceAdapter extends RecyclerView.Adapter<StudentExcellenceAdapter.ViewHolder> {
+
     private Context mContext;
     private ArrayList<PerformanceChartData> mList;
     private StudentExcellenceFragment mFragment;
@@ -44,8 +45,8 @@ public class StudentExcellenceAdapter extends RecyclerView.Adapter<StudentExcell
 
         if (mFragment != null) {
             holder.mBinding.progressBar.setProgressTintList(ColorStateList.valueOf(((mFragment.pickColorAccording
-                                    (Math.round(performanceChartData.
-                                            getPerformance()))))));
+                    (Math.round(performanceChartData.
+                            getPerformance()))))));
 
         }
 

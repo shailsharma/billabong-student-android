@@ -2,16 +2,15 @@ package in.securelearning.lil.android.profile.views.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +80,7 @@ public class StudentAchievementFragment extends Fragment {
         }
     }
 
-    /*Rewards are now Billabucks*/
+    /*Rewards are now Euros*/
     private void setRewards(final ArrayList<StudentSubjectReward> rewardsList, int totalRewards) {
 
         mBinding.textViewTotalRewards.setText(String.valueOf(totalRewards));
@@ -107,7 +106,7 @@ public class StudentAchievementFragment extends Fragment {
         });
     }
 
-    /*To set visibility of label_currency_value tab for first time and other times*/
+    /*To set visibility of euros tab for first time and other times*/
     private void setEurosVisibility(ArrayList<StudentSubjectReward> rewardsList) {
         mBinding.recyclerViewTrophies.setVisibility(View.GONE);
         mBinding.recyclerViewBadges.setVisibility(View.GONE);
@@ -199,7 +198,7 @@ public class StudentAchievementFragment extends Fragment {
         if (topicList != null && !topicList.isEmpty()) {
             final Dialog dialog = new Dialog(Objects.requireNonNull(getContext()));
 
-            /*Dialog box when user click on subject in total rewards/label_currency_value */
+            /*Dialog box when user click on subject in total rewards/euros */
             LayoutDialogSubjectItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.layout_dialog_subject_item, null, false);
             dialog.setCancelable(true);
             dialog.setContentView(binding.getRoot());
@@ -214,9 +213,7 @@ public class StudentAchievementFragment extends Fragment {
             binding.recyclerViewTopic.setNestedScrollingEnabled(false);
             binding.recyclerViewTopic.setAdapter(new SubjectTopicsRewardAdapter(getActivity(), topicList));
 
-            DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
-            int width = metrics.widthPixels;
-            Objects.requireNonNull(dialog.getWindow()).setLayout((6 * width) / 7, LinearLayout.LayoutParams.WRAP_CONTENT);
+            Objects.requireNonNull(dialog.getWindow()).setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             dialog.show();
         }
     }

@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorWhite"
         android:fitsSystemWindows="true">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
             android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <android.support.design.widget.CollapsingToolbarLayout
+            <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsingToolbarLayout"
                 android:layout_width="match_parent"
                 android:layout_height="256dp"
@@ -26,7 +26,7 @@
                 app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
                 app:titleEnabled="false">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/headerImageView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -44,7 +44,7 @@
                     android:background="@android:color/black"
                     android:fitsSystemWindows="true" />
 
-                <android.support.v7.widget.LinearLayoutCompat
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/layoutHeaderContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                     android:paddingEnd="@dimen/value_12dp"
                     app:layout_collapseMode="parallax">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/textViewHeaderTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
                         android:textStyle="bold"
                         tools:text="Health and Wealth Health and Wealth Health and Wealth " />
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/textViewHeaderSubTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -77,20 +77,20 @@
                         android:textColor="@color/colorBlack"
                         tools:text="(In Progress)" />
 
-                </android.support.v7.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <android.support.v7.widget.Toolbar
+                <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:layout_gravity="top"
                     android:layout_marginBottom="48dp"
                     app:layout_collapseMode="pin"
-                    app:navigationIcon="@drawable/action_arrow_left_light"
+                    app:navigationIcon="@drawable/arrow_left_white"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                     app:titleTextColor="@android:color/white">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/textViewToolbarTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                         android:textColor="@color/colorWhite"
                         tools:text="Hello" />
 
-                </android.support.v7.widget.Toolbar>
+                </androidx.appcompat.widget.Toolbar>
 
                 <View
                     android:layout_width="match_parent"
@@ -107,7 +107,7 @@
                     android:background="@android:color/white"
                     android:gravity="bottom" />
 
-                <android.support.design.widget.TabLayout
+                <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -128,11 +128,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/value_2dp"
                     android:layout_gravity="bottom"
-                    android:background="#4C707070" />
+                    android:background="@color/colorTabLayoutLine" />
 
-            </android.support.design.widget.CollapsingToolbarLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <!--Progress Bar-->
         <LinearLayout
@@ -162,12 +162,12 @@
             android:textColor="@color/colorBlack"
             android:visibility="gone" />
 
-        <android.support.v4.view.ViewPager
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

@@ -3,13 +3,14 @@ package in.securelearning.lil.android.login.views.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -23,7 +24,6 @@ import android.widget.Toast;
 import com.stfalcon.smsverifycatcher.OnSmsCatchListener;
 import com.stfalcon.smsverifycatcher.SmsVerifyCatcher;
 
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,8 +37,9 @@ import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.home.views.activity.PasswordChangeActivity;
-import in.securelearning.lil.android.syncadapter.dataobject.AuthToken;
-import in.securelearning.lil.android.syncadapter.dataobject.RequestOTPResponse;
+import in.securelearning.lil.android.syncadapter.dataobjects.AuthToken;
+import in.securelearning.lil.android.syncadapter.dataobjects.RequestOTPResponse;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -48,10 +49,11 @@ import static in.securelearning.lil.android.home.views.activity.PasswordChangeAc
 
 public class GeneratePasswordActivity extends AppCompatActivity {
 
-    LayoutGeneratePasswordBinding mBinding;
-
     @Inject
     HomeModel mHomeModel;
+
+    LayoutGeneratePasswordBinding mBinding;
+
     private Snackbar mIndefiniteSnackBar;
     private SmsVerifyCatcher mSmsVerifyCatcher;
 
@@ -173,33 +175,6 @@ public class GeneratePasswordActivity extends AppCompatActivity {
             }
         });
 
-//        mBinding.editTextLoginPhone.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                if (!mBinding.editTextLoginPhone.getText().toString().trim().isEmpty()) {
-//                    mBinding.buttonRequestOTP.setEnabled(true);
-//                    mBinding.buttonRequestOTP.setClickable(true);
-//                    mBinding.buttonRequestOTP.setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.gradient_chip));
-//                    mBinding.buttonRequestOTP.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorWhite));
-//                } else {
-//                    mBinding.buttonRequestOTP.setEnabled(false);
-//                    mBinding.buttonRequestOTP.setClickable(false);
-//                    mBinding.buttonRequestOTP.setBackground(ContextCompat.getDrawable(getBaseContext(), R.drawable.chip_solid_disabled_ripple));
-//                    mBinding.buttonRequestOTP.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorGrey66));
-//
-//                }
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//
-//            }
-//        });
 
         mBinding.otpView1.addTextChangedListener(new GenericTextWatcher(mBinding.otpView1));
         mBinding.otpView2.addTextChangedListener(new GenericTextWatcher(mBinding.otpView2));
@@ -289,13 +264,6 @@ public class GeneratePasswordActivity extends AppCompatActivity {
                         mBinding.otpView1.requestFocus();
                     }
                     break;
-//                case R.id.otpView3:
-//                    if (mBinding.otpView3.getText().toString().length() == 1) {
-//                        mBinding.otpView4.requestFocus();
-//                    } else if (mBinding.otpView3.getText().toString().length() == 0) {
-//                        mBinding.otpView2.requestFocus();
-//                    }
-//                    break;
                 case R.id.otpView4:
                     if (mBinding.otpView4.getText().toString().length() == 1) {
                         hideSoftKeyboard();
@@ -386,7 +354,7 @@ public class GeneratePasswordActivity extends AppCompatActivity {
 
                             mIndefiniteSnackBar = Snackbar.make(mBinding.getRoot(), throwable.getMessage(), Snackbar.LENGTH_INDEFINITE);
                             View snackBarView = mIndefiniteSnackBar.getView();
-                            TextView textView = snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+                            TextView textView = snackBarView.findViewById(com.google.android.material.R.id.snackbar_text);
                             textView.setMaxLines(6);
                             textView.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.colorWhite));
                             mIndefiniteSnackBar.setAction(R.string.ok, new View.OnClickListener() {
@@ -466,8 +434,17 @@ public class GeneratePasswordActivity extends AppCompatActivity {
 
     /*setup toolbar*/
     private void setUpToolbar() {
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().setBackgroundDrawableResource(android.R.drawable.screen_background_light);
+        CommonUtils.getInstance().setStatusBarIconsDark(GeneratePasswordActivity.this);
+
         setTitle(getString(R.string.generate_password));
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     /**

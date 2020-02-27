@@ -24,6 +24,10 @@ public class StudentTopicReward implements Serializable {
     @Expose
     private int mPointsRewarded;
 
+    @SerializedName("maximumScore")
+    @Expose
+    private int mMaximumPoints;
+
     @SerializedName("topics")
     @Expose
     private ArrayList<StudentTopicReward> mTopicRewardList;
@@ -126,5 +130,13 @@ public class StudentTopicReward implements Serializable {
 
     public void setMiscellaneousEuros(int miscellaneousEuros) {
         mMiscellaneousEuros = miscellaneousEuros;
+    }
+
+    public int getMaximumPoints() {
+        return mMaximumPoints;
+    }
+
+    public void setMaximumPoints(int maximumPoints) {
+        mMaximumPoints = maximumPoints;
     }
 }

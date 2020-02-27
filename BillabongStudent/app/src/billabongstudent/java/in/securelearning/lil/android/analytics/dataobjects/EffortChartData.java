@@ -1,6 +1,6 @@
 package in.securelearning.lil.android.analytics.dataobjects;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
+import in.securelearning.lil.android.syncadapter.dataobjects.IdNameObject;
 
 public class EffortChartData implements Serializable, Comparable<EffortChartData> {
 

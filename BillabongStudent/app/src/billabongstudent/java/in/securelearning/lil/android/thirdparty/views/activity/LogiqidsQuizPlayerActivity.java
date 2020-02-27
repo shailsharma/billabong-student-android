@@ -8,17 +8,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
@@ -57,8 +57,8 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.analytics.dataobjects.ChartConfigurationData;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.Widgets.CheckBoxCustom;
-import in.securelearning.lil.android.app.Widgets.RadioButtonCustom;
+import in.securelearning.lil.android.syncadapter.utils.CheckBoxCustom;
+import in.securelearning.lil.android.syncadapter.utils.RadioButtonCustom;
 import in.securelearning.lil.android.app.databinding.LayoutQuizEndBinding;
 import in.securelearning.lil.android.app.databinding.LayoutQuizPlayerBinding;
 import in.securelearning.lil.android.base.dataobjects.Attempt;
@@ -72,8 +72,8 @@ import in.securelearning.lil.android.base.utils.AnimationUtils;
 import in.securelearning.lil.android.base.utils.DateUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.events.ChallengeForTheDayCompleteEvent;
-import in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity;
-import in.securelearning.lil.android.syncadapter.dataobject.QuizResponse;
+import in.securelearning.lil.android.player.view.activity.PlayFullScreenImageActivity;
+import in.securelearning.lil.android.syncadapter.dataobjects.QuizResponse;
 import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import in.securelearning.lil.android.syncadapter.utils.FlyObjectAnimationUtil;
 import in.securelearning.lil.android.syncadapter.utils.SnackBarUtils;
@@ -312,9 +312,9 @@ public class LogiqidsQuizPlayerActivity extends AppCompatActivity {
 
         mBinding.layoutExplanation.setVisibility(View.GONE);
 
-        mBinding.layoutTimer.setVisibility(View.VISIBLE);
-        mBinding.chronometerQuestionTimer.stop();
-        mBinding.chronometerQuestionTimer.setBase(SystemClock.elapsedRealtime());
+        mBinding.includeLayoutTop.layoutTimer.setVisibility(View.VISIBLE);
+        mBinding.includeLayoutTop.chronometerQuestionTimer.stop();
+        mBinding.includeLayoutTop.chronometerQuestionTimer.setBase(SystemClock.elapsedRealtime());
 
         mHintCounter = 0;
         mBinding.layoutHints.removeAllViews();
@@ -359,11 +359,11 @@ public class LogiqidsQuizPlayerActivity extends AppCompatActivity {
 
     private void hideHintLayouts() {
         mBinding.cardViewHints.setVisibility(View.GONE);
-        mBinding.layoutHintButton.setVisibility(View.GONE);
+        mBinding.includeLayoutTop.layoutHintButton.setVisibility(View.GONE);
     }
 
     private void initializeClickListeners(final Question question) {
-        mBinding.layoutHintButton.setOnClickListener(new View.OnClickListener() {
+        mBinding.includeLayoutTop.layoutHintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -723,14 +723,14 @@ public class LogiqidsQuizPlayerActivity extends AppCompatActivity {
 
     /*Start question timer when question initialize*/
     private void startTimer() {
-        mBinding.chronometerQuestionTimer.start();
+        mBinding.includeLayoutTop.chronometerQuestionTimer.start();
     }
 
     /*Setup question counter view when question initialize*/
     private void setQuestionCounter() {
         AnimationUtils.fadeInFast(getBaseContext(), mBinding.scrollView);
         String counterText = "Question " + mUiQuestionCounter + "/" + mTotalQuestion;
-        mBinding.textViewQuestionCounter.setText(counterText);
+        mBinding.includeLayoutTop.textViewQuestionCounter.setText(counterText);
     }
 
 
@@ -799,7 +799,7 @@ public class LogiqidsQuizPlayerActivity extends AppCompatActivity {
             RadioGroup radioGroup = mBinding.layoutChoices.findViewById(R.id.radio_group_response);
             mBinding.layoutChoices.setVisibility(View.VISIBLE);
             mBinding.recyclerView.setVisibility(View.GONE);
-            mBinding.textViewQuestionType.setText(getString(R.string.single_correct));
+            mBinding.includeLayoutTop.textViewQuestionType.setText(getString(R.string.single_correct));
             for (final QuestionChoice questionChoice : questionChoices) {
                 String thumbUrl = questionChoice.getChoiceResource().getUrlMain();
                 final String mainUrl = questionChoice.getChoiceResource().getUrlMain();
@@ -831,7 +831,7 @@ public class LogiqidsQuizPlayerActivity extends AppCompatActivity {
         } else if (questionType.equalsIgnoreCase(Question.TYPE_DISPLAY_CHECKBOX)) {
             mBinding.layoutChoices.setVisibility(View.VISIBLE);
             mBinding.recyclerView.setVisibility(View.GONE);
-            mBinding.textViewQuestionType.setText(getString(R.string.multiple_correct));
+            mBinding.includeLayoutTop.textViewQuestionType.setText(getString(R.string.multiple_correct));
             for (final QuestionChoice questionChoice : questionChoices) {
                 String thumbUrl = questionChoice.getChoiceResource().getUrlMain();
                 String mainUrl = questionChoice.getChoiceResource().getUrlMain();
@@ -874,10 +874,10 @@ public class LogiqidsQuizPlayerActivity extends AppCompatActivity {
             int hintSize = question.getQuestionHints().size();
 
             String hintCounterText = "0/" + hintSize;
-            mBinding.textHintCounter.setText(hintCounterText);
-            mBinding.layoutHintButton.setVisibility(View.VISIBLE);
+            mBinding.includeLayoutTop.textHintCounter.setText(hintCounterText);
+            mBinding.includeLayoutTop.layoutHintButton.setVisibility(View.VISIBLE);
         } else {
-            mBinding.layoutHintButton.setVisibility(View.GONE);
+            mBinding.includeLayoutTop.layoutHintButton.setVisibility(View.GONE);
         }
 
 
@@ -957,7 +957,7 @@ public class LogiqidsQuizPlayerActivity extends AppCompatActivity {
             }
             mHintCounter++;
             String hintCounterText = mHintCounter + "/" + hintSize;
-            mBinding.textHintCounter.setText(hintCounterText);
+            mBinding.includeLayoutTop.textHintCounter.setText(hintCounterText);
         }
     }
 
@@ -1109,10 +1109,10 @@ public class LogiqidsQuizPlayerActivity extends AppCompatActivity {
             attempt.setStatusCode(Attempt.TYPE_STATUS_CODE_INCORRECT);
         }
         if (mUserAttemptPerQuestion == 1) {
-            mTotalTimeAttempted = SystemClock.elapsedRealtime() - mBinding.chronometerQuestionTimer.getBase();
-            attempt.setTimeTaken(SystemClock.elapsedRealtime() - mBinding.chronometerQuestionTimer.getBase());
+            mTotalTimeAttempted = SystemClock.elapsedRealtime() - mBinding.includeLayoutTop.chronometerQuestionTimer.getBase();
+            attempt.setTimeTaken(SystemClock.elapsedRealtime() - mBinding.includeLayoutTop.chronometerQuestionTimer.getBase());
         } else {
-            long time = SystemClock.elapsedRealtime() - mBinding.chronometerQuestionTimer.getBase() - mTotalTimeAttempted;
+            long time = SystemClock.elapsedRealtime() - mBinding.includeLayoutTop.chronometerQuestionTimer.getBase() - mTotalTimeAttempted;
             mTotalTimeAttempted = mTotalTimeAttempted + time;
             attempt.setTimeTaken(time);
         }

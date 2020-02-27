@@ -2,10 +2,10 @@ package in.securelearning.lil.android.profile.views.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,8 +111,6 @@ public class StudentPersonalFragment extends Fragment {
                 if (GeneralUtils.isNetworkAvailable(mContext)) {
                     if (mUserInterestParent != null) {
                         mContext.startActivity(StudentProfileGoalActivity.getStartIntent(getContext(), mUserInterestId, mUserInterestParent.getDailyTarget()));
-                    } else {
-                        GeneralUtils.showToastShort(mContext, getString(R.string.error_something_went_wrong));
                     }
                 } else {
                     GeneralUtils.showToastShort(mContext, getString(R.string.error_message_no_internet));

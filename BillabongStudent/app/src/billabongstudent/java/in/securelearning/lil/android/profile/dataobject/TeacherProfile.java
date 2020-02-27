@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import in.securelearning.lil.android.base.dataobjects.AdministrativeInfo;
 import in.securelearning.lil.android.base.dataobjects.CuratorMapping;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
-import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
+import in.securelearning.lil.android.syncadapter.dataobjects.IdNameObject;
 
 /**
  * Created by Rajat Jain on 28-Nov-18

@@ -6,23 +6,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.databinding.DataBindingUtil;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -31,7 +18,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -43,18 +43,14 @@ import in.securelearning.lil.android.app.MyApplication;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutNavigationDrawerBinding;
 import in.securelearning.lil.android.app.databinding.LayoutNavigationDrawerHeaderBinding;
-import in.securelearning.lil.android.base.dataobjects.BlogDetails;
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.rxbus.RxBus;
 import in.securelearning.lil.android.base.utils.FileUtils;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
-import in.securelearning.lil.android.base.views.activity.WebPlayerActivity;
-import in.securelearning.lil.android.blog.views.fragment.BlogFragment;
 import in.securelearning.lil.android.gamification.utils.GamificationPrefs;
 import in.securelearning.lil.android.home.InjectorHome;
 import in.securelearning.lil.android.home.events.AnimateFragmentEvent;
-import in.securelearning.lil.android.home.model.FlavorHomeModel;
 import in.securelearning.lil.android.home.model.HomeModel;
 import in.securelearning.lil.android.home.views.fragment.DashboardFragment;
 import in.securelearning.lil.android.homework.views.activity.SubmitHomeworkActivity;
@@ -79,7 +75,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class NavigationDrawerActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
-        BlogFragment.OnListFragmentInteractionListener,
         DashboardFragment.OnDashboardFragmentInteractionListener,
         BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -90,9 +85,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     HomeModel mHomeModel;
 
     @Inject
-    FlavorHomeModel mFlavorHomeModel;
-
-    @Inject
     RxBus mRxBus;
 
     LayoutNavigationDrawerBinding mBinding;
@@ -100,9 +92,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
     private static final String TAG = "NDActivity";
     private ConnectivityChangeReceiver mReceiver;
-    boolean mDoubleBackToExitPressedOnce = false;
-    int mColCount;
-    private int mCurrentFragmentId = -1;
     private FragmentManager mFragmentManager;
     private MenuItem mDoneMenuItem;
     private HomeworkFragment mHomeworkFragment;
@@ -110,6 +99,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     private DashboardFragment mFragmentDashboard;
     private String mLoggedInUserId = "";
     private Disposable mSubscription;
+    private AlertDialog mVersionCheckDialog;
+    boolean mDoubleBackToExitPressedOnce = false;
+    private int mColCount;
+    private int mCurrentFragmentId = -1;
+    private int mLastSelectedBottomNavItemId = -1;
 
     @Override
     public void onBackPressed() {
@@ -118,6 +112,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
             mBinding.drawerLayout.closeDrawer(GravityCompat.START);
             return;
         }
+
         if (!mBinding.appBar.searchView.isIconified()) {
             mBinding.appBar.searchView.setIconified(true);
         } else {
@@ -149,9 +144,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_navigation_drawer);
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setBackgroundDrawableResource(android.R.drawable.screen_background_light);
+        CommonUtils.getInstance().setStatusBarIconsDark(NavigationDrawerActivity.this);
 
         checkTTS();
-
 
     }
 
@@ -173,7 +169,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
         listenRxBusEvents();
 
-
     }
 
     @Override
@@ -185,6 +180,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         MyApplication.getInstance().clearPicassoCache(getBaseContext());
 
         clearResourcesUploadedByUser();
+
+        /* To set last selected item as selected again in bottom navigation view
+         * when user come from settings activity */
+        if (mLastSelectedBottomNavItemId != -1) {
+            mBinding.appBar.navContent.bottomNavigation.setSelectedItemId(mLastSelectedBottomNavItemId);
+        }
 
     }
 
@@ -198,18 +199,22 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     /*checking if current app version is different from published app on play store*/
     @SuppressLint("CheckResult")
     private void isNewVersionAvailable() {
-        if (BuildConfig.BUILD_TYPE.equalsIgnoreCase("release")) {
+
+        if (BuildConfig.BUILD_TYPE.equalsIgnoreCase("release") && mVersionCheckDialog == null) {
+
             if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
+
                 mHomeModel.checkForNewVersionOnPlayStore()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Consumer<Float>() {
                             @Override
                             public void accept(Float playStoreVersion) throws Exception {
+
                                 Float currentVersion = Float.parseFloat(BuildConfig.VERSION_NAME);
                                 if (currentVersion < playStoreVersion) {
 
-                                    new AlertDialog.Builder(NavigationDrawerActivity.this)
+                                    mVersionCheckDialog = new AlertDialog.Builder(NavigationDrawerActivity.this)
                                             .setTitle(getString(R.string.labelUpdateAvailable))
                                             .setMessage(getString(R.string.messageNewUpdateIsAvailable))
                                             .setCancelable(false)
@@ -217,8 +222,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                                                     new DialogInterface.OnClickListener() {
                                                         @Override
                                                         public void onClick(DialogInterface dialog, int which) {
+                                                            mVersionCheckDialog = null;
                                                             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse
                                                                     ("market://details?id=" + BuildConfig.APPLICATION_ID)));
+
                                                         }
                                                     }).show();
                                 }
@@ -247,9 +254,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                         mReceiver = new ConnectivityChangeReceiver();
                         registerReceiver(mReceiver, filter);
                     }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
                 });
-
-
     }
 
     /**
@@ -259,6 +269,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         mSubscription = mRxBus.toFlowable().observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object event) {
+
                 if (event instanceof ObjectDownloadComplete && ((ObjectDownloadComplete) event).getObjectClass().equals(UserProfile.class)) {
                     final UserProfile loggedInUser = mAppUserModel.getApplicationUser();
                     setUpAppUserDetail(loggedInUser);
@@ -347,6 +358,10 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         super.onDestroy();
         if (mSubscription != null)
             mSubscription.dispose();
+
+        if (mVersionCheckDialog != null) {
+            mVersionCheckDialog = null;
+        }
         unregisterConnectivityChangeReceiver();
     }
 
@@ -360,6 +375,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         if (!mBinding.appBar.searchView.isIconified()) {
             mBinding.appBar.searchView.setIconified(true);
         }
+
         int id = item.getItemId();
         final AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mBinding.appBar.toolbarContainer.getLayoutParams();
 
@@ -367,21 +383,23 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
             case R.id.nav_dashboard: {
 
+                mLastSelectedBottomNavItemId = id;
+
                 doneVisibility(false);
 
                 mBinding.appBar.toolbar.setVisibility(View.GONE);
+                mBinding.appBar.appBarLayout.setElevation(ConstantUtil.NO_ELEVATION);
+                params.setScrollFlags(ConstantUtil.INT_ZERO);
+
                 setTitle(item.getTitle());
 
-                getWindow().setBackgroundDrawableResource(android.R.drawable.screen_background_light);
-                CommonUtils.getInstance().setStatusBarIconsDark(NavigationDrawerActivity.this);
-
-                mBinding.appBar.appBarLayout.setElevation(0f);
-                params.setScrollFlags(0);
                 FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
                 fragmentTransaction = hideFragment(fragmentTransaction, mCurrentFragmentId);
+
                 if (mCurrentFragmentId != id) {
                     mRxBus.send(new AnimateFragmentEvent(R.id.nav_dashboard));
                 }
+
                 if (mFragmentDashboard != null) {
                     fragmentTransaction.show(mFragmentDashboard).commitAllowingStateLoss();
 
@@ -390,24 +408,27 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                     fragmentTransaction.add(R.id.container_main, mFragmentDashboard, "dashboard");
                     fragmentTransaction.commitAllowingStateLoss();
                 }
+
                 mCurrentFragmentId = id;
 
             }
             break;
 
             case R.id.nav_assignments: {
+
+                mLastSelectedBottomNavItemId = id;
+
                 doneVisibility(true);
+
                 mBinding.appBar.toolbar.setVisibility(View.VISIBLE);
-                setTitle(item.getTitle());
+                mBinding.appBar.appBarLayout.setElevation(ConstantUtil.NO_ELEVATION);
+                mBinding.appBar.toolbar.setTitle(item.getTitle());
+                params.setScrollFlags(ConstantUtil.INT_ZERO);
 
-                getWindow().setStatusBarColor(Color.TRANSPARENT);
-                getWindow().setBackgroundDrawableResource(R.drawable.gradient_app);
-                CommonUtils.getInstance().setStatusBarIconsLight(NavigationDrawerActivity.this);
-
-                mBinding.appBar.appBarLayout.setElevation(ConstantUtil.NO_TOOLBAR_ELEVATION);
 
                 FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
                 fragmentTransaction = hideFragment(fragmentTransaction, mCurrentFragmentId);
+
                 if (mCurrentFragmentId != id) {
                     mRxBus.send(new AnimateFragmentEvent(R.id.nav_assignments));
                 }
@@ -420,6 +441,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                     fragmentTransaction.add(R.id.container_main, mHomeworkFragment, "assignmentStudent");
                     fragmentTransaction.commit();
                 }
+
                 mCurrentFragmentId = id;
 
 
@@ -427,27 +449,28 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
             break;
 
             case R.id.nav_learning_network: {
+
+                mLastSelectedBottomNavItemId = id;
+
                 doneVisibility(false);
-                setTitle(item.getTitle());
+
                 mBinding.appBar.toolbar.setVisibility(View.VISIBLE);
+                mBinding.appBar.toolbar.setTitle(item.getTitle());
+                params.setScrollFlags(ConstantUtil.INT_ZERO);
 
-                getWindow().setStatusBarColor(Color.TRANSPARENT);
-                getWindow().setBackgroundDrawableResource(R.drawable.gradient_app);
-                CommonUtils.getInstance().setStatusBarIconsLight(NavigationDrawerActivity.this);
-
-                mBinding.appBar.appBarLayout.setElevation(ConstantUtil.TOOLBAR_ELEVATION);
-                params.setScrollFlags(0);
 
                 if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-                    mFlavorHomeModel.checkUserStatus(ConstantUtil.TYPE_NETWORK);
+                    mHomeModel.checkUserStatus(ConstantUtil.TYPE_NETWORK);
                 }
 
                 FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
                 fragmentTransaction = hideFragment(fragmentTransaction, mCurrentFragmentId);
+
                 if (mCurrentFragmentId != id) {
                     mRxBus.send(new AnimateFragmentEvent(R.id.nav_learning_network));
                 }
                 if (mFragmentLearningNetwork != null) {
+                    mBinding.appBar.appBarLayout.setElevation(4f);//since white theme; need elevation only for learning network thus we set elevation and commented this line - 'mBinding.appBar.appBarLayout.setElevation(ConstantUtil.NO_ELEVATION);'
                     fragmentTransaction.show(mFragmentLearningNetwork).commitAllowingStateLoss();
 
                 } else {
@@ -455,19 +478,21 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                     fragmentTransaction.add(R.id.container_main, mFragmentLearningNetwork, "learningNetwork");
                     fragmentTransaction.commit();
                 }
+
                 mCurrentFragmentId = id;
 
             }
             break;
 
             case R.id.nav_settings: {
-                startActivity(SettingActivity.getStartIntent(NavigationDrawerActivity.this));
 
+                startActivity(SettingActivity.getStartIntent(NavigationDrawerActivity.this));
 
             }
             break;
 
             case R.id.navLogout: {
+
                 if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
                     logoutFromApp(NavigationDrawerActivity.this);
                 } else {
@@ -530,7 +555,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     private void initializeToolbar() {
         setSupportActionBar(mBinding.appBar.toolbar);
         mBinding.appBar.appBarLayout.setElevation(0);
-
     }
 
 
@@ -592,13 +616,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
 
 
     @Override
-    public void onListFragmentInteraction(Object object) {
-        if (object instanceof BlogDetails) {
-            WebPlayerActivity.startWebPlayer(this, ((BlogDetails) object).getObjectId(), "", "", BlogDetails.class, "", false);
-        }
-    }
-
-    @Override
     public void onDashboardFragmentInteraction(Class aClass) {
 
         if (aClass.equals(DashboardFragment.class)) {
@@ -618,7 +635,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
         try {
             Intent intent = new Intent();
             intent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-            startActivityForResult(intent, ConstantUtil.CHECK_CODE);
+            startActivityForResult(intent, ConstantUtil.TTS_CHECK_CODE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -629,8 +646,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
 
+            if (requestCode == ConstantUtil.TTS_CHECK_CODE) {
 
-            if (requestCode == ConstantUtil.CHECK_CODE) {
                 if (resultCode != TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
                     Intent installIntent = new Intent();
                     installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
@@ -639,6 +656,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 GamificationPrefs.isTTSAvailable(this, true);
 
             }
+
         } catch (Exception e) {
             GeneralUtils.showToastLong(getBaseContext(), "Oops! Text To Speech not available in your device.");
             GamificationPrefs.isTTSAvailable(this, false);
@@ -673,13 +691,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Action() {
                     @Override
-                    public void run() throws Exception {
-                        boolean bQ = FileUtils.delete(fileOrDirectory);
+                    public void run() {
+                        FileUtils.delete(fileOrDirectory);
 
                     }
                 }, new Consumer<Throwable>() {
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
+                    public void accept(Throwable throwable) {
                         throwable.printStackTrace();
                     }
                 });

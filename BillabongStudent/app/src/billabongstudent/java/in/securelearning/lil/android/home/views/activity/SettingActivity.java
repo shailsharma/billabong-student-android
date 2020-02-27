@@ -8,15 +8,15 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.provider.Settings;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,13 +27,13 @@ import javax.inject.Inject;
 
 import in.securelearning.lil.android.app.BuildConfig;
 import in.securelearning.lil.android.app.R;
-import in.securelearning.lil.android.app.databinding.ActivityNewSettingBinding;
+import in.securelearning.lil.android.app.databinding.LayoutSettingsBinding;
 import in.securelearning.lil.android.base.customchrometabutils.CustomChromeTabHelper;
 import in.securelearning.lil.android.base.model.AppUserModel;
 import in.securelearning.lil.android.base.utils.ToastUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.home.utils.PermissionPrefsCommon;
-import in.securelearning.lil.android.home.utils.PreferenceSettingUtilClass;
+import in.securelearning.lil.android.syncadapter.permission.PermissionPrefsCommon;
+import in.securelearning.lil.android.syncadapter.permission.PreferenceSettingUtilClass;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
 import in.securelearning.lil.android.provider.SearchSuggestionProvider;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
@@ -46,7 +46,7 @@ import static in.securelearning.lil.android.home.views.activity.PasswordChangeAc
 
 public class SettingActivity extends AppCompatActivity implements OnClickListener {
 
-    ActivityNewSettingBinding mBinding;
+    LayoutSettingsBinding mBinding;
 
     private Uri mRingtoneUri;
 
@@ -57,7 +57,9 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InjectorHome.INSTANCE.getComponent().inject(this);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_new_setting);
+
+        mBinding = DataBindingUtil.setContentView(this, R.layout.layout_settings);
+
         setUpToolbar();
         checkLoggedInUser();
         showVersion();
@@ -71,7 +73,6 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
         mBinding.notificationAssignment.setOnClickListener(this);
         mBinding.notificationVibCheck.setOnClickListener(this);
         mBinding.syncMediaCheck.setOnClickListener(this);
-        mBinding.syncQueue.setOnClickListener(this);
         mBinding.syncWifiCheck.setOnClickListener(this);
         mBinding.generalAbout.setOnClickListener(this);
         mBinding.generalLanguage.setOnClickListener(this);
@@ -87,15 +88,20 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
         mBinding.workspaceShortcut.setOnClickListener(this);
         mBinding.trainingShortcut.setOnClickListener(this);
         mBinding.learningMapShortcut.setOnClickListener(this);
+        mBinding.textViewHelpAndFAQ.setOnClickListener(this);
     }
 
     private void setUpToolbar() {
-        getWindow().setBackgroundDrawableResource(R.drawable.gradient_app);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().setBackgroundDrawableResource(android.R.drawable.screen_background_light);
+        CommonUtils.getInstance().setStatusBarIconsDark(SettingActivity.this);
+
+        setTitle(getString(R.string.label_settings));
+
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setBackgroundDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.gradient_app));
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        CommonUtils.getInstance().setStatusBarIconsLight(SettingActivity.this);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     public static Intent getStartIntent(Context context) {
@@ -115,7 +121,7 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
         } else {
             mBinding.learningMapShortcut.setVisibility(View.GONE);
         }
-//for now not showing Training for School build.
+        //for now not showing Training for School build.
         if (PermissionPrefsCommon.getTrainingJoinPermission(getBaseContext())) {
             mBinding.trainingShortcut.setVisibility(View.GONE);
         } else {
@@ -170,6 +176,7 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
         int resId = v.getId();
         Intent intent;
         switch (resId) {
+
             case R.id.notification_sound_enable:
                 PreferenceSettingUtilClass.setNotificationSound(mBinding.notificationSoundEnable.isChecked(), this);
                 break;
@@ -193,9 +200,7 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
             case R.id.notification_assignment:
                 PreferenceSettingUtilClass.setAssignment(mBinding.notificationAssignment.isChecked(), this);
 
-                if (mBinding.notificationAssignment.isChecked()) {
-                    // FlavorSyncServiceHelper.startReminderIntentService(this);
-                } else {
+                if (!mBinding.notificationAssignment.isChecked()) {
                     NotificationManager nMgr = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
                     nMgr.cancel(NotificationUtil.REMINDER_ASSIGNMENT_PENDING);
                 }
@@ -213,11 +218,6 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
                 PreferenceSettingUtilClass.setMediaAutoDownload(mBinding.syncMediaCheck.isChecked(), this);
                 break;
 
-            case R.id.sync_queue:
-                intent = new Intent(SettingActivity.this, SyncQueueActivity.class);
-                startActivity(intent);
-                break;
-
             case R.id.sync_now:
                 ToastUtils.showToastSuccess(getBaseContext(), getString(R.string.sync_started));
                 SyncServiceHelper.startSyncService(SettingActivity.this);
@@ -226,6 +226,9 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
             case R.id.clear_history:
                 clearHistory();
                 break;
+
+            case R.id.textViewHelpAndFAQ:
+                startActivity(HelpAndFAQActivity.getStartIntent(getBaseContext()));
 
             case R.id.general_version:
                 break;
@@ -304,14 +307,12 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
             Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
 
             if (uri != null) {
-//                this.chosenRingtone = uri.toString();
                 final Ringtone ringtone = RingtoneManager.getRingtone(this, uri);
                 mBinding.notificationDefaultSound.setText(ringtone.getTitle(this));
                 PreferenceSettingUtilClass.setNotifications_soundKey(uri, this);
             } else {
                 String chosenRingtone = null;
             }
-//            mBinding.notificationDefaultSound.setText();
             // Writing data to SharedPreferences
 
         }

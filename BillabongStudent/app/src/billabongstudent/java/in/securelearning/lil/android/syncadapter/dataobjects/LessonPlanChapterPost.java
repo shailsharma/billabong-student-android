@@ -10,6 +10,7 @@ public class LessonPlanChapterPost implements Serializable {
     @SerializedName("type")
     @Expose
     private String type;
+
     @SerializedName("subjectId")
     @Expose
     private String subjectId;

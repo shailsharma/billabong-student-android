@@ -34,29 +34,13 @@
     <!--Logiqids base url-->
     <string name="base_url_logiqids">https://api.logiqids.com/</string>
 
-    <!--search provider authorities variant wise-->
     <string name="search_provider_authority">in.securelearning.lil.android.app.billabongstudent.provider.SearchSuggestionProvider</string>
     <string name="search_provider_authority_debug">in.securelearning.lil.android.app.billabongstudent.debug.provider.SearchSuggestionProvider</string>
     <string name="search_provider_authority_test">in.securelearning.lil.android.app.billabongstudent.demo.provider.SearchSuggestionProvider</string>
 
-    <!--file provider authorities variant wise-->
     <string name="file_provider_authority">in.securelearning.lil.android.app.billabongstudent.provider.FileProvider</string>
     <string name="file_provider_authority_debug">in.securelearning.lil.android.app.billabongstudent.debug.provider.FileProvider</string>
     <string name="file_provider_authority_test">in.securelearning.lil.android.app.billabongstudent.demo.provider.FileProvider</string>
-
-    <!--generic strings-->
-    <string name="no_currency_found">No billabucks found</string>
-    <string name="label_currency_value">Billabucks</string>
-    <string name="gamification_assignment_pending"><![CDATA[%1$s, You have %2$s new homework today.\nYou may please plan the day accordingly.]]></string>
-    <string name="gamification_bonus"><![CDATA[Congratulations! I\'ve unlocked Flash Bonus for you! You\'ll secure fifty percent extra points, should you Learn, Revise and Practice %1$s topics Today]]></string>
-    <string name="gamification_school_survey"><![CDATA[Good to see you Again! Let me know how was your School Experience today? Please select your best response from the choice. ]]></string>
-    <string name="gamification_practice_accuracy">You can Earn 50 Billabucks every streak of 4 consecutive correct answers.</string>
-    <string name="messageNextLevel">"Congratulations!\nYou have unlocked next level with Bonus Billabucks!!</string>
-
-    <string name="label_learn">Know &amp; Inquire</string>
-    <string name="label_reinforce">Explore &amp; Explain</string>
-    <string name="label_practice">Analyze &amp; Apply</string>
-    <string name="label_apply">Reflect</string>
 
     <!-- Strings related to Settings -->
     <!-- SkillMasteryQuestionPostData General settings -->
@@ -74,32 +58,9 @@
         <item>1</item>
     </string-array>
 
-    <string-array name="pref_list_bus_arriving">
-        <item>500 meter</item>
-        <item>800 meter</item>
-        <item>1000 meter</item>
-    </string-array>
-    <string-array name="pref_list_bus_arriving_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
-    <string-array name="pref_list_bus_has_arriving">
-        <item>50 meter</item>
-        <item>100 meter</item>
-        <item>200 meter</item>
-    </string-array>
-    <string-array name="pref_list_bus_arriving_has_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
-    <integer name="event_title_limit">100</integer>
-    <integer name="event_location_limit">40</integer>
     <integer name="user_name_limit">16</integer>
     <integer name="user_about_limit">200</integer>
+    <integer name="question_feedback_limit">300</integer>
     <!-- SkillMasteryQuestionPostData settings for Data & Sync -->
     <string name="pref_header_data_sync">Data sync</string>
     <string name="pref_header_logout">Logout</string>
@@ -140,39 +101,9 @@
     <string name="notifications_wifi">notifications_wifi</string>
     <string name="notifications_wifi_on_lnetwork">notifications_wifi_on_lnetwork</string>
 
-    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
-
-
     <string name="next">Next</string>
     <string name="skip">SKIP</string> 
-    <string name="start">GOT IT</string>   
-    <string name="slide_1_title">Hello Food!</string>
-    <string name="slide_1_desc">Find instant help from teachers, professionals and friends !</string>
      
-    <string name="slide_2_title">Movie Tickets</string> 
-    <string name="slide_2_desc">Learn anything, anywhere, free !</string>
-    <string name="slide_3_title">Great Discounts</string>
-    <string name="slide_3_desc">Analyze your progress, interactively !</string>
-    <string name="slide_4_title">World Travel</string>    
-    <string name="slide_4_desc">Stay updated with your assignments !</string>
-    <string name="slide_5_title">World Travel</string>    
-    <string name="slide_5_desc">Get updates about your school commute on your phone!</string>
-    <string name="intro_blog">Get updates about your school commute on your phone!</string>
-    <string name="intro_calendar">Get updates about your school commute on your phone!</string>
-    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
-    <string name="play_again">Play Again</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_markdown_sample">MarkdownSampleActivity</string>
-    <string name="unlockAllResource">Unlock All Resource</string>
-    <string name="markThisSubTopicComplete">Mark This Sub Topic Complete</string>
-    <string name="courseAndLessonPlan">Course and Lesson Plan</string>
-    <string name="prescribedResources">Prescribed Resources</string>
-    <string name="assessments">Assessments</string>
-    <string name="referenceResources">Reference Resources</string>
-    <string name="messageNoPeriodFoundForTodaysDate">No Period found for today\'s date\nPlease select another date.</string>
-    <string name="messageNoStudyReferencesFound">No Study References found for selected topic.\nPlease select another topic.</string>
-    <string name="labelClassPerformance">Class Performance</string>
-    <string name="recap">Recap</string>
     <string name="quickRecap">Let\'s have a quick recap!</string>
     <string name="labelAndroid">android</string>
 
@@ -183,30 +114,14 @@
     <string name="messageUnableToGetData">Unable to get data</string>
     <string name="messageUnableToSendData">Unable to send data</string>
 
-    <integer name="benchmark">1</integer>
-    <string-array name="training_list_item">
-        <item>@string/labelDetails</item>
-        <item>@string/labelCourses</item>
-        <item>@string/labelResources</item>
-        <item>@string/labelSessions</item>
-        <item>@string/labelAssignments</item>
-        <item>@string/labelGroup</item>
-        <item>@string/labelPerformance</item>
-    </string-array>
-
-    <string-array name="training_join_list_item">
-        <item>@string/labelDetails</item>
-        <item>@string/labelCourses</item>
-        <item>@string/labelResources</item>
-        <item>@string/labelSessions</item>
-    </string-array>
-
     <string name="messageNoDataFound">No data found</string>
     <string name="messagePracticeAvailable">No practice available</string>
     <string name="no_subject_available">No subject available</string>
     <string name="no_recap_for_today">No recap for today</string>
-
-    <string name="no_chapter">No Chapter</string>
+    <string name="label_learn">Know &amp; Inquire</string>
+    <string name="label_reinforce">Explore &amp; Explain</string>
+    <string name="label_practice">Analyze &amp; Apply</string>
+    <string name="label_apply">Reflect</string>
     <string name="chapters">Chapters</string>
     <string name="chapter">Chapter</string>
     <string name="go_back">Go Back</string>
@@ -232,7 +147,7 @@
     <string name="labelEnrollmentNumber">Enrollment number</string>
     <string name="labelMotherDetails">Mother Details</string>
     <string name="labelTotalRewards">Total Rewards</string>
-    <string name="no_due_homework_for_today">No due homework for today.</string>
+    <string name="labelTotalEuros">Total Billabucks</string>
     <string name="pass">pass</string>
     <string name="fail">fail</string>
     <string name="messageGettingNextQuestion">Getting Next Question</string>
@@ -270,8 +185,6 @@
     <string name="performance_based_on_assessments">Performance Based On Assessments</string>
     <string name="progress_based_on_coverage">Progress Based On Coverage</string>
     <string name="time_spent">Time Spent</string>
-    <string name="login">Login</string>
-    <string name="generate_password">Generate Password</string>
     <string name="labelGetStarted">Get Started</string>
     <string name="are_you_sure">Are you sure ?</string>
     <string name="logout_message">Would you like to logout from App ?</string>
@@ -290,7 +203,8 @@
     <string name="please_select_you_answer">Please select you answer</string>
     <string name="labelClear">Clear</string>
     <string name="labelSearch">Search</string>
-
+    <string name="achievement">Achievement</string>
+    <string name="achievements">Achievements</string>
 
     <string-array name="array_subject_detail_tab_no_post">
         <item>@string/label_home</item>
@@ -316,6 +230,7 @@
     <item name="isCorrect" type="id" />
     <item name="positionX" type="id" />
     <item name="positionY" type="id" />
+    <item name="mtfPlaceholderLocked" type="id" />
 
     <string-array name="array_student_profile_tab">
         <item>@string/label_achievement</item>
@@ -335,7 +250,10 @@
     <string name="zero">0</string>
     <string name="chart_configuration">Please provide the chart configuration </string>
     <string name="coverage">Coverage</string>
-
+    <string name="gamification_assignment_pending"><![CDATA[%1$s, You have %2$s new homework today.\nYou may please plan the day accordingly.]]></string>
+    <string name="gamification_bonus"><![CDATA[Congratulations! I\'ve unlocked Flash Bonus for you! You\'ll secure fifty percent extra points, should you Learn, Revise and Practice %1$s topics Today]]></string>
+    <string name="gamification_school_survey"><![CDATA[Good to see you Again! Let me know how was your School Experience today? Please select your best response from the choice. ]]></string>
+    <string name="gamification_practice_accuracy">You can Earn 50 Billabucks every streak of 4 consecutive correct answers.</string>
     <string name="snackbar_login_msg"><![CDATA[<i>Hey, </i><b>%1$s</b>\n Great to have you back]]></string>
     <string name="snackbar_login_msg_without_name"><![CDATA[<i>Hey</i>\n Great to have you back]]></string>
     <string name="lrpaGroupNull">Currently subject teacher not mapped for selected grade and section. Please inform to Administrator.</string>
@@ -349,6 +267,7 @@
     <string name="unable_to_submit_homework">Unable to submit homework</string>
     <string name="homework_submit_success">Homework submitted successfully</string>
     <string name="homework_pre_read_submit_success">Pre Read is acknowledged, you are hereby expected to complete the activity.</string>
+    <string name="homework_worksheet_submit_success">Worksheet is acknowledged, you are hereby expected to complete the activity.</string>
 
     <string name="homework_not_submit">Homework Not Submitted</string>
     <string name="homework_submit">Homework Submitted</string>
@@ -362,17 +281,17 @@
     <string name="freadom">freadom</string>
     <string name="lightsail">lightsail</string>
     <string name="mindspark">mindspark</string>
+    <string name="messageNextLevel">"Congratulations!\nYou have unlocked next level with Bonus Billabucks!!</string>
     <string name="messageNextSkill">"Congratulations!\nYou have completed</string>
 
     <string name="finish">Finish</string>
+    <string name="euros">Billabucks</string>
     <string name="trophies">Trophies</string>
     <string name="badges">Badges</string>
     <string name="labelApplication">Application</string>
     <string name="labelMiscellaneous">Miscellaneous</string>
     <string name="all_matched_please_submit">All matched, please submit.</string>
     <string name="chrome_warning_message">Chrome not installed/disabled or not set as default browser.</string>
-    <string name="score">Score</string>
-    <string name="bonus">Bonus</string>
 
     <!--Practice/Quiz response messages-->
     <!--messages when correct response-->
@@ -454,7 +373,403 @@
     <string name="labelViewProfileImage">View profile image</string>
     <string name="labelPleaseSelect">Please select</string>
     <string name="labelUpdateProfileImage">Update profile image</string>
-    <string name="achievements">Achievements</string>
     <string name="teaches">Teaches</string>
+
+    <string name="messagePointsDistributionWithAsterisk">*Total points for Topic excludes Bonus points</string>
+    <string name="labelSlash">/</string>
+
+    <string name="help_and_faqs_amp"><![CDATA[Help & FAQs]]></string>
+
+    <string name="question_feedback_title">Thank you for helping us in improving this question!</string>
+    <string name="question_feedback_issue_location">Where does the issue appeared?</string>
+    <string name="issue_description">Issue description</string>
+    <string name="improve_the_question">Improve the\nquestion</string>
+    <string name="question_feedback_successful">Thank you for your feedback.</string>
+    <string name="question_feedback_failed">Unable to submit feedback, please retry.</string>
+    <string name="feedback_option_prompt_message">Please select where does the issue appeared.</string>
+    <string name="feedback_comment_prompt_message">Please add details about the issue.</string>
+    <string name="youtubeUrlWithoutId">https://youtu.be/</string>
+    <string name="labelTopicsForRevision">Topics for Revision</string>
+    <string name="labelTimeToRevise">It\'s time to revise</string>
+    <string name="labelRevision">Revision</string>
+    <string name="messageLetsGetStartedRevision">Let\'s get started with\nrevision on</string>
+    <string name="messageWishToContinue">Do you wish to continue with\nnext topic</string>
+    <string name="labelGeoGebra">GeoGebra</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="labelRetry">Retry</string>
+    <string name="messageGoBackExit">Press BACK again to exit.</string>
+    <string name="fetching">Fetching</string>
+    <string name="play">Play</string>
+    <string name="stop">Stop</string>
+
+    <string name="string_filter">Filter</string>
+    <string name="string_submitted_assignments">Submitted Assignments</string>
+    <string name="string_sync_now">Sync Now</string>
+    <string name="string_post">Post</string>
+
+    <string name="string_loading_ftp_resource">Loading File</string>
+
+    <string name="time_hh_mm">Time (HH:MM)</string>
+    <string name="repeat">Repeat</string>
+    <string name="assignment">Assignment</string>
+
+    <string name="string_no_results_found">No results found</string>
+    <string name="string_homework_found">No homework found</string>
+    <string name="string_loading">Loading…</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="error_not_logged_in">You are not logged in to app.\nPlease login or sign up to share.</string>
+
+    <string name="string_nav_learning_map">Learning Map</string>
+    <string name="string_new">New</string>
+    <string name="string_over_due">Overdue</string>
+    <string name="string_calendar">Calendar</string>
+
+    <!-- Strings related to refreshToken -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Login Now</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">Enter a valid email</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_field_email_enrollment_number">Enter email or enrollment number</string>
+    <string name="error_field_enrollment_number">Enter enrollment number</string>
+    <string name="error_field_password">Enter password</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
+    <string name="close">Close</string>
+    <string name="save">Save</string>
+    <string name="update">Update</string>
+
+    <string name="submit">Submit</string>
+    <string name="bonus">Bonus</string>
+    <string name="score">Score</string>
+    <string name="submit_on">Submitted on</string>
+    <string name="submit_grade">Submit Grade</string>
+
+    <string name="question_list_heading">Questions</string>
+    <string name="quiz">Quiz</string>
+    <string name="label_hints">Hints</string>
+
+    <!-- Strings for inner headings -->
+    <string name="heading_explanation_text">Explanation</string>
+
+    <string name="string_you_are_now_member_of_his_group">You are now member of this group</string>
+
+
+    <!--String related to Assignment-->
+    <string name="assigned_to">Assigned to</string>
+    <string name="assigned_on">Assigned on</string>
+    <string name="due_on">Due On</string>
+    <string name="subject">Subject</string>
+    <string name="submittedBy">Submitted </string>
+    <string name="submissions">Submissions </string>
+    <string name="pendingBy">Pending </string>
+    <string name="select_group">Select Group</string>
+    <string name="labelTapToSelectDate">Tap To Select Date</string>
+    <string name="select_post_type">Post Type</string>
+
+
+    <!--Login validation message-->
+    <string name="incorrect_password">Invalid password!</string>
+    <string name="incorrect_email_or_password">Invalid email or password</string>
+    <string name="incorrect_email_enrollment_number_or_password">Invalid Email/Enrollment number or password</string>
+    <string name="incorrect_enrollment_number_or_password">Invalid Enrollment number or Password</string>
+    <string name="incorrect_phone_number_or_password">Invalid phone number or password</string>
+    <string name="incorrect_login_information">Invalid login information</string>
+    <string name="check_your_password_or_enable_internet">Check your password or enable internet</string>
+    <string name="message_login">Setting up your profile\n Please wait…</string>
+    <string name="message_login_wait">Logging you in…</string>
+
+    <!--User Profile-->
+    <string name="message_fetching_user_profile">Fetching user profile…</string>
+    <string name="message_fetching_your_profile">Fetching your profile…</string>
+    <string name="message_updating_user_profile">Updating profile…</string>
+    <string name="error_fetching_user_profile">Error fetching user profile</string>
+
+    <!--Learning Network-->
+    <string name="message_cannot_attach_video">You cannot select video with images</string>
+    <string name="message_attach_limit">You can add 6 images only</string>
+    <string name="file_not_supported">File not supported</string>
+    <string name="file_size_limit_10MB">"Can't attach file larger then 10 MB"</string>
+    <string name="file_size_limit">Can\'t attach file larger then</string>
+    <string name="valid_file">"Please select a valid file."</string>
+    <string name="format_not_supported">Selected file format not supported</string>
+    <string name="rate_and_review">Rate and Review</string>
+    <string name="rate_it">Rate it</string>
+    <string name="browse_courses">Browse Courses</string>
+    <string name="browse">Browse</string>
+    <string name="favourite">Favourite</string>
+
+    <string name="connect_internet">Please connect to internet !</string>
+    <string name="connect_internet_for_upload">Please connect to internet for uploading picture.</string>
+    <string name="ok">OK</string>
+    <string name="enable">Enable</string>
+    <string name="sign_up_failed">Sign up failed !</string>
+    <string name="update_profile_failed">Failed to update profile, please retry.</string>
+    <string name="update_profile_thumb_failed">Failed to update profile picture, please retry.</string>
+    <string name="update_profile_thumb_successful">Profile picture changed, click on ✓ to save.</string>
+    <string name="sign_up_success_title">Account created</string>
+    <string name="sign_up_success_message">Please verify your email !</string>
+    <string name="policy_tandc">By creating an account I agree to LIL Open Courses Privacy Policies and Terms of Service.</string>
+    <string name="error_firstname">Please enter first name</string>
+    <string name="error_invalid_name">Please enter valid name</string>
+    <string name="error_lastname">Please enter last name</string>
+    <string name="error_email">Please enter email address</string>
+    <string name="error_password">Please enter password</string>
+    <string name="string_pending_assignment">No pending assignments</string>
+    <string name="string_due_assignment">No due assignments</string>
+    <string name="string_overdue_assignment">No overdue assignments</string>
+    <string name="string_submitted_assignment">No submitted assignments</string>
+    <string name="sync_started">Syncing Started In Background!</string>
+    <string name="pathLearningNetwork">LearningNetwork</string>
+    <string name="pathUserProfile">UserProfile</string>
+    <string name="error_password_length_eigth">Password must contain at least 8 characters.</string>
+    <string name="error_password_numeric_character">Password must contain at least one numeric character.</string>
+    <string name="error_password_upper_case">Password must contain at least one upper case character.</string>
+    <string name="error_password_lower_case">Password must contain at least one lower case character.</string>
+
+    <string name="title_network">Network</string>
+    <string name="action_attach_files">Attach files</string>
+    <string name="action_post">Post</string>
+    <string name="action_favorite_post_list">Favorite Posts</string>
+    <string name="label_assignments">Assignments</string>
+    <string name="label_edit_profile">Edit profile</string>
+    <string name="label_email">Email</string>
+    <string name="label_about_me">About me</string>
+    <string name="label_first_name">First name</string>
+    <string name="label_middle_name">Middle name</string>
+    <string name="label_last_name">Last name</string>
+    <string name="label_personal_info">Personal Info</string>
+    <string name="label_interest">Interests</string>
+    <string name="label_learning_level">Learning Level</string>
+    <string name="label_learning_levels">Learning Levels</string>
+    <string name="label_subject">Subject</string>
+    <string name="label_subjects">Subjects</string>
+    <string name="label_country">Country</string>
+    <string name="label_state">State</string>
+    <string name="labelCity">City</string>
+    <string name="labelPincode">Pincode</string>
+    <string name="label_grade">Grade</string>
+    <string name="label_section">Section</string>
+    <string name="label_qualification">Qualification</string>
+    <string name="label_qualifications">Qualifications</string>
+    <string name="label_create_quiz">Create Quiz</string>
+    <string name="label_common_groups">Groups in common</string>
+    <string name="label_classes">Classes</string>
+    <string name="error_assign_group">Select group for assignment</string>
+    <string name="error_assign_due_date">Select due date for assignment</string>
+    <string name="error_assign_score">Select total score for assignment</string>
+    <string name="error_assign_score_cant_zero">Score must be greater than 0</string>
+    <string name="error_assign_duration">Select expected duration for assignment</string>
+    <string name="error_assign_duration_cant_zero">Duration must be greater than 0</string>
+    <string name="label_requesting_otp">Requesting OTP</string>
+    <string name="enter_otp">OTP</string>
+    <string name="label_otp_text"><![CDATA[Sit back & Relax! while we are verify your mobile number]]></string>
+    <string name="label_otp_not_received">Oops! OTP not received, please request again or if you have received OTP on another phone please enter it manually.</string>
+    <string name="label_otp_received">Yeah! OTP received, Please click login button.</string>
+    <string name="label_request_otp_again">Request OTP again</string>
+    <string name="label_login_via">Login via</string>
+    <string name="labelChange">Change</string>
+    <string name="labelChangePassword">Change Password</string>
+    <string name="labelChangePasswordDesc">Change your account password</string>
+    <string name="labelNewPassword">New Password</string>
+    <string name="labelConfirmPassword">Confirm Password</string>
+
+    <string name="label_camera">Camera</string>
+    <string name="label_gallery">Gallery</string>
+    <string name="label_video">Video</string>
+    <string name="label_assemble">Assemble</string>
+    <string name="label_profile">Profile</string>
+    <string name="label_settings">Settings</string>
+    <string name="label_workspace">Workspace</string>
+    <string name="label_no_post">No post for this group yet.</string>
+    <string name="label_no_post_create">No post for this group yet.\nTap + button to create new post.</string>
+    <string name="label_no_favorite_post">No favorite post marked for this group yet.\nTo make post favorite tap on ❤ button.</string>
+    <string name="label_no_group">You have no groups.</string>
+    <string name="label_add_comment">No comments for this post.\nPlease add your comment.</string>
+    <string name="lable_like">Like</string>
+    <string name="lable_likes">Likes</string>
+    <string name="lable_comment">Comment</string>
+    <string name="lable_comments">Comments</string>
+    <string name="label_sync_post">Post is not synced yet, Please sync!</string>
+    <string name="file_explorer_install_message">Please make sure you have installed a File Explorer</string>
+    <string name="message">Message</string>
+    <string name="label_create_post">Create new post</string>
+    <string name="label_empty_post">Oops ! can\'t create empty post.</string>
+    <string name="assignment_not_found">Oops! Assignment not found</string>
+    <string name="notification_new_assignment_submission">New Assignment Submission</string>
+    <string name="notification_new_assignment">New Assignment</string>
+    <string name="notification_download_failed">Download Failed</string>
+    <string name="notification_download_started">Download Started</string>
+    <string name="move_to_submitted">Assignment moved to submitted list.</string>
+    <string name="learning_network_subtitle">Tap here to see group details</string>
+    <string name="learning_network_favorite_title">Favorite posts of</string>
+    <string name="learning_network">Learning Network</string>
+    <string name="title_course">Course</string>
+    <string name="selected_group">Selected group</string>
+    <string name="label_use_photo">USE PHOTO</string>
+    <string name="label_edit_photo">EDIT PHOTO</string>
+    <string name="error_no_camera">Oops ! your phone doesn\'t have a camera.</string>
+    <string name="nothing_to_update">Nothing to update.</string>
+    <string name="alert_changed_data">All edits will be discarded.</string>
+    <string name="downloadCourse">Downloaded Courses</string>
+
+    <string name="favorites">Favorites</string>
+    <string name="favorites_resources">Favorite Resources</string>
+    <string name="favorites_courses">Favorite Courses</string>
+    <string name="add_favr">Added to Favorites</string>
+        
+    <string name="exit">Exit</string>
+    <string name="label_continue">Continue</string>
+    <string name="error_no_groups">You have no groups</string>
+
+    <string name="label_low">low</string>
+    <string name="label_medium">medium</string>
+    <string name="label_high">high</string>
+    <string name="error_message_no_internet">Internet connection not available, please connect to internet and retry.</string>
+    <string name="error_something_went_wrong">Request not proceed, something went wrong.</string>
+    <string name="no_more_hints">No more hints to show.</string>
+    <string name="message_mastery_completed">Check your updated results in Learning Map.</string>
+    <string name="label_filter_by">Filter By</string>
+    <string name="message_uploading_response">Hold On…! Submitting your response to server, please do not close the app.</string>
+    <string name="messageUploadFailed">Uploading failed.</string>
+    <string name="messageQuestionResponsesUploaded">Question responses uploaded successfully.</string>
+    <string name="messageQuestionFetchFailed">Unable to fetch questions</string>
+    <string name="messagePrerequisiteCoursesFailed">Unable to fetch Prerequisite Courses</string>
+    <string name="messageLessonPlanFailed">Unable to fetch Lesson Plan</string>
+    <string name="messageNoPrerequisiteCoursesFound">No Prerequisite Courses found.</string>
+    <string name="messageNoLessonPlanFound">No Lesson Plan found.</string>
+    <string name="messagePasswordChangeFailed">Failed to change password, try again.</string>
+    <string name="messageChangePasswordLogout">Your password has been changed successfully.\n\nPlease login with your updated password.</string>
+    <string name="messagePasswordChangeSuccess">Password changed successfully.</string>
+    <string name="messagePasswordGenerateSuccess">Password generated successfully.\nPlease login with your updated password.</string>
+    <string name="messageCoursesNotFound">No Courses Found.</string>
+    <string name="messageCoursesFetchFailed">Unable to fetch Courses.</string>
+    <string name="messageResourcesNotFound">No Resources Found.</string>
+    <string name="messageResourcesFetchFailed">Unable to fetch Resources.</string>
+    <string name="labelTraining">Training</string>
+    <string name="labelTrainings">Trainings</string>
+    <string name="labelDetails">Details</string>
+    <string name="labelSessions">Sessions</string>
+    <string name="labelGroup">Group</string>
+    <string name="labelPerformance">Performance</string>
+    <string name="labelOverall">Overall</string>
+    <string name="labelCourses">Courses</string>
+    <string name="labelResources">Resources</string>
+    <string name="labelSession">Session</string>
+    <string name="labelAssignments">Assignments</string>
+    <string name="messagePleaseWait">Please wait…</string>
+    <string name="messagePleaseAddReview">Please add review.</string>
+    <string name="messageNoTopics">No Topics Found</string>
+    <string name="labelPractice">Practice</string>
+    <string name="labelWorksheet">Worksheet</string>
+    <string name="labelTopic">Topic</string>
+    <string name="labelSkill">Skill</string>
+    <string name="messageLessonsNotFound">No Lesson found.</string>
+    <string name="messageCourseDetailNotFound">Unable to get details</string>
+    <string name="messageFeaturedCardsUnableToNotFound">Unable to get featured cards</string>
+    <string name="messageFeaturedCardsNotFound">No featured cards found.</string>
+    <string name="labelMore">More</string>
+    <string name="labelRapidLearning">Rapid Learning</string>
+    <string name="labelStartPracticeTest">Start Practice Test</string>
+    <string name="vimeoAccessToken">d768e9d9b920124bbd0344b5752c076a</string>
+    <string name="vimeoClientId">ca55530a8ecf9832d1cf5ae9ac6a12b503cad9b1</string>
+    <string name="vimeoClientSecret">hBm7Vm9VFXaErOgl8MN0nK4VGlef0N68N4K1cY+Neow8hYpnpvULyCqYnVL8MMb4EslI94oG25TTNd1IKcfkGEmdIGvsYC42565Nz3rvIzbVdmHv1t9Zg8xAJLEC38Fp</string>
+    <string name="messageUnableToMakeWhatsAppCall">Unable to make WhatsApp Call.</string>
+    <string name="labelMailTo">mailto</string>
+    <string name="messageChooseEmailClient">Choose an Email client :</string>
+    <string name="labelAddShortcut">Add Shortcut</string>
+    <string name="idAssignmentShortcut">assignment</string>
+    <string name="idLearningNetworkShortcut">learningNetwork</string>
+    <string name="idCalendarShortcut">calendar</string>
+    <string name="idWorkspaceShortcut">workspace</string>
+    <string name="idTrainingShortcut">training</string>
+    <string name="idLearningMapShortcut">learningMap</string>
+    <string name="messageItemAdded">Item added</string>
+    <string name="messageShortcutCreated">Shortcut created</string>
+    <string name="typeCourse">course</string>
+    <string name="typeNameFeatureCourse">featurecourse</string>
+    <string name="typeImage">image</string>
+    <string name="typePdf">pdf</string>
+    <string name="typeVideo">video</string>
+    <string name="typeYouTubeVideo">youtube#video</string>
+    <string name="typeVimeoVideo">vimeo</string>
+    <string name="typeVimeoVideoDotCom">vimeo.com</string>
+    <string name="typeMicroCourse">microCourse</string>
+    <string name="typeQuiz">quiz</string>
+    <string name="messageNoDrag">Please complete mandatory task to move further.</string>
+    <string name="messageNoTopicsFound">No topics found, please select another subject.</string>
+    <string name="button_dismiss">Dismiss</string>
+    <string name="labelReadMore">Read more</string>
+    <string name="labelReadLess">Read less</string>
+    <string name="stringTripleDot">…</string>
+    <string name="messageTextCopied">Text copied to clipboard</string>
+    <string name="labelSelectSubject">Select Subject</string>
+    <string name="labelSelectTopic">Select Topic</string>
+    <string name="checkAnswer">Check Answer</string>
+    <string name="labelSelectGroups">Select Groups</string>
+    <string name="labelAssignTest">Assign Test</string>
+    <string name="labelBranch">Branch</string>
+    <string name="messageNoResultFound">No Result found.</string>
+    <string name="messageFailedToFetchData">Unable to fetch data.</string>
+    <string name="messageFailedToPostData">Unable to post data.</string>
+    <string name="labelSelectMembers">Select Members</string>
+    <string name="label_select_members">Tap To Select Members</string>
+    <string name="messageTestAlreadyPerformed">Test already performed</string>
+    <string name="labelAvailableTraining">Available Training</string>
+    <string name="labelAnalysis">Analysis</string>
+    <string name="labelAnalytics">Analytics</string>
+    <string name="labelLearningAnalytics">Learning Analytics</string>
+    <string name="label_home">Home</string>
+    <string name="filter_homework">Filter Homework</string>
+    <string name="submitted_homework">Submitted Homework</string>
+
+    <string name="label_achievement">My Achievements</string>
+    <string name="label_personal">Personal</string>
+    <string name="label_parent">Parent</string>
+    <string name="question">Question</string>
+    <string name="questionTypeMCQ">MCQ</string>
+    <string name="unable_to_play_youtube_video">Unable to play youtube video.</string>
+
+    <!--OTP strings-->
+    <string name="mobile_no">Mobile No.</string>
+    <string name="login">Login</string>
+    <string name="generate_password">Generate Password</string>
+    <string name="request_otp">Request OTP</string>
+    <string name="please_enter_otp_sent_to">Please enter the OTP sent to</string>
+    <string name="did_not_receive_otp">Didn’t receive OTP?</string>
+    <string name="resend">RESEND</string>
+    <string name="enter_your_enrollment_number">Enter your enrollment number</string>
+    <string name="request_otp_message">Tap REQUEST OTP to verify your enrollment number with our database.\nAn SMS will be sent to verify your number.</string>
+    <string name="verifying_your_enrollment_number">Verifying your enrollment number…</string>
+    <string name="enrollment_number_not_exist_in_database">It seems like entered enrollment number not exist in our database. Please retry with correct enrollment number.</string>
+    <string name="otp_should_be_4_digit_long">OTP should be 4 digit long.</string>
+    <string name="verify_otp">Verify OTP</string>
+    <string name="otp_verified_successfully">OTP verified successfully.</string>
+    <string name="verifying_otp">Verifying OTP…</string>
+    <string name="invalid_otp">OTP is not valid, please retry with correct OTP.</string>
+
+    <string name="label_efforts">Efforts</string>
+    <string name="label_excellence">Excellence</string>
+    <string name="label_progress">Progress</string>
+    <string name="due_soon">Due Soon</string>
+    <string name="logging_out">Logging Out…</string>
+    <string name="avail_bonus">AVAIL BONUS</string>
+    <string name="in_min">Min.</string>
+    <string name="profile">Profile</string>
+    <string name="preferences">Preferences</string>
+    <string name="other">Other</string>
+    <string name="post_liked_by">Post Liked By</string>
+    <string name="labelLoginHelpWithQuestionMark">Login Help?</string>
+    <string name="title_activity_sample_web_text">SampleWebTextActivity</string>
+    <string name="got_it">Got it</string>
 
 </resources>

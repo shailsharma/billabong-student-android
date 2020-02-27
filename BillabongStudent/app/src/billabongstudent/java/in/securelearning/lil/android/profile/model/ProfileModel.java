@@ -14,18 +14,19 @@ import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.base.dataobjects.FavouriteResource;
 import in.securelearning.lil.android.base.dataobjects.Resource;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.PlayVimeoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.PlayYouTubeFullScreenActivity;
 import in.securelearning.lil.android.login.views.activity.LoginActivity;
+import in.securelearning.lil.android.player.view.activity.PlayVideoFullScreenActivity;
+import in.securelearning.lil.android.player.view.activity.PlayVimeoFullScreenActivity;
+import in.securelearning.lil.android.player.view.activity.PlayYouTubeFullScreenActivity;
 import in.securelearning.lil.android.profile.dataobject.ProfileVideo;
 import in.securelearning.lil.android.profile.dataobject.TeacherProfile;
 import in.securelearning.lil.android.profile.dataobject.UserInterest;
 import in.securelearning.lil.android.profile.dataobject.UserInterestPost;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentAchievement;
 import in.securelearning.lil.android.syncadapter.dataobjects.StudentProfilePicturePost;
-import in.securelearning.lil.android.syncadapter.model.FlavorNetworkModel;
+import in.securelearning.lil.android.syncadapter.model.NetworkModel;
 import in.securelearning.lil.android.syncadapter.service.SyncServiceHelper;
+import in.securelearning.lil.android.syncadapter.utils.ConstantUtil;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -39,7 +40,7 @@ public class ProfileModel {
     Context mContext;
 
     @Inject
-    FlavorNetworkModel mFlavorNetworkModel;
+    NetworkModel mNetworkModel;
 
     public ProfileModel() {
         InjectorHome.INSTANCE.getComponent().inject(this);
@@ -78,13 +79,13 @@ public class ProfileModel {
             Resource item = new Resource();
             item.setType(mContext.getString(R.string.typeVideo));
             item.setUrlMain(url);
-            mContext.startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(mContext, PlayVideoFullScreenActivity.NETWORK_TYPE_ONLINE, (Resource) item));
+            mContext.startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(mContext, ConstantUtil.BLANK, ConstantUtil.BLANK, PlayVideoFullScreenActivity.NETWORK_TYPE_ONLINE, (Resource) item));
         } else if (type.equalsIgnoreCase(mContext.getString(R.string.typeYouTubeVideo))) {
             if (!url.contains("http:") || !url.contains("https:")) {
                 FavouriteResource favouriteResource = new FavouriteResource();
                 favouriteResource.setName(url);
                 favouriteResource.setUrlThumbnail("");
-                mContext.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(mContext, favouriteResource, false));
+                mContext.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(mContext, ConstantUtil.BLANK, ConstantUtil.BLANK, favouriteResource));
             } else {
                 String pattern = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
 
@@ -95,18 +96,18 @@ public class ProfileModel {
                     FavouriteResource favouriteResource = new FavouriteResource();
                     favouriteResource.setName(videoId);
                     favouriteResource.setUrlThumbnail("");
-                    mContext.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(mContext, favouriteResource, false));
+                    mContext.startActivity(PlayYouTubeFullScreenActivity.getStartIntent(mContext, ConstantUtil.BLANK, ConstantUtil.BLANK, favouriteResource));
                 }
             }
 
 
         } else if (type.equalsIgnoreCase(mContext.getString(R.string.typeVimeoVideo))) {
-            mContext.startActivity(PlayVimeoFullScreenActivity.getStartIntent(mContext, url));
+            mContext.startActivity(PlayVimeoFullScreenActivity.getStartIntent(mContext, ConstantUtil.BLANK, ConstantUtil.BLANK, ConstantUtil.BLANK, url));
         } else {
             Resource item = new Resource();
             item.setType(mContext.getString(R.string.typeVideo));
             item.setUrlMain(url);
-            mContext.startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(mContext, PlayVideoFullScreenActivity.NETWORK_TYPE_ONLINE, (Resource) item));
+            mContext.startActivity(PlayVideoFullScreenActivity.getStartActivityIntent(mContext, ConstantUtil.BLANK, ConstantUtil.BLANK, PlayVideoFullScreenActivity.NETWORK_TYPE_ONLINE, (Resource) item));
         }
     }
 
@@ -118,7 +119,7 @@ public class ProfileModel {
                 Observable.create(new ObservableOnSubscribe<StudentAchievement>() {
                     @Override
                     public void subscribe(ObservableEmitter<StudentAchievement> e) throws Exception {
-                        Call<StudentAchievement> call = mFlavorNetworkModel.fetchStudentAchievements(userId);
+                        Call<StudentAchievement> call = mNetworkModel.fetchStudentAchievements(userId);
                         Response<StudentAchievement> response = call.execute();
 
                         if (response != null && response.isSuccessful()) {
@@ -156,7 +157,7 @@ public class ProfileModel {
                 Observable.create(new ObservableOnSubscribe<ArrayList<UserInterest>>() {
                     @Override
                     public void subscribe(ObservableEmitter<ArrayList<UserInterest>> e) throws Exception {
-                        Call<ArrayList<UserInterest>> call = mFlavorNetworkModel.fetchStudentInterestData(gradeId, interestType);
+                        Call<ArrayList<UserInterest>> call = mNetworkModel.fetchStudentInterestData(gradeId, interestType);
                         Response<ArrayList<UserInterest>> response = call.execute();
                         if (response != null && response.isSuccessful()) {
                             ArrayList<UserInterest> list = response.body();
@@ -201,7 +202,7 @@ public class ProfileModel {
                     Observable.create(new ObservableOnSubscribe<ResponseBody>() {
                         @Override
                         public void subscribe(ObservableEmitter<ResponseBody> e) throws Exception {
-                            Call<ResponseBody> call = mFlavorNetworkModel.sendUserInterestInitially(post);
+                            Call<ResponseBody> call = mNetworkModel.sendUserInterestInitially(post);
                             Response<ResponseBody> response = call.execute();
                             if (response != null && response.isSuccessful()) {
                                 ResponseBody list = response.body();
@@ -241,7 +242,7 @@ public class ProfileModel {
                     Observable.create(new ObservableOnSubscribe<ResponseBody>() {
                         @Override
                         public void subscribe(ObservableEmitter<ResponseBody> e) throws Exception {
-                            Call<ResponseBody> call = mFlavorNetworkModel.sendUserInterest(post);
+                            Call<ResponseBody> call = mNetworkModel.sendUserInterest(post);
                             Response<ResponseBody> response = call.execute();
                             if (response != null && response.isSuccessful()) {
                                 ResponseBody list = response.body();
@@ -282,7 +283,7 @@ public class ProfileModel {
             @Override
             public void subscribe(ObservableEmitter<TeacherProfile> e) throws Exception {
 
-                Call<TeacherProfile> call = mFlavorNetworkModel.fetchNonStudentUserProfileByUserId(userId);
+                Call<TeacherProfile> call = mNetworkModel.fetchNonStudentUserProfileByUserId(userId);
                 Response<TeacherProfile> response = call.execute();
                 if (response != null && response.isSuccessful()) {
                     Log.e("NonStProfile1--", "Successful");
@@ -320,7 +321,7 @@ public class ProfileModel {
                 Observable.create(new ObservableOnSubscribe<ResponseBody>() {
                     @Override
                     public void subscribe(ObservableEmitter<ResponseBody> e) throws Exception {
-                        Call<ResponseBody> call = mFlavorNetworkModel.updateStudentProfileWithImage(profilePicturePost, userId);
+                        Call<ResponseBody> call = mNetworkModel.updateStudentProfileWithImage(profilePicturePost, userId);
                         Response<ResponseBody> response = call.execute();
                         if (response != null && response.isSuccessful()) {
                             ResponseBody body = response.body();

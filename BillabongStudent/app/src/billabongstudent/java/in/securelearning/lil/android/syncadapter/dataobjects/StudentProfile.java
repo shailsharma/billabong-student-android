@@ -1,16 +1,10 @@
 package in.securelearning.lil.android.syncadapter.dataobjects;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import in.securelearning.lil.android.base.dataobjects.Grade;
-import in.securelearning.lil.android.base.dataobjects.Location;
-import in.securelearning.lil.android.base.dataobjects.Role;
-import in.securelearning.lil.android.base.dataobjects.Section;
+import java.io.Serializable;
+
 import in.securelearning.lil.android.base.dataobjects.UserProfile;
 import in.securelearning.lil.android.profile.dataobject.UserInterestParent;
 

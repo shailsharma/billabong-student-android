@@ -6,20 +6,18 @@
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
 
-    <!--<uses-permission android:name="android.permission.GET_ACCOUNTS" />-->
-    <!--<uses-permission android:name="android.permission.READ_PROFILE" />-->
-    <!--<uses-permission android:name="android.permission.READ_CONTACTS" />-->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <!--<uses-permission android:name="android.permission.CALL_PHONE"/>-->
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".MyApplication"
@@ -28,10 +26,12 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+
+        <receiver android:name="in.securelearning.lil.android.syncadapter.receiver.ConnectivityChangeReceiver" />
+
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -40,24 +40,65 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <receiver android:name="in.securelearning.lil.android.syncadapter.receiver.ConnectivityChangeReceiver" />
+        <provider
+            android:name="in.securelearning.lil.android.provider.SearchSuggestionProvider"
+            android:authorities="@string/authorities"
+            android:enabled="true"
+            android:exported="false" />
 
         <service
-            android:name="in.securelearning.lil.android.syncadapter.fcmservices.FCMReceiverService"
+            android:name="in.securelearning.lil.android.syncadapter.service.FCMReceiverService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <service
-            android:name="in.securelearning.lil.android.syncadapter.fcmservices.FCMToken"
+            android:name="in.securelearning.lil.android.syncadapter.dataobjects.FCMToken"
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
+        <service
+            android:name="in.securelearning.lil.android.syncadapter.service.SyncService"
+            android:stopWithTask="false" />
+
+        <service
+            android:name="in.securelearning.lil.android.syncadapter.service.UserService"
+            android:stopWithTask="false" />
+
+        <service
+            android:name="in.securelearning.lil.android.syncadapter.service.MessageService"
+            android:stopWithTask="false" />
+
+        <service
+            android:name="in.securelearning.lil.android.syncadapter.service.CourseService"
+            android:stopWithTask="false" />
+
+        <activity
+            android:name="in.securelearning.lil.android.startup.views.activity.AppIntroActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/ThemeSplash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="in.securelearning.lil.android.login.views.activity.LoginActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/CustomActivityTheme"
+            android:windowSoftInputMode="stateHidden" />
 
         <activity
             android:name="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
@@ -71,177 +112,19 @@
 
             <meta-data
                 android:name="android.app.searchable"
-                android:resource="@xml/searchable2" />
+                android:resource="@xml/searchable" />
         </activity>
 
         <activity
-            android:name="in.securelearning.lil.android.home.views.activity.SearchResultListActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_searchresult_list"
-            android:launchMode="singleTop"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable2" />
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity" />
-        </activity>
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.SearchResultListFilterActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_searchresult_list"
-            android:launchMode="singleTop"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable2" />
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity" />
-        </activity>
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.SearchResourcesListFilterActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_searchresult_list"
-            android:launchMode="singleTop"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable2" />
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity" />
-        </activity>
-        <activity
-            android:name="in.securelearning.lil.android.courses.views.activity.CourseDetailActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_course_detail"
-            android:launchMode="standard"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/FullscreenThemeCourseDetail">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity" />
-        </activity>
-        <activity
-            android:name="in.securelearning.lil.android.assignments.views.activity.AssignmentDetailActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_assignment_detail"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="in.securelearning.lil.android.assignments.views.activity.StudentSummaryActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_student_summary"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="in.securelearning.lil.android.assignments.views.activity.AssignActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_assign_resource"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name="in.securelearning.lil.android.assignments.views.activity.QuizMetaDataActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name="in.securelearning.lil.android.assignments.views.activity.QuizAssemblerActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.FTPSettingActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_settings"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/FullscreenTheme" />
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity"
+            android:name="in.securelearning.lil.android.player.view.activity.PlayVideoFullScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/AppThemeLightNoActionBar" />
 
         <activity
-            android:name="in.securelearning.lil.android.home.views.activity.PlayFullScreenImageActivity"
+            android:name="in.securelearning.lil.android.player.view.activity.PlayFullScreenImageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:excludeFromRecents="true"
             android:theme="@style/Theme.UserDialog" />
-
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.CalendarAssignmenResponseActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/FullscreenTheme" />
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.CalendarAssignmentActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.CalendarEventListActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.CalendarPeriodListActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.CalendarPeriodDetailActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/FullscreenTheme" />
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.PersonalEventDetailActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/FullscreenTheme" />
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.PersonalEventCreationActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.ActivityCreationActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.AnnouncementCreationActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name="in.securelearning.lil.android.learningnetwork.views.activity.PostLikeActivity"
@@ -249,6 +132,7 @@
             android:screenOrientation="sensorPortrait"
             android:theme="@style/FullscreenTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+
         <activity
             android:name="in.securelearning.lil.android.learningnetwork.views.activity.CreatePostActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -269,93 +153,19 @@
             android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name="in.securelearning.lil.android.learningnetwork.views.activity.GroupDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name="in.securelearning.lil.android.learningnetwork.views.activity.PostResponseListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name="in.securelearning.lil.android.quizcreator.views.activity.QuizCreatorActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/FullscreenTheme"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.SettingStorageActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_setting_storage"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/FullscreenTheme" />
-
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.SettingAccountActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_setting_account"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/FullscreenTheme" />
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.TrainingDetailsActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme" />
-
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.SessionDetailActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.TrainingSessionsActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.SettingHelpActivity"
-            android:label="@string/title_activity_setting_help"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.SettingAboutActivity"
-            android:label="@string/title_activity_setting_about"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
-
-        <service
-            android:name="in.securelearning.lil.android.syncadapter.service.SyncService"
-            android:stopWithTask="false" />
-        <service
-            android:name="in.securelearning.lil.android.syncadapter.service.UserService"
-            android:stopWithTask="false" />
-        <service
-            android:name="in.securelearning.lil.android.syncadapter.service.PeriodService"
-            android:stopWithTask="false" />
-        <service
-            android:name="in.securelearning.lil.android.syncadapter.service.MessageService"
-            android:stopWithTask="false" />
-        <service
-            android:name="in.securelearning.lil.android.syncadapter.service.AssignmentService"
-            android:stopWithTask="false" />
-        <service
-            android:name="in.securelearning.lil.android.syncadapter.service.CourseService"
-            android:stopWithTask="false" />
-        <service
-            android:name="in.securelearning.lil.android.syncadapter.service.ReminderService"
-            android:stopWithTask="false" />
 
         <activity
             android:name="in.securelearning.lil.android.login.views.activity.SignUpActivity"
@@ -365,183 +175,16 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
 
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
-
-
-        <activity
-            android:name="in.securelearning.lil.android.courses.views.activity.CourseNewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_courses"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity" />
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable2" />
-        </activity>
-        <activity
-            android:name="in.securelearning.lil.android.blog.views.activity.BlogNewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait"></activity>
-        <activity
-            android:name="in.securelearning.lil.android.assignments.views.activity.QuizNewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_courses"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity" />
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable2" />
-        </activity>
-        <activity
-            android:name="in.securelearning.lil.android.assignments.views.activity.AssignmentStudentActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_courses"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity" />
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable2" />
-        </activity>
-        <activity
-            android:name="in.securelearning.lil.android.assignments.views.activity.AssignmentTeacherActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_courses"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity" />
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable2" />
-        </activity>
-        <activity
-            android:name="in.securelearning.lil.android.assignments.views.activity.AssignmentCompletedTeacherActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_courses"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity" />
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable2" />
-        </activity>
-        <activity
-            android:name="in.securelearning.lil.android.assignments.views.activity.AssignmentCompletedTrainerActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity" />
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable2" />
-        </activity>
-        <activity
-            android:name="in.securelearning.lil.android.assignments.views.activity.AssignmentCompletedTraineeActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity" />
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable2" />
-        </activity>
-        <activity
-            android:name="in.securelearning.lil.android.assignments.views.activity.AssignmentCompletedStudentActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_courses"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity" />
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable2" />
-        </activity>
-
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.CalendarActivityNew"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="in.securelearning.lil.android.courses.views.activity.DownloadCourseActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait" />
-
-        <activity
-            android:name="in.securelearning.lil.android.courses.views.activity.FavouriteCourseActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensorPortrait" />
-
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name="com.afollestad.materialcamera.CaptureActivity"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/MaterialCamera.CaptureActivity" />
+
         <activity
             android:name="com.afollestad.materialcamera.CaptureActivity2"
             android:screenOrientation="sensorPortrait"
@@ -552,71 +195,6 @@
             android:exported="false" />
 
         <activity
-            android:name="in.securelearning.lil.android.home.views.activity.NewSearchCourseFilterActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_search_results"
-            android:launchMode="singleTop"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable2" />
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity" />
-        </activity>
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.NewSearchResourceFilterActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_search_results"
-            android:launchMode="singleTop"
-            android:parentActivityName="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable2" />
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity" />
-        </activity>
-
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.SubjectDetailSearchCourseActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_searchresult_list"
-            android:launchMode="singleTop"
-            android:screenOrientation="sensorPortrait" />
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.SubjectDetailSearchResourceActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_searchresult_list"
-            android:launchMode="singleTop"
-            android:screenOrientation="sensorPortrait" />
-        <activity
-            android:name="in.securelearning.lil.android.quizpreview.activity.QuestionPlayerActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Skill Name"
-            android:launchMode="singleTop"
-            android:screenOrientation="sensorPortrait" />
-        <activity
-            android:name="in.securelearning.lil.android.quizpreview.activity.PracticeTopicActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:launchMode="singleTop"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
             android:name="in.securelearning.lil.android.player.view.activity.PracticePlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
@@ -625,14 +203,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name="in.securelearning.lil.android.home.views.activity.ViewAllResoursesActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_searchresult_list"
-            android:launchMode="singleTop"
-            android:screenOrientation="sensorPortrait" />
-
-        <activity
-            android:name="in.securelearning.lil.android.home.views.activity.PlayYouTubeFullScreenActivity"
+            android:name="in.securelearning.lil.android.player.view.activity.PlayYouTubeFullScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="user"
@@ -640,7 +211,7 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
-            android:name="in.securelearning.lil.android.home.views.activity.PlayVimeoFullScreenActivity"
+            android:name="in.securelearning.lil.android.player.view.activity.PlayVimeoFullScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="user"
@@ -669,6 +240,199 @@
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.player.view.activity.RevisionPlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.home.views.activity.SettingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_settings"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppThemeWhite" />
+
+        <activity
+            android:name="in.securelearning.lil.android.home.views.activity.PasswordChangeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppThemeWhite"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="in.securelearning.lil.android.learningnetwork.views.activity.CreatePostSharedIntentActivity"
+            android:autoRemoveFromRecents="true"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/learning_network"
+            android:maxRecents="1"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/FullscreenTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="image/*" />
+                <!-- <data android:mimeType="video/*"/> -->
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="in.securelearning.lil.android.lrpa.views.activity.SubjectDetailsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.profile.views.activity.StudentProfileActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.thirdparty.views.activity.WikiHowListActivity"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.analytics.views.activity.StudentAnalyticsActivity"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.analytics.views.activity.TimeEffortDetailActivity"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.analytics.views.activity.PerformanceDetailActivity"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.analytics.views.activity.ProgressDetailActivity"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.login.views.activity.GeneratePasswordActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppThemeWhite"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="in.securelearning.lil.android.analytics.views.activity.StudentAnalyticsTabActivity"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.homework.views.activity.SubmitHomeworkActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppThemeWhite"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name="in.securelearning.lil.android.homework.views.activity.HomeworkDetailActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppThemeWhite"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name="in.securelearning.lil.android.profile.views.activity.StudentProfileGoalActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name="in.securelearning.lil.android.profile.views.activity.StudentProfileSubjectActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name="in.securelearning.lil.android.profile.views.activity.StudentProfileCoCurricularActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name="in.securelearning.lil.android.profile.views.activity.StudentProfileHobbyActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name="in.securelearning.lil.android.thirdparty.views.activity.LogiqidsQuizPlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name="in.securelearning.lil.android.thirdparty.views.activity.MindSparkPlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.thirdparty.views.activity.MindSparkAllTopicListActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.home.views.activity.VocationalTopicsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.profile.views.activity.UserPublicProfileActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.profile.views.activity.StudentPublicProfileActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.gamification.views.activity.MascotActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/Theme.Mascot"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name="in.securelearning.lil.android.home.views.activity.HelpAndFAQActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/help_and_faqs_amp"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="in.securelearning.lil.android.thirdparty.views.activity.GeoGebraPlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/labelGeoGebra"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme.NoActionBar" />
 
     </application>

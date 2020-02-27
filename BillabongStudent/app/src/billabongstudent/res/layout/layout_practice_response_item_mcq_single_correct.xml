@@ -1,0 +1,14 @@
+<in.securelearning.lil.android.syncadapter.utils.RadioButtonCustom
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@drawable/background_choice_quiz"
+    android:button="@null"
+    android:padding="@dimen/value_12dp"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:textColor="@color/white"
+    android:textColorLink="@color/colorWhite"
+    android:drawablePadding="@dimen/value_8dp">
+
+</in.securelearning.lil.android.syncadapter.utils.RadioButtonCustom>

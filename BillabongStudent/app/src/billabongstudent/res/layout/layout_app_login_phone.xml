@@ -65,7 +65,7 @@
                     android:padding="8dp"
                     android:src="@drawable/back_gray"/>
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
@@ -77,7 +77,7 @@
 
             </RelativeLayout>
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageViewLoginLilLogo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,13 +107,13 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/inputLayoutLoginPhone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColorHint="@color/colorGrey77">
 
-                        <android.support.v7.widget.AppCompatEditText
+                        <androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/editTextLoginPhone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -125,9 +125,9 @@
                             android:textSize="16sp"
                             android:theme="@style/themeEditTextGrey"/>
 
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <android.support.v7.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/buttonRequestOTP"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -222,7 +222,7 @@
                     <!--app:pinWidth="30dp"-->
 
 
-                    <android.support.v7.widget.AppCompatEditText
+                    <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/editTextLoginOTP"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -242,7 +242,7 @@
                         android:visibility="gone"/>
 
 
-                    <android.support.v7.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/buttonSubmitOTP"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

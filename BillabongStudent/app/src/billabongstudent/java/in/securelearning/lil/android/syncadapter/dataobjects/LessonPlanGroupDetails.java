@@ -5,8 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-import in.securelearning.lil.android.syncadapter.dataobject.IdNameObject;
-
 public class LessonPlanGroupDetails implements Serializable {
 
     @SerializedName("grade")

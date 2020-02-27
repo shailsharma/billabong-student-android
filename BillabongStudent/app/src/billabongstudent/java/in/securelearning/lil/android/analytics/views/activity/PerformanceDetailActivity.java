@@ -4,15 +4,15 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,21 +26,25 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
 import in.securelearning.lil.android.analytics.model.AnalyticsModel;
 import in.securelearning.lil.android.app.R;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsPerformanceDetailBinding;
 import in.securelearning.lil.android.app.databinding.LayoutAnalyticsPerformanceTopicItemBinding;
 import in.securelearning.lil.android.base.utils.GeneralUtils;
 import in.securelearning.lil.android.home.InjectorHome;
-import in.securelearning.lil.android.analytics.dataobjects.PerformanceChartData;
+import in.securelearning.lil.android.syncadapter.utils.CommonUtils;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class PerformanceDetailActivity extends AppCompatActivity {
-    LayoutAnalyticsPerformanceDetailBinding mBinding;
+
     @Inject
     AnalyticsModel mAnalyticsModel;
+
+    LayoutAnalyticsPerformanceDetailBinding mBinding;
+
     private static final String SUBJECT_ID = "subjectId";
     private static final String SUBJECT_NAME = "subjectName";
     private static final String PERFORMANCE = "performance";
@@ -63,7 +67,7 @@ public class PerformanceDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         InjectorHome.INSTANCE.getComponent().inject(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.layout_analytics_performance_detail);
-        mAnalyticsModel.setImmersiveStatusBar(getWindow());
+        CommonUtils.getInstance().setImmersiveStatusBar(getWindow());
         handleIntent();
 
     }
@@ -103,7 +107,7 @@ public class PerformanceDetailActivity extends AppCompatActivity {
             int[] colors = new int[]{ContextCompat.getColor(Objects.requireNonNull(getBaseContext()), R.color.colorRed), ContextCompat.getColor(getBaseContext(), R.color.colorGrey)};
             dataSet.setColors(colors);
         } else if (performance > 40 && performance <= 70) {
-            int[] colors = new int[]{ContextCompat.getColor(Objects.requireNonNull(getBaseContext()), R.color.colorAnnouncement), ContextCompat.getColor(getBaseContext(), R.color.colorGrey)};
+            int[] colors = new int[]{ContextCompat.getColor(Objects.requireNonNull(getBaseContext()), R.color.colorOrange), ContextCompat.getColor(getBaseContext(), R.color.colorGrey)};
             dataSet.setColors(colors);
         } else if (performance > 70) {
             int[] colors = new int[]{ContextCompat.getColor(Objects.requireNonNull(getBaseContext()), R.color.colorGreenDark), ContextCompat.getColor(getBaseContext(), R.color.colorGrey)};
@@ -133,11 +137,14 @@ public class PerformanceDetailActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void fetchPerformanceData(String subjectId) {
         if (GeneralUtils.isNetworkAvailable(getBaseContext())) {
-            mAnalyticsModel.fetchPerformanceData(subjectId).subscribeOn(Schedulers.io())
+
+            mAnalyticsModel.fetchPerformanceData(subjectId)
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<ArrayList<PerformanceChartData>>() {
                         @Override
                         public void accept(ArrayList<PerformanceChartData> performanceChartData) throws Exception {
+
                             mBinding.progressBarPerformance.setVisibility(View.GONE);
                             if (!performanceChartData.isEmpty()) {
                                 mBinding.layoutRecyclerView.setVisibility(View.VISIBLE);
@@ -145,14 +152,15 @@ public class PerformanceDetailActivity extends AppCompatActivity {
                             } else {
                                 mBinding.textViewNoPerformanceData.setVisibility(View.VISIBLE);
                             }
+
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
                             throwable.printStackTrace();
+
                             mBinding.textViewNoPerformanceData.setVisibility(View.VISIBLE);
                             mBinding.progressBarPerformance.setVisibility(View.GONE);
-
                         }
                     });
         } else {
@@ -167,6 +175,7 @@ public class PerformanceDetailActivity extends AppCompatActivity {
     }
 
     private class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+
         private Context mContext;
         private ArrayList<PerformanceChartData> mList;
 
@@ -194,7 +203,7 @@ public class PerformanceDetailActivity extends AppCompatActivity {
             if (performanceChartData.getPerformance() > 0 && performanceChartData.getPerformance() <= 40) {
                 holder.mBinding.progressBar.setProgressTintList(ColorStateList.valueOf(ContextCompat.getColor(getBaseContext(), R.color.colorRed)));
             } else if (performanceChartData.getPerformance() > 40 && performanceChartData.getPerformance() <= 70) {
-                holder.mBinding.progressBar.setProgressTintList(ColorStateList.valueOf(ContextCompat.getColor(getBaseContext(), R.color.colorAnnouncement)));
+                holder.mBinding.progressBar.setProgressTintList(ColorStateList.valueOf(ContextCompat.getColor(getBaseContext(), R.color.colorOrange)));
 
             } else if (performanceChartData.getPerformance() > 70) {
                 holder.mBinding.progressBar.setProgressTintList(ColorStateList.valueOf(ContextCompat.getColor(getBaseContext(), R.color.colorGreenDark)));
@@ -236,4 +245,5 @@ public class PerformanceDetailActivity extends AppCompatActivity {
                 .show();
 
     }
+
 }

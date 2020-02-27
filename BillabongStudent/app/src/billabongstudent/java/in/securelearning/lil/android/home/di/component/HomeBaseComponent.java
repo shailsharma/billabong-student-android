@@ -16,52 +16,25 @@ import in.securelearning.lil.android.base.di.component.BaseComponent;
 import in.securelearning.lil.android.base.model.GroupModel;
 import in.securelearning.lil.android.gamification.model.MascotModel;
 import in.securelearning.lil.android.gamification.views.activity.MascotActivity;
-import in.securelearning.lil.android.home.model.CalendarEventModel;
-import in.securelearning.lil.android.home.model.FlavorHomeModel;
 import in.securelearning.lil.android.home.model.HomeModel;
-import in.securelearning.lil.android.home.model.SearchModel;
-import in.securelearning.lil.android.home.views.activity.ActivityCreationActivity;
-import in.securelearning.lil.android.home.views.activity.AnnouncementCreationActivity;
-import in.securelearning.lil.android.home.views.activity.CalendarActivityNew;
-import in.securelearning.lil.android.home.views.activity.CalendarEventListActivity;
-import in.securelearning.lil.android.home.views.activity.CalendarPeriodListActivity;
+import in.securelearning.lil.android.home.views.activity.HelpAndFAQActivity;
 import in.securelearning.lil.android.home.views.activity.NavigationDrawerActivity;
-import in.securelearning.lil.android.home.views.activity.NewSearchCourseFilterActivity;
-import in.securelearning.lil.android.home.views.activity.NewSearchResourceFilterActivity;
 import in.securelearning.lil.android.home.views.activity.PasswordChangeActivity;
-import in.securelearning.lil.android.home.views.activity.PersonalEventCreationActivity;
-import in.securelearning.lil.android.home.views.activity.PlayVideoFullScreenActivity;
-import in.securelearning.lil.android.home.views.activity.SearchResourcesListFilterActivity;
-import in.securelearning.lil.android.home.views.activity.SearchResultListActivity;
-import in.securelearning.lil.android.home.views.activity.SearchResultListFilterActivity;
-import in.securelearning.lil.android.home.views.activity.SessionDetailActivity;
 import in.securelearning.lil.android.home.views.activity.SettingActivity;
-import in.securelearning.lil.android.home.views.activity.SubjectDetailSearchCourseActivity;
-import in.securelearning.lil.android.home.views.activity.SubjectDetailSearchResourceActivity;
-import in.securelearning.lil.android.home.views.activity.SubjectDetailsActivity;
-import in.securelearning.lil.android.home.views.activity.UserProfileActivity;
-import in.securelearning.lil.android.home.views.activity.UserProfileEditActivity;
 import in.securelearning.lil.android.home.views.activity.VocationalTopicsActivity;
-import in.securelearning.lil.android.home.views.activity.WikiHowListActivity;
-import in.securelearning.lil.android.home.views.adapter.LRAAdapter;
-import in.securelearning.lil.android.home.views.adapter.PracticeAdapter;
-import in.securelearning.lil.android.home.views.fragment.ChaptersFragment;
+import in.securelearning.lil.android.home.views.adapter.HelpAndFaqModuleListAdapter;
 import in.securelearning.lil.android.home.views.fragment.DashboardFragment;
-import in.securelearning.lil.android.home.views.fragment.PeriodicFragmentForClassDetails;
-import in.securelearning.lil.android.home.views.fragment.ResourceFragment;
-import in.securelearning.lil.android.home.views.fragment.SubjectDetailHomeFragment;
-import in.securelearning.lil.android.home.views.fragment.SubjectHomeworkFragment;
-import in.securelearning.lil.android.home.views.fragment.TraineeLearningObjectiveFragment;
-import in.securelearning.lil.android.home.views.fragment.TraineePrerequisiteCoursesFragment;
-import in.securelearning.lil.android.home.views.fragment.TraineeSessionsFragment;
-import in.securelearning.lil.android.home.views.fragment.TrainingDetailsFragment;
-import in.securelearning.lil.android.home.views.fragment.TrainingStaticDetailsFragment;
 import in.securelearning.lil.android.homework.model.HomeworkModel;
 import in.securelearning.lil.android.homework.views.activity.HomeworkDetailActivity;
 import in.securelearning.lil.android.homework.views.activity.SubmitHomeworkActivity;
 import in.securelearning.lil.android.homework.views.fragment.HomeworkFragment;
 import in.securelearning.lil.android.login.views.activity.GeneratePasswordActivity;
-import in.securelearning.lil.android.player.view.adapter.QuestionResourceAdapter;
+import in.securelearning.lil.android.lrpa.model.LRPAModel;
+import in.securelearning.lil.android.lrpa.views.activity.SubjectDetailsActivity;
+import in.securelearning.lil.android.lrpa.views.adapter.PracticeAdapter;
+import in.securelearning.lil.android.lrpa.views.fragment.ChaptersFragment;
+import in.securelearning.lil.android.lrpa.views.fragment.SubjectDetailHomeFragment;
+import in.securelearning.lil.android.lrpa.views.fragment.SubjectHomeworkFragment;
 import in.securelearning.lil.android.profile.model.ProfileModel;
 import in.securelearning.lil.android.profile.views.activity.StudentProfileActivity;
 import in.securelearning.lil.android.profile.views.activity.StudentProfileCoCurricularActivity;
@@ -73,6 +46,7 @@ import in.securelearning.lil.android.profile.views.activity.UserPublicProfileAct
 import in.securelearning.lil.android.profile.views.fragment.StudentAchievementFragment;
 import in.securelearning.lil.android.profile.views.fragment.StudentParentFragment;
 import in.securelearning.lil.android.profile.views.fragment.StudentPersonalFragment;
+import in.securelearning.lil.android.thirdparty.views.activity.WikiHowListActivity;
 
 /**
  * Created by Prabodh Dhabaria on 14-11-2016.
@@ -80,71 +54,17 @@ import in.securelearning.lil.android.profile.views.fragment.StudentPersonalFragm
 
 public interface HomeBaseComponent extends BaseComponent {
 
-    void inject(SearchModel model);
-
-    void inject(HomeModel model);
-
-    void inject(ResourceFragment fragment);
-
-    void inject(SearchResultListActivity activity);
-
     void inject(NavigationDrawerActivity activity);
-
-    void inject(PlayVideoFullScreenActivity activity);
 
     void inject(DashboardFragment fragment);
 
-    void inject(UserProfileActivity calendarActivity);
-
-    void inject(CalendarEventModel calendarEventModel);
-
     void inject(GroupModel groupModel);
-
-    void inject(PersonalEventCreationActivity personalEventCreationActivity);
-
-    void inject(AnnouncementCreationActivity announcementCreationActivity);
-
-    void inject(ActivityCreationActivity activityCreationActivity);
-
-    void inject(CalendarPeriodListActivity calendarPeriodListActivity);
-
-    void inject(CalendarEventListActivity calendarEventListActivity);
-
-    void inject(SearchResultListFilterActivity object);
-
-    void inject(SearchResourcesListFilterActivity object);
-
-    void inject(CalendarActivityNew calendarActivityNew);
-
-    void inject(PeriodicFragmentForClassDetails periodicFragmentForClassDetails);
 
     void inject(SettingActivity settingActivity);
 
-    void inject(NewSearchCourseFilterActivity newSearchCourseFilterActivity);
-
-    void inject(NewSearchResourceFilterActivity newSearchResourceFilterActivity);
-
-    void inject(SubjectDetailSearchCourseActivity subjectDetailSearchActivity1);
-
-    void inject(SubjectDetailSearchResourceActivity subjectDetailSearchResourceActivity);
-
-    void inject(UserProfileEditActivity userProfileEditActivity);
-
-    void inject(TrainingDetailsFragment trainingDetailsFragment);
-
-    void inject(TrainingStaticDetailsFragment trainingStaticDetailsFragment);
-
-    void inject(TraineePrerequisiteCoursesFragment traineePrerequisiteCoursesFragment);
-
-    void inject(TraineeLearningObjectiveFragment traineeLearningObjectiveFragment);
-
-    void inject(TraineeSessionsFragment traineeSessionsFragment);
-
-    void inject(SessionDetailActivity sessionDetailActivity);
-
     void inject(PasswordChangeActivity passwordChangeActivity);
 
-    void inject(FlavorHomeModel flavorHomeModel);
+    void inject(HomeModel homeModel);
 
     void inject(ChaptersFragment chaptersFragment);
 
@@ -216,7 +136,11 @@ public interface HomeBaseComponent extends BaseComponent {
 
     void inject(VocationalTopicsActivity vocationalTopicsActivity);
 
-    void inject(LRAAdapter LRAAdapter);
-
     void inject(PracticeAdapter practiceAdapter);
+
+    void inject(HelpAndFAQActivity helpAndFAQActivity);
+
+    void inject(HelpAndFaqModuleListAdapter helpAndFaqModuleListAdapter);
+
+    void inject(LRPAModel lrpaModel);
 }

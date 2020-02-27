@@ -2,14 +2,14 @@ package in.securelearning.lil.android.analytics.views.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.annotation.NonNull;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,8 +40,8 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
 
     LayoutStudentAnalyticsPerformanceBinding mBinding;
 
-    ArrayList<EffortvsPerformanceData> mBrilliantSubjectList = null,
-            mCatchingSubjectList = null, mWorkHarderList = null, mStudyingLot = null;
+    ArrayList<EffortvsPerformanceData> mBrilliantSubjectList = null, mCatchingSubjectList = null,
+            mWorkHarderList = null, mStudyingLot = null;
     BenchMarkPerformance mBenchMarkPerformance;
     private boolean fragmentResume = false;
     private boolean fragmentVisible = false;
@@ -77,6 +77,7 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
                 showNoData();
             }
         }
+
         mBinding.llBrilliant.setOnClickListener(this);
         mBinding.llCatching.setOnClickListener(this);
         mBinding.llStudying.setOnClickListener(this);
@@ -267,7 +268,6 @@ public class StudentPerformanceFragment extends Fragment implements View.OnClick
 
 
     private void showStudentList(ArrayList<EffortvsPerformanceData> subjectList) {
-
 
         mBinding.rvSubject.setVisibility(View.VISIBLE);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
