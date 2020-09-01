@@ -10,12 +10,12 @@
     <string name="base_web_url">https://billabong.learnindialearn.in/</string>
 
     <!--debug/development urls-->
-    <string name="base_api_url_debug">https://billabong-dev.learnindialearn.in/api/</string>
-    <string name="base_web_url_debug">https://billabong-dev.learnindialearn.in/</string>
+    <string name="base_api_url_debug">https://billabongdev.learnindialearn.org/api/</string>
+    <string name="base_web_url_debug">https://billabongdev.learnindialearn.org/</string>
 
     <!--test/qa urls-->
-    <string name="base_api_url_test">https://billabong-test.learnindialearn.in/api/</string>
-    <string name="base_web_url_test">https://billabong-test.learnindialearn.in/</string>
+    <string name="base_api_url_test">https://billabongtest.learnindialearn.org/api/</string>
+    <string name="base_web_url_test">https://billabongtest.learnindialearn.org/</string>
 
     <!--mind spark's strings-->
     <string name="mind_spark_x_api_key">zS72YNPKoA9gK6Z6j9Msj4VO1p2SxUnx21Kwuz4P</string>
